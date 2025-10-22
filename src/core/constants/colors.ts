@@ -8,7 +8,12 @@ export const Colors = {
   red: '#FF4E4E',
   lightRed: '#FF6B6B',
   lightText: '#A6A6A6',
+  green: '#34C759',
+  blue: '#007AFF',
+  yellow: '#FFCC00',
   darkText: '#6B7280',
+  deepBlue: '#1B3954',
+  ocean: '#00375c',
   dividerLight: 'rgba(255, 255, 255, 0.1)',
   dividerDark: 'rgba(0, 0, 0, 0.1)',
 }

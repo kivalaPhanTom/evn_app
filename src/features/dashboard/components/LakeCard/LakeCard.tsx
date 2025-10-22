@@ -26,7 +26,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
   return (
     <SectionContainer title="Tồn tại quan trọng">
       <AnimatedCardContainer
-        backgroundColor={{ dark: Colors.darkBlue, light: Colors.white }}
+        backgroundColor={{ dark: Colors.deepBlue, light: Colors.white }}
         borderColor={Colors.dividerLight}
         borderRadius={16}
       >
@@ -75,7 +75,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
             valueColors={textGradients.water}
             showGradient={false}
             borderColor={Colors.lightGray}
-            backgroundColor={{ dark: Colors.darkGray, light: Colors.white }}
+            backgroundColor={{ dark: Colors.ocean, light: Colors.white }}
           />
 
           <View style={[dashboardCommonStyles.summaryRow]}>
@@ -91,7 +91,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
               valueColors={textGradients.water}
               showGradient={false}
               borderColor={Colors.lightGray}
-              backgroundColor={{ dark: Colors.darkGray, light: Colors.white }}
+              backgroundColor={{ dark: Colors.ocean, light: Colors.white }}
             />
 
             <SummaryCard
@@ -106,7 +106,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
               valueColors={textGradients.water}
               showGradient={false}
               borderColor={Colors.lightGray}
-              backgroundColor={{ dark: Colors.darkGray, light: Colors.white }}
+              backgroundColor={{ dark: Colors.ocean, light: Colors.white }}
             />
 
             <SummaryCard
@@ -121,7 +121,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
               valueColors={textGradients.water}
               showGradient={false}
               borderColor={Colors.lightGray}
-              backgroundColor={{ dark: Colors.darkGray, light: Colors.white }}
+              backgroundColor={{ dark: Colors.ocean, light: Colors.white }}
             />
           </View>
 

@@ -25,7 +25,7 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
   const percent = base === 0 ? diff * 100 : ((diff - base) / base) * 100
 
   const isUp = percent >= 0
-  const color = isUp ? Colors.lightRed : Colors.red
+  const color = isUp ? Colors.green : Colors.red
   const arrow = isUp ? '↑' : '↓'
   const value = Math.abs(percent).toFixed(decimals)
 
