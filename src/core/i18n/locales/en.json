@@ -1,0 +1,19 @@
+{
+  "profit": "PROFIT",
+  "day": "DAY",
+  "month": "MONTH",
+  "year": "YEAR",
+  "profitYesterday": "PROFIT YESTERDAY",
+  "unitVND": "billion VND",
+  "vsYesterday": "vs yesterday",
+  "accumulatedWeek": "WEEKLY",
+  "accumulatedMonth": "MONTHLY",
+  "accumulatedYear": "YEARLY",
+  "lakeFlow": "LAKE FLOW",
+  "run": "Chạy máy",
+  "waterLevel": "Mực nước",
+  "overflow": "Xả tràn",
+  "unit": "billion",
+  "increase": "↑",
+  "decrease": "↓"
+}

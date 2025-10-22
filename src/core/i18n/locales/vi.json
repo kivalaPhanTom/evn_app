@@ -1,0 +1,19 @@
+{
+  "profit": "LỢI NHUẬN",
+  "day": "NGÀY",
+  "month": "THÁNG",
+  "year": "NĂM",
+  "profitYesterday": "LỢI NHUẬN HÔM QUA",
+  "unitVND": "tỷ VNĐ",
+  "vsYesterday": "so với ngày trước",
+  "accumulatedWeek": "LŨY KẾ TUẦN",
+  "accumulatedMonth": "LŨY KẾ THÁNG",
+  "accumulatedYear": "LŨY KẾ NĂM",
+  "lakeFlow": "LUU LƯỢNG VỀ HỒ",
+  "run": "Chạy máy",
+  "waterLevel": "Mực nước",
+  "overflow": "Xả tràn",
+  "unit": "tỷ",
+  "increase": "↑",
+  "decrease": "↓"
+}
