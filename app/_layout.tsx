@@ -1,13 +1,15 @@
 import { ThemePref, ThemeToggleContext } from '@/core/context/theme'
 import { useColorScheme as useSystemColorScheme } from '@/core/hooks/use-color-scheme.web'
 import { TranslationProvider } from '@/core/i18n/TranslationProvider'
+import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack } from 'expo-router'
+import { Stack, usePathname, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useMemo, useState } from 'react'
-import { StyleSheet, Switch, Text, View } from 'react-native'
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
@@ -19,6 +21,9 @@ export default function RootLayout() {
   const systemScheme = useSystemColorScheme() ?? 'light'
   const [preference, setPreferenceState] = useState<ThemePref>('system')
   const [loaded, setLoaded] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  const insets = useSafeAreaInsets()
 
   useEffect(() => {
     void (async () => {
@@ -66,11 +71,26 @@ export default function RootLayout() {
     <TranslationProvider>
       <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
         <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack initialRouteName="splash">
-            <Stack.Screen name="splash" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="splash" />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="charts" />
+            <Stack.Screen name="companies" />
+            {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>
+
+          {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+            <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
+              <TouchableOpacity
+                onPress={() => router.back()}
+                style={styles.backButton}
+                hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+              >
+                <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* Floating switch to toggle theme */}
           <View style={styles.switchContainer} pointerEvents="box-none">
@@ -120,5 +140,15 @@ const styles = StyleSheet.create({
   },
   labelLight: {
     color: '#000',
+  },
+  backContainer: {
+    position: 'absolute',
+    left: 12,
+    zIndex: 50,
+  },
+  backButton: {
+    backgroundColor: 'transparent',
+    // padding: 8,
+    borderRadius: 20,
   },
 })
