@@ -1,4 +1,4 @@
-import { GradientColors } from "../types"
+import { GradientColors } from '../types'
 
 export const textGradients = {
   primary: ['#00E0FF', '#48FFCC'] as GradientColors,

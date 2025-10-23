@@ -1,11 +1,12 @@
+import { getModel } from '@/core/utils/device'
 import { Platform } from 'react-native'
-import DeviceInfo from 'react-native-device-info'
+import { ThemeValue } from '../types'
 
 export const isEmpty = (value: any): boolean => {
   return value === undefined || value === '' || value === null
 }
 export const isDynamicIsland = () => {
-  const deviceId = DeviceInfo.getDeviceId()
+  const deviceId = getModel()
   if (Platform.OS === 'ios' && isDeviceIdGreaterThanOrEqual15(deviceId)) {
     return true
   } else {
@@ -36,4 +37,13 @@ export const validatePhoneNumber = (phoneNumber: string): boolean => {
 export const validateStrongPassword = (password: string): boolean => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
   return passwordRegex.test(password)
+}
+
+export const resolveThemeValue = <T>(val: T | ThemeValue<T> | undefined, isDark: boolean): T | undefined => {
+  if (val == null) return undefined
+  if (typeof val === 'object' && ('light' in (val as any) || 'dark' in (val as any))) {
+    const v = val as ThemeValue<T>
+    return (isDark ? v.dark : v.light) ?? v.light ?? v.dark ?? undefined
+  }
+  return val as T
 }
