@@ -1,13 +1,14 @@
 // components/SummaryCard.tsx
 import { textGradients } from '@/core/constants/gradients'
-import { GradientColors } from '@/core/types'
+import { GradientColors, ThemeValue } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
 import AnimatedNumber from '../../AnimatedNumber/AnimatedNumber.component'
-import AnimatedCardContainer, { ThemeValue } from '../../CardContainer/CardContainer.component'
+import AnimatedCardContainer from '../../CardContainer/CardContainer.component'
 import GradientText from '../../GradientText/GradientText.component'
+import type { ImageSource } from 'expo-image'
 
 interface SummaryCardProps {
   label: string
@@ -18,11 +19,14 @@ interface SummaryCardProps {
   gradientColors?: GradientColors
   valueColors?: GradientColors
   gradientPosition?: 'top' | 'bottom'
-  backgroundColor?: string | ThemeValue<string>
+  backgroundColor?: string | GradientColors | ThemeValue<string | GradientColors>
   borderColor?: string
   borderWidth?: number
   showGradient?: boolean
   style?: ViewStyle
+  backgroundImage?: ImageSource
+  backgroundImageOpacity?: number
+  backgroundImageContentFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
 }
 
 const SummaryCard: React.FC<SummaryCardProps> = ({
@@ -39,6 +43,9 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   style,
   showGradient = true,
   valueColors = textGradients.primary,
+  backgroundImage,
+  backgroundImageOpacity,
+  backgroundImageContentFit,
 }) => {
   const { t } = useTranslation()
 
@@ -54,6 +61,9 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
       gradientPosition={gradientPosition}
       gradientColors={gradientColors}
       showGradient={showGradient}
+      backgroundImage={backgroundImage}
+      backgroundImageOpacity={backgroundImageOpacity}
+      backgroundImageContentFit={backgroundImageContentFit}
     >
       <View style={{ alignItems }}>
         <Text style={styles.summaryLabel}>{label}</Text>

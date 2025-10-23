@@ -26,7 +26,7 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
   const { t } = useTranslation()
 
   return (
-    <SectionContainer style={{ marginTop: px.h(46) }} title="Sản xuất kinh danh">
+    <SectionContainer style={{ marginTop: px.h(26) }} title="Sản xuất kinh danh">
       <AnimatedCardContainer
         backgroundColor={{ dark: '#051022', light: '#fff' }}
         borderColor="rgba(255,255,255,0.04)"

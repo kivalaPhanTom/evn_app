@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     borderRadius: px.h(12),
     padding: px.h(16),
-    borderLeftWidth: px.h(4), // Left border
+    borderLeftWidth: px.h(4),
   },
   header: {
     flexDirection: 'row',

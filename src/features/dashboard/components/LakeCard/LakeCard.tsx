@@ -1,3 +1,4 @@
+import { images } from '@/assets'
 import AlertCard from '@/components/AlertCard/AlertCard.component'
 import AnimatedCardContainer from '@/components/CardContainer/CardContainer.component'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
@@ -76,6 +77,7 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
             showGradient={false}
             borderColor={Colors.lightGray}
             backgroundColor={{ dark: Colors.ocean, light: Colors.white }}
+            backgroundImage={images.waves}
           />
 
           <View style={[dashboardCommonStyles.summaryRow]}>

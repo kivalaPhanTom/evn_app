@@ -1,6 +1,6 @@
 import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
-import { textGradients } from '@/core/constants/gradients'
+import { lightGradients } from '@/core/constants/gradients'
 import { GradientColors } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import { useTheme } from '@react-navigation/native'
@@ -18,7 +18,9 @@ const SectionContainer: React.FC<SectionContainerProps> = ({ title, children, st
   const theme = useTheme()
   const isDark = theme.dark
 
-  const backgroundColors: GradientColors = isDark ? [Colors.darkerGray, Colors.darkBlue] : [Colors.white, Colors.lightGray]
+  const backgroundColors: GradientColors = isDark
+    ? [Colors.darkerGray, Colors.darkBlue]
+    : [Colors.white, Colors.lightGray]
   const dividerColor = isDark ? Colors.dividerLight : Colors.black
 
   return (
@@ -31,7 +33,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({ title, children, st
       <View style={styles.gradientBackground}>
         <GradientText
           text={title.toUpperCase()}
-          colors={textGradients.accent}
+          colors={lightGradients.blue}
           fontSize={px.m(18)}
           fontWeight="600"
           style={styles.title}
