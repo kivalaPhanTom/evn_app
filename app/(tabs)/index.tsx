@@ -5,9 +5,26 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { callApiSample } from '@/redux/Actions/ExampleAction';
 import { Link } from 'expo-router';
-
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 export default function HomeScreen() {
+
+  //for test, remove it in future
+  interface ExampleState {
+    id: number | null
+    name: string
+  }
+  const { id, name } = useSelector((state: any) => state.exampleSlice)
+   const dispatch = useDispatch()
+  console.log(' id:', id)
+  console.log('name:', name)
+  useEffect(() => {
+     dispatch(callApiSample({ id: 1, name: 'Test Redux Saga' }))
+  }, [])
+  //Enb for test, remove it in future
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}

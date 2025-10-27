@@ -1,0 +1,1 @@
+export const CALL_API_SAMPLEE: string  = 'CALL_API_SAMPLE'
