@@ -9,6 +9,7 @@
       "@/components/*": ["./components/*"],
       "@/assets/*": ["./assets/*"],
       "@/redux/*": ["./redux/*"],
+      "@/layouts/*": ["./layouts/*"],
     }
   },
   "include": [
