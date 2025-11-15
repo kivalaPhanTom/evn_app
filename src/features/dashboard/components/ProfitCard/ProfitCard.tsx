@@ -19,10 +19,11 @@ interface Props {
   tab: TabType
   setTab: (t: TabType) => void
   contentAnim: Animated.Value
-  lineData: { value: number; label: string }[]
+  lineData: { value: number }[]
+  lineData2: { value: number; label: string }[]
 }
 
-export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props) {
+export default function ProfitCard({ tab, setTab, contentAnim, lineData, lineData2 }: Props) {
   const { t } = useTranslation()
 
   return (
@@ -86,18 +87,7 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
           {/* Line chart */}
           <View style={styles.chartWrapper}>
             <View style={styles.chartInner}>
-              <ChartView
-                type="line"
-                data={
-                  tab === 'day'
-                    ? lineData
-                    : tab === 'month'
-                      ? lineData.map((d) => ({ ...d, value: d.value * 1.6 }))
-                      : lineData.map((d) => ({ ...d, value: d.value * 3 }))
-                }
-                color="green"
-                height={px.v(240)}
-              />
+              <ChartView type="line" data={lineData} data2={lineData2} color="green" height={px.v(240)} />
             </View>
           </View>
 
