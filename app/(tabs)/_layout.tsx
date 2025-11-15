@@ -15,6 +15,14 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
+        // Để dùng TwinkleStars background khi ở dark mode:
+        tabBarStyle: {
+          backgroundColor: colorScheme === 'dark' ? 'rgba(0, 0, 51, 0.8)' : undefined,
+          borderTopColor: colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : undefined,
+        },
+        sceneStyle: {
+          backgroundColor: colorScheme === 'dark' ? 'transparent' : '#fff'
+        },
       }}>
       <Tabs.Screen
         name="index"

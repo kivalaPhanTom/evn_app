@@ -1,3 +1,4 @@
+import TwinkleStars from '@/components/Background/TwinkleStarsCore';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import StoreProvider from '@/redux/StoreProvider';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
@@ -15,13 +16,26 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StoreProvider>
-        <>
-          <Stack>
+        <TwinkleStars
+          background="#000033"
+          particleDensity={50}
+          particleColor="#FFFFFF"
+          minSize={0.5}
+          maxSize={2}
+        >
+          <Stack
+            screenOptions={{
+              // Chỉ transparent khi dark mode để thấy TwinkleStars
+              contentStyle: {
+                backgroundColor: colorScheme === 'dark' ? 'transparent' : '#fff',
+              },
+            }}
+          >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>
-          <StatusBar style="auto" />
-        </>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'auto'} />
+        </TwinkleStars>
       </StoreProvider>
     </ThemeProvider>
   );
