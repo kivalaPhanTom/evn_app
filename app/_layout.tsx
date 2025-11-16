@@ -1,6 +1,7 @@
 import { ThemePref, ThemeToggleContext } from '@/core/context/theme'
 import { useColorScheme as useSystemColorScheme } from '@/core/hooks/use-color-scheme.web'
 import { TranslationProvider } from '@/core/i18n/TranslationProvider'
+import StoreProvider from '@/redux/StoreProvider'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
@@ -71,45 +72,48 @@ export default function RootLayout() {
     <TranslationProvider>
       <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
         <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="splash" />
-            <Stack.Screen name="login" />
-            <Stack.Screen name="charts" />
-            <Stack.Screen name="companies" />
-            {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
+          <StoreProvider>
+            <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="splash" />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="charts" />
+              <Stack.Screen name="companies" />
+              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
 
-          {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
-            <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.backButton}
-                hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-              >
-                <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
-              </TouchableOpacity>
+            {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+              <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
+                <TouchableOpacity
+                  onPress={() => router.back()}
+                  style={styles.backButton}
+                  hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                >
+                  <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Floating switch to toggle theme */}
+            <View style={styles.switchContainer} pointerEvents="box-none">
+              <View style={styles.inner}>
+                <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
+                  {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
+                </Text>
+                <Switch
+                  value={effectiveScheme === 'dark'}
+                  onValueChange={() => {
+                    toggle()
+                  }}
+                  trackColor={{ false: '#ccc', true: '#4f46e5' }}
+                  thumbColor={effectiveScheme === 'dark' ? '#fff' : '#fff'}
+                />
+              </View>
             </View>
-          )}
 
-          {/* Floating switch to toggle theme */}
-          <View style={styles.switchContainer} pointerEvents="box-none">
-            <View style={styles.inner}>
-              <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
-                {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
-              </Text>
-              <Switch
-                value={effectiveScheme === 'dark'}
-                onValueChange={() => {
-                  toggle()
-                }}
-                trackColor={{ false: '#ccc', true: '#4f46e5' }}
-                thumbColor={effectiveScheme === 'dark' ? '#fff' : '#fff'}
-              />
-            </View>
-          </View>
+            <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
 
-          <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
+          </StoreProvider>
         </ThemeProvider>
       </ThemeToggleContext.Provider>
     </TranslationProvider>
