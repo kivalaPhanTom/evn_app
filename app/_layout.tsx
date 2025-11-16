@@ -1,9 +1,9 @@
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { View, Text, ScrollView } from 'react-native'
 import StoreProvider from '@/redux/StoreProvider';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import Home from './Home/Home';
+import styles from './layout.styles'
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -13,16 +13,12 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StoreProvider>
-        <>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </>
-      </StoreProvider>
-    </ThemeProvider>
+    <View style={styles.layout}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
+          <Home />
+        </ScrollView>
+      </View>
+    </View>
   );
 }
