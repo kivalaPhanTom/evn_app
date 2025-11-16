@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 const styles = StyleSheet.create({
     layout: {
         width: '100%',
+        marginBottom:25
         // height: '100%',
         // backgroundColor: "red",
         // displayflex:'flex',
@@ -20,8 +21,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 600,
     },
-    mainContent:{
-        marginTop:15
+    mainContent: {
+        marginTop: 15
+    },
+    gradientLine: {
+        // height: 1,
+        // marginVertical: 16,
+        // width: '100%',
+        borderRadius: 1,
+
+    },
+    lineContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });
 export default styles;
