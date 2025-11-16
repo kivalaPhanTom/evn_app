@@ -4,6 +4,7 @@ import CommonLayout from '@/layouts/CommonLayout/CommonLayout'
 import TotalPower from './TotalPower/TotalPower'
 import PowerRecentDays from './PowerRecentDays/PowerRecentDays'
 import styles from './PowerSection.styles'
+import PowerByHours from './PowerByHours/PowerByHours'
 
 function PowerSection() {
 
@@ -12,6 +13,9 @@ function PowerSection() {
             <View>
                 <View style={styles.section}>
                     <TotalPower />
+                </View>
+                 <View style={styles.section}>
+                    <PowerByHours/>
                 </View>
                 <View style={styles.section}>
                     <PowerRecentDays />

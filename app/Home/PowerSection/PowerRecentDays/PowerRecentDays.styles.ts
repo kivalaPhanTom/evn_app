@@ -24,18 +24,28 @@ const styles = StyleSheet.create({
     valueCard: {
         backgroundColor: '#1e2838',
         borderRadius: 12,
-        marginRight: 12,
-        paddingHorizontal: 20,
+        marginRight: 10,
+        paddingHorizontal: 12,
         paddingVertical: 16,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.05)',
+        width: 75,  // Width cố định 70px
     },
+    // valueCard: {
+    //     backgroundColor: '#1e2838',
+    //     borderRadius: 12,
+    //     marginRight: 12,
+    //     paddingHorizontal: 20,
+    //     paddingVertical: 16,
+    //     borderWidth: 1,
+    //     borderColor: 'rgba(255, 255, 255, 0.05)',
+    // },
     valueItem: {
         alignItems: 'center',
     },
     powerValue: {
         color: '#5b8def',
-        fontSize: 40,
+        fontSize: 24,
         fontWeight: '700',
         marginBottom: 4,
     },

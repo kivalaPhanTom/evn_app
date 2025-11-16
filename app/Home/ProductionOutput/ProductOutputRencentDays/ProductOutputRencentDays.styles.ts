@@ -37,12 +37,11 @@ const styles = StyleSheet.create({
     },
     tableBody: {
         // flex: 1,
-        gap: 12,
+        gap: 8,
     },
     rowCard: {
         backgroundColor: 'rgba(255, 255, 255, 0.05)',
         borderRadius: 16,
-        marginBottom: 12,
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.08)',
     },

@@ -1,10 +1,12 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import CommonCard from '@/components/CommonCard/CommonCard'
-import styles from './TotalPower.styles'
+import styles from './TotalProductionOutput.styles'
 
-function TotalPower() {
+interface Props { }
 
+function TotalProductionOutput(props: Props) {
+    const { } = props
     const powerSources = [
         {
             name: 'Buôn Tua Srah',
@@ -24,20 +26,18 @@ function TotalPower() {
             power: 42,
             color: '#c084fc', // Purple
         },
-
     ];
-    const totalPower = 126
+    const totalPower = 2.4
     const averagePower = 118
-
     return (
         <CommonCard>
             <View style={styles.content}>
                 {/* Left side - Total Power */}
                 <View style={styles.leftSection}>
-                    <Text style={styles.title}>TỔNG CÔNG SUẤT</Text>
+                    <Text style={styles.title}>TỔNG SẢN LƯỢNG</Text>
                     <Text style={styles.totalPower}>{totalPower}</Text>
-                    <Text style={styles.unit}>MW</Text>
-                    <Text style={styles.average}>TB: {averagePower} MW</Text>
+                    <Text style={styles.unit}>tr.Wh</Text>
+                    <Text style={styles.average}>TB: {averagePower} tr.Wh</Text>
                 </View>
 
                 {/* Right side - Power Sources */}
@@ -52,7 +52,7 @@ function TotalPower() {
                                 </Text>
                             </View>
                             <Text style={[styles.sourcePower, { color: source.color }]}>
-                                {source.power} MW
+                                {source.power} tr.Wh
                             </Text>
                         </View>
                     ))}
@@ -62,4 +62,4 @@ function TotalPower() {
     )
 }
 
-export default TotalPower
+export default TotalProductionOutput

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
-  container: {
+    container: {
     borderRadius: 16,
     padding: 20,
     minHeight: 150,
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   totalPower: {
-    color: '#5b8def',
+    color: '#ff4444',
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 64,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   sourceItem: {
-    // marginBottom: 2,
+    // marginBottom: 8,
   },
   sourceInfo: {
     flexDirection: 'row',
