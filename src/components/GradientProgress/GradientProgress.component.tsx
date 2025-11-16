@@ -1,12 +1,13 @@
+import { GradientColors } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef, useState } from 'react'
-import { Animated, ColorValue, LayoutChangeEvent, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { Animated, LayoutChangeEvent, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 interface GradientProgressProps {
   progress: number // 0..1
   height?: number
-  colors?: readonly [ColorValue, ColorValue, ...ColorValue[]]
+  colors?: GradientColors
   backgroundColor?: string
   borderRadius?: number
   animate?: boolean

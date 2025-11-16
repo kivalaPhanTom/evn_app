@@ -2,13 +2,13 @@
 import { textGradients } from '@/core/constants/gradients'
 import { GradientColors, ThemeValue } from '@/core/types'
 import { px } from '@/core/utils/scale'
+import type { ImageSource } from 'expo-image'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
 import AnimatedNumber from '../../AnimatedNumber/AnimatedNumber.component'
 import AnimatedCardContainer from '../../CardContainer/CardContainer.component'
 import GradientText from '../../GradientText/GradientText.component'
-import type { ImageSource } from 'expo-image'
 
 interface SummaryCardProps {
   label: string
@@ -27,6 +27,9 @@ interface SummaryCardProps {
   backgroundImage?: ImageSource
   backgroundImageOpacity?: number
   backgroundImageContentFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+  fontSizeLabel?: number
+  fontSizeNumber?: number
+  fontSizeUnit?: number
 }
 
 const SummaryCard: React.FC<SummaryCardProps> = ({
@@ -46,10 +49,16 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   backgroundImage,
   backgroundImageOpacity,
   backgroundImageContentFit,
+  fontSizeLabel,
+  fontSizeNumber,
+  fontSizeUnit,
 }) => {
   const { t } = useTranslation()
 
   const alignItems = align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center'
+  const numberFontSize = fontSizeNumber ?? px.m(28)
+  const unitFontSize = fontSizeUnit ?? px.m(16) 
+  const labelFontSize = fontSizeLabel ?? px.m(16) 
 
   return (
     <AnimatedCardContainer
@@ -66,7 +75,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
       backgroundImageContentFit={backgroundImageContentFit}
     >
       <View style={{ alignItems }}>
-        <Text style={styles.summaryLabel}>{label}</Text>
+        <Text style={[styles.summaryLabel, { fontSize: labelFontSize }]}>{label}</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -79,9 +88,11 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
             duration={900}
             decimals={decimals}
             formatter={(n) => (decimals > 0 ? Number(n.toFixed(decimals)).toString() : Number(n.toFixed(0)).toString())}
-            render={(text) => <GradientText text={text} fontSize={px.m(28)} colors={valueColors} />}
+            render={(text) => <GradientText text={text} fontSize={numberFontSize} colors={valueColors} />}
           />
-          <Text style={[styles.summaryUnit, { marginLeft: px.h(8), alignSelf: 'baseline' }]}>{unit ?? t('unit')}</Text>
+          <Text style={[styles.summaryUnit, { marginLeft: px.h(8), alignSelf: 'baseline', fontSize: unitFontSize }]}>
+            {unit ?? t('unit')}
+          </Text>
         </View>
       </View>
     </AnimatedCardContainer>
@@ -94,9 +105,8 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     color: '#9AA6B6',
-    fontSize: px.m(16),
   },
-  summaryUnit: { color: '#9AA6B6', fontSize: px.m(16), fontWeight: '600' },
+  summaryUnit: { color: '#9AA6B6', fontWeight: '600' },
 })
 
 export default SummaryCard
