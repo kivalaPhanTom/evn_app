@@ -73,7 +73,8 @@ export default function RootLayout() {
               <Stack.Screen name="splash" />
               <Stack.Screen name="login" />
               <Stack.Screen name="charts" />
-              <Stack.Screen name="companies" />
+              <Stack.Screen name="home" />
+
               {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
             </Stack>
