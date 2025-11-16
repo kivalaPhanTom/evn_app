@@ -1,7 +1,7 @@
 import { ThemePref, ThemeToggleContext } from '@/core/context/theme'
 import { useColorScheme as useSystemColorScheme } from '@/core/hooks/use-color-scheme.web'
 import { TranslationProvider } from '@/core/i18n/TranslationProvider'
-import StoreProvider from '@/redux/StoreProvider'
+import StoreProvider from '@/core/redux/StoreProvider'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
@@ -13,10 +13,6 @@ import 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-}
 
 export default function RootLayout() {
   const systemScheme = useSystemColorScheme() ?? 'light'
@@ -112,7 +108,6 @@ export default function RootLayout() {
             </View>
 
             <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
-
           </StoreProvider>
         </ThemeProvider>
       </ThemeToggleContext.Provider>

@@ -1,4 +1,4 @@
-import AnimatedCardContainer from '@/components/CardContainer/CardContainer.component'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { textGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import type { GradientColors } from '@/core/types'
@@ -34,7 +34,9 @@ export default function CompaniesScreen() {
           {COMPANIES.map((c) => (
             <Pressable
               key={c.name}
-              onPress={() => router.push({ pathname: '/charts', params: { companyName: c.name, location: c.location } })}
+              onPress={() =>
+                router.push({ pathname: '/charts', params: { companyName: c.name, location: c.location } })
+              }
               style={{ marginBottom: px.v(12) }}
             >
               <AnimatedCardContainer
@@ -55,7 +57,12 @@ export default function CompaniesScreen() {
                       {c.name}
                     </Text>
                     <View style={styles.locationRow}>
-                      <Ionicons name="location-outline" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
+                      <Ionicons
+                        name="location-outline"
+                        size={px.f(12)}
+                        color="#FF6A6A"
+                        style={{ marginRight: px.h(6) }}
+                      />
                       <Text style={[styles.location, { color: isDark ? '#E6ECF2' : '#111827' }]}>{c.location}</Text>
                     </View>
                   </View>

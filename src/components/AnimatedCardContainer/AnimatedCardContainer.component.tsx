@@ -1,8 +1,8 @@
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { GradientColors, ThemeValue } from '@/core/types'
 import { resolveThemeValue } from '@/core/utils/utils'
-import { LinearGradient } from 'expo-linear-gradient'
 import { Image, type ImageSource } from 'expo-image'
+import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef } from 'react'
 import { Animated, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
 
@@ -45,7 +45,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
   gradientPosition = 'bottom',
   borderRadius = 16,
   borderWidth = 1,
-  showGradient = true,
+  showGradient = false,
   backgroundColor: propBackgroundColor,
   borderColor: propBorderColor,
   backgroundImage,
@@ -141,7 +141,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
       <View style={[styles.gradientWrapper, gradientStyle]}>
         {showGradient ? (
           <LinearGradient
-            colors={resolvedGradient as readonly [string, string, ...string[]]}
+            colors={resolvedGradient as GradientColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{ height: gradientHeight, width: '100%' }}

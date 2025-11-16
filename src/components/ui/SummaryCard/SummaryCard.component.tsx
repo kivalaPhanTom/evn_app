@@ -6,8 +6,8 @@ import type { ImageSource } from 'expo-image'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
+import AnimatedCardContainer from '../../AnimatedCardContainer/AnimatedCardContainer.component'
 import AnimatedNumber from '../../AnimatedNumber/AnimatedNumber.component'
-import AnimatedCardContainer from '../../CardContainer/CardContainer.component'
 import GradientText from '../../GradientText/GradientText.component'
 
 interface SummaryCardProps {
@@ -57,8 +57,8 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
 
   const alignItems = align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center'
   const numberFontSize = fontSizeNumber ?? px.m(28)
-  const unitFontSize = fontSizeUnit ?? px.m(16) 
-  const labelFontSize = fontSizeLabel ?? px.m(16) 
+  const unitFontSize = fontSizeUnit ?? px.m(16)
+  const labelFontSize = fontSizeLabel ?? px.m(16)
 
   return (
     <AnimatedCardContainer

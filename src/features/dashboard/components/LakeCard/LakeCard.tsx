@@ -1,6 +1,6 @@
 import { images } from '@/assets'
 import AlertCard from '@/components/AlertCard/AlertCard.component'
-import AnimatedCardContainer from '@/components/CardContainer/CardContainer.component'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -29,7 +29,6 @@ const LakeCard: React.FC<LakeCardProps> = ({ tab, contentAnim }) => {
       <AnimatedCardContainer
         backgroundColor={{ dark: Colors.deepBlue, light: Colors.white }}
         borderColor={Colors.dividerLight}
-        borderRadius={16}
       >
         <Animated.View
           style={{

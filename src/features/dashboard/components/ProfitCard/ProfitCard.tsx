@@ -1,6 +1,6 @@
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
-import AnimatedCardContainer from '@/components/CardContainer/CardContainer.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
@@ -30,7 +30,6 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
       <AnimatedCardContainer
         backgroundColor={{ dark: '#051022', light: '#fff' }}
         borderColor="rgba(255,255,255,0.04)"
-        borderRadius={16}
       >
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>{t('profit')}</Text>
@@ -85,7 +84,7 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
 
           {/* Line chart */}
           <View style={styles.chartWrapper}>
-            <BarChart data={lineData}/>
+            <BarChart data={lineData} rounded />
           </View>
 
           {/* Summary boxes */}

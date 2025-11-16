@@ -28,6 +28,7 @@ interface Props {
   showHorizontalGrid?: boolean // hiển thị grid ngang
   showYAxis?: boolean // hiển thị trục tung và nhãn trục tung
   groupInnerSpacing?: number
+  barRadius?: number
 }
 
 const BarChart: React.FC<Props> = ({
@@ -40,6 +41,7 @@ const BarChart: React.FC<Props> = ({
   frontColor,
   showHorizontalGrid = true,
   showYAxis = false,
+  barRadius = 4,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -124,7 +126,11 @@ const BarChart: React.FC<Props> = ({
         rulesType="solid"
         rulesColor="rgb(255,255,255,0.1)"
         isAnimated
-        roundedTop={rounded}
+        barBorderRadius={rounded ? barRadius : 0}
+        barBorderTopRightRadius={rounded ? barRadius : 0}
+        barBorderTopLeftRadius={rounded ? barRadius : 0}
+        barBorderBottomLeftRadius={0}
+        barBorderBottomRightRadius={0}
         activeOpacity={1}
         autoShiftLabels
         initialSpacing={spacing}
