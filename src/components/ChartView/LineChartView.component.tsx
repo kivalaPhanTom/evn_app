@@ -3,7 +3,7 @@ import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { GradientColors } from '@/core/types'
 import { isTablet, px } from '@/core/utils/scale'
 import React, { useEffect, useRef } from 'react'
-import { ActivityIndicator, Animated, Dimensions, View } from 'react-native'
+import { ActivityIndicator, Animated, Dimensions, Text, View } from 'react-native'
 import { LineChart } from 'react-native-gifted-charts'
 
 export interface LineChartViewProps {
@@ -15,6 +15,7 @@ export interface LineChartViewProps {
   loading?: boolean
   animationDuration?: number
   gradientColors?: GradientColors
+  title?: string
 }
 
 export const LineChartView: React.FC<LineChartViewProps> = ({
@@ -25,6 +26,7 @@ export const LineChartView: React.FC<LineChartViewProps> = ({
   height = isTablet() ? px.v(320) : px.v(220),
   loading = false,
   animationDuration = 1000,
+  title,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -62,6 +64,10 @@ export const LineChartView: React.FC<LineChartViewProps> = ({
 
   const screenWidth = Dimensions.get('window').width
 
+  // Calculate max value from data2 for Y-axis scaling
+  const maxValue2 = data2 && data2.length > 0 ? Math.max(...data2.map((item) => item.value)) : 0
+  const yAxisMaxValue = maxValue2 + 10
+
   // ===== Loading Skeleton =====
   if (loading) {
     return (
@@ -82,34 +88,54 @@ export const LineChartView: React.FC<LineChartViewProps> = ({
   // ===== Render Chart =====
   return (
     <Animated.View style={{ opacity: fadeAnim }}>
-      <View style={{ overflow: 'hidden' }}>
+      <View style={{ overflow: 'hidden', paddingTop: px.v(50) }}>
         <LineChart
           {...commonProps}
           curved
           areaChart
-          startFillColor2="#667EEA"
-          endFillColor2="#667EEA"
+          startFillColor2="#2563EB"
+          endFillColor2="#2563EB"
           startOpacity={0.3}
           endOpacity={0.3}
           spacing={screenWidth / 5}
           thickness={px.h(5)}
-          dataPointsHeight2={px.h(20)}
-          dataPointsWidth2={px.h(20)}
           color="#FBBF24"
-          color2="#667EEA"
-          height={height}
-          dataPointsColor2="#667EEA"
+          color2="#2563EB"
+          height={height + px.v(40)}
+          maxValue={yAxisMaxValue}
+          hideDataPoints2={false}
+          dataPointsColor2="#2563EB"
+          showValuesAsDataPointsText
+          textColor2="#2563EB"
+          textFontSize2={px.m(10)}
+          textShiftY={-10}
+          textShiftX={0}
           showVerticalLines={false}
           hideYAxisText
           yAxisColor="transparent"
           noOfSections={3}
+          //stepValue={(yAxisMaxValue - 100) / 3}
           dashWidth={0}
           dashGap={0}
           scrollAnimation
-          initialSpacing={0}
+          initialSpacing={5}
           endSpacing={0}
         />
       </View>
+      {title && (
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: px.v(12),
+            color: isDark ? '#d1d5db' : '#6b7280',
+            fontSize: px.m(14),
+            fontWeight: '500',
+            fontStyle: 'italic',
+          }}
+        >
+          {title}
+        </Text>
+      )}
     </Animated.View>
   )
 }

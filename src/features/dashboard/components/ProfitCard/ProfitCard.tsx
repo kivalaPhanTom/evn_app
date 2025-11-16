@@ -87,7 +87,14 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData, lineDat
           {/* Line chart */}
           <View style={styles.chartWrapper}>
             <View style={styles.chartInner}>
-              <ChartView type="line" data={lineData} data2={lineData2} color="green" height={px.v(240)} />
+              <ChartView
+                type="line"
+                data={lineData}
+                data2={lineData2}
+                color="green"
+                height={px.v(240)}
+                title="Đơn vị: MW"
+              />
             </View>
           </View>
 

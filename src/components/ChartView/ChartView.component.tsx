@@ -28,6 +28,7 @@ export const ChartView: React.FC<ChartViewProps> = ({
   height = isTablet() ? px.v(320) : px.v(220),
   loading = false,
   animationDuration = 1000,
+  title,
 }) => {
   const commonProps = {
     data,
@@ -36,6 +37,7 @@ export const ChartView: React.FC<ChartViewProps> = ({
     height,
     loading,
     animationDuration,
+    title,
   }
 
   if (type === 'line') {
