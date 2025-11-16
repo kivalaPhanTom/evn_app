@@ -21,6 +21,7 @@ interface AnimatedCardContainerProps {
   borderRadius?: number
   borderWidth?: number
   showGradient?: boolean
+  opacityBg?: number
   /**
    * backgroundColor can be:
    *  - string (applies to both themes)
@@ -51,6 +52,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
   borderRadius = 16,
   borderWidth = 1,
   showGradient = false,
+  opacityBg = 0.8,
   backgroundColor: propBackgroundColor = DEFAULT_CARD_BG,
   borderColor: propBorderColor = 'rgba(255,255,255,0.04)',
   backgroundImage,
@@ -115,6 +117,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
             borderColor,
             borderRadius,
             borderWidth,
+            opacity: opacityBg,
           },
         ]}
       >
