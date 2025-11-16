@@ -12,7 +12,7 @@ function CommonCard({ children }: Props) {
 
     return (
         <LinearGradient
-            colors={['#1a2332', '#2a3544', '#1a2332']}
+            colors={['rgba(26, 35, 50, 0.7)', 'rgba(42, 53, 68, 0.7)', 'rgba(26, 35, 50, 0.7)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.container}

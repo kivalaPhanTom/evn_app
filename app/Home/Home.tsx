@@ -8,7 +8,7 @@ function Home(props: Props) {
     const {} = props
 
     return (
-        <View>
+        <View style={{ backgroundColor: 'transparent' }}>
             <PowerSection/>
             <ProductionOutput />
         </View>
