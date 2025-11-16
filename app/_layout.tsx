@@ -1,6 +1,7 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { View, Text, ScrollView } from 'react-native'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import StoreProvider from '@/redux/StoreProvider';
 import 'react-native-reanimated';
 import Home from './Home/Home';
@@ -14,7 +15,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-
+    <SafeAreaView style={styles.layout}>
     <TwinkleStars
       background="#000033"
       particleDensity={50}
@@ -28,6 +29,7 @@ export default function RootLayout() {
             <Home />
           </ScrollView>
         </View>
+    </SafeAreaView>
       </View>
     </TwinkleStars>
   );
