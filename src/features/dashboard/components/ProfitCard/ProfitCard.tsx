@@ -1,6 +1,6 @@
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
+import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
 import AnimatedCardContainer from '@/components/CardContainer/CardContainer.component'
-import { ChartView } from '@/components/ChartView/ChartView.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
@@ -19,7 +19,7 @@ interface Props {
   tab: TabType
   setTab: (t: TabType) => void
   contentAnim: Animated.Value
-  lineData: { value: number; label: string }[]
+  lineData: BarGroup[]
 }
 
 export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props) {
@@ -85,20 +85,7 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
 
           {/* Line chart */}
           <View style={styles.chartWrapper}>
-            <View style={styles.chartInner}>
-              <ChartView
-                type="line"
-                data={
-                  tab === 'day'
-                    ? lineData
-                    : tab === 'month'
-                      ? lineData.map((d) => ({ ...d, value: d.value * 1.6 }))
-                      : lineData.map((d) => ({ ...d, value: d.value * 3 }))
-                }
-                color="green"
-                height={px.v(240)}
-              />
-            </View>
+            <BarChart data={lineData}/>
           </View>
 
           {/* Summary boxes */}
@@ -169,11 +156,11 @@ const styles = StyleSheet.create({
   chartWrapper: {
     marginTop: px.v(8),
     marginBottom: px.v(12),
+    marginLeft: px.h(-12),
     width: '100%',
     alignSelf: 'stretch',
-    paddingHorizontal: px.h(8),
     backgroundColor: 'transparent',
-    overflow: 'visible', // allow bars to render rounded caps outside bounds
+    overflow: 'hidden',
   },
   chartInner: {
     width: '100%',
