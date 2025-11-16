@@ -15,22 +15,23 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaView style={styles.layout}>
-      <TwinkleStars
-        background="#000033"
-        particleDensity={50}
-        particleColor="#FFFFFF"
-        minSize={0.5}
-        maxSize={2}
-      >
-        <View style={styles.layout}>
-          <View style={styles.container}>
-            <ScrollView contentContainerStyle={{ padding: 16 }}>
-              <Home />
-            </ScrollView>
-          </View>
+    <TwinkleStars
+      background="#000033"
+      particleDensity={50}
+      particleColor="#FFFFFF"
+      minSize={0.5}
+      maxSize={2}
+    >
+      <SafeAreaView style={styles.layout}>
+        <View style={styles.container}>
+          <ScrollView
+            contentContainerStyle={{ padding: 16 }}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            <Home />
+          </ScrollView>
         </View>
-      </TwinkleStars>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TwinkleStars>
   );
 }
