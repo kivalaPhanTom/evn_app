@@ -20,9 +20,10 @@ export default function TabLayout() {
           borderTopColor: colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : undefined,
         },
         sceneStyle: {
-          backgroundColor: colorScheme === 'dark' ? 'transparent' : '#fff'
+          backgroundColor: colorScheme === 'dark' ? 'transparent' : '#fff',
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

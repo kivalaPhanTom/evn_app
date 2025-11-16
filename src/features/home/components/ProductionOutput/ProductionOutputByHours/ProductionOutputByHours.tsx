@@ -1,13 +1,9 @@
-import GradientText from '@/components/GradientText/GradientText.component'
-import { lightGradients } from '@/core/constants/gradients'
-import { px } from '@/core/utils/scale'
-import LakeCard from '@/features/dashboard/components/LakeCard/LakeCard'
-import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
-import { Ionicons } from '@expo/vector-icons'
-import { useLocalSearchParams } from 'expo-router'
-import React, { useRef, useState } from 'react'
-import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React from 'react'
+import { View, Text } from 'react-native'
+import styles from './ProductionOutputByHours.styles'
+import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import BarChart from '@/components/BarChart/BarChart.component'
 
 interface BarGroup {
   label: string
@@ -199,56 +195,79 @@ const rawBarGroups: BarGroup[] = [
   },
 ]
 
-export default function ChartsScreen() {
-  const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
+function ProductionOutputByHours() {
+  const title = 'Sản lượng theo giờ'
+  const subtitle = 'Hôm nay, 14/11/2025'
+  const currentValue = 98
+  const currentHour = '20H'
+  const changePercent = 0.117
+  const averageValue = 105
+  const hourlyData = [
+    { hour: '0h', value: 105 },
+    { hour: '1h', value: 120 },
+    { hour: '2h', value: 123 },
+    { hour: '3h', value: 128 },
+  ]
+  const unit = 'MWh'
+  const chartWidth = 280
+  const chartHeight = 100
+  const maxValue = Math.max(...hourlyData.map((d) => d.value))
+  const minValue = Math.min(...hourlyData.map((d) => d.value))
+  const range = maxValue - minValue || 1
 
-  const contentAnim = useRef(new Animated.Value(1)).current
+  const pointSpacing = chartWidth / (hourlyData.length - 1)
 
-  const { companyName, location } = useLocalSearchParams<{
-    companyName?: string | string[]
-    location?: string | string[]
-  }>()
-  const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-  const companyLocation = Array.isArray(location) ? location[0] : location
+  const getY = (value: number) => {
+    return chartHeight - ((value - minValue) / range) * (chartHeight - 20) - 10
+  }
 
+  const pathData = hourlyData
+    .map((data, index) => {
+      const x = index * pointSpacing
+      const y = getY(data.value)
+      return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
+    })
+    .join(' ')
+
+  // const isPositiveChange = changePercent >= 0;
+  const isPositiveChange = false
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <GradientText
-          text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
-          colors={lightGradients.purple}
-          fontSize={px.f(30)}
-          style={{ textAlign: 'center' }}
-        />
-        <View style={styles.locationRow}>
-          <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-          <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
+    <AnimatedCardContainer>
+      <View style={styles.content}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
-      </View>
 
-      <ProfitCard tab={tab} setTab={setTab} contentAnim={contentAnim} lineData={rawBarGroups} />
-      <LakeCard tab={tab} contentAnim={contentAnim} />
-    </ScrollView>
+        {/* Stats Row */}
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Giờ hiện tại ({currentHour})</Text>
+            <Text style={styles.statValueCurrent}>
+              {currentValue} {unit}
+            </Text>
+            <View style={styles.changeRow}>
+              <MetricDiff diff={98} compareTo={105} />
+            </View>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Hợp đồng (20h)</Text>
+            <Text style={styles.statValueAverage}>
+              {averageValue} {unit}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.chartWrapper}>
+          <BarChart data={rawBarGroups} rounded />
+        </View>
+
+        {/* Unit Label */}
+        <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>
+      </View>
+    </AnimatedCardContainer>
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1 },
-  container: {
-    paddingTop: px.v(12),
-    paddingBottom: px.v(40),
-  },
-  header: {
-    marginTop: px.v(40),
-    alignItems: 'center',
-  },
-  locationRow: {
-    marginTop: px.v(6),
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  locationText: {
-    color: '#C7D6E1',
-    fontSize: px.m(13),
-  },
-})
+export default ProductionOutputByHours

@@ -7,7 +7,7 @@ import Animated, { FadeIn } from 'react-native-reanimated'
 
 interface GradientTextProps extends TextProps {
   text: string | number
-  colors?: readonly string[]
+  colors?: string | readonly string[]
   start?: { x: number; y: number }
   end?: { x: number; y: number }
   fontSize?: number
@@ -28,6 +28,14 @@ const GradientText: React.FC<GradientTextProps> = ({
 }) => {
   const TextComponent = animated ? Animated.Text : RNText
 
+  // normalize colors to an array with at least two entries
+  let gradientColors: string[]
+  if (typeof colors === 'string') {
+    gradientColors = [colors, colors]
+  } else {
+    gradientColors = colors.length === 1 ? [colors[0], colors[0]] : [...colors]
+  }
+
   return (
     <MaskedView
       maskElement={
@@ -40,7 +48,7 @@ const GradientText: React.FC<GradientTextProps> = ({
         </TextComponent>
       }
     >
-      <LinearGradient colors={colors as [string, string, ...string[]]} start={start} end={end}>
+      <LinearGradient colors={gradientColors as [string, string, ...string[]]} start={start} end={end}>
         <TextComponent
           style={[
             styles.text,

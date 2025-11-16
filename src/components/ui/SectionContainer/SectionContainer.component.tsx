@@ -12,15 +12,28 @@ interface SectionContainerProps {
   title: string
   children: React.ReactNode
   style?: ViewStyle
+  showDivider?: boolean
+  backgroundColor?: string // allow passing custom background color, e.g. 'transparent'
 }
 
-const SectionContainer: React.FC<SectionContainerProps> = ({ title, children, style }) => {
+const SectionContainer: React.FC<SectionContainerProps> = ({
+  title,
+  children,
+  style,
+  showDivider = false,
+  backgroundColor = 'transparent',
+}) => {
   const theme = useTheme()
   const isDark = theme.dark
 
-  const backgroundColors: GradientColors = isDark
-    ? [Colors.darkerGray, Colors.darkBlue]
-    : [Colors.white, Colors.lightGray]
+  const backgroundColors: GradientColors = backgroundColor
+    ? backgroundColor === 'transparent'
+      ? ['transparent', 'transparent']
+      : [backgroundColor, backgroundColor]
+    : isDark
+      ? [Colors.darkerGray, Colors.darkerGray]
+      : [Colors.white, Colors.lightGray]
+
   const dividerColor = isDark ? Colors.dividerLight : Colors.black
 
   return (
@@ -33,14 +46,21 @@ const SectionContainer: React.FC<SectionContainerProps> = ({ title, children, st
       <View style={styles.gradientBackground}>
         <GradientText
           text={title.toUpperCase()}
-          colors={lightGradients.blue}
+          colors={['#fff', '#fff']}
           fontSize={px.m(18)}
           fontWeight="600"
           style={styles.title}
         />
       </View>
-      <View style={[styles.divider, { backgroundColor: dividerColor }]} />
-      <View style={styles.content}>{children}</View>
+      {showDivider && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
+      <View
+        style={[
+          styles.content,
+          { paddingTop: showDivider ? px.v(16) : 0, paddingBottom: backgroundColor === 'transparent' ? 0 : px.v(16) },
+        ]}
+      >
+        {children}
+      </View>
     </LinearGradient>
   )
 }
@@ -61,9 +81,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   content: {
-    padding: px.h(16),
     paddingHorizontal: px.h(30),
-    marginVertical: px.v(8),
+    marginBottom: px.v(8),
   },
 })
 

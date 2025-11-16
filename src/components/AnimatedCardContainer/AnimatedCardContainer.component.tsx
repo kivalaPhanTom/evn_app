@@ -6,6 +6,11 @@ import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef } from 'react'
 import { Animated, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
 
+const DEFAULT_CARD_BG: ThemeValue<string | GradientColors> = {
+  dark: ['#1a2332', '#2a3544', '#1a2332'],
+  light: '#fff',
+}
+
 interface AnimatedCardContainerProps {
   children: React.ReactNode
   style?: ViewStyle
@@ -46,8 +51,8 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
   borderRadius = 16,
   borderWidth = 1,
   showGradient = false,
-  backgroundColor: propBackgroundColor,
-  borderColor: propBorderColor,
+  backgroundColor: propBackgroundColor = DEFAULT_CARD_BG,
+  borderColor: propBorderColor = 'rgba(255,255,255,0.04)',
   backgroundImage,
   backgroundImageOpacity = 1,
   backgroundImageContentFit = 'cover',

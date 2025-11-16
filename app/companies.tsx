@@ -34,9 +34,7 @@ export default function CompaniesScreen() {
           {COMPANIES.map((c) => (
             <Pressable
               key={c.name}
-              onPress={() =>
-                router.push({ pathname: '/charts', params: { companyName: c.name, location: c.location } })
-              }
+              onPress={() => router.push({ pathname: '/home', params: { companyName: c.name, location: c.location } })}
               style={{ marginBottom: px.v(12) }}
             >
               <AnimatedCardContainer

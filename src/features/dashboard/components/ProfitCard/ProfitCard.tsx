@@ -27,10 +27,7 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
 
   return (
     <SectionContainer style={{ marginTop: px.h(26) }} title="Sản xuất kinh danh">
-      <AnimatedCardContainer
-        backgroundColor={{ dark: '#051022', light: '#fff' }}
-        borderColor="rgba(255,255,255,0.04)"
-      >
+      <AnimatedCardContainer backgroundColor={{ dark: '#051022', light: '#fff' }} borderColor="rgba(255,255,255,0.04)">
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>{t('profit')}</Text>
 

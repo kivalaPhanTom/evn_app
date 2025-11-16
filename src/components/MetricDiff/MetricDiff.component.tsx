@@ -11,13 +11,7 @@ interface MetricDiffProps {
   compareTo?: number // value to compare with `diff`; defaults to 0
 }
 
-const MetricDiff: React.FC<MetricDiffProps> = ({
-  diff,
-  decimals = 0,
-  style,
-  label = 'so với ngày trước',
-  compareTo,
-}) => {
+const MetricDiff: React.FC<MetricDiffProps> = ({ diff, decimals = 1, style, label = '', compareTo }) => {
   const base = typeof compareTo === 'number' ? compareTo : 0
 
   // If base === 0, treat `diff` as a percentage (e.g., 0.15 => 15%)
@@ -26,7 +20,7 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
 
   const isUp = percent >= 0
   const color = isUp ? Colors.green : Colors.red
-  const arrow = isUp ? '↑' : '↓'
+  const arrow = isUp ? '▲' : '▼'
   const value = Math.abs(percent).toFixed(decimals)
 
   return (
@@ -38,8 +32,9 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: px.m(12),
+    fontSize: px.m(14),
     marginTop: px.v(6),
+    fontWeight: 'bold',
   },
 })
 
