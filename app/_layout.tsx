@@ -1,37 +1,156 @@
-import TwinkleStars from '@/components/Background/TwinkleStarsCore';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { View, Text, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import StoreProvider from '@/redux/StoreProvider';
-import 'react-native-reanimated';
-import Home from './Home/Home';
-import styles from './layout.styles'
+import { ThemePref, ThemeToggleContext } from '@/core/context/theme'
+import { useColorScheme as useSystemColorScheme } from '@/core/hooks/use-color-scheme.web'
+import { TranslationProvider } from '@/core/i18n/TranslationProvider'
+import StoreProvider from '@/core/redux/StoreProvider'
+import { Ionicons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { Stack, usePathname, useRouter } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import React, { useEffect, useMemo, useState } from 'react'
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
+import 'react-native-reanimated'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const systemScheme = useSystemColorScheme() ?? 'light'
+  const [preference, setPreferenceState] = useState<ThemePref>('system')
+  const [loaded, setLoaded] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  const insets = useSafeAreaInsets()
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const raw = await AsyncStorage.getItem(THEME_PREFERENCE_KEY)
+        if (raw === 'light' || raw === 'dark' || raw === 'system') {
+          setPreferenceState(raw)
+        }
+      } catch {
+        /* ignore */
+      } finally {
+        setLoaded(true)
+      }
+    })()
+  }, [])
+
+  const setPreference = async (p: ThemePref) => {
+    try {
+      await AsyncStorage.setItem(THEME_PREFERENCE_KEY, p)
+    } catch {
+      /* ignore */
+    }
+    setPreferenceState(p)
+  }
+
+  const toggle = () => {
+    // simple toggle between dark and light (if currently system => switch to opposite of system)
+    setPreferenceState((prev) => {
+      const next = prev === 'system' ? (systemScheme === 'dark' ? 'light' : 'dark') : prev === 'dark' ? 'light' : 'dark'
+      // persist
+      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => {})
+      return next
+    })
+  }
+
+  const effectiveScheme = useMemo(
+    () => (preference === 'system' ? systemScheme : preference),
+    [preference, systemScheme],
+  )
+
+  // don't render until loaded to avoid flicker
+  if (!loaded) return null
 
   return (
-    <TwinkleStars
-      background="#000033"
-      particleDensity={50}
-      particleColor="#FFFFFF"
-      minSize={0.5}
-      maxSize={2}
-    >
-      <SafeAreaView style={styles.layout}>
-        <View style={styles.container}>
-          <ScrollView
-            contentContainerStyle={{ padding: 16 }}
-            style={{ backgroundColor: 'transparent' }}
-          >
-            <Home />
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    </TwinkleStars>
-  );
+    <TranslationProvider>
+      <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
+        <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <StoreProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
+              <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="splash" />
+                <Stack.Screen name="login" />
+                <Stack.Screen name="charts" />
+                <Stack.Screen name="home/index" />
+
+                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+              </Stack>
+
+              {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+                <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
+                  <TouchableOpacity
+                    onPress={() => router.back()}
+                    style={styles.backButton}
+                    hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                  >
+                    <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Floating switch to toggle theme */}
+              <View style={styles.switchContainer} pointerEvents="box-none">
+                <View style={styles.inner}>
+                  <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
+                    {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
+                  </Text>
+                  <Switch
+                    value={effectiveScheme === 'dark'}
+                    onValueChange={() => {
+                      toggle()
+                    }}
+                    trackColor={{ false: '#ccc', true: '#4f46e5' }}
+                    thumbColor={effectiveScheme === 'dark' ? '#fff' : '#fff'}
+                  />
+                </View>
+              </View>
+
+              <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
+            </SafeAreaView>
+          </StoreProvider>
+        </ThemeProvider>
+      </ThemeToggleContext.Provider>
+    </TranslationProvider>
+  )
 }
+
+const styles = StyleSheet.create({
+  switchContainer: {
+    position: 'absolute',
+    top: 14,
+    right: 12,
+    zIndex: 50,
+  },
+  inner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  label: {
+    marginRight: 8,
+    fontSize: 12,
+  },
+  labelDark: {
+    color: '#fff',
+  },
+  labelLight: {
+    color: '#000',
+  },
+  backContainer: {
+    position: 'absolute',
+    left: 12,
+    zIndex: 50,
+  },
+  backButton: {
+    backgroundColor: 'transparent',
+    // padding: 8,
+    borderRadius: 20,
+  },
+})
