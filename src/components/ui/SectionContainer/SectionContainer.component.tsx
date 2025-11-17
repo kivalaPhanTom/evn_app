@@ -35,7 +35,10 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
       : [Colors.white, Colors.lightGray]
 
   const dividerColor = isDark ? Colors.dividerLight : Colors.black
-
+  const widthLine = '93%'
+  const heightLine = 1
+  const colorLine = '#7a8596'
+  const lineStyle = { marginVertical: 10 }
   return (
     <LinearGradient
       colors={backgroundColors}
@@ -61,6 +64,15 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
       >
         {children}
       </View>
+      <View style={[styles.lineContainer, lineStyle]}>
+        <LinearGradient
+          colors={[`${colorLine}00`, `${colorLine}AA`, `${colorLine}00`]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          locations={[0, 0.5, 1]}
+          style={[styles.gradientLine, { width: widthLine, height: heightLine }]}
+        />
+      </View>
     </LinearGradient>
   )
 }
@@ -83,6 +95,13 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: px.h(30),
     marginBottom: px.v(8),
+  },
+  lineContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gradientLine: {
+    borderRadius: 1,
   },
 })
 
