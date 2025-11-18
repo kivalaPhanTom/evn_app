@@ -2,8 +2,10 @@ import React from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import { useRouter } from 'expo-router'
 
 function ProductOutputRencentDays() {
+  const router = useRouter()
   const productionData = [
     { date: 'Hôm nay', actual: 2.4, contract: 2.5 },
     { date: 'Hôm qua', actual: 2.6, contract: 2.5 },
@@ -14,8 +16,12 @@ function ProductOutputRencentDays() {
     { date: '08/11', actual: 2.4, contract: 2.5 },
   ]
   const unit = 'tr.Wh'
+
+  const onPressCard = () => {
+    router.push({ pathname: '/product-output-detail' })
+  }
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View style={styles.content}>
         {/* Title */}
         <Text style={styles.title}>SẢN LƯỢNG 7 NGÀY GẦN NHẤT</Text>
