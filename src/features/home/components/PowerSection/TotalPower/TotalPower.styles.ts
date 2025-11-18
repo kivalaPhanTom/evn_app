@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     color: '#8b92a0',
     fontSize: 12,
     fontWeight: '600',
-    marginBottom: 8,
     letterSpacing: 0.5,
   },
   totalPower: {
