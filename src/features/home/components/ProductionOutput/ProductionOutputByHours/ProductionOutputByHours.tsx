@@ -4,6 +4,7 @@ import styles from './ProductionOutputByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarChart from '@/components/BarChart/BarChart.component'
+import { useRouter } from 'expo-router'
 
 interface BarGroup {
   label: string
@@ -196,6 +197,7 @@ const rawBarGroups: BarGroup[] = [
 ]
 
 function ProductionOutputByHours() {
+  const router = useRouter()
   const title = 'Sản lượng theo giờ'
   const subtitle = 'Hôm nay, 14/11/2025'
   const currentValue = 98
@@ -231,8 +233,12 @@ function ProductionOutputByHours() {
 
   // const isPositiveChange = changePercent >= 0;
   const isPositiveChange = false
+
+  const onPressCard = () => {
+    router.push({ pathname: '/product-output-detail' })
+  }
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>

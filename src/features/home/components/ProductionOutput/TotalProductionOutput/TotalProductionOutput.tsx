@@ -5,11 +5,13 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
+import { useRouter } from 'expo-router'
 
 interface Props {}
 
 function TotalProductionOutput(props: Props) {
   const {} = props
+  const router = useRouter()
   const powerSources = [
     {
       name: 'Buôn Tua Srah',
@@ -32,8 +34,13 @@ function TotalProductionOutput(props: Props) {
   ]
   const totalPower = 2.4
   const averagePower = 118
+
+  const onPressCard = () => {
+    router.push({ pathname: '/product-output-detail' })
+  }
+
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
