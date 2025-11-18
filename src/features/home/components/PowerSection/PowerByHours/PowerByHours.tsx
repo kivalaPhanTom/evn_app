@@ -95,7 +95,13 @@ function PowerByHours() {
           </View>
         </View>
         <View>
-          <LineChart data={avgData} data2={hourlyData} initialScrollIndex={initIndex} />
+          <LineChart
+            data={avgData}
+            data2={hourlyData}
+            initialScrollIndex={initIndex}
+            color="#FBBF24"
+            color2="#2563EB"
+          />
         </View>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>

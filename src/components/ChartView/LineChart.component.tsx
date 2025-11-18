@@ -9,6 +9,8 @@ import { LineChart as GiftedLineChart } from 'react-native-gifted-charts'
 export interface LineCharProps {
   data: any[]
   data2?: any[]
+  color: string
+  color2: string
   gradient?: boolean
   height?: number
   loading?: boolean
@@ -20,6 +22,8 @@ export interface LineCharProps {
 export const LineChart: React.FC<LineCharProps> = ({
   data,
   data2 = [],
+  color = '#FBBF24',
+  color2 = '#2563EB',
   gradient = true,
   height = isTablet() ? px.v(320) : px.v(220),
   loading = false,
@@ -71,21 +75,21 @@ export const LineChart: React.FC<LineCharProps> = ({
         {...commonProps}
         curved
         areaChart
-        startFillColor2="#2563EB"
-        endFillColor2="#2563EB"
+        startFillColor2={color2}
+        endFillColor2={color2}
         startOpacity={0.3}
         endOpacity={0.3}
         spacing={screenWidth / 5}
         thickness={px.h(5)}
         dataPointsRadius2={px.h(5)}
-        color="#FBBF24"
-        color2="#2563EB"
+        color={color}
+        color2={color2}
         height={height + px.v(40)}
         maxValue={yAxisMaxValue}
         hideDataPoints2={false}
-        dataPointsColor2="#2563EB"
+        dataPointsColor2={color2}
         showValuesAsDataPointsText
-        textColor2="#2563EB"
+        textColor2={color2}
         textFontSize2={px.m(13)}
         textShiftY={-10}
         textShiftX={-5}
