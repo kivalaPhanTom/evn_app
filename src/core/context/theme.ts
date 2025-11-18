@@ -7,7 +7,7 @@ export const ThemeToggleContext = createContext<{
   setPreference: (p: ThemePref) => void
   toggle: () => void
 }>({
-  preference: 'system',
+  preference: 'dark',
   setPreference: () => {},
   toggle: () => {},
 })
