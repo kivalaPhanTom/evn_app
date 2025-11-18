@@ -25,10 +25,11 @@ export default function RootLayout() {
   useEffect(() => {
     void (async () => {
       try {
-        const raw = await AsyncStorage.getItem(THEME_PREFERENCE_KEY)
-        if (raw === 'light' || raw === 'dark' || raw === 'system') {
-          setPreferenceState(raw)
-        }
+        // const raw = await AsyncStorage.getItem(THEME_PREFERENCE_KEY)
+        // if (raw === 'light' || raw === 'dark' || raw === 'system') {
+        //   setPreferenceState(raw)
+        // }
+        setPreferenceState('dark') // default to dark
       } catch {
         /* ignore */
       } finally {
@@ -75,6 +76,7 @@ export default function RootLayout() {
                 <Stack.Screen name="login" />
                 <Stack.Screen name="charts" />
                 <Stack.Screen name="home/index" />
+                <Stack.Screen name="product-output-detail/index" />
 
                 {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                 <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
@@ -93,7 +95,7 @@ export default function RootLayout() {
               )}
 
               {/* Floating switch to toggle theme */}
-              <View style={styles.switchContainer} pointerEvents="box-none">
+              {/* <View style={styles.switchContainer} pointerEvents="box-none">
                 <View style={styles.inner}>
                   <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
                     {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
@@ -107,7 +109,7 @@ export default function RootLayout() {
                     thumbColor={effectiveScheme === 'dark' ? '#fff' : '#fff'}
                   />
                 </View>
-              </View>
+              </View> */}
 
               <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
             </SafeAreaView>
