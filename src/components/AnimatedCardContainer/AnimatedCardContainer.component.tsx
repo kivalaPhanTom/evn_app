@@ -4,7 +4,7 @@ import { resolveThemeValue } from '@/core/utils/utils'
 import { Image, type ImageSource } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef } from 'react'
-import { Animated, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
+import { Animated, Pressable, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
 
 const DEFAULT_CARD_BG: ThemeValue<string | GradientColors> = {
   dark: ['#1a2332', '#2a3544', '#1a2332'],
@@ -40,26 +40,32 @@ interface AnimatedCardContainerProps {
   backgroundImageOpacity?: number
   backgroundImageContentFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
   backgroundImageStyle?: ImageStyle
+  onPress?: () => void
 }
 
-const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
-  children,
-  style,
-  delay = 0,
-  gradientColors = ['#FF4BC2', '#705CFF'] as const,
-  gradientHeight = 4,
-  gradientPosition = 'bottom',
-  borderRadius = 16,
-  borderWidth = 1,
-  showGradient = false,
-  opacityBg = 0.8,
-  backgroundColor: propBackgroundColor = DEFAULT_CARD_BG,
-  borderColor: propBorderColor = 'rgba(255,255,255,0.04)',
-  backgroundImage,
-  backgroundImageOpacity = 1,
-  backgroundImageContentFit = 'cover',
-  backgroundImageStyle,
-}) => {
+const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
+  const {
+    children,
+    style,
+    delay = 0,
+    gradientColors = ['#FF4BC2', '#705CFF'] as const,
+    gradientHeight = 4,
+    gradientPosition = 'bottom',
+    borderRadius = 16,
+    borderWidth = 1,
+    showGradient = false,
+    opacityBg = 0.8,
+    backgroundColor: propBackgroundColor = DEFAULT_CARD_BG,
+    borderColor: propBorderColor = 'rgba(255,255,255,0.04)',
+    backgroundImage,
+    backgroundImageOpacity = 1,
+    backgroundImageContentFit = 'cover',
+    backgroundImageStyle,
+    onPress = () => {},
+  } = props
+
+  const hasOnPressProp = typeof props.onPress === 'function'
+
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
@@ -97,68 +103,70 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = ({
       : { bottom: 0, borderBottomLeftRadius: borderRadius, borderBottomRightRadius: borderRadius }
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          borderRadius,
-          opacity,
-          transform: [{ scale }],
-          shadowColor: '#000',
-        },
-        style,
-      ]}
-    >
-      <View
+    <Pressable onPress={onPress} disabled={!hasOnPressProp}>
+      <Animated.View
         style={[
-          styles.card,
-          Array.isArray(resolvedBg) ? { backgroundColor: 'transparent' } : { backgroundColor: resolvedBg as string },
+          styles.container,
           {
-            borderColor,
             borderRadius,
-            borderWidth,
-            opacity: opacityBg,
+            opacity,
+            transform: [{ scale }],
+            shadowColor: '#000',
           },
+          style,
         ]}
       >
-        {!!backgroundImage && (
-          <Image
-            source={backgroundImage}
-            style={[
-              StyleSheet.absoluteFillObject,
-              { borderRadius },
-              backgroundImageStyle,
-              { opacity: backgroundImageOpacity },
-            ]}
-            contentFit={backgroundImageContentFit}
-            pointerEvents="none"
-          />
-        )}
-        {Array.isArray(resolvedBg) && (
-          <LinearGradient
-            colors={resolvedBg as GradientColors}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{ ...StyleSheet.absoluteFillObject, borderRadius }}
-            pointerEvents="none"
-          />
-        )}
-        {children}
-      </View>
+        <View
+          style={[
+            styles.card,
+            Array.isArray(resolvedBg) ? { backgroundColor: 'transparent' } : { backgroundColor: resolvedBg as string },
+            {
+              borderColor,
+              borderRadius,
+              borderWidth,
+              opacity: opacityBg,
+            },
+          ]}
+        >
+          {!!backgroundImage && (
+            <Image
+              source={backgroundImage}
+              style={[
+                StyleSheet.absoluteFillObject,
+                { borderRadius },
+                backgroundImageStyle,
+                { opacity: backgroundImageOpacity },
+              ]}
+              contentFit={backgroundImageContentFit}
+              pointerEvents="none"
+            />
+          )}
+          {Array.isArray(resolvedBg) && (
+            <LinearGradient
+              colors={resolvedBg as GradientColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ ...StyleSheet.absoluteFillObject, borderRadius }}
+              pointerEvents="none"
+            />
+          )}
+          {children}
+        </View>
 
-      <View style={[styles.gradientWrapper, gradientStyle]}>
-        {showGradient ? (
-          <LinearGradient
-            colors={resolvedGradient as GradientColors}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{ height: gradientHeight, width: '100%' }}
-          />
-        ) : (
-          <View style={{ width: '100%', backgroundColor: borderColor }} />
-        )}
-      </View>
-    </Animated.View>
+        <View style={[styles.gradientWrapper, gradientStyle]}>
+          {showGradient ? (
+            <LinearGradient
+              colors={resolvedGradient as GradientColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{ height: gradientHeight, width: '100%' }}
+            />
+          ) : (
+            <View style={{ width: '100%', backgroundColor: borderColor }} />
+          )}
+        </View>
+      </Animated.View>
+    </Pressable>
   )
 }
 
