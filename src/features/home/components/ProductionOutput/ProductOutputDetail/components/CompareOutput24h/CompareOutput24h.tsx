@@ -30,7 +30,7 @@ function ProductOutputRencentDays() {
         </View>
 
         {/* Legend */}
-        <CompareLegend />
+        <CompareLegend displayType="output" />
 
         {/* Dashboard */}
         <CompareDashboard />

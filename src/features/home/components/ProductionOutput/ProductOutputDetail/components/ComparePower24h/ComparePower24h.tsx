@@ -18,12 +18,11 @@ function ProductOutputRencentDays() {
         </View>
 
         {/* Legend */}
-        <CompareLegend />
+        <CompareLegend displayType="power" />
 
         {/* Dashboard */}
         <CompareDashboard />
         {/* Compare Detail Stats */}
-        <CompareDetailStats currentDate="14/11/2024" compareDate="10/11/2023" />
         <CompareDetailStats currentDate="14/11/2024" compareDate="10/11/2023" />
       </View>
     </AnimatedCardContainer>

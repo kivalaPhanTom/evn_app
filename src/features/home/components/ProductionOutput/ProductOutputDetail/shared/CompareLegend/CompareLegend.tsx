@@ -10,15 +10,24 @@ interface LegendItemData {
 
 interface CompareLegendProps {
   items?: LegendItemData[]
+  displayType?: 'power' | 'output' // Thêm prop để biết kiểu hiển thị
 }
 
-const CompareLegend: React.FC<CompareLegendProps> = ({ items }) => {
-  const defaultItems: LegendItemData[] = [
+const CompareLegend: React.FC<CompareLegendProps> = ({ items, displayType = 'output' }) => {
+  // Nếu type = 'power', chỉ hiển thị 2 items: Ngày mục tiêu và Ngày so sánh
+  const defaultItemsPower: LegendItemData[] = [
+    { type: 'box', label: 'Ngày mục tiêu' },
+    { type: 'line', label: 'Ngày so sánh' },
+  ]
+
+  // Nếu type = 'output', hiển thị đầy đủ 3 items
+  const defaultItemsOutput: LegendItemData[] = [
     { type: 'box', label: 'Ngày mục tiêu' },
     { type: 'line', color: '#FBBF24', label: 'Hợp đồng ngày MT' },
     { type: 'line', label: 'Ngày so sánh' },
   ]
 
+  const defaultItems = displayType === 'power' ? defaultItemsPower : defaultItemsOutput
   const legendItems = items || defaultItems
 
   return (
