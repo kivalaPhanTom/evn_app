@@ -31,7 +31,9 @@ export const dashboardCommonStyles = StyleSheet.create({
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
     marginTop: px.v(12),
+    width: '100%',
   },
   summaryBox: {
     flex: 1,
@@ -40,5 +42,14 @@ export const dashboardCommonStyles = StyleSheet.create({
   },
   summaryFull: {
     marginTop: px.v(12),
+  },
+  chartWrapper: {
+    marginTop: px.v(8),
+    marginBottom: px.v(12),
+    marginLeft: px.h(-12),
+    width: '100%',
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
   },
 })

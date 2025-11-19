@@ -1,6 +1,7 @@
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import React, { useEffect, useRef, useState } from 'react'
 import { Text, View } from 'react-native'
+import ProductCumulativeOutput from './ProductCummulativeOutput/ProductComulativeOutput'
 
 export default function ProductOutputDetail() {
   return (
@@ -8,9 +9,7 @@ export default function ProductOutputDetail() {
       <AnimatedCardContainer>
         <Text>So sánh sản lượng 24h</Text>
       </AnimatedCardContainer>
-      <AnimatedCardContainer>
-        <Text>Sản lượng lũy kế</Text>
-      </AnimatedCardContainer>
+      <ProductCumulativeOutput />
     </View>
   )
 }
