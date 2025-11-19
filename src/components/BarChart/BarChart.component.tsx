@@ -1,3 +1,4 @@
+import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import React, { useMemo } from 'react'
@@ -65,7 +66,7 @@ const BarChart: React.FC<Props> = ({
       group.items.forEach((item, idx) => {
         const isLastInGroup = idx === group.items.length - 1
         const globalIndex = startIndex + idx
-        const front = item.frontColor ?? COLORS[globalIndex % COLORS.length]
+        const front = item.frontColor ?? frontColor ?? COLORS[globalIndex % COLORS.length]
 
         const isLastOverall = gIdx === data.length - 1 && isLastInGroup
 
@@ -98,7 +99,7 @@ const BarChart: React.FC<Props> = ({
     })
 
     return result
-  }, [data, barWidth, groupInnerSpacing])
+  }, [data, barWidth, groupInnerSpacing, frontColor])
 
   return (
     <View style={styles.wrap}>
@@ -110,6 +111,7 @@ const BarChart: React.FC<Props> = ({
         // focusedBarIndex={3}
         // highlightedBarIndex={3}
         // highlightEnabled
+        frontColor={frontColor}
         spacing={spacing}
         maxValue={paddedMax}
         noOfSections={6}

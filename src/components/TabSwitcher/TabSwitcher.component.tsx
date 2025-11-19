@@ -1,4 +1,4 @@
-import { textGradients } from '@/core/constants/gradients'
+import { lightGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
 import { LinearGradient } from 'expo-linear-gradient'
 import React from 'react'
@@ -57,7 +57,7 @@ export function TabSwitcher<T extends TabId>({
           >
             {active ? (
               <LinearGradient
-                colors={textGradients.tab}
+                colors={lightGradients.blue}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={[styles.segmentItem]}
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.03)',
     padding: px.v(4),
     borderRadius: px.h(24),
+    height: px.v(42),
     overflow: 'hidden',
   },
   segmentItem: {
