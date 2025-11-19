@@ -5,8 +5,10 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
 import { LineChart } from '@/components/ChartView/LineChart.component'
+import { useRouter } from 'expo-router'
 
 function PowerByHours() {
+  const router = useRouter()
   const title = 'Công suất theo giờ'
   const subtitle = 'Hôm nay, 14/11/2025'
   const currentValue = 126
@@ -67,8 +69,11 @@ function PowerByHours() {
     .join(' ')
 
   const isPositiveChange = changePercent >= 0
+  const onPressCard = () => {
+    router.push({ pathname: '/product-output-detail', params: { type: 'power' } })
+  }
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
