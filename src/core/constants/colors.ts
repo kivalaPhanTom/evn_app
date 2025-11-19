@@ -14,6 +14,7 @@ export const Colors = {
   darkText: '#6B7280',
   deepBlue: '#1B3954',
   ocean: '#00375c',
+  cardColor: '#1e2838',
   dividerLight: 'rgba(255, 255, 255, 0.1)',
   dividerDark: 'rgba(0, 0, 0, 0.1)',
 }

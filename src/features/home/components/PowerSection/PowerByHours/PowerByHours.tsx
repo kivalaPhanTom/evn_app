@@ -3,6 +3,8 @@ import { View, Text } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
+import { LineChart } from '@/components/ChartView/LineChart.component'
 
 function PowerByHours() {
   const title = 'Công suất theo giờ'
@@ -12,10 +14,30 @@ function PowerByHours() {
   const changePercent = 0.024
   const averageValue = 118
   const hourlyData = [
-    { hour: '0h', value: 115 },
-    { hour: '1h', value: 120 },
-    { hour: '2h', value: 123 },
-    { hour: '3h', value: 128 },
+    { value: 118, label: '0h' },
+    { value: 120, label: '1h' },
+    { value: 122, label: '2h' },
+    { value: 126, label: '3h' },
+    { value: 115, label: '4h' },
+    { value: 110, label: '5h' },
+    { value: 120, label: '6h' },
+    { value: 125, label: '7h' },
+    { value: 125, label: '8h' },
+    { value: 135, label: '9h' },
+    { value: 118, label: '10h' },
+    { value: 112, label: '11h' },
+    { value: 120, label: '12h' },
+    { value: 123, label: '13h' },
+    { value: 140, label: '14h' },
+    { value: 145, label: '15h' },
+    { value: 136, label: '16h' },
+    { value: 133, label: '17h' },
+    { value: 131, label: '18h' },
+    { value: 128, label: '19h' },
+    { value: 126, label: '20h' },
+    { value: 123, label: '21h' },
+    { value: 121, label: '22h' },
+    { value: 110, label: '23h' },
   ]
   const unit = 'MW'
   const chartWidth = 280
@@ -25,6 +47,12 @@ function PowerByHours() {
   const range = maxValue - minValue || 1
 
   const pointSpacing = chartWidth / (hourlyData.length - 1)
+
+  const avgData = Array(24)
+    .fill(0)
+    .map((item, idx) => ({ value: 118, label: idx + 'h', hideDataPoint: true }))
+
+  const initIndex = Number(currentHour.substring(0, 2))
 
   const getY = (value: number) => {
     return chartHeight - ((value - minValue) / range) * (chartHeight - 20) - 10
@@ -66,7 +94,15 @@ function PowerByHours() {
             </Text>
           </View>
         </View>
-
+        <View>
+          <LineChart
+            data={avgData}
+            data2={hourlyData}
+            initialScrollIndex={initIndex}
+            color="#FBBF24"
+            color2="#2563EB"
+          />
+        </View>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>
       </View>
