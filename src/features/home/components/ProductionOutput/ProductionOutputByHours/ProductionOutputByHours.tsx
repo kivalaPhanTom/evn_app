@@ -235,7 +235,7 @@ function ProductionOutputByHours() {
   const isPositiveChange = false
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail' })
+    router.push({ pathname: '/product-output-detail', params: { type: 'output' } })
   }
   return (
     <AnimatedCardContainer onPress={() => onPressCard()}>
