@@ -8,12 +8,11 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import SummaryCard from '@/components/ui/SummaryCard/SummaryCard.component'
 import { textGradients } from '@/core/constants/gradients'
 import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
+import { TabType } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-
-type TabType = 'day' | 'month' | 'year'
 
 interface Props {
   tab: TabType
