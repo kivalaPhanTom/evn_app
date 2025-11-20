@@ -34,7 +34,7 @@ function TotalPower() {
   const averagePower = 118
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail', params: { type: 'power' } })
+    router.push({ pathname: '/product-power-detail' })
   }
 
   return (
