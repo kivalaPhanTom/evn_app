@@ -30,6 +30,10 @@ interface Props {
   showYAxis?: boolean // hiển thị trục tung và nhãn trục tung
   groupInnerSpacing?: number
   barRadius?: number
+  showLine?: boolean
+  lineDataPointsShift?: number // offset to shift line data points vertically
+  noOfSection?: number
+  rulesType?: string
 }
 
 const BarChart: React.FC<Props> = ({
@@ -43,6 +47,10 @@ const BarChart: React.FC<Props> = ({
   showHorizontalGrid = true,
   showYAxis = false,
   barRadius = 4,
+  showLine = false,
+  lineDataPointsShift = 0,
+  noOfSection = 6,
+  rulesType = 'solid',
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -104,6 +112,7 @@ const BarChart: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       <GiftedBarChart
+        key={1}
         data={processed}
         height={height}
         barWidth={barWidth}
@@ -114,7 +123,7 @@ const BarChart: React.FC<Props> = ({
         frontColor={frontColor}
         spacing={spacing}
         maxValue={paddedMax}
-        noOfSections={6}
+        noOfSections={noOfSection}
         yAxisThickness={showYAxis ? 1 : 0}
         yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
         xAxisThickness={1}
@@ -125,7 +134,7 @@ const BarChart: React.FC<Props> = ({
           fontSize: px.m(11),
         }}
         hideRules={!showHorizontalGrid}
-        rulesType="solid"
+        rulesType={rulesType}
         rulesColor="rgb(255,255,255,0.1)"
         isAnimated
         barBorderRadius={rounded ? barRadius : 0}
@@ -138,6 +147,38 @@ const BarChart: React.FC<Props> = ({
         initialSpacing={spacing}
         endSpacing={10}
         xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
+        showLine={showLine}
+        lineConfig={{
+          isAnimated: true,
+          thickness: 2,
+          color: '#A78BFA',
+          dataPointsColor: '#A78BFA',
+          dataPointsRadius: 6,
+          shiftY: lineDataPointsShift,
+          customDataPoint: () => (
+            <View
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: 6,
+                backgroundColor: '#A78BFA',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: -5,
+                marginTop: -5,
+              }}
+            >
+              <View
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 3,
+                  backgroundColor: '#FFFFFF',
+                }}
+              />
+            </View>
+          ),
+        }}
       />
     </View>
   )
