@@ -1,4 +1,3 @@
-import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import React, { useMemo } from 'react'
@@ -19,6 +18,11 @@ export interface BarGroup {
   items: BarPoint[]
 }
 
+export interface LineDataPoint {
+  value: number
+  dataPointColor?: string
+}
+
 interface Props {
   data: BarGroup[]
   height?: number
@@ -26,17 +30,20 @@ interface Props {
   spacing?: number
   rounded?: boolean
   frontColor?: string
-  showHorizontalGrid?: boolean // hiển thị grid ngang
-  showYAxis?: boolean // hiển thị trục tung và nhãn trục tung
+  showHorizontalGrid?: boolean
+  showYAxis?: boolean
   groupInnerSpacing?: number
   barRadius?: number
-  showLine?: boolean
-  lineDataPointsShift?: number // offset to shift line data points vertically
-  noOfSection?: number
-  rulesType?: string
+  // Line overlay support
+  lineData?: LineDataPoint[]
+  lineColor?: string
+  lineThickness?: number
+  showLineDataPoints?: boolean
+  curvedLine?: boolean
+  useCustomDataPoint?: boolean // Dùng custom data point (nền trắng viền màu)
 }
 
-const BarChart: React.FC<Props> = ({
+const BarChartWithLines: React.FC<Props> = ({
   data,
   height = px.v(180),
   barWidth = px.h(18),
@@ -47,10 +54,12 @@ const BarChart: React.FC<Props> = ({
   showHorizontalGrid = true,
   showYAxis = false,
   barRadius = 4,
-  showLine = false,
-  lineDataPointsShift = 0,
-  noOfSection = 6,
-  rulesType = 'solid',
+  lineData,
+  lineColor = '#E879F9',
+  lineThickness = 3,
+  showLineDataPoints = true,
+  curvedLine = true,
+  useCustomDataPoint = true,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -112,18 +121,13 @@ const BarChart: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       <GiftedBarChart
-        key={1}
         data={processed}
         height={height}
         barWidth={barWidth}
-        // focusBarOnPress
-        // focusedBarIndex={3}
-        // highlightedBarIndex={3}
-        // highlightEnabled
         frontColor={frontColor}
         spacing={spacing}
         maxValue={paddedMax}
-        noOfSections={noOfSection}
+        noOfSections={6}
         yAxisThickness={showYAxis ? 1 : 0}
         yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
         xAxisThickness={1}
@@ -134,7 +138,7 @@ const BarChart: React.FC<Props> = ({
           fontSize: px.m(11),
         }}
         hideRules={!showHorizontalGrid}
-        rulesType={rulesType}
+        rulesType="solid"
         rulesColor="rgb(255,255,255,0.1)"
         isAnimated
         barBorderRadius={rounded ? barRadius : 0}
@@ -147,38 +151,48 @@ const BarChart: React.FC<Props> = ({
         initialSpacing={spacing}
         endSpacing={10}
         xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-        showLine={showLine}
-        lineConfig={{
-          isAnimated: true,
-          thickness: 2,
-          color: '#A78BFA',
-          dataPointsColor: '#A78BFA',
-          dataPointsRadius: 6,
-          shiftY: lineDataPointsShift,
-          customDataPoint: () => (
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 6,
-                backgroundColor: '#A78BFA',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: -5,
-                marginTop: -5,
-              }}
-            >
-              <View
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: '#FFFFFF',
-                }}
-              />
-            </View>
-          ),
-        }}
+        // Line overlay - data points với viền màu
+        showLine={!!lineData}
+        lineData={lineData}
+        lineConfig={
+          lineData
+            ? {
+                color: lineColor,
+                thickness: lineThickness,
+                curved: curvedLine,
+                hideDataPoints: !showLineDataPoints,
+                dataPointsHeight: 8,
+                dataPointsWidth: 8,
+                dataPointsRadius: 4,
+                dataPointsColor: useCustomDataPoint ? '#fff' : lineColor,
+                textColor: 'transparent',
+                textFontSize: 0,
+                customDataPoint:
+                  useCustomDataPoint && showLineDataPoints
+                    ? () => (
+                        <View
+                          style={{
+                            width: 14,
+                            height: 14,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <View
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 5,
+                              backgroundColor: '#fff',
+                              borderWidth: 1,
+                              borderColor: lineColor,
+                            }}
+                          />
+                        </View>
+                      )
+                    : undefined,
+              }
+            : undefined
+        }
       />
     </View>
   )
@@ -195,6 +209,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  dataPoint: {
+    width: 10,
+    height: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dataPointInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+  },
 })
 
-export default BarChart
+export default BarChartWithLines

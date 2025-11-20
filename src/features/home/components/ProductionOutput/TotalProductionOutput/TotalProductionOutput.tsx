@@ -36,7 +36,7 @@ function TotalProductionOutput(props: Props) {
   const averagePower = 118
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail', params: { type: 'output' } })
+    router.push({ pathname: '/product-output-detail' })
   }
 
   return (

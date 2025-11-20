@@ -77,6 +77,7 @@ export default function RootLayout() {
                 <Stack.Screen name="charts" />
                 <Stack.Screen name="home/index" />
                 <Stack.Screen name="product-output-detail/index" />
+                <Stack.Screen name="product-power-detail/index" />
 
                 {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                 <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
