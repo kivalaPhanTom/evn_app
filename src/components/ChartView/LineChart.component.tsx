@@ -103,6 +103,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         scrollToIndex={initialScrollIndex}
         initialSpacing={15}
         endSpacing={15}
+        isAnimated
       />
     </View>
   )
