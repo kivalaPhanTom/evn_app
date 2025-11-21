@@ -1,7 +1,6 @@
-import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
-import React, { Component, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart as GiftedBarChart } from 'react-native-gifted-charts'
 
@@ -19,6 +18,11 @@ export interface BarGroup {
   items: BarPoint[]
 }
 
+export interface LineDataPoint {
+  value: number
+  dataPointColor?: string
+}
+
 interface Props {
   data: BarGroup[]
   height?: number
@@ -26,23 +30,20 @@ interface Props {
   spacing?: number
   rounded?: boolean
   frontColor?: string
-  showHorizontalGrid?: boolean // hiển thị grid ngang
-  showYAxis?: boolean // hiển thị trục tung và nhãn trục tung
+  showHorizontalGrid?: boolean
+  showYAxis?: boolean
   groupInnerSpacing?: number
   barRadius?: number
-  showLine?: boolean
-  lineDataPointsShift?: number // offset to shift line data points vertically
-  noOfSection?: number
-  rulesType?: string
+  // Line overlay support
+  lineData?: LineDataPoint[]
   lineColor?: string
-  customDataPoint?: React.ReactElement
-  lineData2?: any[] // second line data
-  lineColor2?: string
-  lineDataPointsShift2?: number
-  customDataPoint2?: React.ReactElement
+  lineThickness?: number
+  showLineDataPoints?: boolean
+  curvedLine?: boolean
+  useCustomDataPoint?: boolean // Dùng custom data point (nền trắng viền màu)
 }
 
-const BarChart: React.FC<Props> = ({
+const BarChartWithLines: React.FC<Props> = ({
   data,
   height = px.v(180),
   barWidth = px.h(18),
@@ -53,33 +54,21 @@ const BarChart: React.FC<Props> = ({
   showHorizontalGrid = true,
   showYAxis = false,
   barRadius = 4,
-  showLine = false,
-  lineDataPointsShift = 0,
-  noOfSection = 6,
-  rulesType = 'solid',
-  lineColor = '#A78BFA',
-  customDataPoint = null,
-  lineData2,
-  lineColor2 = '#FBD34D',
-  lineDataPointsShift2 = 0,
-  customDataPoint2,
+  lineData,
+  lineColor = '#E879F9',
+  lineThickness = 3,
+  showLineDataPoints = true,
+  curvedLine = true,
+  useCustomDataPoint = true,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
   const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value)), [data])
   const paddedMax = useMemo(() => {
-    const barMax = Math.max(0, ...allValues)
-
-    // Get max values from lineData2
-    const line2Max = lineData2 && lineData2.length > 0
-      ? Math.max(...lineData2.map((item) => item.value || 0))
-      : 0
-
-    // The first line uses bar values, so we only need to check barMax and line2Max
-    const overallMax = Math.max(barMax, line2Max)
-    return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
-  }, [allValues, lineData2])
+    const m = Math.max(0, ...allValues)
+    return m > 0 ? Math.ceil(m * 1.05) : 10
+  }, [allValues])
 
   const processed = useMemo(() => {
     const COLORS = ['#ee0033', '#00b300', '#fcba03', '#0ff', '#ff00ff', '#00f', '#ffff00']
@@ -132,18 +121,13 @@ const BarChart: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       <GiftedBarChart
-        key={1}
         data={processed}
         height={height}
         barWidth={barWidth}
-        // focusBarOnPress
-        // focusedBarIndex={3}
-        // highlightedBarIndex={3}
-        // highlightEnabled
         frontColor={frontColor}
         spacing={spacing}
         maxValue={paddedMax}
-        noOfSections={noOfSection}
+        noOfSections={6}
         yAxisThickness={showYAxis ? 1 : 0}
         yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
         xAxisThickness={1}
@@ -154,7 +138,7 @@ const BarChart: React.FC<Props> = ({
           fontSize: px.m(11),
         }}
         hideRules={!showHorizontalGrid}
-        rulesType={rulesType}
+        rulesType="solid"
         rulesColor="rgb(255,255,255,0.1)"
         isAnimated
         barBorderRadius={rounded ? barRadius : 0}
@@ -167,30 +151,48 @@ const BarChart: React.FC<Props> = ({
         initialSpacing={spacing}
         endSpacing={10}
         xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-        showLine={showLine}
-        lineConfig={{
-          isAnimated: true,
-          thickness: 2,
-          color: lineColor,
-          dataPointsColor: lineColor,
-          dataPointsRadius: 6,
-          shiftY: lineDataPointsShift,
-          ...(customDataPoint && {
-            customDataPoint: () => customDataPoint,
-          }),
-        }}
-        lineData2={lineData2}
-        lineConfig2={{
-          isAnimated: true,
-          thickness: 2,
-          color: lineColor2,
-          dataPointsColor: lineColor2,
-          dataPointsRadius: 5,
-          shiftY: lineDataPointsShift2,
-          ...(customDataPoint2 && {
-            customDataPoint: () => customDataPoint2,
-          }),
-        }}
+        // Line overlay - data points với viền màu
+        showLine={!!lineData}
+        lineData={lineData}
+        lineConfig={
+          lineData
+            ? {
+                color: lineColor,
+                thickness: lineThickness,
+                curved: curvedLine,
+                hideDataPoints: !showLineDataPoints,
+                dataPointsHeight: 8,
+                dataPointsWidth: 8,
+                dataPointsRadius: 4,
+                dataPointsColor: useCustomDataPoint ? '#fff' : lineColor,
+                textColor: 'transparent',
+                textFontSize: 0,
+                customDataPoint:
+                  useCustomDataPoint && showLineDataPoints
+                    ? () => (
+                        <View
+                          style={{
+                            width: 14,
+                            height: 14,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <View
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 5,
+                              backgroundColor: '#fff',
+                              borderWidth: 1,
+                              borderColor: lineColor,
+                            }}
+                          />
+                        </View>
+                      )
+                    : undefined,
+              }
+            : undefined
+        }
       />
     </View>
   )
@@ -207,6 +209,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  dataPoint: {
+    width: 10,
+    height: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dataPointInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+  },
 })
 
-export default BarChart
+export default BarChartWithLines

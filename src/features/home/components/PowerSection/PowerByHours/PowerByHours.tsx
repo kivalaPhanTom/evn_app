@@ -1,12 +1,14 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
 import { LineChart } from '@/components/ChartView/LineChart.component'
+import { useRouter } from 'expo-router'
 
 function PowerByHours() {
+  const router = useRouter()
   const title = 'Công suất theo giờ'
   const subtitle = 'Hôm nay, 14/11/2025'
   const currentValue = 126
@@ -16,7 +18,7 @@ function PowerByHours() {
   const hourlyData = [
     { value: 118, label: '0h' },
     { value: 120, label: '1h' },
-    { value: 122, label: '2h' },
+    { value: 200, label: '2h' },
     { value: 126, label: '3h' },
     { value: 115, label: '4h' },
     { value: 110, label: '5h' },
@@ -67,8 +69,11 @@ function PowerByHours() {
     .join(' ')
 
   const isPositiveChange = changePercent >= 0
+  const onPressCard = () => {
+    router.push({ pathname: '/product-power-detail' })
+  }
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
@@ -94,8 +99,14 @@ function PowerByHours() {
             </Text>
           </View>
         </View>
-        <View>
-          <LineChart data={avgData} data2={hourlyData} initialScrollIndex={initIndex} />
+        <View style={{ zIndex: 9999 }}>
+          <LineChart
+            data={avgData}
+            data2={hourlyData}
+            initialScrollIndex={initIndex}
+            color="#FBBF24"
+            color2="#2563EB"
+          />
         </View>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>

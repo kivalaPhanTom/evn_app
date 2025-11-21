@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import { useRouter } from 'expo-router'
 
 interface DayPower {
   value: number
@@ -9,6 +10,7 @@ interface DayPower {
 }
 
 function PowerRecentDays() {
+  const router = useRouter()
   const powerData: DayPower[] = [
     { value: 126, label: 'Hôm nay' },
     { value: 124, label: 'Hôm qua' },
@@ -19,8 +21,11 @@ function PowerRecentDays() {
     { value: 127, label: '9/11' },
   ]
   const unit = 'tr.Wh'
+  const onPressCard = () => {
+    router.push({ pathname: '/product-power-detail' })
+  }
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={() => onPressCard()}>
       <View>
         <View style={styles.content}>
           <Text style={styles.title}>CÔNG SUẤT 7 NGÀY GẦN NHẤT</Text>
