@@ -19,7 +19,29 @@ const CompareDashboard = () => {
   const availableWidth = screenWidth - totalPadding
   const barSpacing = px.h(8)
   const barWidth = (availableWidth - barSpacing * (barsToShow - 1)) / barsToShow
-
+  const customDataPoint = (
+    <View
+      style={{
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#A78BFA',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: -5,
+        marginTop: -5,
+      }}
+    >
+      <View
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: '#FFFFFF',
+        }}
+      />
+    </View>
+  )
   const rawBarGroups: BarGroup[] = [
     {
       label: '0h',
@@ -117,10 +139,6 @@ const CompareDashboard = () => {
       label: '23h',
       items: [{ value: 69, frontColor: barColor }],
     },
-    {
-      label: '24h',
-      items: [{ value: 56, frontColor: barColor }],
-    },
   ]
 
   return (
@@ -136,6 +154,8 @@ const CompareDashboard = () => {
           lineDataPointsShift={-15}
           noOfSection={4}
           rulesType="dash"
+          lineColor="#A78BFA"
+          customDataPoint={customDataPoint}
         />
       </View>
     </View>

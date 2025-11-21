@@ -1,7 +1,7 @@
 import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
-import React, { useMemo } from 'react'
+import React, { Component, useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart as GiftedBarChart } from 'react-native-gifted-charts'
 
@@ -34,6 +34,12 @@ interface Props {
   lineDataPointsShift?: number // offset to shift line data points vertically
   noOfSection?: number
   rulesType?: string
+  lineColor?: string
+  customDataPoint?: React.ReactElement
+  lineData2?: any[] // second line data
+  lineColor2?: string
+  lineDataPointsShift2?: number
+  customDataPoint2?: React.ReactElement
 }
 
 const BarChart: React.FC<Props> = ({
@@ -51,15 +57,29 @@ const BarChart: React.FC<Props> = ({
   lineDataPointsShift = 0,
   noOfSection = 6,
   rulesType = 'solid',
+  lineColor = '#A78BFA',
+  customDataPoint = null,
+  lineData2,
+  lineColor2 = '#FBD34D',
+  lineDataPointsShift2 = 0,
+  customDataPoint2,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
   const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value)), [data])
   const paddedMax = useMemo(() => {
-    const m = Math.max(0, ...allValues)
-    return m > 0 ? Math.ceil(m * 1.05) : 10
-  }, [allValues])
+    const barMax = Math.max(0, ...allValues)
+
+    // Get max values from lineData2
+    const line2Max = lineData2 && lineData2.length > 0
+      ? Math.max(...lineData2.map((item) => item.value || 0))
+      : 0
+
+    // The first line uses bar values, so we only need to check barMax and line2Max
+    const overallMax = Math.max(barMax, line2Max)
+    return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
+  }, [allValues, lineData2])
 
   const processed = useMemo(() => {
     const COLORS = ['#ee0033', '#00b300', '#fcba03', '#0ff', '#ff00ff', '#00f', '#ffff00']
@@ -151,33 +171,25 @@ const BarChart: React.FC<Props> = ({
         lineConfig={{
           isAnimated: true,
           thickness: 2,
-          color: '#A78BFA',
-          dataPointsColor: '#A78BFA',
+          color: lineColor,
+          dataPointsColor: lineColor,
           dataPointsRadius: 6,
           shiftY: lineDataPointsShift,
-          customDataPoint: () => (
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 6,
-                backgroundColor: '#A78BFA',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: -5,
-                marginTop: -5,
-              }}
-            >
-              <View
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: '#FFFFFF',
-                }}
-              />
-            </View>
-          ),
+          ...(customDataPoint && {
+            customDataPoint: () => customDataPoint,
+          }),
+        }}
+        lineData2={lineData2}
+        lineConfig2={{
+          isAnimated: true,
+          thickness: 2,
+          color: lineColor2,
+          dataPointsColor: lineColor2,
+          dataPointsRadius: 5,
+          shiftY: lineDataPointsShift2,
+          ...(customDataPoint2 && {
+            customDataPoint: () => customDataPoint2,
+          }),
         }}
       />
     </View>
