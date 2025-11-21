@@ -99,7 +99,7 @@ function PowerByHours() {
             </Text>
           </View>
         </View>
-        <View>
+        <View style={{ zIndex: 9999 }}>
           <LineChart
             data={avgData}
             data2={hourlyData}
