@@ -72,6 +72,12 @@ function HydrographicChart() {
     setChartHeight(height);
   };
 
+  // ⭐ Tính toán spacing cho vertical lines
+  const barWidth = SCREEN_WIDTH * 0.04;
+  const spacing = SCREEN_WIDTH * 0.015;
+  const barTotalWidth = barWidth + spacing;
+  const verticalLineSpacing = barTotalWidth * 4; // Mỗi 4 bars = 1 line
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Mức nước shot</Text>
@@ -124,9 +130,8 @@ function HydrographicChart() {
           dashWidth={4}
           dashGap={4}
 
-          showVerticalLines
-          verticalLinesColor="#4A5568"
-          verticalLinesStrokeDashArray={[4, 4]}
+
+        
 
           // Threshold line
           showReferenceLine1
@@ -139,6 +144,13 @@ function HydrographicChart() {
 
           isAnimated
           animationDuration={600}
+
+          // ⭐ Vertical lines - mỗi 4 bars
+          showVerticalLines
+          verticalLinesColor="#4A5568"
+          verticalLinesStrokeDashArray={[4, 4]}
+          verticalLinesThickness={1}
+          verticalLinesSpacing={verticalLineSpacing} // 🔥 Key property
         />
 
         {/* Responsive custom label */}
