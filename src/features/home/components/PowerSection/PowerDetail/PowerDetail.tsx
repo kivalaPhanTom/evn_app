@@ -1,11 +1,11 @@
-import React from 'react'
-import ProductCumulativeOutput from './ProductCummulativeOutput/ProductComulativeOutput'
-import { ScrollView, View } from 'react-native'
-import CompareOutput24h from './CompareOutput24h/CompareOutput24h'
-import style from './ProductOutputDetail.styles'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import React, { useEffect, useRef, useState } from 'react'
+import { ScrollView, Text, View } from 'react-native'
+import ComparePower24h from './ComparePower24h/ComparePower24h'
+import style from './PowerDetail.styles'
 import { useLocalSearchParams } from 'expo-router'
 
-export default function ProductOutputDetail() {
+export default function PowerDetail() {
   const { type } = useLocalSearchParams<{ type?: string }>()
 
   // Mặc định hiển thị CompareOutput24h nếu không có type hoặc type = 'output'
@@ -15,10 +15,7 @@ export default function ProductOutputDetail() {
     <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={style.section}>
-          <CompareOutput24h />
-        </View>
-        <View style={style.section}>
-          <ProductCumulativeOutput />
+          <ComparePower24h />
         </View>
       </View>
     </ScrollView>

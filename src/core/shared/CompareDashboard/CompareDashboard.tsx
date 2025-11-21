@@ -125,8 +125,7 @@ const CompareDashboard = () => {
 
   return (
     <View>
-      <Text style={styles.chartTitle}>So sánh sản lượng theo ngày</Text>
-      <Text style={styles.chartTitle}>Dashboard</Text>
+      <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
       <View style={styles.chartWrapper}>
         <BarChart
           data={rawBarGroups}
