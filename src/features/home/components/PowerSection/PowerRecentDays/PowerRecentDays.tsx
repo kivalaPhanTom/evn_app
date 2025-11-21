@@ -22,7 +22,7 @@ function PowerRecentDays() {
   ]
   const unit = 'tr.Wh'
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail', params: { type: 'power' } })
+    router.push({ pathname: '/product-power-detail' })
   }
   return (
     <AnimatedCardContainer onPress={() => onPressCard()}>
