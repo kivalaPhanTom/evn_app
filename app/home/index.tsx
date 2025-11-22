@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 interface Props {}
 
 function HomeNewScreen(props: Props) {
@@ -37,6 +38,7 @@ function HomeNewScreen(props: Props) {
       <ScrollView>
         <PowerSection />
         <ProductionOutput />
+        <Hydrology />
       </ScrollView>
     </TwinkleStars>
   )
