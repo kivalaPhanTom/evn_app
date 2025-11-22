@@ -1,180 +1,283 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, LayoutChangeEvent } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, LayoutChangeEvent, ScrollView } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
-import Svg, { Line } from 'react-native-svg'; // ✅ Đã có sẵn với Expo
-// import { StyleSheet, View, TextStyle } from 'react-native'
+import Svg, { Line } from 'react-native-svg';
+import WaterDrop from '../WaterDrop/WaterDrop.component';
+
 interface Props { }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const getBarColor = (value: number): string => {
+  return value >= 180 ? '#5B9FED' : '#E74C5C';
+};
+
 function HydrographicChart() {
-  const barData = [
-    // 18 giờ - Blue bars
-    { value: 210, frontColor: '#5B9FED', label: '' },
-    { value: 180, frontColor: '#5B9FED', label: '' },
-    { value: 310, frontColor: '#5B9FED', label: '18' },
+  const [chartHeight, setChartHeight] = useState(0);
 
-    // 19 giờ - Blue bars
-    { value: 210, frontColor: '#5B9FED', label: '' },
-    { value: 205, frontColor: '#5B9FED', label: '' },
-    { value: 210, frontColor: '#5B9FED', label: '19' },
-
-    // 20 giờ - Blue bars
-    { value: 190, frontColor: '#5B9FED', label: '' },
-    { value: 185, frontColor: '#5B9FED', label: '' },
-    { value: 195, frontColor: '#5B9FED', label: '' },
-    { value: 200, frontColor: '#5B9FED', label: '20 giờ' },
-
-    // 21 giờ - Red bars
-    { value: 110, frontColor: '#E74C5C', label: '' },
-    { value: 130, frontColor: '#E74C5C', label: '' },
-    { value: 105, frontColor: '#E74C5C', label: '' },
-    { value: 90, frontColor: '#E74C5C', label: '21' },
-
-    // 22 giờ - Red bars
-    { value: 120, frontColor: '#E74C5C', label: '' },
-    { value: 140, frontColor: '#E74C5C', label: '' },
-    { value: 115, frontColor: '#E74C5C', label: '' },
-    { value: 135, frontColor: '#E74C5C', label: '22' },
-
-    // 23 giờ - Red bars
-    { value: 50, frontColor: '#E74C5C', label: '' },
-    { value: 95, frontColor: '#E74C5C', label: '' },
-    { value: 100, frontColor: '#E74C5C', label: '' },
-    { value: 120, frontColor: '#E74C5C', label: '23' },
+  const hourlyData = [
+    { values: [120, 115, 125, 130], avgVolume: 420 },
+    { values: [110, 105, 115, 120], avgVolume: 410 },
+    { values: [100, 95, 105, 110], avgVolume: 400 },
+    { values: [90, 85, 95, 100], avgVolume: 380 },
+    { values: [80, 75, 85, 90], avgVolume: 360 },
+    { values: [70, 65, 75, 80], avgVolume: 340 },
+    { values: [120, 130, 140, 150], avgVolume: 420 },
+    { values: [160, 170, 180, 190], avgVolume: 450 },
+    { values: [200, 210, 220, 230], avgVolume: 480 },
+    { values: [210, 220, 215, 225], avgVolume: 490 },
+    { values: [220, 230, 225, 235], avgVolume: 500 },
+    { values: [230, 240, 235, 245], avgVolume: 500 },
+    { values: [250, 260, 270, 280], avgVolume: 500 },
+    { values: [240, 250, 260, 270], avgVolume: 500 },
+    { values: [230, 240, 250, 260], avgVolume: 490 },
+    { values: [220, 230, 240, 250], avgVolume: 480 },
+    { values: [210, 220, 230, 240], avgVolume: 470 },
+    { values: [200, 210, 220, 230], avgVolume: 460 },
+    { values: [210, 180, 310, 290], avgVolume: 420 },
+    { values: [210, 205, 210, 215], avgVolume: 450 },
+    { values: [190, 185, 195, 200], avgVolume: 450 },
+    { values: [110, 130, 105, 90], avgVolume: 280 },
+    { values: [120, 140, 115, 135], avgVolume: 280 },
+    { values: [50, 95, 100, 120], avgVolume: 280 },
   ];
 
-  const [chartHeight, setChartHeight] = useState(0);
-  // Responsive values
-  const containerPadding = 16;
-  const yAxisLabelWidth = 40;
-  const chartWidth = SCREEN_WIDTH - (containerPadding * 2);
-  const dynamicChartHeight = SCREEN_WIDTH * 0.7; // 70% của screen width
+  const generateBarData = () => {
+    const data: any[] = [];
+    hourlyData.forEach((hourData, hourIndex) => {
+      hourData.values.forEach((value, barIndex) => {
+        data.push({
+          value,
+          frontColor: getBarColor(value),
+          label: '',
+        });
+      });
+    });
+    return data;
+  };
 
-  // Tính toán vị trí label động
+  const generateWaterDropData = () => {
+    return hourlyData.map((hourData, index) => ({
+      hour: index,
+      percent: Math.min(Math.round((hourData.avgVolume / 500) * 100), 100),
+      volume: `${hourData.avgVolume}m`
+    }));
+  };
+
+  const barData = generateBarData();
+  const waterDrops = generateWaterDropData();
+
+  const yAxisLabelWidth = 0;
+  const barWidth = SCREEN_WIDTH * 0.04;
+  const spacing = SCREEN_WIDTH * 0.015;
+  const totalBars = 24 * 4;
+  const barTotalWidth = barWidth + spacing;
+  const chartContentWidth = (totalBars * barTotalWidth) + 40;
+  const dynamicChartHeight = SCREEN_WIDTH * 0.7;
+
   const maxValue = 500;
   const thresholdValue = 180;
-  const topPadding = 20;
-  const bottomPadding = 50;
 
-  // Calculate label position
-  const calculateLabelPosition = () => {
-    if (!chartHeight) return '36%';
-
-    const usableHeight = chartHeight - topPadding - bottomPadding;
-    const valueRatio = (maxValue - thresholdValue) / maxValue;
-    const labelTop = topPadding + (valueRatio * usableHeight);
-
-    return labelTop + 2; // ⭐ Thêm 8px để kéo xuống (adjust số này)
-  };
+  const topPadding = 10;
+  const bottomPadding = 40;
 
   const handleChartLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setChartHeight(height);
   };
 
-  // ⭐ Tính toán spacing cho vertical lines
-  const barWidth = SCREEN_WIDTH * 0.04;
-  const spacing = SCREEN_WIDTH * 0.015;
-  const barTotalWidth = barWidth + spacing;
-  const verticalLineSpacing = barTotalWidth * 4; // Mỗi 4 bars = 1 line
+  const verticalLineSpacing = barTotalWidth * 4;
+  const waterDropSpacing = barTotalWidth * 4;
+
+  const yAxisLabels = [];
+  const sections = 5;
+  for (let i = 0; i <= sections; i++) {
+    const value = Math.round((maxValue / sections) * (sections - i));
+    yAxisLabels.push(value);
+  }
+
+  const calculateThresholdPosition = () => {
+    if (!chartHeight) return 0;
+    const chartAreaHeight = chartHeight - topPadding - bottomPadding;
+    const ratio = (maxValue - thresholdValue) / maxValue;
+    return topPadding + (ratio * chartAreaHeight);
+  };
+
+  const thresholdTop = calculateThresholdPosition();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mức nước shot</Text>
-      <View style={styles.legendContainer}>
-        <Svg height="2" width="30" style={styles.legendLine}>
-          <Line
-            x1="0"
-            y1="1"
-            x2="24"
-            y2="1"
-            stroke="#E74C5C"
-            strokeWidth="2"
-            strokeDasharray="4, 3"
-          />
-        </Svg>
-        <Text style={styles.legendText}>Mức nước chết</Text>
-      </View>
-      <View
-        style={styles.chartWrapper}
-        onLayout={handleChartLayout}
-      >
-        <BarChart
-          data={barData}
-          width={chartWidth}
-          height={dynamicChartHeight}
-          barWidth={SCREEN_WIDTH * 0.04} // 4% of screen width
-          spacing={SCREEN_WIDTH * 0.015} // 1.5% of screen width
-          barBorderRadius={4}
-          backgroundColor="transparent"
+    <View style={styles.mainContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Mức nước shot</Text>
 
-          maxValue={maxValue}
-          noOfSections={5}
-          yAxisColor="transparent"
-          yAxisTextStyle={{
-            color: '#8A94A8',
-            fontSize: SCREEN_WIDTH * 0.03, // Responsive font
-          }}
-          yAxisLabelWidth={yAxisLabelWidth}
+        <View style={styles.legendContainer}>
+          <Svg height="2" width="30" style={styles.legendLine}>
+            <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
+          </Svg>
+          <Text style={styles.legendText}>Mức nước chết</Text>
+        </View>
 
-          xAxisColor="transparent"
-          xAxisLabelTextStyle={{
-            color: '#8A94A8',
-            fontSize: SCREEN_WIDTH * 0.028,
-          }}
+        <View style={styles.chartContainer}>
+          <View style={styles.stickyLeftColumn}>
+            <View style={[styles.yAxisContainer, { height: dynamicChartHeight }]}>
+              {yAxisLabels.map((label, index) => {
+                const sectionHeight = (dynamicChartHeight - topPadding - bottomPadding) / sections;
+                const isFirst = index === 0;
+                const isLast = index === sections;
 
-          // Grid lines
-          hideRules={false}
-          rulesColor="#4A5568"
-          rulesType="dashed"
-          dashWidth={4}
-          dashGap={4}
+                return (
+                  <View
+                    key={index}
+                    style={[
+                      styles.yAxisLabelWrapper,
+                      {
+                        height: sectionHeight,
+                        paddingTop: isFirst ? topPadding : 0,
+                        paddingBottom: isLast ? bottomPadding : 0,
+                      }
+                    ]}
+                  >
+                    <Text style={styles.yAxisText}>{label}</Text>
+                  </View>
+                );
+              })}
+            </View>
 
+            {/* ⭐ REMOVED - Không còn line ngắn ở đây nữa */}
+          </View>
 
-        
+          {/* ⭐ Sticky 180m label - bên phải màn hình */}
+          {chartHeight > 0 && (
+            <View
+              style={[
+                styles.stickyRightLabel,
+                { top: thresholdTop - 10 }
+              ]}
+            >
+              <Text style={styles.thresholdLabelText}>180m</Text>
+            </View>
+          )}
 
-          // Threshold line
-          showReferenceLine1
-          referenceLine1Position={thresholdValue}
-          referenceLine1Config={{
-            color: '#E74C5C',
-            thickness: 2,
-            strokeDashArray: [6, 4],
-          }}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            style={styles.scrollView}
+          >
+            <View style={{ width: chartContentWidth }}>
+              <View style={styles.chartWrapper} onLayout={handleChartLayout}>
+                <BarChart
+                  data={barData}
+                  width={chartContentWidth}
+                  height={dynamicChartHeight}
+                  barWidth={barWidth}
+                  spacing={spacing}
+                  barBorderRadius={4}
+                  backgroundColor="transparent"
 
-          isAnimated
-          animationDuration={600}
+                  maxValue={maxValue}
+                  noOfSections={sections}
 
-          // ⭐ Vertical lines - mỗi 4 bars
-          showVerticalLines
-          verticalLinesColor="#4A5568"
-          verticalLinesStrokeDashArray={[4, 4]}
-          verticalLinesThickness={1}
-          verticalLinesSpacing={verticalLineSpacing} // 🔥 Key property
-        />
+                  yAxisColor="transparent"
+                  hideYAxisText={true}
+                  yAxisLabelWidth={0}
 
-        {/* Responsive custom label */}
-        <View
-          style={[
-            styles.customLabel,
-            {
-              top: calculateLabelPosition(),
-              right: SCREEN_WIDTH * 0.025, // 2.5% from right
-            }
-          ]}
-        >
-          <Text style={[
-            styles.labelText,
-            { fontSize: SCREEN_WIDTH * 0.032 } // Responsive font
-          ]}>
-            180m
-          </Text>
+                  xAxisColor="transparent"
+                  xAxisLabelTextStyle={{
+                    color: 'transparent',
+                    fontSize: SCREEN_WIDTH * 0.028,
+                  }}
+
+                  hideRules={false}
+                  rulesColor="#4A5568"
+                  rulesType="dashed"
+                  dashWidth={4}
+                  dashGap={4}
+
+                  showReferenceLine1={false}
+
+                  isAnimated
+                  animationDuration={600}
+
+                  showVerticalLines
+                  verticalLinesColor="#4A5568"
+                  verticalLinesStrokeDashArray={[4, 4]}
+                  verticalLinesThickness={1}
+                  verticalLinesSpacing={verticalLineSpacing}
+
+                  scrollToEnd={false}
+                  scrollAnimation={false}
+                />
+
+                {/* ⭐ Full-width threshold line - chỉ line này thôi */}
+                {chartHeight > 0 && (
+                  <View
+                    style={[
+                      styles.scrollableThresholdLine,
+                      {
+                        top: thresholdTop,
+                        left: yAxisLabelWidth, // Bắt đầu sau Y-axis
+                        width: chartContentWidth - yAxisLabelWidth
+                      }
+                    ]}
+                  >
+                    <Svg height="2" width={chartContentWidth - yAxisLabelWidth}>
+                      <Line
+                        x1="0"
+                        y1="1"
+                        x2={chartContentWidth - yAxisLabelWidth}
+                        y2="1"
+                        stroke="#E74C5C"
+                        strokeWidth="2"
+                        strokeDasharray="6, 4"
+                      />
+                    </Svg>
+                  </View>
+                )}
+              </View>
+
+              {/* ⭐ Custom X-axis labels - chính giữa 4 cột */}
+              <View style={styles.customXAxisContainer}>
+                {hourlyData.map((_, hourIndex) => {
+                  const groupWidth = 4 * barTotalWidth;
+                  const labelPosition = (hourIndex * groupWidth) + (groupWidth / 2);
+
+                  return (
+                    <View
+                      key={hourIndex}
+                      style={[
+                        styles.customXAxisLabel,
+                        { left: labelPosition }
+                      ]}
+                    >
+                      <Text style={styles.customXAxisText}>{hourIndex}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+
+              <View style={styles.waterDropContainer}>
+                <View style={styles.waterDropRow}>
+                  {waterDrops.map((drop, index) => (
+                    <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
+                      <WaterDrop percent={drop.percent} />
+                      <Text style={styles.volumeText}>{drop.volume}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </View>
     </View>
-  )
+  );
 }
+
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
   container: {
     backgroundColor: '#2C3E5C',
     padding: 16,
@@ -182,27 +285,72 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FFFFFF',
-    fontSize: SCREEN_WIDTH * 0.037, // Responsive
+    fontSize: SCREEN_WIDTH * 0.037,
     marginBottom: 16,
     fontWeight: '500',
     textAlign: 'center',
   },
+  chartContainer: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  stickyLeftColumn: {
+    width: 40,
+    position: 'relative',
+    zIndex: 10,
+  },
+  yAxisContainer: {
+    justifyContent: 'space-between',
+  },
+  yAxisLabelWrapper: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingRight: 8,
+  },
+  yAxisText: {
+    color: '#8A94A8',
+    fontSize: SCREEN_WIDTH * 0.03,
+  },
+  // ⭐ Sticky label bên phải màn hình
+  stickyRightLabel: {
+    position: 'absolute',
+    right: 16,
+    backgroundColor: '#2C3E5C',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    zIndex: 15,
+    borderRadius: 4,
+  },
+  thresholdLabelText: {
+    color: '#E74C5C',
+    fontWeight: 'bold',
+    fontSize: SCREEN_WIDTH * 0.028,
+  },
+  scrollView: {
+    flex: 1,
+  },
   chartWrapper: {
     position: 'relative',
   },
-  customLabel: {
+  scrollableThresholdLine: {
     position: 'absolute',
-    backgroundColor: '#2C3E5C',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    zIndex: 10,
+    zIndex: 3,
   },
-  labelText: {
-    color: '#E74C5C',
-    fontWeight: 'bold',
+  customXAxisContainer: {
+    position: 'relative',
+    height: 0,
+    marginTop: -20,
   },
-
-  // ⭐ Legend styles
+  customXAxisLabel: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: [{ translateX: -1 }],
+  },
+  customXAxisText: {
+    color: '#8A94A8',
+    fontSize: SCREEN_WIDTH * 0.028,
+  },
   legendContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -218,7 +366,23 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH * 0.03,
     fontWeight: '400',
   },
+  waterDropContainer: {
+    marginTop: 16,
+  },
+  waterDropRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  waterDropWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  volumeText: {
+    color: '#8A94A8',
+    fontSize: SCREEN_WIDTH * 0.028,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+});
 
-
-})
-export default HydrographicChart
+export default HydrographicChart;
