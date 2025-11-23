@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -18,7 +18,7 @@ function PowerByHours() {
   const hourlyData = [
     { value: 118, label: '0h' },
     { value: 120, label: '1h' },
-    { value: 122, label: '2h' },
+    { value: 200, label: '2h' },
     { value: 126, label: '3h' },
     { value: 115, label: '4h' },
     { value: 110, label: '5h' },
