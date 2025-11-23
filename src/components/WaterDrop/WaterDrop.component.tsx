@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, Animated } from 'react-native'
+import { View, Text, StyleSheet, Animated, Easing } from 'react-native'
 import Svg, { Path, Rect, Defs, ClipPath, LinearGradient, Stop } from 'react-native-svg'
 
 interface Props {
@@ -25,6 +25,18 @@ export default function WaterDrop({
   const critical = percent < 20
 
   const anim = useRef(new Animated.Value(0)).current
+  // NEW: gentle bobbing animation
+  const bobAnim = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bobAnim, { toValue: 1, duration: 2200, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
+        Animated.timing(bobAnim, { toValue: 0, duration: 2200, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
+      ]),
+    )
+    loop.start()
+    return () => loop.stop()
+  }, [bobAnim])
 
   useEffect(() => {
     Animated.timing(anim, {
@@ -57,6 +69,13 @@ export default function WaterDrop({
     inputRange: [0, 100],
     outputRange: [0, vbHeight],
   })
+  // NEW: vertical offset (3% vbHeight up/down)
+  const bobOffset = bobAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-vbHeight * 0.03, vbHeight * 0.03],
+  })
+  // Combined y position with bobbing (keep height constant)
+  const animatedY = Animated.subtract(Animated.subtract(vbHeight, waterHeight), bobOffset)
 
   const fillColor1 = isHigh ? '#1fb7ff' : '#ff7070'
   const fillColor2 = isHigh ? '#0099ff' : '#ff2b2b'
@@ -101,7 +120,7 @@ export default function WaterDrop({
           width={vbWidth}
           fill="url(#grad)"
           clipPath="url(#clip)"
-          y={Animated.subtract(vbHeight, waterHeight)}
+          y={animatedY}          // CHANGED: was Animated.subtract(vbHeight, waterHeight)
           height={waterHeight}
         />
       </Svg>
