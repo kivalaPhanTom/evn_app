@@ -1,6 +1,5 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
-import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import { lightGradients } from '@/core/constants/gradients'
 import { textGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
@@ -38,7 +37,6 @@ function HomeNewScreen(props: Props) {
         </View>
       </View>
       <ScrollView>
-        <HydrographicChart />
         <PowerSection />
         <ProductionOutput />
         <Hydrology />
