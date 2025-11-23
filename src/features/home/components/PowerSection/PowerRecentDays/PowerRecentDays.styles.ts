@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingRight: 20,
+    zIndex: 9999,
   },
   valueCard: {
     backgroundColor: '#1e2838',
