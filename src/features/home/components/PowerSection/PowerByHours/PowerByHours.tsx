@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -99,15 +99,19 @@ function PowerByHours() {
             </Text>
           </View>
         </View>
-        <View style={{ zIndex: 9999 }}>
-          <LineChart
-            data={avgData}
-            data2={hourlyData}
-            initialScrollIndex={initIndex}
-            color="#FBBF24"
-            color2="#2563EB"
-          />
-        </View>
+        <Pressable onPress={(e) => e.stopPropagation()}>
+          <View>
+            <LineChart
+              data={avgData}
+              data2={hourlyData}
+              color="#FBBF24"
+              color2="#2563EB"
+              hideDataPoints2={false}
+              hideYAxisText={true}
+              hideDataPoints1={true}
+            />
+          </View>
+        </Pressable>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>
       </View>
