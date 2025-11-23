@@ -98,9 +98,10 @@ function HydrographicChart() {
 
   const calculateThresholdPosition = () => {
     if (!chartHeight) return 0;
-    // Simple calculation: ratio of position from top
+    // Match the Y-axis calculation system
+    const chartAreaHeight = dynamicChartHeight - topPadding - bottomPadding;
     const ratio = (maxValue - thresholdValue) / maxValue;
-    return chartHeight * ratio;
+    return topPadding + (ratio * chartAreaHeight);
   };
 
   const thresholdTop = calculateThresholdPosition();
@@ -108,6 +109,8 @@ function HydrographicChart() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
+        <Text style={styles.title}>Mức nước shot</Text>
+
         <View style={styles.legendContainer}>
           <Svg height="2" width="30" style={styles.legendLine}>
             <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
@@ -119,14 +122,34 @@ function HydrographicChart() {
           {/* Sticky Y-axis bên trái */}
           <View style={styles.stickyLeftColumn}>
             <View style={[styles.yAxisContainer, { height: dynamicChartHeight }]}>
-              {yAxisLabels.map((label, index) => (
-                <View
-                  key={index}
-                  style={styles.yAxisLabelWrapper}
-                >
-                  <Text style={styles.yAxisText}>{label}</Text>
-                </View>
-              ))}
+              {yAxisLabels.map((label, index) => {
+                // Calculate exact position matching BarChart's internal grid
+                // BarChart uses chart area = height - topPadding - bottomPadding
+                const chartAreaHeight = dynamicChartHeight - topPadding - bottomPadding;
+                const sectionHeight = chartAreaHeight / sections;
+                
+                // Position for the grid line
+                const lineTop = topPadding + (index * sectionHeight);
+                
+                // Center text on the line (text height ≈ 12px, so offset by half)
+                const textOffset = 0; // Try different values: -6, 0, 6
+                const topOffset = lineTop + textOffset;
+                
+                return (
+                  <View
+                    key={index}
+                    style={[
+                      styles.yAxisLabelWrapper,
+                      {
+                        position: 'absolute',
+                        top: topOffset,
+                      }
+                    ]}
+                  >
+                    <Text style={styles.yAxisText}>{label}</Text>
+                  </View>
+                );
+              })}
             </View>
           </View>
 
@@ -287,11 +310,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   yAxisContainer: {
-    justifyContent: 'space-between',
+    position: 'relative',
   },
   yAxisLabelWrapper: {
     alignItems: 'flex-end',
     paddingRight: 8,
+    width: 40,
   },
   yAxisText: {
     color: '#8A94A8',
