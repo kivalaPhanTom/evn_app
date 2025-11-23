@@ -67,7 +67,7 @@ function HydrographicChart() {
   const barData = generateBarData();
   const waterDrops = generateWaterDropData();
 
-  const yAxisLabelWidth = 0;
+  const yAxisLabelWidth = 40;
   const barWidth = SCREEN_WIDTH * 0.04;
   const spacing = SCREEN_WIDTH * 0.015;
   const totalBars = 24 * 4;
@@ -98,9 +98,9 @@ function HydrographicChart() {
 
   const calculateThresholdPosition = () => {
     if (!chartHeight) return 0;
-    const chartAreaHeight = chartHeight - topPadding - bottomPadding;
+    // Simple calculation: ratio of position from top
     const ratio = (maxValue - thresholdValue) / maxValue;
-    return topPadding + (ratio * chartAreaHeight);
+    return chartHeight * ratio;
   };
 
   const thresholdTop = calculateThresholdPosition();
@@ -108,8 +108,6 @@ function HydrographicChart() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Mức nước shot</Text>
-
         <View style={styles.legendContainer}>
           <Svg height="2" width="30" style={styles.legendLine}>
             <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
@@ -118,35 +116,21 @@ function HydrographicChart() {
         </View>
 
         <View style={styles.chartContainer}>
+          {/* Sticky Y-axis bên trái */}
           <View style={styles.stickyLeftColumn}>
             <View style={[styles.yAxisContainer, { height: dynamicChartHeight }]}>
-              {yAxisLabels.map((label, index) => {
-                const sectionHeight = (dynamicChartHeight - topPadding - bottomPadding) / sections;
-                const isFirst = index === 0;
-                const isLast = index === sections;
-
-                return (
-                  <View
-                    key={index}
-                    style={[
-                      styles.yAxisLabelWrapper,
-                      {
-                        height: sectionHeight,
-                        paddingTop: isFirst ? topPadding : 0,
-                        paddingBottom: isLast ? bottomPadding : 0,
-                      }
-                    ]}
-                  >
-                    <Text style={styles.yAxisText}>{label}</Text>
-                  </View>
-                );
-              })}
+              {yAxisLabels.map((label, index) => (
+                <View
+                  key={index}
+                  style={styles.yAxisLabelWrapper}
+                >
+                  <Text style={styles.yAxisText}>{label}</Text>
+                </View>
+              ))}
             </View>
-
-            {/* ⭐ REMOVED - Không còn line ngắn ở đây nữa */}
           </View>
 
-          {/* ⭐ Sticky 180m label - bên phải màn hình */}
+          {/* Sticky label "180m" bên phải màn hình */}
           {chartHeight > 0 && (
             <View
               style={[
@@ -158,6 +142,7 @@ function HydrographicChart() {
             </View>
           )}
 
+          {/* Scrollable content: Chart + Water drops */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -165,6 +150,7 @@ function HydrographicChart() {
             style={styles.scrollView}
           >
             <View style={{ width: chartContentWidth }}>
+              {/* Chart wrapper */}
               <View style={styles.chartWrapper} onLayout={handleChartLayout}>
                 <BarChart
                   data={barData}
@@ -209,23 +195,23 @@ function HydrographicChart() {
                   scrollAnimation={false}
                 />
 
-                {/* ⭐ Full-width threshold line - chỉ line này thôi */}
+                {/* Threshold line đỏ - full width, chạm Y-axis */}
                 {chartHeight > 0 && (
                   <View
                     style={[
                       styles.scrollableThresholdLine,
                       {
                         top: thresholdTop,
-                        left: yAxisLabelWidth, // Bắt đầu sau Y-axis
-                        width: chartContentWidth - yAxisLabelWidth
+                        left: 0,
+                        width: chartContentWidth
                       }
                     ]}
                   >
-                    <Svg height="2" width={chartContentWidth - yAxisLabelWidth}>
+                    <Svg height="2" width={chartContentWidth}>
                       <Line
                         x1="0"
                         y1="1"
-                        x2={chartContentWidth - yAxisLabelWidth}
+                        x2={chartContentWidth}
                         y2="1"
                         stroke="#E74C5C"
                         strokeWidth="2"
@@ -236,7 +222,7 @@ function HydrographicChart() {
                 )}
               </View>
 
-              {/* ⭐ Custom X-axis labels - chính giữa 4 cột */}
+              {/* Custom X-axis labels - chính giữa 4 cột */}
               <View style={styles.customXAxisContainer}>
                 {hourlyData.map((_, hourIndex) => {
                   const groupWidth = 4 * barTotalWidth;
@@ -256,6 +242,7 @@ function HydrographicChart() {
                 })}
               </View>
 
+              {/* Water drops */}
               <View style={styles.waterDropContainer}>
                 <View style={styles.waterDropRow}>
                   {waterDrops.map((drop, index) => (
@@ -303,7 +290,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   yAxisLabelWrapper: {
-    justifyContent: 'flex-start',
     alignItems: 'flex-end',
     paddingRight: 8,
   },
@@ -311,7 +297,6 @@ const styles = StyleSheet.create({
     color: '#8A94A8',
     fontSize: SCREEN_WIDTH * 0.03,
   },
-  // ⭐ Sticky label bên phải màn hình
   stickyRightLabel: {
     position: 'absolute',
     right: 16,
