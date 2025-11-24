@@ -6,7 +6,7 @@ import WaterDrop from '../WaterDrop/WaterDrop.component';
 
 interface Props { }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const getBarColor = (value: number): string => {
   return value >= 180 ? '#5B9FED' : '#E74C5C';
@@ -68,25 +68,27 @@ function HydrographicChart() {
   const waterDrops = generateWaterDropData();
 
   const yAxisLabelWidth = 40;
-  const barWidth = SCREEN_WIDTH * 0.04;
-  const spacing = SCREEN_WIDTH * 0.015;
-  const totalBars = 24 * 4;
+  // Make the chart compact so it doesn't take too much vertical space
+  const barWidth = SCREEN_WIDTH * 0.028;
+  const spacing = SCREEN_WIDTH * 0.01;
+  // derive total bars from data rather than hardcoding
+  const totalBars = hourlyData.length * 4;
   const barTotalWidth = barWidth + spacing;
-  const chartContentWidth = (totalBars * barTotalWidth) + 40;
-  const dynamicChartHeight = SCREEN_WIDTH * 0.7;
+  const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
+  const dynamicChartHeight = SCREEN_WIDTH * 0.45;
 
   const maxValue = 500;
   const thresholdValue = 180;
 
-  const topPadding = 10;
-  const bottomPadding = 40;
+  const topPadding = 8;
+  const bottomPadding = 36;
 
   const handleChartLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setChartHeight(height);
   };
 
-  const verticalLineSpacing = barTotalWidth * 4;
+  const verticalLineSpacing = barTotalWidth * 4; // every 4 bars
   const waterDropSpacing = barTotalWidth * 4;
 
   const yAxisLabels = [];
@@ -109,8 +111,6 @@ function HydrographicChart() {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Mức nước shot</Text>
-
         <View style={styles.legendContainer}>
           <Svg height="2" width="30" style={styles.legendLine}>
             <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
@@ -127,13 +127,23 @@ function HydrographicChart() {
                 // BarChart uses chart area = height - topPadding - bottomPadding
                 const chartAreaHeight = dynamicChartHeight - topPadding - bottomPadding;
                 const sectionHeight = chartAreaHeight / sections;
-                
+
                 // Position for the grid line
                 const lineTop = topPadding + (index * sectionHeight);
-                
-                // Center text on the line (text height ≈ 12px, so offset by half)
-                const textOffset = 0; // Try different values: -6, 0, 6
-                const topOffset = lineTop + textOffset;
+
+                // Estimate text height from font size to center labels.
+                const fontSize = SCREEN_WIDTH * 0.026;
+                const textHeight = fontSize * 1.2;
+
+                // Center all labels on their corresponding grid line so spacing is even.
+                // But ensure the bottom label (0) sits exactly at the chart bottom
+                // so its center aligns with the x-axis intersection point.
+                let topOffset;
+                if (index === sections) {
+                  topOffset = dynamicChartHeight - (textHeight / 2);
+                } else {
+                  topOffset = lineTop - (textHeight / 2);
+                }
                 
                 return (
                   <View
@@ -295,7 +305,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FFFFFF',
-    fontSize: SCREEN_WIDTH * 0.037,
+    fontSize: SCREEN_WIDTH * 0.032,
     marginBottom: 16,
     fontWeight: '500',
     textAlign: 'center',
@@ -319,7 +329,7 @@ const styles = StyleSheet.create({
   },
   yAxisText: {
     color: '#8A94A8',
-    fontSize: SCREEN_WIDTH * 0.03,
+    fontSize: SCREEN_WIDTH * 0.026,
   },
   stickyRightLabel: {
     position: 'absolute',
@@ -333,7 +343,7 @@ const styles = StyleSheet.create({
   thresholdLabelText: {
     color: '#E74C5C',
     fontWeight: 'bold',
-    fontSize: SCREEN_WIDTH * 0.028,
+    fontSize: SCREEN_WIDTH * 0.024,
   },
   scrollView: {
     flex: 1,
@@ -358,7 +368,7 @@ const styles = StyleSheet.create({
   },
   customXAxisText: {
     color: '#8A94A8',
-    fontSize: SCREEN_WIDTH * 0.028,
+    fontSize: SCREEN_WIDTH * 0.024,
   },
   legendContainer: {
     flexDirection: 'row',
@@ -372,7 +382,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     color: 'white',
-    fontSize: SCREEN_WIDTH * 0.03,
+    fontSize: SCREEN_WIDTH * 0.025,
     fontWeight: '400',
   },
   waterDropContainer: {
@@ -388,7 +398,7 @@ const styles = StyleSheet.create({
   },
   volumeText: {
     color: '#8A94A8',
-    fontSize: SCREEN_WIDTH * 0.028,
+    fontSize: SCREEN_WIDTH * 0.022,
     marginTop: 4,
     textAlign: 'center',
   },
