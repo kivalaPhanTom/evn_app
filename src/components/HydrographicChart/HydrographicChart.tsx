@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Dimensions, LayoutChangeEvent, ScrollView } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import Svg, { Line } from 'react-native-svg';
@@ -6,7 +6,7 @@ import WaterDrop from '../WaterDrop/WaterDrop.component';
 
 interface Props { }
 
-  const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const getBarColor = (value: number): string => {
   return value >= 180 ? '#5B9FED' : '#E74C5C';
@@ -27,7 +27,7 @@ function HydrographicChart() {
     { values: [200, 210, 220, 230], avgVolume: 480 },
     { values: [210, 220, 215, 225], avgVolume: 490 },
     { values: [220, 230, 225, 235], avgVolume: 500 },
-    { values: [230, 240, 235, 245], avgVolume: 500 },
+    { values: [230, 240, 235, 245], avgVolume: 600 },
     { values: [250, 260, 270, 280], avgVolume: 500 },
     { values: [240, 250, 260, 270], avgVolume: 500 },
     { values: [230, 240, 250, 260], avgVolume: 490 },
@@ -42,10 +42,16 @@ function HydrographicChart() {
     { values: [50, 95, 100, 120], avgVolume: 280 },
   ];
 
-  const generateBarData = () => {
+  // Compute maxValue from the largest avgVolume so grid scales to data.
+  const maxAvgVolume = hourlyData.length ? Math.max(...hourlyData.map(h => h.avgVolume)) : 500;
+  // Round up to nearest 50 for a cleaner axis
+  const computedMaxValue = Math.ceil(maxAvgVolume / 50) * 50;
+
+  // Memoize bar data and water drops to avoid recalculating on every render
+  const barData = useMemo(() => {
     const data: any[] = [];
-    hourlyData.forEach((hourData, hourIndex) => {
-      hourData.values.forEach((value, barIndex) => {
+    hourlyData.forEach((hourData) => {
+      hourData.values.forEach((value) => {
         data.push({
           value,
           frontColor: getBarColor(value),
@@ -54,18 +60,15 @@ function HydrographicChart() {
       });
     });
     return data;
-  };
+  }, [hourlyData]);
 
-  const generateWaterDropData = () => {
+  const waterDrops = useMemo(() => {
     return hourlyData.map((hourData, index) => ({
       hour: index,
-      percent: Math.min(Math.round((hourData.avgVolume / 500) * 100), 100),
+      percent: Math.min(Math.round((hourData.avgVolume / computedMaxValue) * 100), 100),
       volume: `${hourData.avgVolume}m`
     }));
-  };
-
-  const barData = generateBarData();
-  const waterDrops = generateWaterDropData();
+  }, [hourlyData, computedMaxValue]);
 
   const yAxisLabelWidth = 40;
   // Make the chart compact so it doesn't take too much vertical space
@@ -77,15 +80,23 @@ function HydrographicChart() {
   const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
   const dynamicChartHeight = SCREEN_WIDTH * 0.45;
 
-  const maxValue = 500;
+  const maxValue = computedMaxValue;
   const thresholdValue = 180;
 
   const topPadding = 8;
-  const bottomPadding = 36;
+  // Try zero bottom padding so the baseline is at the very bottom of chart area
+  const bottomPadding = 0;
+  // Some chart implementations add an internal bottom inset for labels/axis.
+  // `barBottomInset` nudges our computed baseline up so it lines up with BarChart's bar bottoms.
+  // Increase this value if bars appear above the baseline (tunable per device).
+  const barBottomInset = 22;
+  // Remove overlay offset — draw grid exactly from computed baseline
+  const overlayOffset = 0;
 
   const handleChartLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
-    setChartHeight(height);
+    // Only update state when height actually changes to avoid extra renders
+    if (height && height !== chartHeight) setChartHeight(height);
   };
 
   const verticalLineSpacing = barTotalWidth * 4; // every 4 bars
@@ -98,10 +109,22 @@ function HydrographicChart() {
     yAxisLabels.push(value);
   }
 
+  // Precompute actual height and y positions for each grid line so labels and SVG use the same coordinates
+  const yPositions = useMemo(() => {
+    const actualHeight = chartHeight || dynamicChartHeight;
+    // ensure baseline sits exactly at the bottom of the chart area (minus a 1px inset)
+    const baselineY = actualHeight - bottomPadding - 1 - barBottomInset;
+    const usableTop = topPadding;
+    const chartAreaHeight = baselineY - usableTop;
+    const sectionHeight = chartAreaHeight / sections;
+    return Array.from({ length: sections + 1 }, (_, i) => usableTop + (i * sectionHeight));
+  }, [chartHeight, dynamicChartHeight, topPadding, bottomPadding, sections]);
+
   const calculateThresholdPosition = () => {
-    if (!chartHeight) return 0;
+    const actualHeight = chartHeight || dynamicChartHeight;
     // Match the Y-axis calculation system
-    const chartAreaHeight = dynamicChartHeight - topPadding - bottomPadding;
+    const baselineY = actualHeight - bottomPadding - 1 - barBottomInset;
+    const chartAreaHeight = baselineY - topPadding;
     const ratio = (maxValue - thresholdValue) / maxValue;
     return topPadding + (ratio * chartAreaHeight);
   };
@@ -121,30 +144,13 @@ function HydrographicChart() {
         <View style={styles.chartContainer}>
           {/* Sticky Y-axis bên trái */}
           <View style={styles.stickyLeftColumn}>
-            <View style={[styles.yAxisContainer, { height: dynamicChartHeight }]}>
+            <View style={[styles.yAxisContainer, { height: chartHeight || dynamicChartHeight }]}>
               {yAxisLabels.map((label, index) => {
-                // Calculate exact position matching BarChart's internal grid
-                // BarChart uses chart area = height - topPadding - bottomPadding
-                const chartAreaHeight = dynamicChartHeight - topPadding - bottomPadding;
-                const sectionHeight = chartAreaHeight / sections;
-
-                // Position for the grid line
-                const lineTop = topPadding + (index * sectionHeight);
-
-                // Estimate text height from font size to center labels.
+                // Use precomputed yPositions to ensure exact match with SVG grid
+                const lineTop = yPositions[index];
                 const fontSize = SCREEN_WIDTH * 0.026;
-                const textHeight = fontSize * 1.2;
+                const containerTop = lineTop - (fontSize / 2);
 
-                // Center all labels on their corresponding grid line so spacing is even.
-                // But ensure the bottom label (0) sits exactly at the chart bottom
-                // so its center aligns with the x-axis intersection point.
-                let topOffset;
-                if (index === sections) {
-                  topOffset = dynamicChartHeight - (textHeight / 2);
-                } else {
-                  topOffset = lineTop - (textHeight / 2);
-                }
-                
                 return (
                   <View
                     key={index}
@@ -152,11 +158,13 @@ function HydrographicChart() {
                       styles.yAxisLabelWrapper,
                       {
                         position: 'absolute',
-                        top: topOffset,
+                        top: containerTop,
+                        height: fontSize,
+                        justifyContent: 'center',
                       }
                     ]}
                   >
-                    <Text style={styles.yAxisText}>{label}</Text>
+                    <Text style={[styles.yAxisText, { fontSize, lineHeight: fontSize }]}>{label}</Text>
                   </View>
                 );
               })}
@@ -207,7 +215,9 @@ function HydrographicChart() {
                     fontSize: SCREEN_WIDTH * 0.028,
                   }}
 
-                  hideRules={false}
+                  hideRules={true}
+                  // We draw our own rules (grid lines) with an SVG overlay so
+                  // label positions exactly match the grid. See overlay below.
                   rulesColor="#4A5568"
                   rulesType="dashed"
                   dashWidth={4}
@@ -215,8 +225,8 @@ function HydrographicChart() {
 
                   showReferenceLine1={false}
 
-                  isAnimated
-                  animationDuration={600}
+                  isAnimated={false}
+                  animationDuration={0}
 
                   showVerticalLines
                   verticalLinesColor="#4A5568"
@@ -228,28 +238,65 @@ function HydrographicChart() {
                   scrollAnimation={false}
                 />
 
-                {/* Threshold line đỏ - full width, chạm Y-axis */}
-                {chartHeight > 0 && (
+                {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
+                {(chartHeight || dynamicChartHeight) > 0 && (
                   <View
                     style={[
                       styles.scrollableThresholdLine,
                       {
-                        top: thresholdTop,
+                        top: 0,
                         left: 0,
-                        width: chartContentWidth
+                        width: chartContentWidth,
+                        height: chartHeight || dynamicChartHeight,
                       }
                     ]}
                   >
-                    <Svg height="2" width={chartContentWidth}>
+                    <Svg height={chartHeight || dynamicChartHeight} width={chartContentWidth}>
+                      {yAxisLabels.map((_, index) => {
+                        const y = yPositions[index];
+                        return (
+                          <Line
+                            key={`grid-${index}`}
+                            x1="0"
+                            y1={y}
+                            x2={chartContentWidth}
+                            y2={y}
+                            stroke="#4A5568"
+                            strokeWidth="1"
+                            strokeDasharray={[4, 4]}
+                            opacity={0.85}
+                          />
+                        );
+                      })}
+
+                      {/* threshold line (red dashed) */}
                       <Line
                         x1="0"
-                        y1="1"
+                        y1={thresholdTop}
                         x2={chartContentWidth}
-                        y2="1"
+                        y2={thresholdTop}
                         stroke="#E74C5C"
                         strokeWidth="2"
-                        strokeDasharray="6, 4"
+                        strokeDasharray={[6, 4]}
                       />
+
+                      {/* x-axis baseline: draw at the bottom of chart area so bars sit on it */}
+                      {
+                        (() => {
+                          const actualHeight = chartHeight || dynamicChartHeight;
+                              const baselineY = actualHeight - bottomPadding - 1 - barBottomInset; // match barBottomInset
+                          return (
+                            <Line
+                              x1="0"
+                              y1={baselineY}
+                              x2={chartContentWidth}
+                              y2={baselineY}
+                              stroke="rgba(255,255,255,0.06)"
+                              strokeWidth="1"
+                            />
+                          );
+                        })()
+                      }
                     </Svg>
                   </View>
                 )}
@@ -280,8 +327,8 @@ function HydrographicChart() {
                 <View style={styles.waterDropRow}>
                   {waterDrops.map((drop, index) => (
                     <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
-                      <WaterDrop percent={drop.percent} />
-                      <Text style={styles.volumeText}>{drop.volume}</Text>
+                      <WaterDrop percent={drop.percent} animated={false} />
+                      <Text style={[styles.volumeText, { marginTop: -8 }]}>{drop.volume}</Text>
                     </View>
                   ))}
                 </View>
@@ -299,7 +346,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: '#2C3E5C',
+    // backgroundColor: '#2C3E5C',
+    backgroundColor: 'transparent',
     padding: 16,
     borderRadius: 12,
   },
@@ -334,7 +382,7 @@ const styles = StyleSheet.create({
   stickyRightLabel: {
     position: 'absolute',
     right: 16,
-    backgroundColor: '#2C3E5C',
+    backgroundColor: '#000033',
     paddingHorizontal: 6,
     paddingVertical: 3,
     zIndex: 15,
@@ -358,7 +406,8 @@ const styles = StyleSheet.create({
   customXAxisContainer: {
     position: 'relative',
     height: 0,
-    marginTop: -20,
+    // pull labels up a bit so they sit closer to bars and reduce empty gap below
+    marginTop: -12,
   },
   customXAxisLabel: {
     position: 'absolute',
@@ -386,7 +435,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   waterDropContainer: {
-    marginTop: 16,
+    // reduce space between chart baseline and water drops
+    marginTop: 6,
   },
   waterDropRow: {
     flexDirection: 'row',
@@ -395,11 +445,14 @@ const styles = StyleSheet.create({
   waterDropWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
+    // Scale the WaterDrop component so the droplets appear smaller
+    transform: [{ scale: 0.9 }],
   },
   volumeText: {
     color: '#8A94A8',
     fontSize: SCREEN_WIDTH * 0.022,
-    marginTop: 4,
+    // slightly reduce margin so volume text sits closer to the droplet
+    marginTop: 2,
     textAlign: 'center',
   },
 });
