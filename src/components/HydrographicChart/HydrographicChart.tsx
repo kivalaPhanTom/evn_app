@@ -324,10 +324,10 @@ function HydrographicChart() {
 
               {/* Water drops */}
               <View style={styles.waterDropContainer}>
-                <View style={styles.waterDropRow}>
+                <View style={[styles.waterDropRow, { paddingLeft: barTotalWidth / 2 - 5 }]}>
                   {waterDrops.map((drop, index) => (
                     <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
-                      <WaterDrop percent={drop.percent} animated={false} />
+                      <WaterDrop percent={drop.percent}/>
                       <Text style={[styles.volumeText, { marginTop: -8 }]}>{drop.volume}</Text>
                     </View>
                   ))}
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
   },
   waterDropContainer: {
     // reduce space between chart baseline and water drops
-    marginTop: 6,
+    marginTop: -2,
   },
   waterDropRow: {
     flexDirection: 'row',
