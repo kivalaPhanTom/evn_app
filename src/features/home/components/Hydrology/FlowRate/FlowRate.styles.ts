@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     width: 105,
     backgroundColor: 'rgba(255,255,255, 0.03)',
     borderRadius: 8,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     color: '#93959F',
   },
   itemValue: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   legend: {
