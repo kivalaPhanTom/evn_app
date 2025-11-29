@@ -7,28 +7,35 @@ export const styles = StyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
-    marginBottom: px.v(16),
+    alignItems: 'stretch',
   },
   card: {
     flex: 1,
     minWidth: 0,
+    alignSelf: 'stretch',
+    display: 'flex',
   },
   cardActive: {
-    transform: [{ scale: 1.02 }],
+    // Bỏ scale để detailContainer sát với tab active
+    // transform: [{ scale: 1.02 }],
   },
   cardContent: {
     alignItems: 'center',
     paddingVertical: px.v(12),
     paddingHorizontal: px.h(8),
+    flex: 1,
+    justifyContent: 'flex-start',
   },
   locationContainer: {
     alignItems: 'center',
     marginBottom: px.v(8),
     width: '100%',
+    height: px.v(48),
+    justifyContent: 'center',
   },
   locationName: {
     // Màu sẽ được set động từ data.color
-    fontSize: px.m(12),
+    fontSize: px.m(14),
     fontWeight: '600',
     textAlign: 'center',
     width: '100%',
@@ -74,11 +81,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     borderTopWidth: 1,
-    borderTopColor: '#ADFF2F', // Màu vàng-xanh lá
+    borderTopColor: '#F6FF00', // Màu vàng
     borderStyle: 'dashed' as const,
   },
   referenceText: {
-    color: '#ADFF2F', // Màu vàng-xanh lá
+    color: '#F6FF00', // Màu vàng
     fontSize: px.m(10),
     fontWeight: '600',
     marginLeft: px.h(6),
@@ -90,7 +97,8 @@ export const styles = StyleSheet.create({
   detailContainer: {
     padding: px.h(12),
     backgroundColor: '#48319d',
-    borderRadius: px.h(8),
+    borderBottomLeftRadius: px.h(8),
+    borderBottomRightRadius: px.h(8),
   },
   detailText: {
     color: '#C7D6E1',
