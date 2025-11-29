@@ -16,8 +16,8 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
       style={{
         padding: 12,
         borderRadius: 12,
-        borderWidth: 1,
-        borderColor: '#OD1253',
+        //borderWidth: 1,
+        //borderColor: '#OD1253',
         backgroundColor: '#00054A',
         width: 112,
         height: 112,
