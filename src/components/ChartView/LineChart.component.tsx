@@ -142,7 +142,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                 radius: px.h(6),
                 pointerLabelWidth: px.h(100),
                 pointerLabelHeight: px.v(90),
-                activatePointersOnLongPress: false,
+                activatePointersOnLongPress: true,
                 autoAdjustPointerLabelPosition: true,
                 persistPointer: true,
                 resetPointerOnDataChange: false,
