@@ -1,5 +1,6 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
+import { lightGradients } from '@/core/constants/gradients'
 import { textGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
 import PowerSection from '@/features/home/components/PowerSection/PowerSection'

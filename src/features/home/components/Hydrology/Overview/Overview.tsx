@@ -20,7 +20,7 @@ const waterData: WaterLevelData[] = [
     name: 'Buôn Tua Srah',
     currentLevel: 420,
     maxLevel: 700,
-    referenceLevel: 420,
+    referenceLevel: 400,
     color: '#FB923C',
   },
   {
@@ -28,7 +28,7 @@ const waterData: WaterLevelData[] = [
     name: 'Buôn Kuốp',
     currentLevel: 300,
     maxLevel: 700,
-    referenceLevel: 300,
+    referenceLevel: 400,
     color: '#14B8A6',
   },
   {
@@ -36,7 +36,7 @@ const waterData: WaterLevelData[] = [
     name: 'Srepok 3',
     currentLevel: 600,
     maxLevel: 700,
-    referenceLevel: 600,
+    referenceLevel: 400,
     color: '#00C0E8',
   },
 ]
@@ -50,11 +50,15 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   const [cardWidth, setCardWidth] = useState(0)
   const MAX_TANK_HEIGHT = 700
 
-  const waterHeightPercent = (data.referenceLevel / MAX_TANK_HEIGHT) * 100
+  // waterHeight tính theo currentLevel, referenceLevel cố định để vẽ đường reference line
+  const waterHeightPercent = (data.currentLevel / MAX_TANK_HEIGHT) * 100
   const waterHeight = (waterHeightPercent / 100) * containerHeight
   const referenceY = containerHeight - (data.referenceLevel / MAX_TANK_HEIGHT) * containerHeight
   const waveAreaHeight = waterHeight
   const containerWidth = cardWidth > 0 ? cardWidth - px.h(24) : 0
+  
+  // Kiểm tra mực nước cảnh báo: currentLevel < referenceLevel
+  const isLowWaterLevel = data.currentLevel < data.referenceLevel
 
   // Thêm offset ban đầu khác nhau cho mỗi tab để tạo hiệu ứng không đồng bộ
   const initialOffset = data.id === 'buon-tua-srah' ? 0 : data.id === 'buon-kuop' ? Math.PI : Math.PI * 1.5
@@ -202,7 +206,15 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 
   return (
     <View
-      style={StyleSheet.flatten([styles.card, isActive && styles.cardActive])}
+      style={StyleSheet.flatten([
+        styles.card,
+        isActive && styles.cardActive,
+        isActive && {
+          borderTopLeftRadius: px.h(12),
+          borderTopRightRadius: px.h(12),
+          overflow: 'hidden',
+        },
+      ])}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout
         if (width > 0 && cardWidth !== width) {
@@ -214,12 +226,14 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         onPress={onPress}
         style={{ flex: 1 }}
         backgroundColor={isActive ? '#48319d' : 'rgba(255, 255, 255, 0.05)'}
-        borderRadius={px.h(12)}
+        borderRadius={isActive ? 0 : px.h(12)}
         opacityBg={1}
       >
         <View style={styles.cardContent}>
           <View style={styles.locationContainer}>
-            <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
+            <Text style={[styles.locationName, { color: data.color }]}>
+              {data.name}
+            </Text>
             <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
           </View>
 
@@ -251,16 +265,33 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                   >
                     <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
                       <Defs>
-                        <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                          <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                          <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                          <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                        </LinearGradient>
-                        <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                          <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                          <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                          <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                        </LinearGradient>
+                        {isLowWaterLevel ? (
+                          <>
+                            <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                              <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                              <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                            </LinearGradient>
+                            <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                              <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                              <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                            </LinearGradient>
+                          </>
+                        ) : (
+                          <>
+                            <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                              <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                              <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                            </LinearGradient>
+                            <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                              <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                              <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                            </LinearGradient>
+                          </>
+                        )}
                       </Defs>
                       {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
                       {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
@@ -298,7 +329,7 @@ const Overview: React.FC = () => {
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
 
   return (
-    <AnimatedCardContainer backgroundColor={'transparent'}>
+    <AnimatedCardContainer backgroundColor={'transparent'} borderRadius={0}>
       <View style={[styles.container, { margin: -24 }]}>
         <View style={styles.tabsContainer}>
           {waterData.map((data) => (
