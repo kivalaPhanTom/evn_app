@@ -1,0 +1,1 @@
+export const GET_TOKEN: string = 'GET_TOKEN'

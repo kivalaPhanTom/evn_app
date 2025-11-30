@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-
+import { API_BASE_URL } from '@env';
 type ApiResponse<T = any> = {
   data: T
   status: number
@@ -7,10 +7,9 @@ type ApiResponse<T = any> = {
   headers?: Record<string, any>
 }
 
-const BASE_URL =
-  process.env.REACT_APP_API_URL || process.env.VITE_API_URL || process.env.API_BASE_URL || 'http://localhost:3000'
+const BASE_URL = API_BASE_URL || 'http://localhost:3000'
 
-const api: AxiosInstance = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 15_000,
   headers: {
@@ -18,7 +17,14 @@ const api: AxiosInstance = axios.create({
     Accept: 'application/json',
   },
 })
-
+// export const apiLogin: AxiosInstance = axios.create({
+//   baseURL: BASE_URL,
+//   timeout: 15_000,
+//   headers: {
+//     'Content-Type': 'application/x-www-form-urlencoded',
+//     Accept: 'application/json',
+//   },
+// });
 let authToken: string | null = null
 
 const isReactNative = typeof navigator !== 'undefined' && (navigator as any).product === 'ReactNative'
@@ -93,6 +99,7 @@ export function clearAuthToken() {
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!config.headers) config.headers = {} as any
+    authToken = "hVGsSKF1ll7hRuMvj7MxS51Y20_SPC9fLIT9y09c8mWtfHc59SZ3S7o0DE0sdKWgDUewC0eqpQjc3fy23eHrUTjpdW3j_8ZBBF_oITnHQDHwOq03KY0c0OwKnVadMppkEHowvlJ0a-ulyNb4bhNW5pVujyslZ3Qswo8QviTrSXWhObdcfxKMB6SnLHHzvDQPtOw2TYqUaRMlDMyKuhuZNmby7FXbnnxJ8v_36CHmY3_I3ypPSqY6UO7eA3c5eL2eHXujxiCGTiKXz24YxHpwFr62JXir73QBGXvNZ-i59wM8a4ZIZNC5kVV-aOCWBOJAcTMVI4Btgx6KXcgofD4iZQ"
     if (authToken) {
       ;(config.headers as any).Authorization = `Bearer ${authToken}`
     }
@@ -100,7 +107,17 @@ api.interceptors.request.use(
   },
   (error: unknown) => Promise.reject(error),
 )
-
+// apiLogin.interceptors.request.use(
+//   (config: InternalAxiosRequestConfig) => {
+//     if (!config.headers) config.headers = {} as any
+//     authToken = "hVGsSKF1ll7hRuMvj7MxS51Y20_SPC9fLIT9y09c8mWtfHc59SZ3S7o0DE0sdKWgDUewC0eqpQjc3fy23eHrUTjpdW3j_8ZBBF_oITnHQDHwOq03KY0c0OwKnVadMppkEHowvlJ0a-ulyNb4bhNW5pVujyslZ3Qswo8QviTrSXWhObdcfxKMB6SnLHHzvDQPtOw2TYqUaRMlDMyKuhuZNmby7FXbnnxJ8v_36CHmY3_I3ypPSqY6UO7eA3c5eL2eHXujxiCGTiKXz24YxHpwFr62JXir73QBGXvNZ-i59wM8a4ZIZNC5kVV-aOCWBOJAcTMVI4Btgx6KXcgofD4iZQ"
+//     if (authToken) {
+//       ;(config.headers as any).Authorization = `Bearer ${authToken}`
+//     }
+//     return config
+//   },
+//   (error: unknown) => Promise.reject(error),
+// )
 /**
  * Response interceptor: chuẩn hoá lỗi và dữ liệu
  */
@@ -125,7 +142,27 @@ api.interceptors.response.use(
     })
   },
 )
-
+// apiLogin.interceptors.response.use(
+//   (response: AxiosResponse) => {
+//     return response
+//   },
+//   (error: unknown) => {
+//     // narrow to any for property access
+//     const err = error as any
+//     // Nếu server trả lỗi, giữ cấu trúc thông tin hữu ích
+//     if (err.response) {
+//       return Promise.reject({
+//         message: err.response.data?.message || err.response.statusText || 'Request error',
+//         status: err.response.status,
+//         data: err.response.data,
+//       })
+//     }
+//     // Lỗi mạng / timeout
+//     return Promise.reject({
+//       message: err.message || 'Network error',
+//     })
+//   },
+// )
 /**
  * Helpers: get/post/put/delete với generic typing
  */
@@ -168,4 +205,6 @@ export default {
   delete: del,
   setAuthToken,
   clearAuthToken,
+  // apiLogin
+  
 }

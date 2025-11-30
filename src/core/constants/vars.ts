@@ -1,0 +1,1 @@
+export const prefix_api = "api/API"

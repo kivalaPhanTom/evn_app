@@ -1,4 +1,5 @@
 import { icons } from '@/assets'
+import { useDispatch, useSelector } from 'react-redux'
 import GradientButton from '@/components/GradientButton/GradientButton.component'
 import GradientInput from '@/components/GradientInput/GradientInput.component'
 import { Colors } from '@/core/constants/colors'
@@ -12,9 +13,11 @@ import { useRouter } from 'expo-router'
 import React, { useMemo, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { getToken } from '@/core/redux/Actions/AuthenActions'
 
 export default function LoginScreen() {
   const scheme = useAppTheme()
+  const dispatch = useDispatch()
   const isDark = scheme === 'dark'
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -28,12 +31,13 @@ export default function LoginScreen() {
   )
 
   const onLogin = () => {
-    if (loading) return
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-      router.push('/companies')
-    }, 900)
+    dispatch(getToken({ username, password }))
+    // if (loading) return
+    // setLoading(true)
+    // setTimeout(() => {
+    //   setLoading(false)
+    //   router.push('/companies')
+    // }, 900)
   }
 
   return (
