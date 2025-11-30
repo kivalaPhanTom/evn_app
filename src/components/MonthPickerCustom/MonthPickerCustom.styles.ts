@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     gap: px.h(12),
   },
   monthPickerLabel: {
-    fontSize: px.f(14),
+    fontSize: px.f(16),
     color: '#FFFFFF',
   },
   monthPickerInput: {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   monthPickerText: {
-    fontSize: px.f(14),
+    fontSize: px.f(16),
     color: '#FFFFFF',
     fontWeight: '500',
   },

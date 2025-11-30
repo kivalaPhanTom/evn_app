@@ -3,7 +3,7 @@ import { px } from '@/core/utils/scale'
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: px.f(22),
+    fontSize: px.f(24),
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: px.v(16),
