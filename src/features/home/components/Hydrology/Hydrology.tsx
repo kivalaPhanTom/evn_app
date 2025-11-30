@@ -6,6 +6,7 @@ import PowerStoreInLake from './PowerStoreInLake/PowerStoreInLake'
 import Overview from './Overview/Overview'
 import InflowOutflow from './InflowOutflow/InflowOutflow'
 import FlowRate from './FlowRate/FlowRate'
+import RegulationWaterLevel from './RegulationWaterLevel/RegulationWaterLevel'
 
 function Hydrology() {
   const flowRateData = [
@@ -88,6 +89,9 @@ function Hydrology() {
           />
         </View>
       ))}
+      <View style={{ marginBottom: 20 }}>
+        <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />
+      </View>
     </SectionContainer>
   )
 }
