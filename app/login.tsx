@@ -32,12 +32,12 @@ export default function LoginScreen() {
 
   const onLogin = () => {
     dispatch(getToken({ username, password }))
-    // if (loading) return
-    // setLoading(true)
-    // setTimeout(() => {
-    //   setLoading(false)
-    //   router.push('/companies')
-    // }, 900)
+    if (loading) return
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+      router.push('/companies')
+    }, 900)
   }
 
   return (

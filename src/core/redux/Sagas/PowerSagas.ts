@@ -7,6 +7,7 @@ function* getPowerOverviewSaga(): Generator {
     try {
         const res = yield call(Service.getPowerOverviewApi)
         if(res.status === 200){
+            console.log('Power overview data:', res.data)
             yield put(setPowerOverview(res.data))
         }
     } catch (error) {

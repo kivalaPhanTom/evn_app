@@ -1,12 +1,16 @@
-// import { apiLogin } from './api.service'
+import { apiFormUrlEncoded } from './api.service'
+interface tokenRequest {
+    grant_type: string;
+    username: string;
+    password: string;
+}
+export const Service = {
+    getTokenApi,
+}
+export const servicePattern = {
+    getToken: '/Token',
+}
 
-// export const Service = {
-//     getTokenApi,
-// }
-// export const servicePattern = {
-//     getToken: '/Token',
-// }
-
-// function getTokenApi() {
-//     return apiLogin.postLoginForm(`${servicePattern.getToken}`)
-// }
+function getTokenApi(data:tokenRequest) {
+    return apiFormUrlEncoded.post(`${servicePattern.getToken}`, data)
+}

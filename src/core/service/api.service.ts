@@ -17,14 +17,14 @@ export const api: AxiosInstance = axios.create({
     Accept: 'application/json',
   },
 })
-// export const apiLogin: AxiosInstance = axios.create({
-//   baseURL: BASE_URL,
-//   timeout: 15_000,
-//   headers: {
-//     'Content-Type': 'application/x-www-form-urlencoded',
-//     Accept: 'application/json',
-//   },
-// });
+export const apiFormUrlEncoded: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
+  timeout: 15_000,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/json',
+  },
+});
 let authToken: string | null = null
 
 const isReactNative = typeof navigator !== 'undefined' && (navigator as any).product === 'ReactNative'
@@ -48,7 +48,7 @@ if (isReactNative) {
     // ignore storage errors
   }
 }
-
+console.log('authTokenXXXXX:', authToken)
 /**
  * Gọi khi app khởi tạo (React Native): load token bất đồng bộ từ AsyncStorage vào biến nội bộ
  * Ví dụ gọi từ App.tsx trước khi mount phần còn lại của app.
@@ -99,7 +99,6 @@ export function clearAuthToken() {
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!config.headers) config.headers = {} as any
-    authToken = "hVGsSKF1ll7hRuMvj7MxS51Y20_SPC9fLIT9y09c8mWtfHc59SZ3S7o0DE0sdKWgDUewC0eqpQjc3fy23eHrUTjpdW3j_8ZBBF_oITnHQDHwOq03KY0c0OwKnVadMppkEHowvlJ0a-ulyNb4bhNW5pVujyslZ3Qswo8QviTrSXWhObdcfxKMB6SnLHHzvDQPtOw2TYqUaRMlDMyKuhuZNmby7FXbnnxJ8v_36CHmY3_I3ypPSqY6UO7eA3c5eL2eHXujxiCGTiKXz24YxHpwFr62JXir73QBGXvNZ-i59wM8a4ZIZNC5kVV-aOCWBOJAcTMVI4Btgx6KXcgofD4iZQ"
     if (authToken) {
       ;(config.headers as any).Authorization = `Bearer ${authToken}`
     }
@@ -107,17 +106,17 @@ api.interceptors.request.use(
   },
   (error: unknown) => Promise.reject(error),
 )
-// apiLogin.interceptors.request.use(
-//   (config: InternalAxiosRequestConfig) => {
-//     if (!config.headers) config.headers = {} as any
-//     authToken = "hVGsSKF1ll7hRuMvj7MxS51Y20_SPC9fLIT9y09c8mWtfHc59SZ3S7o0DE0sdKWgDUewC0eqpQjc3fy23eHrUTjpdW3j_8ZBBF_oITnHQDHwOq03KY0c0OwKnVadMppkEHowvlJ0a-ulyNb4bhNW5pVujyslZ3Qswo8QviTrSXWhObdcfxKMB6SnLHHzvDQPtOw2TYqUaRMlDMyKuhuZNmby7FXbnnxJ8v_36CHmY3_I3ypPSqY6UO7eA3c5eL2eHXujxiCGTiKXz24YxHpwFr62JXir73QBGXvNZ-i59wM8a4ZIZNC5kVV-aOCWBOJAcTMVI4Btgx6KXcgofD4iZQ"
-//     if (authToken) {
-//       ;(config.headers as any).Authorization = `Bearer ${authToken}`
-//     }
-//     return config
-//   },
-//   (error: unknown) => Promise.reject(error),
-// )
+
+apiFormUrlEncoded.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    if (!config.headers) config.headers = {} as any
+    if (authToken) {
+      ;(config.headers as any).Authorization = `Bearer ${authToken}`
+    }
+    return config
+  },
+  (error: unknown) => Promise.reject(error),
+)
 /**
  * Response interceptor: chuẩn hoá lỗi và dữ liệu
  */
@@ -142,27 +141,28 @@ api.interceptors.response.use(
     })
   },
 )
-// apiLogin.interceptors.response.use(
-//   (response: AxiosResponse) => {
-//     return response
-//   },
-//   (error: unknown) => {
-//     // narrow to any for property access
-//     const err = error as any
-//     // Nếu server trả lỗi, giữ cấu trúc thông tin hữu ích
-//     if (err.response) {
-//       return Promise.reject({
-//         message: err.response.data?.message || err.response.statusText || 'Request error',
-//         status: err.response.status,
-//         data: err.response.data,
-//       })
-//     }
-//     // Lỗi mạng / timeout
-//     return Promise.reject({
-//       message: err.message || 'Network error',
-//     })
-//   },
-// )
+
+apiFormUrlEncoded.interceptors.response.use(
+  (response: AxiosResponse) => {
+    return response
+  },
+  (error: unknown) => {
+    // narrow to any for property access
+    const err = error as any
+    // Nếu server trả lỗi, giữ cấu trúc thông tin hữu ích
+    if (err.response) {
+      return Promise.reject({
+        message: err.response.data?.message || err.response.statusText || 'Request error',
+        status: err.response.status,
+        data: err.response.data,
+      })
+    }
+    // Lỗi mạng / timeout
+    return Promise.reject({
+      message: err.message || 'Network error',
+    })
+  },
+)
 /**
  * Helpers: get/post/put/delete với generic typing
  */
@@ -205,6 +205,7 @@ export default {
   delete: del,
   setAuthToken,
   clearAuthToken,
+  apiFormUrlEncoded
   // apiLogin
   
 }
