@@ -1,15 +1,19 @@
 import React from 'react'
 import { View } from 'react-native'
+import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import PowerStoreInLake from './PowerStoreInLake/PowerStoreInLake'
 import Overview from './Overview/Overview'
 import InflowOutflow from './InflowOutflow/InflowOutflow'
 import FlowRate from './FlowRate/FlowRate'
-import RegulationWaterLevel from './RegulationWaterLevel/RegulationWaterLevel'
-import GeneralInformation from './GeneralInformation/GeneralInformation'
 
 function Hydrology() {
+  const router = useRouter()
+
+  const onPressCard = () => {
+    router.push({ pathname: '/hydrology-detail' as any })
+  }
   const flowRateData = [
     {
       title: 'Mực nước thượng lưu (MNTL)',
@@ -58,7 +62,13 @@ function Hydrology() {
   ] // Dữ liệu mẫu cho FlowRate
 
   return (
-    <SectionContainer title="Thủy văn">
+    <SectionContainer 
+      title="Thủy văn"
+      actionButton={{
+        label: 'Thêm chi tiết',
+        onPress: onPressCard,
+      }}
+    >
       <View style={{ marginBottom: 20 }}>
         <Overview />
         <HydrographicChart />
@@ -79,9 +89,6 @@ function Hydrology() {
       <View style={{ marginBottom: 20 }}>
         <FlowRate title="Lưu lượng xả tràn (Qxt)" data={[]} currentColor="#F59E0B" unit="m³/s" />
       </View> */}
-      <View style={{ marginBottom: 20 }}>
-        <GeneralInformation />
-      </View>
       {flowRateData.map((item, index) => (
         <View key={index} style={{ marginBottom: 20 }}>
           <FlowRate
@@ -93,9 +100,6 @@ function Hydrology() {
           />
         </View>
       ))}
-      <View style={{ marginBottom: 20 }}>
-        <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />
-      </View>
     </SectionContainer>
   )
 }
