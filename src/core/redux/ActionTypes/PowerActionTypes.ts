@@ -1,0 +1,1 @@
+export const GET_POWER_OVERVIEW: string = 'GET_POWER_OVERVIEW'
