@@ -129,6 +129,7 @@ const InflowOutflow: React.FC = () => {
           label2="Qxa: "
           height={px.v(150)}
           pointerConfig={true}
+          xAxisColor="#E5E5EF"
         />
       </View>
     </AnimatedCardContainer>

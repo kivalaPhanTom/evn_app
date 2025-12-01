@@ -27,6 +27,8 @@ export interface LineCharProps {
   label1?: string
   label2?: string
   pointerConfig?: boolean
+  xAxisColor?: string
+  strokeDashArray2?: number[]
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
@@ -49,6 +51,8 @@ export const LineChart: React.FC<LineCharProps> = ({
   label1,
   label2,
   pointerConfig = false,
+  xAxisColor = 'rgba(255,255,255,0.05)',
+  strokeDashArray2,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -120,11 +124,12 @@ export const LineChart: React.FC<LineCharProps> = ({
         showVerticalLines={false}
         hideYAxisText={hideYAxisText}
         yAxisColor="transparent"
-        {...(ruleTypes && { xAxisColor: '#E5E5EF', rulesColor: rulesColor, dashGap: 10, dashWidth: 5 })}
+        {...(ruleTypes && { xAxisColor, rulesColor: rulesColor, dashGap: 10, dashWidth: 5 })}
         noOfSections={3}
         rulesType={ruleTypes}
         initialSpacing={15}
         endSpacing={15}
+        strokeDashArray2={strokeDashArray2}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
           pointerConfig
@@ -137,7 +142,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                 radius: px.h(6),
                 pointerLabelWidth: px.h(100),
                 pointerLabelHeight: px.v(90),
-                activatePointersOnLongPress: false,
+                activatePointersOnLongPress: true,
                 autoAdjustPointerLabelPosition: true,
                 persistPointer: true,
                 resetPointerOnDataChange: false,
