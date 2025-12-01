@@ -6,7 +6,7 @@ import { px } from '@/core/utils/scale'
 import { useTheme } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
 import React from 'react'
-import { StyleSheet, View, ViewStyle } from 'react-native'
+import { StyleSheet, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
 
 interface SectionContainerProps {
   title: string
@@ -14,6 +14,10 @@ interface SectionContainerProps {
   style?: ViewStyle
   showDivider?: boolean
   backgroundColor?: string // allow passing custom background color, e.g. 'transparent'
+  actionButton?: {
+    label: string
+    onPress: () => void
+  }
 }
 
 const SectionContainer: React.FC<SectionContainerProps> = ({
@@ -22,6 +26,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
   style,
   showDivider = false,
   backgroundColor = 'transparent',
+  actionButton,
 }) => {
   const theme = useTheme()
   const isDark = theme.dark
@@ -47,13 +52,21 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
       style={[styles.container, style]}
     >
       <View style={styles.gradientBackground}>
-        <GradientText
-          text={title.toUpperCase()}
-          colors={['#fff', '#fff']}
-          fontSize={px.m(18)}
-          fontWeight="600"
-          style={styles.title}
-        />
+        <View style={styles.headerRow}>
+          <GradientText
+            text={title.toUpperCase()}
+            colors={['#fff', '#fff']}
+            fontSize={px.m(18)}
+            fontWeight="600"
+            style={styles.title}
+          />
+          {actionButton && (
+            <TouchableOpacity onPress={actionButton.onPress} style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>{actionButton.label}</Text>
+              <Text style={styles.actionButtonIcon}>{'>'}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       {showDivider && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
       <View
@@ -85,8 +98,27 @@ const styles = StyleSheet.create({
     padding: px.h(16),
     backgroundColor: 'transparent',
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   title: {
     textAlign: 'left',
+    flex: 1,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: px.m(14),
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: px.m(14),
   },
   divider: {
     height: px.v(2),
