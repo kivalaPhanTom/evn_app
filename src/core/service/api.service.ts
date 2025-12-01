@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-
+import { API_BASE_URL } from '@env';
 type ApiResponse<T = any> = {
   data: T
   status: number
@@ -7,10 +7,9 @@ type ApiResponse<T = any> = {
   headers?: Record<string, any>
 }
 
-const BASE_URL =
-  process.env.REACT_APP_API_URL || process.env.VITE_API_URL || process.env.API_BASE_URL || 'http://localhost:3000'
+const BASE_URL = API_BASE_URL || 'http://localhost:3000'
 
-const api: AxiosInstance = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 15_000,
   headers: {
@@ -18,7 +17,14 @@ const api: AxiosInstance = axios.create({
     Accept: 'application/json',
   },
 })
-
+export const apiFormUrlEncoded: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
+  timeout: 15_000,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/json',
+  },
+});
 let authToken: string | null = null
 
 const isReactNative = typeof navigator !== 'undefined' && (navigator as any).product === 'ReactNative'
@@ -42,7 +48,7 @@ if (isReactNative) {
     // ignore storage errors
   }
 }
-
+console.log('authTokenXXXXX:', authToken)
 /**
  * Gọi khi app khởi tạo (React Native): load token bất đồng bộ từ AsyncStorage vào biến nội bộ
  * Ví dụ gọi từ App.tsx trước khi mount phần còn lại của app.
@@ -101,6 +107,16 @@ api.interceptors.request.use(
   (error: unknown) => Promise.reject(error),
 )
 
+apiFormUrlEncoded.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    if (!config.headers) config.headers = {} as any
+    if (authToken) {
+      ;(config.headers as any).Authorization = `Bearer ${authToken}`
+    }
+    return config
+  },
+  (error: unknown) => Promise.reject(error),
+)
 /**
  * Response interceptor: chuẩn hoá lỗi và dữ liệu
  */
@@ -126,6 +142,27 @@ api.interceptors.response.use(
   },
 )
 
+apiFormUrlEncoded.interceptors.response.use(
+  (response: AxiosResponse) => {
+    return response
+  },
+  (error: unknown) => {
+    // narrow to any for property access
+    const err = error as any
+    // Nếu server trả lỗi, giữ cấu trúc thông tin hữu ích
+    if (err.response) {
+      return Promise.reject({
+        message: err.response.data?.message || err.response.statusText || 'Request error',
+        status: err.response.status,
+        data: err.response.data,
+      })
+    }
+    // Lỗi mạng / timeout
+    return Promise.reject({
+      message: err.message || 'Network error',
+    })
+  },
+)
 /**
  * Helpers: get/post/put/delete với generic typing
  */
@@ -168,4 +205,7 @@ export default {
   delete: del,
   setAuthToken,
   clearAuthToken,
+  apiFormUrlEncoded
+  // apiLogin
+  
 }
