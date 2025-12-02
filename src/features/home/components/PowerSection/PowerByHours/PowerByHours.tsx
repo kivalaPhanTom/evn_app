@@ -1,74 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, Pressable } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { useRouter } from 'expo-router'
+import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
 
 function PowerByHours() {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
+    (state: any) => state.powerSlice.powerByTime,
+  )
+
+  useEffect(() => {
+    dispatch(getPowerByTime())
+  }, [])
+
   const title = 'Công suất theo giờ'
-  const subtitle = 'Hôm nay, 14/11/2025'
-  const currentValue = 126
-  const currentHour = '20H'
-  const changePercent = 0.024
-  const averageValue = 118
-  const hourlyData = [
-    { value: 118, label: '0h' },
-    { value: 120, label: '1h' },
-    { value: 200, label: '2h' },
-    { value: 126, label: '3h' },
-    { value: 115, label: '4h' },
-    { value: 110, label: '5h' },
-    { value: 120, label: '6h' },
-    { value: 125, label: '7h' },
-    { value: 125, label: '8h' },
-    { value: 135, label: '9h' },
-    { value: 118, label: '10h' },
-    { value: 112, label: '11h' },
-    { value: 120, label: '12h' },
-    { value: 123, label: '13h' },
-    { value: 140, label: '14h' },
-    { value: 145, label: '15h' },
-    { value: 136, label: '16h' },
-    { value: 133, label: '17h' },
-    { value: 131, label: '18h' },
-    { value: 128, label: '19h' },
-    { value: 126, label: '20h' },
-    { value: 123, label: '21h' },
-    { value: 121, label: '22h' },
-    { value: 110, label: '23h' },
-  ]
+  const subtitle = 'Hôm nay, ' + currentDate
+  const hourlyData = HourlyPowerList ? HourlyPowerList.map((d: any) => ({ ...d })) : []
   const unit = 'MW'
-  const chartWidth = 280
-  const chartHeight = 100
-  const maxValue = Math.max(...hourlyData.map((d) => d.value))
-  const minValue = Math.min(...hourlyData.map((d) => d.value))
-  const range = maxValue - minValue || 1
 
-  const pointSpacing = chartWidth / (hourlyData.length - 1)
-
-  const avgData = Array(24)
+  const avgData = Array(hourlyData.length)
     .fill(0)
-    .map((item, idx) => ({ value: 118, label: idx + 'h', hideDataPoint: true }))
+    .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
-  const initIndex = Number(currentHour.substring(0, 2))
-
-  const getY = (value: number) => {
-    return chartHeight - ((value - minValue) / range) * (chartHeight - 20) - 10
-  }
-
-  const pathData = hourlyData
-    .map((data, index) => {
-      const x = index * pointSpacing
-      const y = getY(data.value)
-      return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
-    })
-    .join(' ')
-
-  const isPositiveChange = changePercent >= 0
   const onPressCard = () => {
     router.push({ pathname: '/product-power-detail' })
   }
@@ -84,18 +44,18 @@ function PowerByHours() {
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>HIỆN TẠI ({currentHour})</Text>
+            <Text style={styles.statLabel}>HIỆN TẠI ({currentTime})</Text>
             <Text style={styles.statValueCurrent}>
-              {currentValue} {unit}
+              {currentPower} {unit}
             </Text>
             <View style={styles.changeRow}>
-              <MetricDiff diff={126} compareTo={118} />
+              <MetricDiff diff={currentPower} compareTo={avgPower} />
             </View>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>TRUNG BÌNH</Text>
             <Text style={styles.statValueAverage}>
-              {averageValue} {unit}
+              {avgPower} {unit}
             </Text>
           </View>
         </View>

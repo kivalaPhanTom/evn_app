@@ -2,7 +2,7 @@ import { darkGradients, lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { GradientColors } from '@/core/types'
 import { isTablet, px } from '@/core/utils/scale'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { ActivityIndicator, Animated, Dimensions, View, Text } from 'react-native'
 import { LineChart as GiftedLineChart } from 'react-native-gifted-charts'
 
@@ -89,8 +89,10 @@ export const LineChart: React.FC<LineCharProps> = ({
   }
 
   const screenWidth = Dimensions.get('window').width
+  const maxValue1 = data && data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0
   const maxValue2 = data2 && data2.length > 0 ? Math.max(...data2.map((item) => item.value)) : 0
-  const yAxisMaxValue = maxValue2 + 10
+  const overallMax = Math.max(maxValue1, maxValue2)
+  const yAxisMaxValue = overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
 
   // ===== Render Chart =====
   return (
