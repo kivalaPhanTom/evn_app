@@ -3,12 +3,14 @@ import createSagaMiddleware from 'redux-saga'
 import rootSaga from './Sagas/RootSaga'
 import exampleSlice from './slices/ExampleSlice'
 import powerSlice from './slices/PowerSlice'
+import productOutputSlice from './slices/ProductOutputSlice'
 
 let sagaMiddleware = createSagaMiddleware()
 
 const allReducer = {
   exampleSlice,
-  powerSlice
+  powerSlice,
+  productOutputSlice
 }
 const store = configureStore({
   reducer: {
