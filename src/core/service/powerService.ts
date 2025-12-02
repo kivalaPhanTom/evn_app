@@ -1,13 +1,19 @@
 import { api } from './api.service'
-import {prefix_api} from '../constants/vars'
+import { prefix_api } from '../constants/vars'
 
 export const Service = {
-    getPowerOverviewApi,
+  getPowerOverviewApi,
+  getPowerByTimeApi,
 }
 export const servicePattern = {
-    getPowerOverview: `${prefix_api}/overview`,
+  getPowerOverview: `${prefix_api}/overview`,
+  getPowerByTime: `${prefix_api}/power_by_time`,
 }
 
 function getPowerOverviewApi() {
-    return api.get(`${servicePattern.getPowerOverview}`)
+  return api.get(`${servicePattern.getPowerOverview}`)
+}
+
+function getPowerByTimeApi() {
+  return api.get(`${servicePattern.getPowerByTime}`)
 }
