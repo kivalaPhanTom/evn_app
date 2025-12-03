@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, TouchableOpacity } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
@@ -33,12 +33,18 @@ function PowerByHours() {
     router.push({ pathname: '/product-power-detail' })
   }
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <View style={styles.headerTop}>
+            <Text style={styles.subtitle}>{subtitle}</Text>
+            <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+              <Text style={styles.actionButtonIcon}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Stats Row */}
