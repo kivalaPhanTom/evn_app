@@ -21,11 +21,8 @@ function PowerRecentDays() {
     { value: 127, label: '9/11' },
   ]
   const unit = 'tr.Wh'
-  const onPressCard = () => {
-    router.push({ pathname: '/product-power-detail' })
-  }
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View>
         <View style={styles.content}>
           <Text style={styles.title}>CÔNG SUẤT 7 NGÀY GẦN NHẤT</Text>

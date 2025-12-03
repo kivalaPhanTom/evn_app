@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import styles from './ProductionOutputByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -40,12 +40,18 @@ function ProductionOutputByHours() {
     router.push({ pathname: '/product-output-detail' })
   }
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <View style={styles.headerTop}>
+            <Text style={styles.subtitle}>{subtitle}</Text>
+            <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+              <Text style={styles.actionButtonIcon}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Stats Row */}

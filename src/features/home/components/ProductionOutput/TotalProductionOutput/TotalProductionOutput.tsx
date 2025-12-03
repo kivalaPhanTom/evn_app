@@ -35,12 +35,8 @@ function TotalProductionOutput(props: Props) {
   const totalPower = 2.4
   const averagePower = 118
 
-  const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail' })
-  }
-
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
