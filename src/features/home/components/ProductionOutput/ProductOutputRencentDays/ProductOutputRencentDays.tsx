@@ -17,11 +17,8 @@ function ProductOutputRencentDays() {
   ]
   const unit = 'tr.Wh'
 
-  const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail' })
-  }
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Title */}
         <Text style={styles.title}>SẢN LƯỢNG 7 NGÀY GẦN NHẤT</Text>
