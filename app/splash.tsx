@@ -18,14 +18,14 @@ export default function Splash() {
 
   return (
     <LinearGradient
-      colors={['#0B0F2A', '#221A47', '#2F205D']}
+      colors={['#0B0F2A', '#000033']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.root}
     >
       <View style={styles.content}>
         <Image source={icons.evnLogo} style={styles.logo} contentFit="contain" />
-        <ActivityIndicator size="large" color="#7B61F0" style={{ marginTop: px.v(16) }} />
+        <ActivityIndicator size="large" color="#0EA5E9" style={{ marginTop: px.v(16) }} />
       </View>
     </LinearGradient>
   )
