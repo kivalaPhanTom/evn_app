@@ -1,39 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './TotalProductionOutput.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import { useRouter } from 'expo-router'
+import { getProductOutputOverview } from '@/core/redux/Actions/ProductOutputActions'
+import { RootState } from '@/core/redux/store'
 
 interface Props {}
 
 function TotalProductionOutput(props: Props) {
   const {} = props
   const router = useRouter()
-  const powerSources = [
-    {
-      name: 'Buôn Tua Srah',
-      code: 'BTS',
-      power: 30,
-      color: '#fb923c', // Orange
-    },
-    {
-      name: 'Buôn Kuốp',
-      code: 'BK',
-      power: 54,
-      color: '#4ade80', // Green
-    },
-    {
-      name: 'Srepok 3',
-      code: 'SPS3',
-      power: 42,
-      color: '#c084fc', // Purple
-    },
-  ]
-  const totalPower = 2.4
-  const averagePower = 118
+  const dispatch = useDispatch()
+  const {
+    productOutputOverview: { totalPower, averagePower, powerSources },
+  } = useSelector((state: RootState) => state.productOutputSlice)
+
+  useEffect(() => {
+    dispatch(getProductOutputOverview())
+  }, [])
 
   return (
     <AnimatedCardContainer>
