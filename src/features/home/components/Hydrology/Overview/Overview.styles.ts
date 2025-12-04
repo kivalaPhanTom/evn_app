@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
   cardActive: {
     // Bỏ scale để detailContainer sát với tab active
     // transform: [{ scale: 1.02 }],
+    backgroundColor: '#1c056eff',
   },
   cardContent: {
     alignItems: 'center',
@@ -96,7 +97,7 @@ export const styles = StyleSheet.create({
   },
   detailContainer: {
     padding: px.h(12),
-    backgroundColor: '#48319d',
+    backgroundColor: '#1c056eff',
     borderBottomLeftRadius: px.h(8),
     borderBottomRightRadius: px.h(8),
   },
