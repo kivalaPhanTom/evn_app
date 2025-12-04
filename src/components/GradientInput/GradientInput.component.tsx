@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: px.f(15),
+    fontSize: px.f(18),
     fontWeight: '500',
   },
   iconLeft: {

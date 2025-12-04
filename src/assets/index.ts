@@ -9,6 +9,7 @@ export const icons = {
 export const images = {
   // Example: bgLogin: require('./images/bg-login.png') as ImageSource,
   waves: require('./images/wave.png') as ImageSource,
+  buonKuopBg: require('./images/buon-kuop-bg.jpg') as ImageSource,
 }
 
 // Default export for convenience
