@@ -10,6 +10,23 @@ interface productOutputState {
     unit: string,
     barGroups: {label: string, value: number}[]
   }
+  productOutputOverview: {
+    totalPower: number,
+    averagePower: number,
+    powerSources: {
+      name: string,
+      code: string,
+      power: number,
+      color: string,
+    }[],
+  },
+  productOutputByDays: {
+    productionData: {
+      date: string,
+      actual: number,
+      contract: number,
+    }[],
+  },
 }
 const initialState: productOutputState = {
   productOutputByHours: {
@@ -18,7 +35,15 @@ const initialState: productOutputState = {
     contractPowerValue: 0,
     currentPowerValue: 0,
     currentTime: '',
-    barGroups: [],
+    barGroups: [],    
+  },
+  productOutputOverview: {
+    totalPower: 0,
+    averagePower: 0,
+    powerSources: [],
+  },
+  productOutputByDays: {
+    productionData: [],
   },
 }
 
@@ -34,8 +59,16 @@ const productOutputSlice = createSlice({
       state.productOutputByHours.barGroups = action.payload.listValueByHours
       state.productOutputByHours.unit = action.payload.unit
     },
+    setProductOutputOverview: (state, action) => {
+      state.productOutputOverview.totalPower = action.payload.total
+      state.productOutputOverview.averagePower = action.payload.Contract
+      state.productOutputOverview.powerSources = action.payload.detail
+    },
+    setProductOutputByDays: (state, action) => {
+      state.productOutputByDays.productionData = action.payload
+    },
   },
 })
 const { reducer } = productOutputSlice
-export const { setProductOutputByHours } = productOutputSlice.actions
+export const { setProductOutputByHours, setProductOutputOverview, setProductOutputByDays } = productOutputSlice.actions
 export default reducer

@@ -1,26 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
+import { RootState } from '@/core/redux/store'
 
 interface DayPower {
   value: number
-  label: string
+  date: string
 }
 
 function PowerRecentDays() {
   const router = useRouter()
-  const powerData: DayPower[] = [
-    { value: 126, label: 'Hôm nay' },
-    { value: 124, label: 'Hôm qua' },
-    { value: 128, label: '12/11' },
-    { value: 122, label: '1/11' },
-    { value: 130, label: '11/11' },
-    { value: 125, label: '10/11' },
-    { value: 127, label: '9/11' },
-  ]
+  const dispatch = useDispatch()
+  const { powerByDays: { powerData } } = useSelector((state: RootState) => state.powerSlice)
+
   const unit = 'tr.Wh'
+
+  useEffect(() => {
+    dispatch(getPowerByDays(7))
+  }, [])
+
   return (
     <AnimatedCardContainer>
       <View>
@@ -33,7 +35,7 @@ function PowerRecentDays() {
               <View key={index} style={styles.valueCard}>
                 <View style={styles.valueItem}>
                   <Text style={styles.powerValue}>{day.value}</Text>
-                  <Text style={styles.dayLabel}>{day.label}</Text>
+                  <Text style={styles.dayLabel}>{day.date}</Text>
                 </View>
               </View>
             ))}
