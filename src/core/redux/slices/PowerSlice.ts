@@ -9,6 +9,10 @@ interface HourlyPowerList {
   value: number
   label: string
 }
+interface PowerByDays {
+  value: number
+  date: string
+}
 interface powerOverviewState {
   average: number
   total: number
@@ -19,6 +23,9 @@ interface powerOverviewState {
     currentTime: string
     avgPower: number
     HourlyPowerList: HourlyPowerList[]
+  }
+  powerByDays: {
+    powerData: PowerByDays[]
   }
 }
 const initialState: powerOverviewState = {
@@ -31,6 +38,9 @@ const initialState: powerOverviewState = {
     currentTime: '0h',
     avgPower: 0,
     HourlyPowerList: [],
+  },
+  powerByDays: {
+    powerData: [],
   },
 }
 
@@ -50,8 +60,12 @@ const powerSlice = createSlice({
       newState.powerByTime = action.payload
       return newState
     },
+    setPowerByDays: (state, action) => {
+      // Không return, chỉ modify state trực tiếp
+      state.powerByDays.powerData = action.payload.detail
+    },
   },
 })
 const { reducer } = powerSlice
-export const { setPowerOverview, setPowerByTime } = powerSlice.actions
+export const { setPowerOverview, setPowerByTime, setPowerByDays } = powerSlice.actions
 export default reducer

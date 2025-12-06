@@ -11,6 +11,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import ToastManager from 'toastify-react-native'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
@@ -112,6 +113,13 @@ export default function RootLayout() {
                   />
                 </View>
               </View> */}
+
+              <ToastManager
+                theme={'dark'}
+                position={'top'}
+                animationStyle="fade"
+                // textStyle={{ fontSize: 8 }}
+              />
 
               <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
             </SafeAreaView>
