@@ -2,7 +2,6 @@
   "expo": {
     "name": "evnApp",
     "slug": "evnApp",
-    "owner": "duynguyendinh",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
@@ -48,9 +47,8 @@
     },
     "extra": {
       "API_BASE_URL": "https://mygenco3-api.genco3.com/",
-      "router": {},
       "eas": {
-        "projectId": "6a47f43c-3a01-4d78-b538-efb0343cb606"
+        "projectId": "0e05c8e0-9d79-49f5-b372-71459c07451a"
       }
     }
   }
