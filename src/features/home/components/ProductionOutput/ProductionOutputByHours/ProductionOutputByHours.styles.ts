@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 20,
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   title: {
     color: '#e8eaed',
     fontSize: 17,
@@ -25,6 +30,19 @@ const styles = StyleSheet.create({
     color: '#7a8596',
     fontSize: 13,
     fontWeight: '400',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
   },
   statsRow: {
     flexDirection: 'row',

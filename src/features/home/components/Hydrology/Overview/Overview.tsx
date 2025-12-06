@@ -4,6 +4,8 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
+import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
+import InflowOutflow from '../InflowOutflow/InflowOutflow'
 
 interface WaterLevelData {
   id: string
@@ -56,7 +58,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   const referenceY = containerHeight - (data.referenceLevel / MAX_TANK_HEIGHT) * containerHeight
   const waveAreaHeight = waterHeight
   const containerWidth = cardWidth > 0 ? cardWidth - px.h(24) : 0
-  
+
   // Kiểm tra mực nước cảnh báo: currentLevel < referenceLevel
   const isLowWaterLevel = data.currentLevel < data.referenceLevel
 
@@ -225,7 +227,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
       <AnimatedCardContainer
         onPress={onPress}
         style={{ flex: 1 }}
-        backgroundColor={isActive ? '#48319d' : 'rgba(255, 255, 255, 0.05)'}
+        backgroundColor={isActive ? '#1c056eff' : 'rgba(255, 255, 255, 0.05)'}
         borderRadius={isActive ? 0 : px.h(12)}
         opacityBg={1}
       >
@@ -359,8 +361,10 @@ const Overview: React.FC = () => {
 
         <Animated.View style={[styles.detailContainer, { opacity: contentAnim }]}>
           <Text style={styles.detailText}>
-            {activeData.name}: {activeData.currentLevel}m / {activeData.maxLevel}m
+            {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
           </Text>
+          <HydrographicChart />
+          <InflowOutflow />
         </Animated.View>
       </View>
     </AnimatedCardContainer>

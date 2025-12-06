@@ -14,12 +14,8 @@ function TotalPower() {
   const router = useRouter()
   const { average, total, detail } = useSelector((state: RootState) => state.powerSlice)
  
-  const onPressCard = () => {
-    router.push({ pathname: '/product-power-detail' })
-  }
-
   return (
-    <AnimatedCardContainer onPress={() => onPressCard()}>
+    <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>

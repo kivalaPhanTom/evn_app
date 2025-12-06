@@ -1,13 +1,14 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { API_BASE_URL } from '@env';
+// import { API_BASE_URL } from '@env';
+import Constants from 'expo-constants';
+
+const BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL ?? 'http://localhost:3000';
 type ApiResponse<T = any> = {
   data: T
   status: number
   statusText?: string
   headers?: Record<string, any>
 }
-
-const BASE_URL = API_BASE_URL || 'http://localhost:3000'
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
