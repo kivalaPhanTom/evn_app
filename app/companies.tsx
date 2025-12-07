@@ -19,7 +19,7 @@ export default function CompaniesScreen() {
   const router = useRouter()
 
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    // <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
           <SectionContainer title='Danh sách công ty'>
@@ -56,7 +56,7 @@ export default function CompaniesScreen() {
           </SectionContainer>
         </ScrollView>
       </SafeAreaView>
-    </TwinkleStars>
+    // </TwinkleStars>
   )
 }
 
