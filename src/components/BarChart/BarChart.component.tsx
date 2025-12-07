@@ -67,131 +67,170 @@ const BarChart: React.FC<Props> = ({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
-  const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value)), [data])
+  const allValues = useMemo(() => {
+    if (!data || data.length === 0) {
+      return []
+    }
+    return data.flatMap((g) => g.items.map((i) => i.value))
+  }, [data])
+
   const paddedMax = useMemo(() => {
-    const barMax = Math.max(0, ...allValues)
+    const barMax = allValues.length > 0 ? Math.max(0, ...allValues) : 0
 
     // Get max values from lineData2
-    const line2Max = lineData2 && lineData2.length > 0
-      ? Math.max(...lineData2.map((item) => item.value || 0))
-      : 0
+    const line2Max = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
 
     // The first line uses bar values, so we only need to check barMax and line2Max
     const overallMax = Math.max(barMax, line2Max)
     return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
   }, [allValues, lineData2])
 
-  const processed = useMemo(() => {
-    const COLORS = ['#ee0033', '#00b300', '#fcba03', '#0ff', '#ff00ff', '#00f', '#ffff00']
-    const result: any[] = []
+  const processed =
+    useMemo(() => {
+      try {
+        const COLORS = ['#ee0033', '#00b300', '#fcba03', '#0ff', '#ff00ff', '#00f', '#ffff00']
+        const result: any[] = []
 
-    data.forEach((group, gIdx) => {
-      const startIndex = result.length
-      const n = group.items.length
-      const isGrouped = n >= 2
-      const groupWidth = n * barWidth + Math.max(0, n - 1) * groupInnerSpacing
+        if (!data || data.length === 0) {
+          return result
+        }
 
-      group.items.forEach((item, idx) => {
-        const isLastInGroup = idx === group.items.length - 1
-        const globalIndex = startIndex + idx
-        const front = item.frontColor ?? frontColor ?? COLORS[globalIndex % COLORS.length]
+        data.forEach((group, gIdx) => {
+          const startIndex = result.length
+          const n = group.items.length
+          const isGrouped = n >= 2
+          const groupWidth = n * barWidth + Math.max(0, n - 1) * groupInnerSpacing
 
-        const isLastOverall = gIdx === data.length - 1 && isLastInGroup
+          group.items.forEach((item, idx) => {
+            const isLastInGroup = idx === group.items.length - 1
+            const globalIndex = startIndex + idx
+            const front = item.frontColor ?? frontColor ?? COLORS[globalIndex % COLORS.length]
 
-        result.push({
-          value: item.value,
-          frontColor: front,
-          spacing: isLastOverall ? 0 : isGrouped && !isLastInGroup ? groupInnerSpacing : item.spacing,
-          labelWidth: isGrouped && !isLastInGroup ? groupWidth : item.labelWidth,
-          onPress: () => {
-            console.log('Pressed bar:', {
-              groupIndex: gIdx,
-              itemIndex: idx,
-              globalIndex,
+            const isLastOverall = gIdx === data.length - 1 && isLastInGroup
+
+            result.push({
               value: item.value,
-              groupLabel: group.label,
+              frontColor: front,
+              spacing: isLastOverall ? 0 : isGrouped && !isLastInGroup ? groupInnerSpacing : item.spacing,
+              labelWidth: isGrouped && !isLastInGroup ? groupWidth : item.labelWidth,
+              onPress: () => {
+                console.log('Pressed bar:', {
+                  groupIndex: gIdx,
+                  itemIndex: idx,
+                  globalIndex,
+                  value: item.value,
+                  groupLabel: group.label,
+                })
+              },
+              topLabelComponent:
+                (item.showValuesOnTop ?? true)
+                  ? () => (
+                      <Text
+                        style={[styles.topLabel, { color: front, width: 200 }]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                      >
+                        {item.value}
+                      </Text>
+                    )
+                  : undefined,
             })
-          },
-          topLabelComponent:
-            (item.showValuesOnTop ?? true)
-              ? () => (
-                  <Text style={[styles.topLabel, { color: front, width: 200 }]} numberOfLines={1} adjustsFontSizeToFit>
-                    {item.value}
-                  </Text>
-                )
-              : undefined,
+          })
+
+          result[startIndex].label = group.label
         })
-      })
 
-      result[startIndex].label = group.label
-    })
-
-    return result
-  }, [data, barWidth, groupInnerSpacing, frontColor])
+        return result
+      } catch (error) {
+        console.error('Error in BarChart processed useMemo:', error)
+        return []
+      }
+    }, [data, barWidth, groupInnerSpacing, frontColor]) || []
 
   return (
     <View style={styles.wrap}>
-      <GiftedBarChart
-        key={1}
-        data={processed}
-        height={height}
-        barWidth={barWidth}
-        // focusBarOnPress
-        // focusedBarIndex={3}
-        // highlightedBarIndex={3}
-        // highlightEnabled
-        frontColor={frontColor}
-        spacing={spacing}
-        maxValue={paddedMax}
-        noOfSections={noOfSection}
-        yAxisThickness={showYAxis ? 1 : 0}
-        yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
-        xAxisThickness={1}
-        xAxisColor={'rgb(255,255,255,0.1)'}
-        hideYAxisText={!showYAxis}
-        yAxisTextStyle={{
-          color: isDark ? '#FFF' : '#6B7280',
-          fontSize: px.m(11),
-        }}
-        hideRules={!showHorizontalGrid}
-        rulesType={rulesType}
-        rulesColor="rgb(255,255,255,0.1)"
-        isAnimated
-        barBorderRadius={rounded ? barRadius : 0}
-        barBorderTopRightRadius={rounded ? barRadius : 0}
-        barBorderTopLeftRadius={rounded ? barRadius : 0}
-        barBorderBottomLeftRadius={0}
-        barBorderBottomRightRadius={0}
-        activeOpacity={1}
-        autoShiftLabels
-        initialSpacing={spacing}
-        endSpacing={10}
-        xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-        showLine={showLine}
-        lineConfig={{
-          isAnimated: true,
-          thickness: 2,
-          color: lineColor,
-          dataPointsColor: lineColor,
-          dataPointsRadius: 6,
-          shiftY: lineDataPointsShift,
-          ...(customDataPoint && {
-            customDataPoint: () => customDataPoint,
-          }),
-        }}
-        lineData2={lineData2}
-        lineConfig2={{
-          isAnimated: true,
-          thickness: 2,
-          color: lineColor2,
-          dataPointsColor: lineColor2,
-          dataPointsRadius: 5,
-          shiftY: lineDataPointsShift2,
-          ...(customDataPoint2 && {
-            customDataPoint: () => customDataPoint2,
-          }),
-        }}
-      />
+      {processed.length > 0 ? (
+        <GiftedBarChart
+          data={processed}
+          height={height}
+          barWidth={barWidth}
+          // focusBarOnPress
+          // focusedBarIndex={3}
+          // highlightedBarIndex={3}
+          // highlightEnabled
+          frontColor={frontColor}
+          spacing={spacing}
+          maxValue={paddedMax}
+          noOfSections={noOfSection}
+          yAxisThickness={showYAxis ? 1 : 0}
+          yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
+          xAxisThickness={1}
+          xAxisColor={'rgb(255,255,255,0.1)'}
+          hideYAxisText={!showYAxis}
+          yAxisTextStyle={{
+            color: isDark ? '#FFF' : '#6B7280',
+            fontSize: px.m(11),
+          }}
+          hideRules={!showHorizontalGrid}
+          rulesType={rulesType}
+          rulesColor="rgb(255,255,255,0.1)"
+          isAnimated
+          barBorderRadius={rounded ? barRadius : 0}
+          barBorderTopRightRadius={rounded ? barRadius : 0}
+          barBorderTopLeftRadius={rounded ? barRadius : 0}
+          barBorderBottomLeftRadius={0}
+          barBorderBottomRightRadius={0}
+          activeOpacity={1}
+          autoShiftLabels
+          initialSpacing={spacing}
+          endSpacing={10}
+          xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
+          showLine={showLine}
+          lineConfig={
+            customDataPoint
+              ? {
+                  isAnimated: true,
+                  thickness: 2,
+                  color: lineColor,
+                  dataPointsColor: lineColor,
+                  dataPointsRadius: 6,
+                  shiftY: lineDataPointsShift,
+                  customDataPoint: () => customDataPoint,
+                }
+              : {
+                  isAnimated: true,
+                  thickness: 2,
+                  color: lineColor,
+                  dataPointsColor: lineColor,
+                  dataPointsRadius: 6,
+                  shiftY: lineDataPointsShift,
+                }
+          }
+          lineData2={lineData2 && lineData2.length > 0 ? lineData2 : undefined}
+          lineConfig2={
+            customDataPoint2
+              ? {
+                  isAnimated: true,
+                  thickness: 2,
+                  color: lineColor2,
+                  dataPointsColor: lineColor2,
+                  dataPointsRadius: 5,
+                  shiftY: lineDataPointsShift2,
+                  customDataPoint: () => customDataPoint2,
+                }
+              : {
+                  isAnimated: true,
+                  thickness: 2,
+                  color: lineColor2,
+                  dataPointsColor: lineColor2,
+                  dataPointsRadius: 5,
+                  shiftY: lineDataPointsShift2,
+                }
+          }
+        />
+      ) : (
+        <Text>No data</Text>
+      )}
     </View>
   )
 }
