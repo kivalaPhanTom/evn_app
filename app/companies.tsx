@@ -19,14 +19,14 @@ export default function CompaniesScreen() {
   const router = useRouter()
 
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    // <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
           <SectionContainer title='Danh sách công ty'>
             {COMPANIES.map((c) => (
               <Pressable
                 key={c.name}
-                onPress={() => router.push({ pathname: '/home/index', params: { companyName: c.name, location: c.location } })}
+                onPress={() => router.push({ pathname: '/home', params: { companyName: c.name, location: c.location } })}
                 style={{ marginBottom: px.v(12) }}
               >
                 <AnimatedCardContainer
@@ -56,7 +56,7 @@ export default function CompaniesScreen() {
           </SectionContainer>
         </ScrollView>
       </SafeAreaView>
-    </TwinkleStars>
+    // </TwinkleStars>
   )
 }
 

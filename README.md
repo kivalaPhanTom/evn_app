@@ -50,7 +50,7 @@ Join our community of developers creating universal apps.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
 
-## How to build apk file for android ##
+## How to build apk file for android with EAS ##
 if first build, run:
 + eas login (login by your expo accoutn)
 + eas build:configure
@@ -58,3 +58,7 @@ if first build, run:
 
 If you have built it before, run:
 + eas build -p android --profile preview
+if build with clear cache: eas build -p android --profile preview --clear-cache
+
+## How to build apk file for android with not EAS ##
++ I wrote a doc with "Hướng dẫn build file apk cho android.docx" name

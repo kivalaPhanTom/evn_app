@@ -8,10 +8,7 @@ import { router } from 'expo-router'
 
 function* getTokenSaga(action: any): Generator {
     const { username, password } = action.payload
-    console.log('🔐 Login attempt:', { username, password: '***' })
-    console.log('🌐 API Base URL:', apiFormUrlEncoded.defaults.baseURL)
     try {
-        console.log('🌐 Calling API...')
         const res = yield call(Service.getTokenApi, {
             grant_type: "password",
             username,
@@ -23,7 +20,6 @@ function* getTokenSaga(action: any): Generator {
             console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token)
-            console.log('🚀 Navigating to /companies')
             router.push('/companies')
         } else {
             console.log('❌ Unexpected status:', res.status)
@@ -31,7 +27,7 @@ function* getTokenSaga(action: any): Generator {
         }
     } catch (error) {
         console.log('💥 Login error:', error)
-        Toast.error(`Đăng nhập thất bại: ${error.message || 'Lỗi không xác định'}`)
+        Toast.error(`Lỗi đăng nhập: ${error}`)
     }
 }
 

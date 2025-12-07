@@ -44,12 +44,6 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    },
-    "extra": {
-      "API_BASE_URL": "https://mygenco3-api.genco3.com/",
-      "eas": {
-        "projectId": "0e05c8e0-9d79-49f5-b372-71459c07451a"
-      }
     }
   }
 }
