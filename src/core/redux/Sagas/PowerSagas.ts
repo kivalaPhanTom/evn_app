@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getPowerOverivew, getPowerByTime, getPowerByDays } from '../Actions/PowerActions'
-import { setPowerOverview, setPowerByTime, setPowerByDays } from '../slices/PowerSlice'
+import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower } from '../Actions/PowerActions'
+import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower } from '../slices/PowerSlice'
 import { Service } from '@/core/service/powerService'
 
 function* getPowerOverviewSaga(): Generator {
@@ -38,6 +38,22 @@ function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generat
   }
 }
 
+function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Generator {
+  try {
+    const payload = action.payload as { tagetDate: string; compareDate: string }
+    const tagetDate = payload?.tagetDate || ''
+    const compareDate = payload?.compareDate || ''
+
+    const res = yield call(Service.getComparePowerApi, tagetDate, compareDate)
+
+    if (res.status === 200) {
+      yield put(setComparePower(res.data))
+    }
+  } catch (error) {
+    console.log('getComparePower error:', error)
+  }
+}
+
 function* handleGetPowerOverviewApi() {
   yield takeEvery(getPowerOverivew, getPowerOverviewSaga)
 }
@@ -47,6 +63,14 @@ function* handleGetPowerByTimeApi() {
 function* handleGetPowerByDaysApi() {
   yield takeEvery(getPowerByDays, getPowerByDaysSaga)
 }
+function* handleGetComparePowerApi() {
+  yield takeEvery(getComparePower, getComparePowerSaga)
+}
 export function* powerSagaList() {
-  yield all([handleGetPowerOverviewApi(), handleGetPowerByTimeApi(), handleGetPowerByDaysApi()])
+  yield all([
+    handleGetPowerOverviewApi(),
+    handleGetPowerByTimeApi(),
+    handleGetPowerByDaysApi(),
+    handleGetComparePowerApi(),
+  ])
 }

@@ -19,9 +19,9 @@ const StatItem: React.FC<StatItemProps> = ({
   compareDate,
   compareValue,
   difference,
-  unit = 'MWh'
+  unit = 'MWh',
 }) => {
-  const calculatedDifference = difference ?? (currentValue - compareValue)
+  const calculatedDifference = difference ?? currentValue - compareValue
   const isPositive = calculatedDifference >= 0
 
   return (
@@ -58,48 +58,87 @@ const StatItem: React.FC<StatItemProps> = ({
           {isPositive ? '↑' : '↓'}
         </Text>
         <Text style={[styles.differenceText, isPositive ? styles.positiveColor : styles.negativeColor]}>
-          {isPositive ? '+' : ''}{calculatedDifference} {unit}
+          {isPositive ? '+' : ''}
+          {calculatedDifference} {unit}
         </Text>
       </View>
     </View>
   )
 }
 
-interface CompareDetailStatsProps {
-  currentDate?: string
-  compareDate?: string
+interface ISummary {
+  average: {
+    target: {
+      date: string
+      value: number
+      unit: string
+    }
+    compare: {
+      date: string
+      value: number
+      unit: string
+    }
+  }
+  max: {
+    target: {
+      date: string
+      value: number
+      unit: string
+    }
+    compare: {
+      date: string
+      value: number
+      unit: string
+    }
+  }
+  min: {
+    target: {
+      date: string
+      value: number
+      unit: string
+    }
+    compare: {
+      date: string
+      value: number
+      unit: string
+    }
+  }
 }
 
-const CompareDetailStats: React.FC<CompareDetailStatsProps> = ({
-  currentDate = '14/11/2024',
-  compareDate = '10/11/2023'
-}) => {
+interface CompareDetailStatsProps {
+  summary?: ISummary
+}
+
+const CompareDetailStats: React.FC<CompareDetailStatsProps> = ({ summary }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>So sánh chi tiết</Text>
 
       <StatItem
         title="Trung bình"
-        currentDate={currentDate}
-        currentValue={5}
-        compareDate={compareDate}
-        compareValue={98}
+        currentDate={summary?.average.target.date || ''}
+        currentValue={Number(summary?.average.target.value.toFixed(2)) || 0}
+        compareDate={summary?.average.compare.date || ''}
+        compareValue={Number(summary?.average.compare.value.toFixed(2)) || 0}
+        unit={summary?.average.target.unit || 'MWh'}
       />
 
       <StatItem
         title="Cao nhất"
-        currentDate={currentDate}
-        currentValue={118}
-        compareDate={compareDate}
-        compareValue={108}
+        currentDate={summary?.max.target.date || ''}
+        currentValue={Number(summary?.max.target.value.toFixed(2)) || 0}
+        compareDate={summary?.max.compare.date || ''}
+        compareValue={Number(summary?.max.compare.value.toFixed(2)) || 0}
+        unit={summary?.max.target.unit || 'MWh'}
       />
 
       <StatItem
         title="Thấp nhất"
-        currentDate={currentDate}
-        currentValue={98}
-        compareDate={compareDate}
-        compareValue={90}
+        currentDate={summary?.min.target.date || ''}
+        currentValue={Number(summary?.min.target.value.toFixed(2)) || 0}
+        compareDate={summary?.min.compare.date || ''}
+        compareValue={Number(summary?.min.compare.value.toFixed(2)) || 0}
+        unit={summary?.min.target.unit || 'MWh'}
       />
     </View>
   )

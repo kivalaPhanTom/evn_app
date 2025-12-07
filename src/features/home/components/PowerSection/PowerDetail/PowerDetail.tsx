@@ -10,7 +10,6 @@ export default function PowerDetail() {
 
   // Mặc định hiển thị CompareOutput24h nếu không có type hoặc type = 'output'
   const isPowerType = type === 'power'
-
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={{ paddingHorizontal: 16 }}>
