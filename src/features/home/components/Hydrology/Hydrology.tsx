@@ -25,7 +25,6 @@ function Hydrology() {
       }}
     >
       <View style={{ marginBottom: 20 }}>
-        <FlowDiagram />
         <Overview />
       </View>
       <View style={{ marginBottom: 20 }}>
