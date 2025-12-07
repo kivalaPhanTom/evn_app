@@ -11,6 +11,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import ToastManager from 'toastify-react-native'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
@@ -74,10 +75,12 @@ export default function RootLayout() {
               <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="splash" />
                 <Stack.Screen name="login" />
+                <Stack.Screen name="companies" />
                 <Stack.Screen name="charts" />
                 <Stack.Screen name="home/index" />
                 <Stack.Screen name="product-output-detail/index" />
                 <Stack.Screen name="product-power-detail/index" />
+                <Stack.Screen name="hydrology-detail/index" />
 
                 {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                 <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
@@ -111,6 +114,13 @@ export default function RootLayout() {
                   />
                 </View>
               </View> */}
+
+              <ToastManager
+                theme={'dark'}
+                position={'top'}
+                animationStyle="fade"
+                // textStyle={{ fontSize: 8 }}
+              />
 
               <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
             </SafeAreaView>

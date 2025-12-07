@@ -2,11 +2,15 @@ import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './Sagas/RootSaga'
 import exampleSlice from './slices/ExampleSlice'
+import powerSlice from './slices/PowerSlice'
+import productOutputSlice from './slices/ProductOutputSlice'
 
 let sagaMiddleware = createSagaMiddleware()
 
 const allReducer = {
   exampleSlice,
+  powerSlice,
+  productOutputSlice
 }
 const store = configureStore({
   reducer: {
@@ -15,4 +19,5 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 })
 sagaMiddleware.run(rootSaga)
+export type RootState = ReturnType<typeof store.getState>;
 export default store

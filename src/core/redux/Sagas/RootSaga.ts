@@ -1,7 +1,14 @@
 import { all } from 'redux-saga/effects'
 import { exampleSagaList } from './ExampleSaga'
-
-const sagasList = [exampleSagaList()]
+import { powerSagaList } from './PowerSagas'
+import {authenSagaList} from './AuthenSagas'
+import { productOutputSagaList } from './ProductOutputSaga'
+const sagasList = [
+  exampleSagaList(),
+  powerSagaList(),
+  productOutputSagaList(),
+  authenSagaList()
+]
 
 export default function* () {
   yield all(sagasList)
