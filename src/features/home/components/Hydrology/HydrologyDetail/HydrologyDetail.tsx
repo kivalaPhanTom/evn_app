@@ -4,6 +4,7 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import GeneralInformation from '../GeneralInformation/GeneralInformation'
 import RegulationWaterLevel from '../RegulationWaterLevel/RegulationWaterLevel'
 import FlowRate from '../FlowRate/FlowRate'
+import FlowDiagramCard from '../FlowDiagramCard/FlowDiagramCard'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -55,6 +56,10 @@ function HydrologyDetail() {
   return (
     <ScrollView>
       <SectionContainer title="">
+        {/* flow diagram here */}
+        <View>
+          <FlowDiagramCard />
+        </View>
         <View style={{ marginBottom: 20 }}>
           <GeneralInformation />
         </View>
