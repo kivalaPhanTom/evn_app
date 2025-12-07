@@ -8,9 +8,22 @@ export const Service = {
     getTokenApi,
 }
 export const servicePattern = {
-    getToken: '/Token',
+    getToken: 'Token',
 }
 
-function getTokenApi(data:tokenRequest) {
-    return apiFormUrlEncoded.post(`${servicePattern.getToken}`, data)
+function getTokenApi(data: tokenRequest) {
+    const formData = new URLSearchParams();
+
+    Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value);
+    });
+    return apiFormUrlEncoded.post(
+        `${servicePattern.getToken}`,
+        formData.toString(),
+        {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        }
+    );
 }

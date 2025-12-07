@@ -3,7 +3,7 @@ import { getToken } from '../Actions/AuthenActions'
 import { setPowerOverview } from '../slices/PowerSlice'
 import { Service } from '@/core/service/authenSerivce'
 import { Toast } from 'toastify-react-native'
-import { setAuthToken } from '@/core/service/api.service'
+import { setAuthToken, apiFormUrlEncoded } from '@/core/service/api.service'
 import { router } from 'expo-router'
 
 function* getTokenSaga(action: any): Generator {
@@ -14,15 +14,20 @@ function* getTokenSaga(action: any): Generator {
             username,
             password
         })
+        console.log('📡 API Response:', { status: res.status, data: res.data })
         if (res.status === 200) {
             const access_token = res.data.access_token
-            console.log('access_token:', access_token)
+            console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token)
             router.push('/companies')
+        } else {
+            console.log('❌ Unexpected status:', res.status)
+            Toast.error(`Lỗi đăng nhập: ${res.status}`)
         }
     } catch (error) {
-        Toast.error('Đăng nhập thất bại!')
+        console.log('💥 Login error:', error)
+        Toast.error(`Lỗi đăng nhập: ${error}`)
     }
 }
 
