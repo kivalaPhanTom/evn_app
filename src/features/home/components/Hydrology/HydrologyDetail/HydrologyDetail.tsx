@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import GeneralInformation from '../GeneralInformation/GeneralInformation'
 import RegulationWaterLevel from '../RegulationWaterLevel/RegulationWaterLevel'
 import FlowRate from '../FlowRate/FlowRate'
 import FlowDiagramCard from '../FlowDiagramCard/FlowDiagramCard'
+import DatePicker from '@/components/DatePicker/DatePicker.component'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -52,10 +53,24 @@ const flowRateData = [
   },
 ] // Dữ liệu mẫu cho FlowRate
 
+
 function HydrologyDetail() {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+
   return (
     <ScrollView>
       <SectionContainer title="">
+        {/* Date Picker */}
+        <View style={{ marginBottom: 20, paddingHorizontal: 16 }}>
+          <DatePicker
+            value={selectedDate}
+            onChange={setSelectedDate}
+            format="MM/DD/YYYY"
+            textColor="#fff"
+            borderColor="rgba(255,255,255,0.15)"
+            backgroundColor="rgba(255,255,255,0.06)"
+          />
+        </View>
         {/* flow diagram here */}
         <View>
           <FlowDiagramCard />
@@ -77,8 +92,6 @@ function HydrologyDetail() {
         <View style={{ marginBottom: 20 }}>
           <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />
         </View>
-
-
       </SectionContainer>
     </ScrollView>
   )
