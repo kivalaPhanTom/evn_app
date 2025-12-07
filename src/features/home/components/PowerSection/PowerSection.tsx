@@ -9,11 +9,12 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import { getPowerOverivew } from '@/core/redux/Actions/PowerActions'
 
 function PowerSection() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getPowerOverivew());
-  }, []);
+    debugger
+    dispatch(getPowerOverivew())
+  }, [])
 
   return (
     <SectionContainer title="Công Suất">
