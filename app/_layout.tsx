@@ -75,6 +75,7 @@ export default function RootLayout() {
               <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="splash" />
                 <Stack.Screen name="login" />
+                <Stack.Screen name="companies" />
                 <Stack.Screen name="charts" />
                 <Stack.Screen name="home/index" />
                 <Stack.Screen name="product-output-detail/index" />
