@@ -1,7 +1,18 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getProductOutputByHours, getProductOutputOverview, getProductOutputByDays } from '../Actions/ProductOutputActions'
+import {
+  getProductOutputByHours,
+  getProductOutputOverview,
+  getProductOutputByDays,
+  getProductCummulativeOutput,
+} from '../Actions/ProductOutputActions'
 import { Service } from '@/core/service/productOutput'
-import { setProductOutputByHours, setProductOutputOverview, setProductOutputByDays } from '../slices/ProductOutputSlice'
+import {
+  setProductOutputByHours,
+  setProductOutputOverview,
+  setProductOutputByDays,
+  setProductCummulativeOutput,
+} from '../slices/ProductOutputSlice'
+import { catchHandle } from '@/core/utils/utils'
 
 function* getProductOutputByHoursSaga(): Generator {
   try {
@@ -10,7 +21,7 @@ function* getProductOutputByHoursSaga(): Generator {
       yield put(setProductOutputByHours(res.data))
     }
   } catch (error) {
-    console.log('errorXXX:', error)
+    catchHandle(error)
   }
 }
 
@@ -21,7 +32,7 @@ function* getProductOutputOverviewSaga(): Generator {
       yield put(setProductOutputOverview(res.data))
     }
   } catch (error) {
-    console.log('errorXXX:', error)
+    catchHandle(error)
   }
 }
 
@@ -33,7 +44,21 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
       yield put(setProductOutputByDays(res.data))
     }
   } catch (error) {
-    console.log('errorXXX:', error)
+    catchHandle(error)
+  }
+}
+
+function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCummulativeOutput>): Generator {
+  try {
+    const params = action.payload
+    console.log('Fetching Cummulative Output with params:', params)
+    const res = yield call(Service.getProductCummulativeOutputApi, params)
+    if (res.status === 200) {
+      console.log('Cummulative Output Data:', res.data)
+      yield put(setProductCummulativeOutput(res.data))
+    }
+  } catch (error) {
+    catchHandle(error)
   }
 }
 
@@ -46,6 +71,14 @@ function* handleGetProductOutputOverviewApi() {
 function* handleGetProductOutputByDaysApi() {
   yield takeEvery(getProductOutputByDays, getProductOutputByDaysSaga)
 }
+function* handleGetProductCummulativeOutputApi() {
+  yield takeEvery(getProductCummulativeOutput, getProductCummulativeOutputSaga)
+}
 export function* productOutputSagaList() {
-  yield all([handleGetProductOutputByHoursApi(), handleGetProductOutputOverviewApi(), handleGetProductOutputByDaysApi()])
+  yield all([
+    handleGetProductOutputByHoursApi(),
+    handleGetProductOutputOverviewApi(),
+    handleGetProductOutputByDaysApi(),
+    handleGetProductCummulativeOutputApi(),
+  ])
 }
