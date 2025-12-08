@@ -27,6 +27,49 @@ interface powerOverviewState {
   powerByDays: {
     powerData: PowerByDays[]
   }
+  comparePower: {
+    Unit: string
+    BarChartData: { value: number; label: string }[]
+    compareLineChartData: []
+    Summary: {
+      average: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      max: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      min: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+    }
+  }
 }
 const initialState: powerOverviewState = {
   average: 0,
@@ -41,6 +84,49 @@ const initialState: powerOverviewState = {
   },
   powerByDays: {
     powerData: [],
+  },
+  comparePower: {
+    Unit: '',
+    BarChartData: [],
+    compareLineChartData: [],
+    Summary: {
+      average: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      max: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      min: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+    },
   },
 }
 
@@ -64,8 +150,11 @@ const powerSlice = createSlice({
       // Không return, chỉ modify state trực tiếp
       state.powerByDays.powerData = action.payload.detail
     },
+    setComparePower: (state, action) => {
+      state.comparePower = action.payload
+    },
   },
 })
 const { reducer } = powerSlice
-export const { setPowerOverview, setPowerByTime, setPowerByDays } = powerSlice.actions
+export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower } = powerSlice.actions
 export default reducer
