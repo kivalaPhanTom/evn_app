@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getToken } from '../Actions/AuthenActions'
 import { setPowerOverview } from '../slices/PowerSlice'
-import { Service } from '@/core/service/authenSerivce'
+import { Service } from '@/core/service/authenService'
 import { Toast } from 'toastify-react-native'
 import { setAuthToken, apiFormUrlEncoded } from '@/core/service/api.service'
 import { router } from 'expo-router'

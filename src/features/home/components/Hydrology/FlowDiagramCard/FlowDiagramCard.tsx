@@ -1,10 +1,10 @@
-import React from 'react'
-import { px } from '@/core/utils/scale'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { View, Text, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
+import { getHydrologyflowChart } from '@/core/redux/Actions/HydrologyActions'
 
 const BLUE_BG = "rgba(59, 130, 246, 0.10)";     // nền xanh nhạt
 const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
@@ -12,7 +12,11 @@ const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
 const RED_BG = "rgba(239, 68, 68, 0.10)";        // nền đỏ nhạt
 const RED_BORDER = "rgba(239, 68, 68, 0.45)";
 function FlowDiagramCard() {
+    const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(getHydrologyflowChart())
+    }, [])
 
     return (
         <AnimatedCardContainer>
