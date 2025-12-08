@@ -3,53 +3,102 @@ import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
 import WaterDrop from '@/components/WaterDrop/WaterDrop.component'
+import { getProductCummulativeOutput } from '@/core/redux/Actions/ProductOutputActions'
+import { RootState } from '@/core/redux/store'
 import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
 import { TabType } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import dayjs from 'dayjs'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, StyleSheet, Text, View } from 'react-native'
-
-const randomValue = () => Math.floor(Math.random() * (100 - 10 + 1)) + 10
-
-const rawBarGroups: BarGroup[] = [
-  { label: '1/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '2/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '3/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '4/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '5/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '6/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '7/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '8/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '9/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '10/11', items: [{ value: randomValue(), showValuesOnTop: false }] },
-  { label: '11/11', items: [{ value: randomValue(), showValuesOnTop: false, labelWidth: 30 }] },
-]
-
+import { useDispatch, useSelector } from 'react-redux'
+import { Toast } from 'toastify-react-native'
 interface CumulativeSummaryItem {
-  title: string
+  label: string
   value: string
   unit: string
-  date: string
+  periodLabel: string
 }
 
-const cumulativeSummaryData: CumulativeSummaryItem[] = [
-  { title: 'CAO NHẤT', value: '1.96', unit: 'tr.Wh', date: '05/11/2024' },
-  { title: 'THẤP NHẤT', value: '1.62', unit: 'tr.Wh', date: '05/11/2024' },
-  { title: 'TRUNG BÌNH', value: '1.79', unit: 'tr.Wh', date: '05/11/2024' },
-  { title: 'TỔNG LŨY KẾ', value: '17.9', unit: 'tr.Wh', date: '05/11/2024' },
-]
-
 export default function ProductCumulativeOutput() {
+  const dispatch = useDispatch()
+  const { productCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const { t } = useTranslation()
   const [range, setRange] = useState({
-    from: dayjs(),
+    from: dayjs().subtract(10, 'day'),
     to: dayjs(),
-  });
+  })
 
   const contentAnim = useRef(new Animated.Value(1)).current
+
+  useEffect(() => {
+    dispatch(
+      getProductCummulativeOutput({
+        type: tab,
+        from: dayjs().subtract(10, 'day').format('DD/MM/YYYY'),
+        to: dayjs().format('DD/MM/YYYY'),
+      }),
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const summary = productCummulativeOutput?.summary ?? {}
+  const orderedKeys = ['Max', 'Min', 'Average', 'Total'] as const
+
+  const cumulativeSummaryData: CumulativeSummaryItem[] = orderedKeys
+    .map((key) => {
+      const item = (summary as any)?.[key] ?? {}
+      return {
+        label: String(item?.Label ?? ''),
+        value: String(item?.Value ?? ''),
+        unit: String(item?.Unit ?? ''),
+        periodLabel: String(item?.PeriodLabel ?? ''),
+      }
+    })
+    .filter((item) => item.label !== '' || item.value !== '' || item.unit !== '' || item.periodLabel !== '')
+
+  const rawBarGroups: BarGroup[] = (productCummulativeOutput.barGroups || []).map(
+    (group: { label: string; value: number }) => ({
+      label: group.label,
+      items: [{ value: group.value, showValuesOnTop: false }],
+    }),
+  )
+
+  const onChangeDateRage = (newRange: { from: any; to: any }) => {
+    setRange(newRange)
+    const fromDate = dayjs(newRange.from)
+    const toDate = dayjs(newRange.to)
+    console.log('Selected Date Range:', { from: fromDate.format('DD/MM/YYYY'), to: toDate.format('DD/MM/YYYY') })
+
+    if (fromDate.isAfter(toDate)) {
+      return
+    }
+
+    dispatch(
+      getProductCummulativeOutput({
+        type: tab,
+        from: fromDate.format('DD/MM/YYYY'),
+        to: toDate.format('DD/MM/YYYY'),
+      }),
+    )
+  }
+
+  const onTabChange = (newTab: TabType) => {
+    setTab(newTab)
+
+    if (dayjs(range.from).isAfter(dayjs(range.to))) {
+      return
+    }
+    dispatch(
+      getProductCummulativeOutput({
+        type: newTab,
+        from: dayjs(range.from).format('DD/MM/YYYY'),
+        to: dayjs(range.to).format('DD/MM/YYYY'),
+      }),
+    )
+  }
 
   return (
     <AnimatedCardContainer>
@@ -62,25 +111,38 @@ export default function ProductCumulativeOutput() {
             { id: 'year', label: t('byYear') },
           ]}
           activeTab={tab}
-          onTabChange={(newTab) => setTab(newTab as TabType)}
+          onTabChange={(newTab) => onTabChange(newTab as TabType)}
           contentAnim={contentAnim}
         />
       </View>
 
-      <DateRangePicker value={range} onChange={setRange} mode="modal" />
+      <DateRangePicker
+        format={tab === 'day' ? 'DD/MM/YYYY' : tab === 'month' ? 'MM/YYYY' : 'YYYY'}
+        value={range}
+        onChange={onChangeDateRage}
+        mode="modal"
+        chooseMode={tab}
+      />
 
       <View style={dashboardCommonStyles.chartWrapper}>
-        <BarChart data={rawBarGroups} frontColor='#60a5fa' rounded barWidth={20} spacing={10} showHorizontalGrid={false} />
+        <BarChart
+          data={rawBarGroups}
+          frontColor="#60a5fa"
+          rounded
+          barWidth={25}
+          spacing={20}
+          showHorizontalGrid={false}
+        />
       </View>
 
       <View style={[dashboardCommonStyles.summaryRow]}>
         {cumulativeSummaryData.map((item, idx) => (
           <View key={idx} style={styles.cumulativeCard}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.cardTitle}>{item.label}</Text>
             <Text style={styles.cardValue}>
               {item.value} <Text style={styles.cardUnit}>{item.unit}</Text>
             </Text>
-            <Text style={styles.cardTitle}>{item.date}</Text>
+            <Text style={styles.cardTitle}>{item.periodLabel}</Text>
           </View>
         ))}
       </View>

@@ -1,7 +1,7 @@
 import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
-import React, { Component, useMemo } from 'react'
+import React, { Component, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart as GiftedBarChart } from 'react-native-gifted-charts'
 
@@ -36,6 +36,8 @@ interface Props {
   rulesType?: string
   lineColor?: string
   customDataPoint?: React.ReactElement
+  showCustomTooltip?: boolean
+  disableScroll?: boolean
   lineData2?: any[] // second line data
   lineColor2?: string
   lineDataPointsShift2?: number
@@ -63,16 +65,32 @@ const BarChart: React.FC<Props> = ({
   lineColor2 = '#FBD34D',
   lineDataPointsShift2 = 0,
   customDataPoint2,
+  showCustomTooltip = false,
+  disableScroll = false,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
-  const allValues = useMemo(() => {
-    if (!data || data.length === 0) {
-      return []
-    }
-    return data.flatMap((g) => g.items.map((i) => i.value))
-  }, [data])
+  // Trạng thái nhóm đang được chọn
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null)
+  const [selectedGroupItems, setSelectedGroupItems] = useState<BarPoint[] | null>(null)
+
+  const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value)), [data])
+
+  const maxValue = Math.max(0, ...data.flatMap((g) => g.items.map((i) => i.value)))
+
+  const roundedMax = Math.ceil(maxValue / 10) * 10
+
+  const yAxisLabelTexts = Array.from({ length: noOfSection + 1 }).map((_, i) => {
+    const value = (roundedMax / noOfSection) * i
+    return formatCompact(value)
+  })
+
+  function formatCompact(value: number) {
+    if (value >= 1_000_000) return `${Math.round((value / 1_000_000) * 10) / 10}M`
+    if (value >= 1_000) return `${Math.round((value / 1_000) * 10) / 10}K`
+    return `${value}`
+  }
 
   const paddedMax = useMemo(() => {
     const barMax = allValues.length > 0 ? Math.max(0, ...allValues) : 0
@@ -114,6 +132,8 @@ const BarChart: React.FC<Props> = ({
               spacing: isLastOverall ? 0 : isGrouped && !isLastInGroup ? groupInnerSpacing : item.spacing,
               labelWidth: isGrouped && !isLastInGroup ? groupWidth : item.labelWidth,
               onPress: () => {
+                setSelectedGroupIndex(gIdx)
+                setSelectedGroupItems(group.items)
                 console.log('Pressed bar:', {
                   groupIndex: gIdx,
                   itemIndex: idx,
@@ -147,8 +167,104 @@ const BarChart: React.FC<Props> = ({
       }
     }, [data, barWidth, groupInnerSpacing, frontColor]) || []
 
+  // Tính toán vị trí overlay theo index nhóm
+  const getGroupMetrics = (gIdx: number | null) => {
+    if (gIdx === null) return null
+    const n = data[gIdx]?.items.length ?? 0
+    if (n === 0) return null
+
+    const groupWidth = n * barWidth + Math.max(0, n - 1) * groupInnerSpacing
+
+    const beforeGroupsWidth = data.slice(0, gIdx).reduce((acc, g) => {
+      const wn = g.items.length * barWidth + Math.max(0, g.items.length - 1) * groupInnerSpacing
+      return acc + wn
+    }, 0)
+
+    const wrapPadding = px.h(8)
+    const initialSpacing = spacing
+    const yAxisLabelWidthOffset = showYAxis ? 20 : 0 // default width used by gifted charts
+
+    // Mép trái đúng của toàn nhóm (bắt đầu từ mép trái cột đầu tiên)
+    const left = wrapPadding + yAxisLabelWidthOffset + initialSpacing + beforeGroupsWidth + gIdx * spacing
+
+    return { left, width: groupWidth }
+  }
+
+  const selectedMetrics = getGroupMetrics(selectedGroupIndex)
+
   return (
     <View style={styles.wrap}>
+      {/* Overlay xám bao nhóm */}
+      {selectedMetrics && showCustomTooltip && (
+        <View
+          pointerEvents="none"
+          style={[
+            styles.groupOverlay,
+            {
+              left: selectedMetrics.left - 7,
+              width: selectedMetrics.width + px.h(15),
+              // đặt overlay sao cho chân chạm trục hoành (x-axis)
+              top:
+                height -
+                ((selectedGroupItems && selectedGroupItems.length > 0
+                  ? Math.max(...selectedGroupItems.map((i) => i.value))
+                  : 0) /
+                  paddedMax) *
+                  height +
+                5,
+              // chiều cao overlay = chiều cao cột cao nhất trong nhóm + 10
+              height:
+                ((selectedGroupItems && selectedGroupItems.length > 0
+                  ? Math.max(...selectedGroupItems.map((i) => i.value))
+                  : 0) /
+                  paddedMax) *
+                  height +
+                5,
+              backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+              borderRadius: px.h(10),
+            },
+          ]}
+        />
+      )}
+
+      {/* Tooltip hiển thị giá trị từng cột */}
+      {selectedMetrics && selectedGroupItems && showCustomTooltip && (
+        <View
+          pointerEvents="none"
+          style={[
+            styles.tooltip,
+            {
+              left: selectedMetrics.left - 2,
+                // position tooltip clearly above the overlay (no overlap)
+                top:
+                height -
+                ((selectedGroupItems && selectedGroupItems.length > 0
+                  ? Math.max(...selectedGroupItems.map((i) => i.value))
+                  : 0) /
+                  paddedMax) *
+                  height -
+                px.v(35),
+              },
+              ]}
+            >
+          <View style={[styles.tooltipBubble, { backgroundColor: isDark ? '#1F2937' : '#111827' }]}>
+            {selectedGroupItems.map((it, i) => (
+              <View key={i} style={styles.tooltipRow}>
+                <View
+                  style={{
+                    width: px.h(8),
+                    height: px.h(8),
+                    borderRadius: px.h(4),
+                    backgroundColor: it.frontColor || '#5B9BF3',
+                    marginRight: px.h(6),
+                  }}
+                />
+                <Text style={{ color: '#FFF', fontSize: px(8) }}>{formatCompact(it.value)}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
       {processed.length > 0 ? (
         <GiftedBarChart
           data={processed}
@@ -166,7 +282,9 @@ const BarChart: React.FC<Props> = ({
           yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
           xAxisThickness={1}
           xAxisColor={'rgb(255,255,255,0.1)'}
+          disableScroll={disableScroll}
           hideYAxisText={!showYAxis}
+          yAxisLabelTexts={showYAxis ? yAxisLabelTexts : []}
           yAxisTextStyle={{
             color: isDark ? '#FFF' : '#6B7280',
             fontSize: px.m(11),
@@ -245,6 +363,25 @@ const styles = StyleSheet.create({
     fontSize: px.m(12),
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  groupOverlay: {
+    position: 'absolute',
+  },
+  tooltip: {
+    position: 'absolute',
+    top: 0,
+  },
+  tooltipBubble: {
+    paddingVertical: px.v(4),
+    paddingHorizontal: px.h(4),
+    borderRadius: px.h(10),
+    flexDirection: 'column',
+    gap: px.v(4),
+    elevation: 2,
+  },
+  tooltipRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })
 
