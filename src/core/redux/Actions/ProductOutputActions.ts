@@ -6,3 +6,4 @@ export const getProductOutputByHours = createAction(ACTION_TYPES.GET_PRODUCT_BY_
 export const getProductOutputOverview = createAction(ACTION_TYPES.GET_PRODUCT_OUTPUT_OVERVIEW)
 export const getProductOutputByDays = createAction<number>(ACTION_TYPES.GET_PRODUCT_OUTPUT_BY_DAYS)
 export const getProductCummulativeOutput = createAction<ProductCummulativeOutputParams>(ACTION_TYPES.GET_PRODUCT_CUMMULATIVE_OUTPUT)
+export const getCompareProductOutput = createAction<{ tagetDate: string; compareDate: string }>(ACTION_TYPES.GET_COMPARE_PRODUCT_OUTPUT)

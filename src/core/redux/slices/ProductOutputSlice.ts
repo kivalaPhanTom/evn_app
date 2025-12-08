@@ -1,4 +1,3 @@
-import { BarGroup } from '@/core/types'
 import { createSlice } from '@reduxjs/toolkit'
 
 interface productOutputState {
@@ -40,6 +39,50 @@ interface productOutputState {
     }
     unit: string
   }
+  compareProductOutput: {
+    Unit: string
+    Contractvalue: number
+    BarChartData: { value: number; label: string }[]
+    compareLineChartData: []
+    Summary: {
+      average: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      max: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      min: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+    }
+  }
 }
 const initialState: productOutputState = {
   productOutputByHours: {
@@ -63,6 +106,50 @@ const initialState: productOutputState = {
     byLabel: '',
     summary: {},
     unit: '',
+  },
+  compareProductOutput: {
+    Unit: '',
+    Contractvalue: 0,
+    BarChartData: [],
+    compareLineChartData: [],
+    Summary: {
+      average: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      max: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      min: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+    },
   },
 }
 
@@ -92,6 +179,9 @@ const productOutputSlice = createSlice({
       state.productCummulativeOutput.summary = action.payload.Summary
       state.productCummulativeOutput.unit = action.payload.Unit
     },
+    setCompareProductOutput: (state, action) => {
+      state.compareProductOutput = action.payload
+    },
   },
 })
 const { reducer } = productOutputSlice
@@ -100,5 +190,6 @@ export const {
   setProductOutputOverview,
   setProductOutputByDays,
   setProductCummulativeOutput,
+  setCompareProductOutput,
 } = productOutputSlice.actions
 export default reducer

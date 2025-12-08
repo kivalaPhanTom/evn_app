@@ -33,7 +33,7 @@ const CompareLegend: React.FC<CompareLegendProps> = ({ items, displayType = 'out
   return (
     <View style={styles.legendContainer}>
       {legendItems.map((item, index) => (
-        <View key={index} style={styles.legendItem}>
+        <View key={`${item.type}-${item.label}-${index}`} style={styles.legendItem}>
           {item.type === 'box' ? (
             <View style={styles.legendBox} />
           ) : (

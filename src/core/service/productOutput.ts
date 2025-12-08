@@ -7,13 +7,15 @@ export const Service = {
   getProductOutputByHoursApi,
   getProductOutputOverviewApi,
   getProductOutputByDaysApi,
-  getProductCummulativeOutputApi
+  getProductCummulativeOutputApi,
+  getCompareProductOutputApi
 }
 export const servicePattern = {
   getProductOutputByHours: `${prefix_api}/ProductByHours`,
   getProductOutputOverview: `${prefix_api}/ProductOutputOverview`,
   getProductOutputByDays: `${prefix_api}/Product_Recent_Days`,
   getProductCummulativeOutput: `${prefix_api}/ProductCummulativeOutput`,
+  getCompareProductOutput: `${prefix_api}/CompareProductOutput`
 }
 
 function getProductOutputByHoursApi() {
@@ -41,5 +43,14 @@ function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) 
       from: params.from,
       to: params.to
      }
+  })
+}
+
+function getCompareProductOutputApi(tagetDate: string, compareDate: string) {
+  return api.get(`${servicePattern.getCompareProductOutput}`, {
+    params: {
+      tagetDate: tagetDate,
+      compareDate: compareDate
+    }
   })
 }
