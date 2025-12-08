@@ -1,6 +1,8 @@
 import { getModel } from '@/core/utils/device'
 import { Platform } from 'react-native'
 import { ThemeValue } from '../types'
+import { Toast } from 'toastify-react-native'
+import { router } from 'expo-router'
 
 export const isEmpty = (value: any): boolean => {
   return value === undefined || value === '' || value === null
@@ -47,3 +49,40 @@ export const resolveThemeValue = <T>(val: T | ThemeValue<T> | undefined, isDark:
   }
   return val as T
 }
+
+export type ApiResponse<T = any> = {
+  data: T
+  status: number
+  statusText?: string
+  message?: string
+  headers?: Record<string, any>
+}
+
+export const catchHandle = (e: any): void => {
+  const { status, data }: ApiResponse = e;
+  const { Message: message } = (data ?? {}) as { Message?: string };
+
+  switch (status) {
+    case 401: {
+      Toast.error('Vui lòng đăng nhập lại để tiếp tục.');
+      router.replace('/login');
+      break;
+    }
+    case 404: {
+      Toast.error('Yêu cầu không tồn tại. Vui lòng thử lại sau.');
+      break;
+    }
+    case 500: {
+      Toast.error('Đã có lỗi xảy ra ở phía máy chủ. Vui lòng thử lại sau.');
+      break;
+    }
+    case 400: {
+      Toast.error('Yêu cầu không hợp lệ. Vui lòng thử lại sau.');
+      break;
+    }
+    default: {
+      Toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau.');
+    }
+  }
+};
+
