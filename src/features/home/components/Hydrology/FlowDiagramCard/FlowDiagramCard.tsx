@@ -6,26 +6,47 @@ import { useDispatch, useSelector } from 'react-redux'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 
+const BLUE_BG = "rgba(59, 130, 246, 0.10)";     // nền xanh nhạt
+const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
 
+const RED_BG = "rgba(239, 68, 68, 0.10)";        // nền đỏ nhạt
+const RED_BORDER = "rgba(239, 68, 68, 0.45)";
 function FlowDiagramCard() {
 
 
     return (
         <AnimatedCardContainer>
             <View style={styles.content}>
-                {/* Header */}
                 <View style={styles.header}>
                     <Text style={styles.title}>{"Sơ đồ dòng chảy"}</Text>
-                    {/* <View style={styles.headerTop}>
-                        <Text style={styles.subtitle}>{subtitle}</Text>
-                        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-                            <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
-                            <Text style={styles.actionButtonIcon}>{'>'}</Text>
-                        </TouchableOpacity>
-                    </View> */}
+                    <Text style={styles.ck}>{"CK = Cùng kỳ năm ngoái (14/11/2023)"}</Text>
                 </View>
                 <View style={styles.flowDiagramDetail}>
                     <FlowDiagram />
+                </View>
+                <View style={styles.container}>
+                    {/* Line phía trên */}
+                    <View style={styles.line} />
+
+                    <View style={styles.traffic}>
+
+                        {/* BOX XANH */}
+                        <View style={[styles.box, styles.inboundTraffic]}>
+                            <Text style={styles.titleSection}>LƯU LƯỢNG VỀ</Text>
+                            <Text style={styles.valueBlue}>
+                                850 <Text style={styles.unit}>m³/s</Text>
+                            </Text>
+                        </View>
+
+                        {/* BOX ĐỎ */}
+                        <View style={[styles.box, styles.dischargeFlow]}>
+                            <Text style={styles.titleSection}>LƯU LƯỢNG XẢ</Text>
+                            <Text style={styles.valueRed}>
+                                850 <Text style={styles.unit}>m³/s</Text>
+                            </Text>
+                        </View>
+
+                    </View>
                 </View>
 
 
@@ -35,13 +56,6 @@ function FlowDiagramCard() {
     )
 }
 const styles = StyleSheet.create({
-    container: {
-        borderRadius: 24,
-        padding: 24,
-        minHeight: 340,
-        position: 'relative',
-        overflow: 'hidden',
-    },
     flowDiagramDetail: {
         width: '97%',
         marginLeft: "auto",
@@ -53,91 +67,75 @@ const styles = StyleSheet.create({
     header: {
         marginBottom: 20,
     },
-    headerTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
     title: {
         color: '#e8eaed',
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 4,
     },
-    subtitle: {
-        color: '#7a8596',
-        fontSize: 13,
-        fontWeight: '400',
-    },
-    actionButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-    },
-    actionButtonText: {
-        color: '#9CA3AF',
-        fontSize: 13,
-    },
-    actionButtonIcon: {
-        color: '#9CA3AF',
-        fontSize: 13,
-    },
-    statsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 24,
-    },
-    statItem: {
-        flex: 1,
-    },
-    statLabel: {
-        color: '#7a8596',
-        fontSize: 11,
-        fontWeight: '600',
-        // marginBottom: ,
-        letterSpacing: 0.5,
-    },
-    statValueCurrent: {
-        color: '#5b8def',
-        fontSize: 24,
-        fontWeight: '700',
-        // marginBottom: 6,
-    },
-    statValueAverage: {
-        color: '#eab308',
-        fontSize: 24,
-        fontWeight: '700',
-    },
-    changeRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    changeText: {
-        color: '#ef4444',
-        fontSize: 13,
-        fontWeight: '600',
-    },
-    changePositive: {
-        color: '#4ade80',
-    },
-    chartContainer: {
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    unitLabel: {
-        color: '#7a8596',
-        fontSize: 12,
+    ck: {
         textAlign: 'center',
-        marginTop: 8,
+        marginTop: 10,
+        color: "#b7b7b7",      // màu xám nhạt giống hình
+        fontStyle: "italic",   // chữ nghiêng
+        fontSize: 14,
     },
-    chartWrapper: {
-        marginTop: px.v(8),
-        marginBottom: px.v(12),
-        marginLeft: px.h(-12),
-        width: '100%',
-        alignSelf: 'stretch',
-        backgroundColor: 'transparent',
-        overflow: 'hidden',
+    container: {
+        paddingTop: 20,
+    },
+    line: {
+        height: 1,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        marginBottom: 15,
+    },
+    traffic: {
+        flexDirection: "row",
+        gap: 15,
+        width: "95%",
+        marginRight: "auto",
+        marginLeft: "auto",
+    },
+    box: {
+        flex: 1,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        borderWidth: 1.5,
+    },
+
+    // BOX XANH
+    inboundTraffic: {
+        backgroundColor: BLUE_BG,
+        borderColor: BLUE_BORDER,
+    },
+
+    // BOX ĐỎ
+    dischargeFlow: {
+        backgroundColor: RED_BG,
+        borderColor: RED_BORDER,
+    },
+
+    titleSection: {
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 12,
+        fontWeight: "600",
+        marginBottom: 6,
+        letterSpacing: 1,
+    },
+
+    valueBlue: {
+        color: "#3B82F6",
+        fontSize: 20,
+        fontWeight: "700",
+    },
+    valueRed: {
+        color: "#EF4444",
+        fontSize: 20,
+        fontWeight: "700",
+    },
+    unit: {
+        fontSize: 12,
+        color: "rgba(255,255,255,0.6)",
     },
 })
 export default FlowDiagramCard
