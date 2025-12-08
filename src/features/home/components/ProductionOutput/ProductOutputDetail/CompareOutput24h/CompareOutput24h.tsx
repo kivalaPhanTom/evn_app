@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import styles from './CompareOutput24h.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -6,8 +6,14 @@ import { useRouter } from 'expo-router'
 import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashboardOutput'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from "@/core/redux/store";
 
 function ProductOutputRencentDays() {
+  const dispatch = useDispatch()
+  const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
+  const { Unit = '', BarChartData, compareLineChartData, Summary } = compareProductOutput
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -21,9 +27,9 @@ function ProductOutputRencentDays() {
         <CompareLegend displayType="output" />
 
         {/* Dashboard */}
-        <CompareDashboardOutput />
+        <CompareDashboardOutput data={BarChartData} lineData2={compareLineChartData} />
         {/* Compare Detail Stats */}
-        <CompareDetailStats currentDate="14/11/2024" compareDate="10/11/2023" />
+        <CompareDetailStats summary={Summary} />
       </View>
     </AnimatedCardContainer>
   )

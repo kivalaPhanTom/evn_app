@@ -4,6 +4,7 @@ import {
   getProductOutputOverview,
   getProductOutputByDays,
   getProductCummulativeOutput,
+  getCompareProductOutput,
 } from '../Actions/ProductOutputActions'
 import { Service } from '@/core/service/productOutput'
 import {
@@ -11,6 +12,7 @@ import {
   setProductOutputOverview,
   setProductOutputByDays,
   setProductCummulativeOutput,
+  setCompareProductOutput,
 } from '../slices/ProductOutputSlice'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -62,6 +64,22 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
   }
 }
 
+function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProductOutput>): Generator {
+  try {
+    const payload = action.payload as { tagetDate: string; compareDate: string }
+    const tagetDate = payload?.tagetDate || ''
+    const compareDate = payload?.compareDate || ''
+
+    const res = yield call(Service.getCompareProductOutputApi, tagetDate, compareDate)
+    if (res.status === 200) {
+      yield put(setCompareProductOutput(res.data))
+    }
+  } catch (error) {
+    catchHandle(error)
+    console.log('getCompareProductOutput error:', error)
+  }
+}
+
 function* handleGetProductOutputByHoursApi() {
   yield takeEvery(getProductOutputByHours, getProductOutputByHoursSaga)
 }
@@ -74,11 +92,15 @@ function* handleGetProductOutputByDaysApi() {
 function* handleGetProductCummulativeOutputApi() {
   yield takeEvery(getProductCummulativeOutput, getProductCummulativeOutputSaga)
 }
+function* handleGetCompareProductOutputApi() {
+  yield takeEvery(getCompareProductOutput, getCompareProductOutputSaga)
+}
 export function* productOutputSagaList() {
   yield all([
     handleGetProductOutputByHoursApi(),
     handleGetProductOutputOverviewApi(),
     handleGetProductOutputByDaysApi(),
     handleGetProductCummulativeOutputApi(),
+    handleGetCompareProductOutputApi(),
   ])
 }
