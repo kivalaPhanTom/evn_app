@@ -3,10 +3,11 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosR
 import Constants from 'expo-constants';
 
 const BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL ?? 'http://localhost:3000';
-type ApiResponse<T = any> = {
+export type ApiResponse<T = any> = {
   data: T
   status: number
   statusText?: string
+  message?: string
   headers?: Record<string, any>
 }
 
