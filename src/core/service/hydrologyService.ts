@@ -1,12 +1,19 @@
-import { apiFormUrlEncoded } from './api.service'
+import { prefix_api } from '../constants/vars'
+import { apiFormUrlEncoded, get } from './api.service'
 
 export const Service = {
-    getHydrologyFlowApi,
+  getHydrologyFlowApi,
+  getInflowOutflowApi,
 }
 export const servicePattern = {
-    getHydrologyFlow: '',
+  getHydrologyFlow: '',
+  getInflowOutflow: `${prefix_api}/InflowOutflow`,
 }
 
-function getHydrologyFlowApi() {
-   
+function getHydrologyFlowApi() {}
+
+function getInflowOutflowApi(hydroElectricId: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getInflowOutflow}?hydroElectricId=${encodeURIComponent(hydroElectricId)}`,
+  )
 }
