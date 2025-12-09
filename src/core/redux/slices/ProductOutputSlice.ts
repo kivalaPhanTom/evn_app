@@ -1,32 +1,88 @@
-import { BarGroup } from '@/core/types'
 import { createSlice } from '@reduxjs/toolkit'
 
 interface productOutputState {
   productOutputByHours: {
-    currentDate: string,
-    contractPowerValue: number,
-    currentPowerValue: number,
-    currentTime: string,
-    unit: string,
-    barGroups: {label: string, value: number}[]
+    currentDate: string
+    contractPowerValue: number
+    currentPowerValue: number
+    currentTime: string
+    unit: string
+    barGroups: { label: string; value: number }[]
   }
   productOutputOverview: {
-    totalPower: number,
-    averagePower: number,
+    totalPower: number
+    averagePower: number
     powerSources: {
-      name: string,
-      code: string,
-      power: number,
-      color: string,
-    }[],
-  },
+      name: string
+      code: string
+      power: number
+      color: string
+    }[]
+  }
   productOutputByDays: {
     productionData: {
-      date: string,
-      actual: number,
-      contract: number,
-    }[],
-  },
+      date: string
+      actual: number
+      contract: number
+    }[]
+  }
+  productCummulativeOutput: {
+    barGroups?: { label: string; value: number }[]
+    byLabel: string
+    summary: {
+      [key: string]: {
+        label: string
+        periodLabel: string
+        unit: string
+        value: number
+      }
+    }
+    unit: string
+  }
+  compareProductOutput: {
+    Unit: string
+    Contractvalue: number
+    BarChartData: { value: number; label: string }[]
+    compareLineChartData: []
+    Summary: {
+      average: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      max: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+      min: {
+        target: {
+          date: string
+          value: number
+          unit: string
+        }
+        compare: {
+          date: string
+          value: number
+          unit: string
+        }
+      }
+    }
+  }
 }
 const initialState: productOutputState = {
   productOutputByHours: {
@@ -35,7 +91,7 @@ const initialState: productOutputState = {
     contractPowerValue: 0,
     currentPowerValue: 0,
     currentTime: '',
-    barGroups: [],    
+    barGroups: [],
   },
   productOutputOverview: {
     totalPower: 0,
@@ -44,6 +100,56 @@ const initialState: productOutputState = {
   },
   productOutputByDays: {
     productionData: [],
+  },
+  productCummulativeOutput: {
+    barGroups: [],
+    byLabel: '',
+    summary: {},
+    unit: '',
+  },
+  compareProductOutput: {
+    Unit: '',
+    Contractvalue: 0,
+    BarChartData: [],
+    compareLineChartData: [],
+    Summary: {
+      average: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      max: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+      min: {
+        target: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+        compare: {
+          date: '',
+          value: 0,
+          unit: '',
+        },
+      },
+    },
   },
 }
 
@@ -67,8 +173,23 @@ const productOutputSlice = createSlice({
     setProductOutputByDays: (state, action) => {
       state.productOutputByDays.productionData = action.payload
     },
+    setProductCummulativeOutput: (state, action) => {
+      state.productCummulativeOutput.barGroups = action.payload.BarChartData
+      state.productCummulativeOutput.byLabel = action.payload.ByLabel
+      state.productCummulativeOutput.summary = action.payload.Summary
+      state.productCummulativeOutput.unit = action.payload.Unit
+    },
+    setCompareProductOutput: (state, action) => {
+      state.compareProductOutput = action.payload
+    },
   },
 })
 const { reducer } = productOutputSlice
-export const { setProductOutputByHours, setProductOutputOverview, setProductOutputByDays } = productOutputSlice.actions
+export const {
+  setProductOutputByHours,
+  setProductOutputOverview,
+  setProductOutputByDays,
+  setProductCummulativeOutput,
+  setCompareProductOutput,
+} = productOutputSlice.actions
 export default reducer

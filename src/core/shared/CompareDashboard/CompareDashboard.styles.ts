@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
     paddingVertical: px.v(16),
     backgroundColor: 'transparent',
   },
+  headerDashboard: {
+    color: '#fff',
+    fontSize: 14,
+    paddingHorizontal: 10,
+  },
   chartTitle: {
     textTransform: 'capitalize',
     color: 'rgba(255, 255, 255, 0.5)',

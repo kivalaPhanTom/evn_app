@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import styles from './ComparePower24h.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -6,8 +6,20 @@ import { useRouter } from 'expo-router'
 import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboard from '@/core/shared/CompareDashboard'
+import { useDispatch, useSelector } from 'react-redux'
+import { getComparePower } from '@/core/redux/Actions/PowerActions'
 
-function ProductOutputRencentDays() {
+function ComparePower24h() {
+  const dispatch = useDispatch()
+  const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
+  const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
+
+  console.log('Rendering ComparePower24h with data:', Summary)
+
+  useEffect(() => {
+    dispatch(getComparePower({ tagetDate: '06/12/2025', compareDate: '06/12/2025' }))
+  }, [dispatch])
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -21,12 +33,12 @@ function ProductOutputRencentDays() {
         <CompareLegend displayType="power" />
 
         {/* Dashboard */}
-        <CompareDashboard />
+        <CompareDashboard data={BarChartData} lineData2={compareLineChartData} />
         {/* Compare Detail Stats */}
-        <CompareDetailStats currentDate="14/11/2024" compareDate="10/11/2023" />
+        <CompareDetailStats summary={Summary} />
       </View>
     </AnimatedCardContainer>
   )
 }
 
-export default ProductOutputRencentDays
+export default ComparePower24h

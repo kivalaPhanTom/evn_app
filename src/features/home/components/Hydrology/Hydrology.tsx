@@ -6,6 +6,7 @@ import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import PowerStoreInLake from './PowerStoreInLake/PowerStoreInLake'
 import Overview from './Overview/Overview'
 import InflowOutflow from './InflowOutflow/InflowOutflow'
+import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 
 function Hydrology() {
   const router = useRouter()
