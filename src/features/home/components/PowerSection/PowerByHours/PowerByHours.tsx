@@ -65,19 +65,17 @@ function PowerByHours() {
             </Text>
           </View>
         </View>
-        <Pressable onPress={(e) => e.stopPropagation()}>
-          <View>
-            <LineChart
-              data={avgData}
-              data2={hourlyData}
-              color="#FBBF24"
-              color2="#2563EB"
-              hideDataPoints2={false}
-              hideYAxisText={true}
-              hideDataPoints1={true}
-            />
-          </View>
-        </Pressable>
+        <View>
+          <LineChart
+            data={avgData}
+            data2={hourlyData}
+            color="#FBBF24"
+            color2="#2563EB"
+            hideDataPoints2={false}
+            hideYAxisText={true}
+            hideDataPoints1={true}
+          />
+        </View>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>
       </View>
