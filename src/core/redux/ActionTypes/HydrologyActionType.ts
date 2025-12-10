@@ -1,1 +1,2 @@
 export const GET_HYDROLOGY_FLOW_CHART: string = 'GET_HYDROLOGY_FLOW_CHART'
+export const GET_INFLOW_OUTFLOW: string = 'GET_INFLOW_OUTFLOW'

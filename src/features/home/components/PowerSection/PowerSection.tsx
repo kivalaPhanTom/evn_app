@@ -12,7 +12,6 @@ function PowerSection() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    debugger
     dispatch(getPowerOverivew())
   }, [])
 
