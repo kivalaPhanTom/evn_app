@@ -1,16 +1,19 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower } from '../Actions/PowerActions'
-import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower } from '../slices/PowerSlice'
+import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
 import { Service } from '@/core/service/powerService'
 
 function* getPowerOverviewSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingOverview: true }))
     const res = yield call(Service.getPowerOverviewApi)
     if (res.status === 200) {
       console.log('Power overview data:', res.data)
       yield put(setPowerOverview(res.data))
     }
+    yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingOverview: false }))
     console.log('errorXXX:', error)
   }
 }
