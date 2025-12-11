@@ -45,7 +45,7 @@ export default function LoginScreen() {
           <View style={styles.logoWrap}>
             <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(200) }} contentFit="contain" />
           </View>
-
+       
           <View style={styles.titleWrap}>
             <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
           </View>

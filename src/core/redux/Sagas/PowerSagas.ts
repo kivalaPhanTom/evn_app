@@ -8,7 +8,6 @@ function* getPowerOverviewSaga(): Generator {
     yield put(setLoading({ isLoadingOverview: true }))
     const res = yield call(Service.getPowerOverviewApi)
     if (res.status === 200) {
-      console.log('Power overview data:', res.data)
       yield put(setPowerOverview(res.data))
     }
     yield put(setLoading({ isLoadingOverview: false }))
@@ -20,11 +19,14 @@ function* getPowerOverviewSaga(): Generator {
 
 function* getPowerByTimeSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingByHours: true }))
     const res = yield call(Service.getPowerByTimeApi)
     if (res.status === 200) {
       yield put(setPowerByTime(res.data))
     }
+    yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingByHours: false }))
     console.log('getPowerByTime error:', error)
   }
 }

@@ -34,7 +34,6 @@ function TotalPower() {
               />
             </>
           }
-
           {isLoadingOverview ? <SkeletonForUnit /> :
             <>
               <Text style={styles.unit}>MW</Text>
@@ -45,19 +44,22 @@ function TotalPower() {
 
         {/* Right side - Power Sources */}
         <View style={styles.rightSection}>
-          {isLoadingOverview ? <SkeletonForCompany /> : <>
-            {detail.map((source, index) => (
-              <View key={index} style={styles.sourceItem}>
-                <View style={styles.sourceInfo}>
-                  <View style={[styles.dot, { backgroundColor: source.color }]} />
-                  <Text style={styles.sourceName}>
-                    {source.name} <Text style={styles.sourceCode}>({source.code})</Text>
-                  </Text>
+          {isLoadingOverview ?
+            <>
+              <SkeletonForCompany/>
+            </> : <>
+              {detail.map((source, index) => (
+                <View key={index} style={styles.sourceItem}>
+                  <View style={styles.sourceInfo}>
+                    <View style={[styles.dot, { backgroundColor: source.color }]} />
+                    <Text style={styles.sourceName}>
+                      {source.name} <Text style={styles.sourceCode}>({source.code})</Text>
+                    </Text>
+                  </View>
+                  <Text style={[styles.sourcePower, { color: source.color }]}>{source.value} MW</Text>
                 </View>
-                <Text style={[styles.sourcePower, { color: source.color }]}>{source.value} MW</Text>
-              </View>
-            ))}
-          </>}
+              ))}
+            </>}
         </View>
       </View>
     </AnimatedCardContainer>

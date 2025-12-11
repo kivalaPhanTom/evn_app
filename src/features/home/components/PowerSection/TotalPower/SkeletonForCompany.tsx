@@ -1,69 +1,78 @@
-import { View, StyleSheet, Animated } from "react-native";
-import { useEffect, useRef } from "react";
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
 
-const BackgroundColor = "rgba(255,255,255,0.15)"
-function SkeletonForCompany() {
-    const opacity = useRef(new Animated.Value(0.4)).current;
-
-    useEffect(() => {
-        // chạy ngay lập tức frame đầu tiên
-        opacity.setValue(0.7);
-
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(opacity, {
-                    toValue: 1,
-                    duration: 600,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(opacity, {
-                    toValue: 0.4,
-                    duration: 600,
-                    useNativeDriver: true,
-                }),
-            ])
-        ).start();
-    }, []);
-
-    return (
-        <View>
-            <View style={styles.bottomRow}>
-                <Animated.View style={[styles.dot, { opacity }]} />
-                <Animated.View style={[styles.lineSmall, { opacity }]} />
-            </View>
-
-            <View style={styles.bottomRow}>
-                <Animated.View style={[styles.dot, { opacity }]} />
-                <Animated.View style={[styles.lineSmall, { opacity }]} />
-            </View>
-
-            <View style={styles.bottomRow}>
-                <Animated.View style={[styles.dot, { opacity }]} />
-                <Animated.View style={[styles.lineSmall, { opacity }]} />
-            </View>
-        </View>
-    )
+interface Props {
+  width1?: string | number;
+  width2?: string | number;
+  width3?: string | number;
 }
 
+export const SkeletonForCompany: React.FC<Props> = ({
+  width1 = "80%",
+  width2 = "60%",
+  width3 = "70%",
+}) => {
+  return (
+    <View style={styles.rowContainer}>
+      {/* DOT + LINE ROW 1 */}
+      <View style={styles.row}>
+        <View style={styles.dot} />
+        <ShimmerPlaceHolder
+          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          LinearGradient={LinearGradient}
+          style={[styles.line, { width: width1 }]}
+        />
+      </View>
+
+      {/* DOT + LINE ROW 2 */}
+      <View style={styles.row}>
+        <View style={styles.dot} />
+        <ShimmerPlaceHolder
+          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          LinearGradient={LinearGradient}
+          style={[styles.line, { width: width2 }]}
+        />
+      </View>
+
+      {/* DOT + LINE ROW 3 */}
+      <View style={styles.row}>
+        <View style={styles.dot} />
+        <ShimmerPlaceHolder
+          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          LinearGradient={LinearGradient}
+          style={[styles.line, { width: width3 }]}
+        />
+      </View>
+    </View>
+  );
+};
 export default SkeletonForCompany
 const styles = StyleSheet.create({
-    bottomRow: {
-        marginTop: 10,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-    },
+  rowContainer: {
+    // backgroundColor: "#1F242C",  // nền tối giống hình bạn
+    paddingVertical: 10,
+    gap: 10,
+  },
 
-    dot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: BackgroundColor,
-    },
-    lineSmall: {
-        height: 12,
-        width: "90%",
-        borderRadius: 6,
-        backgroundColor: BackgroundColor,
-    },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+
+  dot: {
+    width: 16,
+    height: 16,
+    borderRadius: 999,
+    backgroundColor: "#2D333C", // màu dot giống hình
+  },
+
+  line: {
+    height: 16,
+    borderRadius: 999,
+    backgroundColor: "#2D333C",
+    overflow: "hidden",
+  },
 });
