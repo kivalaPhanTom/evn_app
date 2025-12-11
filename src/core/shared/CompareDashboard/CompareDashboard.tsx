@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, Dimensions } from 'react-native'
 import styles from './CompareDashboard.styles'
 import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
+import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
+import dayjs from 'dayjs'
 interface BarGroup {
   label: string
   items: {
@@ -15,8 +17,10 @@ interface BarGroup {
 interface CompareDashboardProps {
   data: { value: number; label: string }[]
   lineData2?: { value: number }[]
+  range: { from: dayjs.Dayjs; to: dayjs.Dayjs }
+  onChangeDateRage: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
 }
-const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
+const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareDashboardProps) => {
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -53,7 +57,8 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
     items: [item.value],
   }))
 
-  const barData: BarGroup[] = convertData.map((item) => ({
+  const barData: BarGroup[] = convertData.map((item, idx) => ({
+    id: idx,
     label: item.label,
     items: [
       {
@@ -63,13 +68,24 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
     ],
   }))
 
-  const lineData2Converted = lineData2?.map((item: any) => ({
-    value: item,
+  const lineData2Converted = lineData2?.map((item: any, idx: number) => ({
+    id: String(idx),
+    label: String(idx),
+    value: typeof item === 'number' ? item : item?.value,
   }))
 
   return (
     <View>
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
+      <DateRangePicker
+        labelFrom="Ngày mục tiêu"
+        labelTo="Ngày so sánh"
+        format={'DD/MM/YYYY'}
+        value={range}
+        onChange={onChangeDateRage}
+        mode="modal"
+        chooseMode={'day'}
+      />
       <View style={styles.chartWrapper}>
         <BarChart
           data={barData}
