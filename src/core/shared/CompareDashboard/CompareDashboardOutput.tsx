@@ -155,7 +155,7 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
             customDataPoint2={customDataPoint}
             lineData2={lineData2Converted}
             lineColor2="#A78BFA"
-            lineDataPointsShift2={-15}
+            lineDataPointsShift2={0}
           />
         </View>
       </View>
