@@ -130,8 +130,12 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
     }
 
     if (waterHeight > 0) {
-      setWavePathBottom1(createBottomWavePath(initialOffset * 0.8, amplitudeBottom1, 0.015, containerWidth, waterHeight))
-      setWavePathBottom2(createBottomWavePath(initialOffset * 1.1, amplitudeBottom2, 0.018, containerWidth, waterHeight))
+      setWavePathBottom1(
+        createBottomWavePath(initialOffset * 0.8, amplitudeBottom1, 0.015, containerWidth, waterHeight),
+      )
+      setWavePathBottom2(
+        createBottomWavePath(initialOffset * 1.1, amplitudeBottom2, 0.018, containerWidth, waterHeight),
+      )
     }
 
     const anim1 = Animated.loop(
@@ -140,7 +144,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         duration: 6000,
         useNativeDriver: false,
       }),
-      { iterations: -1 }
+      { iterations: -1 },
     )
     const anim2 = Animated.loop(
       Animated.timing(waveOffset2, {
@@ -148,7 +152,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         duration: 7500,
         useNativeDriver: false,
       }),
-      { iterations: -1 }
+      { iterations: -1 },
     )
     const animBottom1 = Animated.loop(
       Animated.timing(waveOffsetBottom1, {
@@ -156,7 +160,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         duration: 6500,
         useNativeDriver: false,
       }),
-      { iterations: -1 }
+      { iterations: -1 },
     )
     const animBottom2 = Animated.loop(
       Animated.timing(waveOffsetBottom2, {
@@ -164,7 +168,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         duration: 8000,
         useNativeDriver: false,
       }),
-      { iterations: -1 }
+      { iterations: -1 },
     )
 
     const listener1 = waveOffset1.addListener(({ value }) => {
@@ -233,9 +237,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
       >
         <View style={styles.cardContent}>
           <View style={styles.locationContainer}>
-            <Text style={[styles.locationName, { color: data.color }]}>
-              {data.name}
-            </Text>
+            <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
             <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
           </View>
 
@@ -329,6 +331,8 @@ const Overview: React.FC = () => {
   const contentAnim = useRef(new Animated.Value(1)).current
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
+  console.log('Rendering Overview with activeTab:', activeData)
+  const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SPS3'
 
   return (
     <AnimatedCardContainer backgroundColor={'transparent'} borderRadius={0}>
@@ -364,7 +368,7 @@ const Overview: React.FC = () => {
             {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
           </Text>
           <HydrographicChart />
-          <InflowOutflow />
+          <InflowOutflow hydroElectricId={hydroElectricId} />
         </Animated.View>
       </View>
     </AnimatedCardContainer>
