@@ -52,7 +52,6 @@ export default function LoginScreen() {
 
           {/* Form */}
           <View style={styles.formWrap}>
-         
             <LinearGradient
               pointerEvents="none"
               colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}

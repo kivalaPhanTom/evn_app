@@ -20,6 +20,7 @@ interface powerOverviewState {
   isLoadingOverview: boolean
   isLoadingByHours: boolean
   isLoadingNearCurrentDays: boolean
+  isLoadingComparePower: boolean
   powerByTime: {
     currentDate: string
     currentPower: number
@@ -81,6 +82,7 @@ const initialState: powerOverviewState = {
   isLoadingOverview: false,
   isLoadingByHours: false,
   isLoadingNearCurrentDays: false,
+  isLoadingComparePower:false,
   powerByTime: {
     currentDate: '',
     currentPower: 0,

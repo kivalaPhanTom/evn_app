@@ -5,6 +5,7 @@ import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import dayjs from 'dayjs'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 interface BarGroup {
   label: string
   items: {
@@ -19,8 +20,9 @@ interface CompareDashboardProps {
   lineData2?: { value: number }[]
   range: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   onChangeDateRage: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
+  isLoading: boolean
 }
-const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareDashboardProps) => {
+const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareDashboardProps, isLoading = false) => {
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -87,19 +89,22 @@ const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareD
         chooseMode={'day'}
       />
       <View style={styles.chartWrapper}>
-        <BarChart
-          data={barData}
-          rounded
-          barWidth={barWidth}
-          spacing={barSpacing}
-          showLine={true}
-          noOfSection={4}
-          rulesType="dash"
-          lineColor="transparent"
-          lineData2={lineData2Converted}
-          lineColor2="#A78BFA"
-          customDataPoint2={customDataPoint}
-        />
+        {isLoading ?
+          <LineBarChartSkeleton /> :
+          <BarChart
+            data={barData}
+            rounded
+            barWidth={barWidth}
+            spacing={barSpacing}
+            showLine={true}
+            noOfSection={4}
+            rulesType="dash"
+            lineColor="transparent"
+            lineData2={lineData2Converted}
+            lineColor2="#A78BFA"
+            customDataPoint2={customDataPoint}
+          />
+        }
       </View>
     </View>
   )
