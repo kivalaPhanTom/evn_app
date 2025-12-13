@@ -33,12 +33,15 @@ function* getPowerByTimeSaga(): Generator {
 
 function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generator {
   try {
+    yield put(setLoading({ isLoadingNearCurrentDays: true }))
     const n = action.payload || 7 // default is 7 days
     const res = yield call(Service.getPowerByDaysApi, n)
     if (res.status === 200) {
       yield put(setPowerByDays(res.data))
     }
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
     console.log('getPowerByDays error:', error)
   }
 }

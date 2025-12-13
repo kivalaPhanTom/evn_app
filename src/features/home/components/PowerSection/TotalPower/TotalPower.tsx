@@ -8,9 +8,8 @@ import { px } from '@/core/utils/scale'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { useRouter } from 'expo-router'
 import { RootState } from "@/core/redux/store";
-import SkeletonForTotalValue from './SkeletonForTotalValue'
-import SkeletonForUnit from './SkeletonForUnit'
-import SkeletonForCompany from './SkeletonForCompany'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 
 
 function TotalPower() {
@@ -22,7 +21,8 @@ function TotalPower() {
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
-          {isLoadingOverview ? <SkeletonForTotalValue /> :
+
+          {isLoadingOverview ? <BarSkeleton /> :
             <>
               <Text style={styles.title}>TỔNG CÔNG SUẤT</Text>
               <AnimatedNumber
@@ -34,7 +34,12 @@ function TotalPower() {
               />
             </>
           }
-          {isLoadingOverview ? <SkeletonForUnit /> :
+
+          {isLoadingOverview ?
+            <BarSkeleton
+              width={95}
+              height={28}
+            /> :
             <>
               <Text style={styles.unit}>MW</Text>
               <Text style={styles.average}>TB: {average} MW</Text>
@@ -46,7 +51,7 @@ function TotalPower() {
         <View style={styles.rightSection}>
           {isLoadingOverview ?
             <>
-              <SkeletonForCompany/>
+              <DotBarSkeleton />
             </> : <>
               {detail.map((source, index) => (
                 <View key={index} style={styles.sourceItem}>

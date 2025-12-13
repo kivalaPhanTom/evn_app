@@ -160,7 +160,6 @@ const powerSlice = createSlice({
       state.comparePower = action.payload
     },
     setLoading: (state, action) => {
-      console.log('action.payload:', action.payload)
       return {
         ...state,
         ...action.payload,

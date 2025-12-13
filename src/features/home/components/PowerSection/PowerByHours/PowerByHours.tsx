@@ -8,9 +8,8 @@ import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { useRouter } from 'expo-router'
 import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
-import { ChartSkeleton } from './ChartSkeleton'
-import SkeletonCurrentValue from './SkeletonCurrentValue'
-import SkeletonAvgValue from './SkeletonAvgValue'
+import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 function PowerByHours() {
   const router = useRouter()
@@ -55,26 +54,40 @@ function PowerByHours() {
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>HIỆN TẠI ({currentTime})</Text>
-            {isLoadingByHours ? <SkeletonCurrentValue /> : <>
-              <Text style={styles.statValueCurrent}>
-                {currentPower} {unit}
-              </Text>
-              <View style={styles.changeRow}>
-                <MetricDiff diff={currentPower} compareTo={avgPower} />
-              </View>
-            </>}
+            {isLoadingByHours ?
+              <>
+                <BarSkeleton />
+                <BarSkeleton
+                  width={70}
+                  height={20}
+                  marginBottom={0}
+                />
+              </> :
+              <>
+                <Text style={styles.statValueCurrent}>
+                  {currentPower} {unit}
+                </Text>
+                <View style={styles.changeRow}>
+                  <MetricDiff diff={currentPower} compareTo={avgPower} />
+                </View>
+              </>}
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>TRUNG BÌNH</Text>
-            {isLoadingByHours ? <SkeletonAvgValue /> : <>
-              <Text style={styles.statValueAverage}>
-                {avgPower} {unit}
-              </Text>
-            </>}
+            {isLoadingByHours ?
+              <BarSkeleton
+                width={95}
+                height={28}
+              /> :
+              <>
+                <Text style={styles.statValueAverage}>
+                  {avgPower} {unit}
+                </Text>
+              </>}
           </View>
         </View>
         <View>
-          {isLoadingByHours ? <ChartSkeleton /> : <LineChart
+          {isLoadingByHours ? <LineChartSkeleton /> : <LineChart
             data={avgData}
             data2={hourlyData}
             color="#FBBF24"

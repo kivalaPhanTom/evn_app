@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-export const ChartSkeleton = () => {
+export const LineChartSkeleton = () => {
   const opacity = useRef(new Animated.Value(0.3)).current; // bắt đầu mờ mờ
 
   useEffect(() => {
