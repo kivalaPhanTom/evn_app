@@ -11,7 +11,6 @@ import { getComparePower } from '@/core/redux/Actions/PowerActions'
 import dayjs from 'dayjs'
 
 function ComparePower24h() {
-  //dangcode
   const dispatch = useDispatch()
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
   const {isLoadingComparePower} = useSelector((state: any) => state.powerSlice)

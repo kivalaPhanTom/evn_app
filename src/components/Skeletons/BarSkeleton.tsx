@@ -59,7 +59,7 @@ function BarSkeleton({
     // );
     return (
         <View style={styles.row}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginTop: 5 }}>
                 <Shimmer style={{ flex: 1, width: width, height: height, marginBottom: marginBottom }} />
             </View>
         </View>
