@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { useEffect, useRef } from "react";
 import { View, StyleSheet, Animated, Easing } from "react-native";
 import { StyleProp, ViewStyle } from "react-native";
+import { DimensionValue } from "react-native";
 import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 const BackgroundColor = "rgba(255,255,255,0.15)";
@@ -21,7 +22,7 @@ const Shimmer: FC<ShimmerProps> = ({ style }) => {
     );
 };
 interface BarSkeletonProps {
-    width?: number;
+    width?:DimensionValue;
     height?: number;
     marginBottom?: number;
 }
@@ -58,8 +59,8 @@ function BarSkeleton({
     // );
     return (
         <View style={styles.row}>
-            <View>
-                <Shimmer style={{ width: width, height: height, marginBottom: marginBottom }} />
+            <View style={{ flex: 1 }}>
+                <Shimmer style={{ flex: 1, width: width, height: height, marginBottom: marginBottom }} />
             </View>
         </View>
     )
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
+        width: '100%',
         // marginTop: 15
     },
     bigBlock: {

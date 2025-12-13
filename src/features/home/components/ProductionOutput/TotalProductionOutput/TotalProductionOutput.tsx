@@ -32,7 +32,6 @@ function TotalProductionOutput(props: Props) {
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
-
           {/* <Text style={styles.totalPower}>{totalPower}</Text> */}
           {isLoadingOverview ? <BarSkeleton /> :
             <>

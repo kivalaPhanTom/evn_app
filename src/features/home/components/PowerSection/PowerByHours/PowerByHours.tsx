@@ -18,7 +18,7 @@ function PowerByHours() {
     (state: any) => state.powerSlice.powerByTime,
   )
   const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
-  console.log('isLoadingByHours:', isLoadingByHours)
+
   useEffect(() => {
     dispatch(getPowerByTime())
   }, [])
