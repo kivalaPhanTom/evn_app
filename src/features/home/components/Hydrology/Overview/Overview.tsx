@@ -367,7 +367,9 @@ const Overview: React.FC = () => {
           <Text style={styles.detailText}>
             {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
           </Text>
-          <HydrographicChart />
+          <HydrographicChart
+             isLoading={false}
+          />
           <InflowOutflow hydroElectricId={hydroElectricId} />
         </Animated.View>
       </View>

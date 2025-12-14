@@ -133,8 +133,11 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width }) => {
 };
 
 /* ================= MAIN ================= */
-
-const LineBarChartSkeleton: React.FC = () => {
+interface LineBarChartSkeletonProps{
+  isShowLine?:boolean
+}
+const LineBarChartSkeleton: React.FC<LineBarChartSkeletonProps>  = (props) => {
+  const {isShowLine = true} = props
   const [chartWidth, setChartWidth] = useState(0);
   const barHeights = ['25%', '35%', '60%', '45%', '75%', '90%'];
 
@@ -144,7 +147,7 @@ const LineBarChartSkeleton: React.FC = () => {
         style={styles.chartFrame}
         onLayout={(e) => setChartWidth(e.nativeEvent.layout.width)}
       >
-        {chartWidth > 0 && <ShimmerLineChart width={chartWidth} />}
+        {chartWidth > 0 && isShowLine && <ShimmerLineChart width={chartWidth} />}
 
         <View style={styles.barContainer}>
           {barHeights.map((height, index) => (
