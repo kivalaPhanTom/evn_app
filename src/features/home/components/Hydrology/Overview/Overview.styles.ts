@@ -8,17 +8,20 @@ export const styles = StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     alignItems: 'stretch',
+    width: '100%',
   },
   card: {
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
     display: 'flex',
+    backgroundColor: 'transparent',
+    width: '100%',
   },
   cardActive: {
     // Bỏ scale để detailContainer sát với tab active
     // transform: [{ scale: 1.02 }],
-    backgroundColor: '#1c056eff',
+    // backgroundColor: 'transparent',
   },
   cardContent: {
     alignItems: 'center',
@@ -26,6 +29,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: px.h(8),
     flex: 1,
     justifyContent: 'flex-start',
+    width: '100%',
+    paddingBottom: 16,
   },
   locationContainer: {
     alignItems: 'center',
@@ -69,7 +74,7 @@ export const styles = StyleSheet.create({
     borderColor: '#fff',
     borderTopWidth: 0,
     overflow: 'hidden',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'transparent',
   },
   referenceLine: {
     position: 'absolute',
@@ -90,7 +95,8 @@ export const styles = StyleSheet.create({
     fontSize: px.m(10),
     fontWeight: '600',
     marginLeft: px.h(6),
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'transparent',
     paddingHorizontal: px.h(6),
     paddingVertical: px.v(2),
     borderRadius: px.h(4),

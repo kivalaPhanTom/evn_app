@@ -105,7 +105,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
                     isLast && styles.tabContentLast,
                   ]}
                 >
-                  <View style={styles.textContainer}>
+                  <View style={[styles.textContainer, isActive && styles.textContainerActive]}>
                     <Text style={[styles.tabText, isActive && styles.tabTextActive]}>{tab.label}</Text>
                   </View>
                 </View>
