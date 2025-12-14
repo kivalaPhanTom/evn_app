@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, StyleSheet, Animated } from 'react-native'
+import { View, Text, StyleSheet, Animated, Pressable } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
+import { Shadow } from 'react-native-shadow-2'
 
 interface WaterLevelData {
   id: string
@@ -43,10 +44,11 @@ const waterData: WaterLevelData[] = [
   },
 ]
 
-const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void }> = ({
+const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void; isLastTab?: boolean }> = ({
   data,
   isActive,
   onPress,
+  isLastTab = false,
 }) => {
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
@@ -218,7 +220,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         isActive && {
           borderTopLeftRadius: px.h(12),
           borderTopRightRadius: px.h(12),
-          overflow: 'hidden',
+          // Bỏ overflow: 'hidden' để shadow không bị cắt
         },
       ])}
       onLayout={(event) => {
@@ -228,142 +230,260 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
         }
       }}
     >
-      <AnimatedCardContainer
-        onPress={onPress}
-        style={{ flex: 1 }}
-        backgroundColor={isActive ? '#1c056eff' : 'rgba(255, 255, 255, 0.05)'}
-        borderRadius={isActive ? 0 : px.h(12)}
-        opacityBg={1}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.locationContainer}>
-            <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
-            <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
-          </View>
+      {isActive ? (
+        <Shadow
+          distance={8}
+          startColor="rgba(0, 0, 0, 0.3)"
+          endColor="rgba(0, 0, 0, 0.01)"
+          offset={[0, -4]}
+          sides={{ top: true, start: true, end: true, bottom: false }}
+          containerStyle={{
+            marginRight: 0,
+            marginLeft: isLastTab ? 6 : 0,
+          }}
+          style={{
+            flex: 1,
+            zIndex: 1,
+            backgroundColor: '#1c056eff',
+            borderTopLeftRadius: px.h(12),
+            borderTopRightRadius: px.h(12),
+            overflow: 'hidden',
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Pressable
+              onPress={onPress}
+              style={[
+                {
+                  flex: 1,
+                  elevation: 0,
+                  backgroundColor: isActive ? '#1c056eff' : 'transparent',
+                  borderRadius: 0,
+                },
+              ]}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.locationContainer}>
+                  <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
+                  <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
+                </View>
 
-          <View style={styles.levelContainer}>
-            <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
-              {data.currentLevel}m
-            </Text>
-            <Text style={styles.maxLevel} numberOfLines={1}>
-              {' '}
-              / {data.maxLevel}m
-            </Text>
-          </View>
+                <View style={styles.levelContainer}>
+                  <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
+                    {data.currentLevel}m
+                  </Text>
+                  <Text style={styles.maxLevel} numberOfLines={1}>
+                    {' '}
+                    / {data.maxLevel}m
+                  </Text>
+                </View>
 
-          {containerWidth > 0 && (
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
-              <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
-                {waveAreaHeight > 0 && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: waveAreaHeight,
-                      overflow: 'visible',
-                      zIndex: 1,
-                    }}
-                  >
-                    <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
-                      <Defs>
-                        {isLowWaterLevel ? (
-                          <>
-                            <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                              <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                              <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                              <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
-                            </LinearGradient>
-                            <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                              <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                              <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                              <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
-                            </LinearGradient>
-                          </>
-                        ) : (
-                          <>
-                            <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                              <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                              <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                              <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                            </LinearGradient>
-                            <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                              <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                              <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                              <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                            </LinearGradient>
-                          </>
-                        )}
-                      </Defs>
-                      {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
-                      {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
-                    </Svg>
+                {containerWidth > 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                    <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
+                      {waveAreaHeight > 0 && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: waveAreaHeight,
+                            overflow: 'visible',
+                            zIndex: 1,
+                          }}
+                        >
+                          <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
+                            <Defs>
+                              {isLowWaterLevel ? (
+                                <>
+                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                  </LinearGradient>
+                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                  </LinearGradient>
+                                </>
+                              ) : (
+                                <>
+                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                  </LinearGradient>
+                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                  </LinearGradient>
+                                </>
+                              )}
+                            </Defs>
+                            {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
+                            {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
+                          </Svg>
+                        </View>
+                      )}
+
+                      <View
+                        style={[
+                          styles.referenceLine,
+                          {
+                            top: referenceY,
+                            width: containerWidth - px.h(16),
+                            zIndex: 10,
+                          },
+                        ]}
+                      >
+                        <View style={styles.dashedLine} />
+                        <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
+                      </View>
+                    </View>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
                   </View>
                 )}
-
-                <View
-                  style={[
-                    styles.referenceLine,
-                    {
-                      top: referenceY,
-                      width: containerWidth - px.h(16),
-                      zIndex: 10,
-                    },
-                  ]}
-                >
-                  <View style={styles.dashedLine} />
-                  <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
-                </View>
               </View>
-              <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
-            </View>
-          )}
+            </Pressable>
+          </View>
+        </Shadow>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <Pressable
+            onPress={onPress}
+            style={[
+              {
+                flex: 1,
+                elevation: 0,
+                backgroundColor: 'transparent',
+                borderRadius: 0,
+              },
+            ]}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.locationContainer}>
+                <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
+                <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
+              </View>
+
+              <View style={styles.levelContainer}>
+                <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
+                  {data.currentLevel}m
+                </Text>
+                <Text style={styles.maxLevel} numberOfLines={1}>
+                  {' '}
+                  / {data.maxLevel}m
+                </Text>
+              </View>
+
+              {containerWidth > 0 && (
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                  <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
+                    {waveAreaHeight > 0 && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: waveAreaHeight,
+                          overflow: 'visible',
+                          zIndex: 1,
+                        }}
+                      >
+                        <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
+                          <Defs>
+                            {isLowWaterLevel ? (
+                              <>
+                                <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                  <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                </LinearGradient>
+                                <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                  <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                </LinearGradient>
+                              </>
+                            ) : (
+                              <>
+                                <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                  <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                </LinearGradient>
+                                <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                  <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                </LinearGradient>
+                              </>
+                            )}
+                          </Defs>
+                          {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
+                          {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
+                        </Svg>
+                      </View>
+                    )}
+
+                    <View
+                      style={[
+                        styles.referenceLine,
+                        {
+                          top: referenceY,
+                          width: containerWidth - px.h(16),
+                          zIndex: 10,
+                        },
+                      ]}
+                    >
+                      <View style={styles.dashedLine} />
+                      <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
+                    </View>
+                  </View>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                </View>
+                )}
+              </View>
+            </Pressable>
         </View>
-      </AnimatedCardContainer>
+      )}
     </View>
   )
 }
 
 const Overview: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>(waterData[0].id)
-  const contentAnim = useRef(new Animated.Value(1)).current
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   console.log('Rendering Overview with activeTab:', activeData)
   const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SPS3'
 
   return (
-    <AnimatedCardContainer backgroundColor={'transparent'} borderRadius={0}>
+    <AnimatedCardContainer backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
       <View style={[styles.container, { margin: -24 }]}>
         <View style={styles.tabsContainer}>
-          {waterData.map((data) => (
+          {waterData.map((data, index) => (
             <WaterLevelCard
               key={data.id}
               data={data}
               isActive={activeTab === data.id}
+              isLastTab={index === waterData.length - 1}
               onPress={() => {
                 if (activeTab !== data.id) {
-                  Animated.timing(contentAnim, {
-                    toValue: 0,
-                    duration: 140,
-                    useNativeDriver: true,
-                  }).start(() => {
-                    setActiveTab(data.id)
-                    Animated.timing(contentAnim, {
-                      toValue: 1,
-                      duration: 220,
-                      useNativeDriver: true,
-                    }).start()
-                  })
+                  setActiveTab(data.id)
                 }
               }}
             />
           ))}
         </View>
 
-        <Animated.View style={[styles.detailContainer, { opacity: contentAnim }]}>
+        <View style={styles.detailContainer}>
           <Text style={styles.detailText}>
             {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
           </Text>
@@ -371,7 +491,7 @@ const Overview: React.FC = () => {
              isLoading={false}
           />
           <InflowOutflow hydroElectricId={hydroElectricId} />
-        </Animated.View>
+        </View>
       </View>
     </AnimatedCardContainer>
   )
