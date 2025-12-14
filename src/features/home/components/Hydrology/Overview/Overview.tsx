@@ -31,11 +31,12 @@ const getColorByIndex = (index: number): string => {
   return plantColors[index % plantColors.length]
 }
 
-const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void; isLastTab?: boolean }> = ({
+const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void; isLastTab?: boolean; index: number }> = ({
   data,
   isActive,
   onPress,
   isLastTab = false,
+  index,
 }) => {
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
@@ -51,8 +52,9 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   // Kiểm tra mực nước cảnh báo: currentLevel < referenceLevel
   const isLowWaterLevel = data.currentLevel < data.referenceLevel
 
-  // Thêm offset ban đầu khác nhau cho mỗi tab để tạo hiệu ứng không đồng bộ
-  const initialOffset = data.id === 'buon-tua-srah' ? 0 : data.id === 'buon-kuop' ? Math.PI : Math.PI * 1.5
+  // Thêm offset ban đầu khác nhau cho mỗi tab dựa trên index để tạo hiệu ứng không đồng bộ
+  // Mỗi tab có offset khác nhau: 0, Math.PI/2, Math.PI, etc.
+  const initialOffset = index * (Math.PI / 2)
   const waveOffset1 = useRef(new Animated.Value(initialOffset)).current
   const waveOffset2 = useRef(new Animated.Value(initialOffset * 1.2)).current
   const waveOffsetBottom1 = useRef(new Animated.Value(initialOffset * 0.8)).current
@@ -127,10 +129,17 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
       )
     }
 
+    // Tốc độ animation khác nhau dựa trên index: mỗi tab nhanh hơn 0.5s
+    const speedOffset = index * 500 // Giảm duration để animation nhanh hơn
+    const duration1 = Math.max(3000, 6000 - speedOffset) // Tối thiểu 3s
+    const duration2 = Math.max(4000, 7500 - speedOffset) // Tối thiểu 4s
+    const durationBottom1 = Math.max(3500, 6500 - speedOffset) // Tối thiểu 3.5s
+    const durationBottom2 = Math.max(4500, 8000 - speedOffset) // Tối thiểu 4.5s
+
     const anim1 = Animated.loop(
       Animated.timing(waveOffset1, {
         toValue: initialOffset + Math.PI * 2,
-        duration: 6000,
+        duration: duration1,
         useNativeDriver: false,
       }),
       { iterations: -1 },
@@ -138,7 +147,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
     const anim2 = Animated.loop(
       Animated.timing(waveOffset2, {
         toValue: initialOffset * 1.2 + Math.PI * 2,
-        duration: 7500,
+        duration: duration2,
         useNativeDriver: false,
       }),
       { iterations: -1 },
@@ -146,7 +155,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
     const animBottom1 = Animated.loop(
       Animated.timing(waveOffsetBottom1, {
         toValue: initialOffset * 0.8 + Math.PI * 2,
-        duration: 6500,
+        duration: durationBottom1,
         useNativeDriver: false,
       }),
       { iterations: -1 },
@@ -154,7 +163,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
     const animBottom2 = Animated.loop(
       Animated.timing(waveOffsetBottom2, {
         toValue: initialOffset * 1.1 + Math.PI * 2,
-        duration: 8000,
+        duration: durationBottom2,
         useNativeDriver: false,
       }),
       { iterations: -1 },
@@ -528,6 +537,7 @@ const Overview: React.FC = () => {
               data={data}
               isActive={activeTab === data.id}
               isLastTab={index === waterData.length - 1}
+              index={index}
               onPress={() => {
                 if (activeTab !== data.id) {
                   setActiveTab(data.id)
