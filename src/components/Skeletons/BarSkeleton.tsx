@@ -22,16 +22,18 @@ const Shimmer: FC<ShimmerProps> = ({ style }) => {
     );
 };
 interface BarSkeletonProps {
-    width?:DimensionValue;
+    width?: DimensionValue;
     height?: number;
     marginBottom?: number;
     marginTop?: number;
+    alignSelf?: ViewStyle["alignSelf"];
 }
 function BarSkeleton({
     width = 120,
     height = 50,
     marginBottom = 7,
     marginTop = 5,
+    alignSelf
 }: BarSkeletonProps) {
     // const opacity = useRef(new Animated.Value(0.4)).current;
 
@@ -62,7 +64,17 @@ function BarSkeleton({
     return (
         <View style={styles.row}>
             <View style={{ flex: 1, marginTop: marginTop }}>
-                <Shimmer style={{ flex: 1, width: width, height: height, marginBottom: marginBottom }} />
+                <Shimmer
+                    // style={{ width: width, height: height, marginBottom: marginBottom }} 
+                    style={[
+                        {
+                            width,
+                            height,
+                            marginBottom,
+                        },
+                        alignSelf ? { alignSelf } : null,
+                    ]}
+                />
             </View>
         </View>
     )
