@@ -7,6 +7,11 @@ import { styles } from './Overview.styles'
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
 import { Shadow } from 'react-native-shadow-2'
+import { useDispatch, useSelector } from 'react-redux'
+import { getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
+import { RootState } from '@/core/redux/store'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 
 interface WaterLevelData {
   id: string
@@ -15,34 +20,16 @@ interface WaterLevelData {
   maxLevel: number
   referenceLevel: number
   color?: string
+  abbreviation?: string
 }
 
-const waterData: WaterLevelData[] = [
-  {
-    id: 'buon-tua-srah',
-    name: 'Buôn Tua Srah',
-    currentLevel: 420,
-    maxLevel: 700,
-    referenceLevel: 400,
-    color: '#FB923C',
-  },
-  {
-    id: 'buon-kuop',
-    name: 'Buôn Kuốp',
-    currentLevel: 300,
-    maxLevel: 700,
-    referenceLevel: 400,
-    color: '#14B8A6',
-  },
-  {
-    id: 'srepok-3',
-    name: 'Srepok 3',
-    currentLevel: 600,
-    maxLevel: 700,
-    referenceLevel: 400,
-    color: '#00C0E8',
-  },
-]
+// Mảng màu sắc tuần tự cho các nhà máy
+const plantColors = ['#FB923C', '#14B8A6', '#00C0E8', '#7DF0FF']
+
+// Lấy màu sắc tuần tự theo index
+const getColorByIndex = (index: number): string => {
+  return plantColors[index % plantColors.length]
+}
 
 const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void; isLastTab?: boolean }> = ({
   data,
@@ -458,11 +445,78 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 }
 
 const Overview: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>(waterData[0].id)
+  const dispatch = useDispatch()
+  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+  
+  // Chuyển đổi dữ liệu từ API sang format của component
+  const waterData: WaterLevelData[] = React.useMemo(() => {
+    if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
+      return []
+    }
+    return hydrologyPlants.plantsData.map((plant, index) => ({
+      id: String(plant.id),
+      name: plant.name,
+      currentLevel: plant.currentLevel,
+      maxLevel: plant.maxLevel,
+      referenceLevel: plant.referenceLevel,
+      color: getColorByIndex(index),
+      abbreviation: plant.abbreviation,
+    }))
+  }, [hydrologyPlants?.plantsData])
+
+  const [activeTab, setActiveTab] = useState<string>('')
+
+  useEffect(() => {
+    dispatch(getHydrologyPlantsParam())
+  }, [dispatch])
+
+  // Set activeTab khi data được load
+  useEffect(() => {
+    if (waterData.length > 0 && !activeTab) {
+      setActiveTab(waterData[0].id)
+    }
+  }, [waterData, activeTab])
+
+  console.log('hydrologyPlants:', hydrologyPlants)
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   console.log('Rendering Overview with activeTab:', activeData)
-  const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SPS3'
+  const hydroElectricId = activeData?.abbreviation || ''
+
+  // Hiển thị skeleton loading nếu chưa có dữ liệu
+  if (!waterData || waterData.length === 0) {
+    return (
+      <AnimatedCardContainer backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
+        <View style={[styles.container, { margin: -24 }]}>
+          {/* Skeleton cho tabs */}
+          <View style={styles.tabsContainer}>
+            {[1, 2, 3].map((index) => (
+              <View key={index} style={[styles.card, { flex: 1 }]}>
+                <View style={styles.cardContent}>
+                  <BarSkeleton width={'80%'} height={20} marginTop={8} />
+                  <BarSkeleton width={'60%'} height={16} marginTop={12} />
+                  <View style={{ marginTop: px.v(12), width: '100%', alignItems: 'center' }}>
+                    <BarSkeleton width={'90%'} height={px.v(120)} marginTop={0} />
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Skeleton cho detail container */}
+          <View style={styles.detailContainer}>
+            <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
+            <View style={{ marginTop: px.v(16) }}>
+              <LineBarChartSkeleton isShowLine={false} />
+            </View>
+            <View style={{ marginTop: px.v(16) }}>
+              <BarSkeleton width={'100%'} height={100} marginTop={0} />
+            </View>
+          </View>
+        </View>
+      </AnimatedCardContainer>
+    )
+  }
 
   return (
     <AnimatedCardContainer backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
@@ -484,13 +538,15 @@ const Overview: React.FC = () => {
         </View>
 
         <View style={styles.detailContainer}>
-          <Text style={styles.detailText}>
-            {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
-          </Text>
-          <HydrographicChart
-             isLoading={false}
-          />
-          <InflowOutflow hydroElectricId={hydroElectricId} />
+          {activeData && (
+            <>
+              <Text style={styles.detailText}>
+                {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
+              </Text>
+              <HydrographicChart isLoading={false} />
+              <InflowOutflow hydroElectricId={hydroElectricId} />
+            </>
+          )}
         </View>
       </View>
     </AnimatedCardContainer>

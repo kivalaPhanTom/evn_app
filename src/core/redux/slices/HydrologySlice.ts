@@ -20,6 +20,16 @@ interface hydrologyState {
       value: number
     }[]
   }
+  hydrologyPlants: {
+    plantsData: {
+      id: number
+      abbreviation: string
+      name: string
+      maxLevel: number
+      currentLevel: number
+      referenceLevel: number
+    }[]
+  }
 }
 const initialState: hydrologyState = {
   inboundTraffic: 0,
@@ -30,6 +40,9 @@ const initialState: hydrologyState = {
     qIn: [],
     qOut: [],
   },
+  hydrologyPlants: {
+    plantsData: [],
+  },
 }
 
 const hydrologySlice = createSlice({
@@ -39,8 +52,11 @@ const hydrologySlice = createSlice({
     setInflowOutflow: (state, action) => {
       state.inflowOutflow = action.payload
     },
+    setHydrologyPlantsParam: (state, action) => {
+      state.hydrologyPlants = action.payload
+    },
   },
 })
 const { reducer } = hydrologySlice
-export const { setInflowOutflow } = hydrologySlice.actions
+export const { setInflowOutflow, setHydrologyPlantsParam } = hydrologySlice.actions
 export default reducer
