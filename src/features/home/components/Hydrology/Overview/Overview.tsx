@@ -235,7 +235,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
           sides={{ top: true, start: true, end: true, bottom: false }}
           containerStyle={{
             marginRight: 0,
-            marginLeft: isLastTab ? 6 : 0,
+            marginLeft: isLastTab ? 0 : 0, // Sử dụng isLastTab để kiểm tra Shadow có tự động tạo margin
           }}
           style={{
             flex: 1,
