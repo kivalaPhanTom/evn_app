@@ -52,7 +52,23 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2,
+    paddingHorizontal: px.h(16),
+    paddingVertical: px.v(8),
+  },
+  textContainerActive: {
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(100, 200, 255, 0.8)', // Light blue border like in image
+    backgroundColor: 'rgba(30, 50, 80, 0.6)', // Dark blue background
+    shadowColor: 'rgba(100, 200, 255, 0.5)', // Glowing effect
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 5, // For Android
+    width: '50%',
   },
   tabContentFirst: {
     borderTopLeftRadius: 12,
@@ -92,8 +108,11 @@ const styles = StyleSheet.create({
     lineHeight: px.m(20),
   },
   tabTextActive: {
-    color: '#fff',
+    color: '#E5E7EB', // Light gray/off-white like in image
     fontWeight: '700',
+    textShadowColor: 'rgba(100, 200, 255, 0.6)', // Glowing text effect
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 4,
   },
 })
 
