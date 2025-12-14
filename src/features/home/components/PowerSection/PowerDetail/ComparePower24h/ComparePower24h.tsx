@@ -67,7 +67,10 @@ function ComparePower24h() {
           isLoading ={isLoadingComparePower}
         />
         {/* Compare Detail Stats */}
-        <CompareDetailStats summary={Summary} />
+        <CompareDetailStats 
+        summary={Summary} 
+        isLoading = {isLoadingComparePower}
+        />
       </View>
     </AnimatedCardContainer>
   )
