@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 function ComparePower24h() {
   const dispatch = useDispatch()
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
+  const {isLoadingComparePower} = useSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
 
   const [range, setRange] = useState({
@@ -63,9 +64,13 @@ function ComparePower24h() {
           lineData2={compareLineChartData}
           range={range}
           onChangeDateRage={onChangeDateRage}
+          isLoading ={isLoadingComparePower}
         />
         {/* Compare Detail Stats */}
-        <CompareDetailStats summary={Summary} />
+        <CompareDetailStats 
+        summary={Summary} 
+        isLoading = {isLoadingComparePower}
+        />
       </View>
     </AnimatedCardContainer>
   )

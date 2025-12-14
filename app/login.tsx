@@ -45,14 +45,13 @@ export default function LoginScreen() {
           <View style={styles.logoWrap}>
             <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(200) }} contentFit="contain" />
           </View>
-
+       
           <View style={styles.titleWrap}>
             <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
           </View>
 
           {/* Form */}
           <View style={styles.formWrap}>
-         
             <LinearGradient
               pointerEvents="none"
               colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
