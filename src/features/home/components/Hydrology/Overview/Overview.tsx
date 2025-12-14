@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { View, Text, StyleSheet, Animated } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
+import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart } from '@/core/redux/Actions/HydrologyActions'
+
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
 
@@ -327,13 +330,16 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 }
 
 const Overview: React.FC = () => {
+  const dispatch = useDispatch()
   const [activeTab, setActiveTab] = useState<string>(waterData[0].id)
   const contentAnim = useRef(new Animated.Value(1)).current
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   console.log('Rendering Overview with activeTab:', activeData)
   const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SPS3'
-
+  useEffect(() => {
+    dispatch(getHydrographicChart({ companyId: "BTS" }))
+  }, [])
   return (
     <AnimatedCardContainer backgroundColor={'transparent'} borderRadius={0}>
       <View style={[styles.container, { margin: -24 }]}>
@@ -368,7 +374,7 @@ const Overview: React.FC = () => {
             {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
           </Text>
           <HydrographicChart
-             isLoading={false}
+            isLoading={false}
           />
           <InflowOutflow hydroElectricId={hydroElectricId} />
         </Animated.View>

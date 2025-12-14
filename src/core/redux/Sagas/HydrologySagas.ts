@@ -1,9 +1,24 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getHydrologyflowChart, getInflowOutflow } from '../Actions/HydrologyActions'
+import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import { setInflowOutflow } from '../slices/HydrologySlice'
 
-function* getHydrologyflowChartApiSaga(): Generator {}
+function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
+  try {
+    const payload = action.payload as { companyId: string }
+    console.log('PAYLOADD:', payload)
+    const companyId = payload?.companyId || ''
+    const res = yield call(Service.getHydrologyGraphicChartApi, companyId)
+    console.log('redSSSSSSS:', res.data)
+    if (res.status === 200) {
+
+    }
+  } catch (error) {
+
+  }
+}
+
+function* getHydrologyflowChartApiSaga(): Generator { }
 
 function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): Generator {
   try {
@@ -21,6 +36,9 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
     console.log('getInflowOutflow error:', error)
   }
 }
+function* getHydrologyChartApi() {
+  yield takeEvery(getHydrographicChart, getHydrographicChartSaga)
+}
 
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
@@ -31,5 +49,5 @@ function* getInflowOutflowApi() {
 }
 
 export function* hydrologySagaList() {
-  yield all([getHydrologyflowChartApi(), getInflowOutflowApi()])
+  yield all([getHydrologyChartApi(), getHydrologyflowChartApi(), getInflowOutflowApi()])
 }

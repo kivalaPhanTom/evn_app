@@ -19,31 +19,62 @@ function HydrographicChart(props: HydrographicChartProps) {
   const { isLoading = false } = props
   const [chartHeight, setChartHeight] = useState(0);
 
+  // const hourlyData = [
+  //   { values: [120], avgVolume: 420 },
+  //   { values: [110, 105, 115, 120], avgVolume: 410 },
+  //   { values: [100, 95, 105, 110], avgVolume: 400 },
+  //   { values: [90, 85, 95, 100], avgVolume: 380 },
+  //   { values: [80, 75, 85, 90], avgVolume: 360 },
+  //   { values: [70, 65, 75, 80], avgVolume: 340 },
+  //   { values: [120, 130, 140, 150], avgVolume: 420 },
+  //   { values: [160, 170, 180, 190], avgVolume: 450 },
+  //   { values: [200, 210, 220, 230], avgVolume: 480 },
+  //   { values: [210, 220, 215, 225], avgVolume: 490 },
+  //   { values: [220, 230, 225, 235], avgVolume: 500 },
+  //   { values: [230, 240, 235, 245], avgVolume: 600 },
+  //   { values: [250, 260, 270, 280], avgVolume: 500 },
+  //   { values: [240, 250, 260, 270], avgVolume: 500 },
+  //   { values: [230, 240, 250, 260], avgVolume: 490 },
+  //   { values: [220, 230, 240, 250], avgVolume: 480 },
+  //   { values: [210, 220, 230, 240], avgVolume: 470 },
+  //   { values: [200, 210, 220, 230], avgVolume: 460 },
+  //   { values: [210, 180, 310, 290], avgVolume: 420 },
+  //   { values: [210, 205, 210, 215], avgVolume: 450 },
+  //   { values: [190, 185, 195, 200], avgVolume: 450 },
+  //   { values: [110, 130, 105, 90], avgVolume: 280 },
+  //   { values: [120, 140, 115, 135], avgVolume: 280 },
+  //   { values: [50, 95, 100, 120], avgVolume: 280 },
+  // ];
   const hourlyData = [
-    { values: [120, 115, 125, 130], avgVolume: 420 },
-    { values: [110, 105, 115, 120], avgVolume: 410 },
-    { values: [100, 95, 105, 110], avgVolume: 400 },
-    { values: [90, 85, 95, 100], avgVolume: 380 },
-    { values: [80, 75, 85, 90], avgVolume: 360 },
-    { values: [70, 65, 75, 80], avgVolume: 340 },
-    { values: [120, 130, 140, 150], avgVolume: 420 },
-    { values: [160, 170, 180, 190], avgVolume: 450 },
-    { values: [200, 210, 220, 230], avgVolume: 480 },
-    { values: [210, 220, 215, 225], avgVolume: 490 },
-    { values: [220, 230, 225, 235], avgVolume: 500 },
-    { values: [230, 240, 235, 245], avgVolume: 600 },
-    { values: [250, 260, 270, 280], avgVolume: 500 },
-    { values: [240, 250, 260, 270], avgVolume: 500 },
-    { values: [230, 240, 250, 260], avgVolume: 490 },
-    { values: [220, 230, 240, 250], avgVolume: 480 },
-    { values: [210, 220, 230, 240], avgVolume: 470 },
-    { values: [200, 210, 220, 230], avgVolume: 460 },
-    { values: [210, 180, 310, 290], avgVolume: 420 },
-    { values: [210, 205, 210, 215], avgVolume: 450 },
-    { values: [190, 185, 195, 200], avgVolume: 450 },
-    { values: [110, 130, 105, 90], avgVolume: 280 },
-    { values: [120, 140, 115, 135], avgVolume: 280 },
-    { values: [50, 95, 100, 120], avgVolume: 280 },
+    { value: 120, avgVolume: 420 },
+    { value: 110, avgVolume: 410 },
+    { value: 100, avgVolume: 400 },
+    { value: 90, avgVolume: 380 },
+    { value: 80, avgVolume: 360 },
+
+    { value: 120, avgVolume: 420 },
+    { value: 110, avgVolume: 410 },
+    { value: 100, avgVolume: 400 },
+    { value: 90, avgVolume: 380 },
+    { value: 80, avgVolume: 360 },
+
+    { value: 120, avgVolume: 420 },
+    { value: 110, avgVolume: 410 },
+    { value: 100, avgVolume: 400 },
+    { value: 90, avgVolume: 380 },
+    { value: 80, avgVolume: 360 },
+
+    { value: 120, avgVolume: 420 },
+    { value: 110, avgVolume: 410 },
+    { value: 100, avgVolume: 400 },
+    { value: 90, avgVolume: 380 },
+    { value: 80, avgVolume: 360 },
+
+    { value: 120, avgVolume: 420 },
+    { value: 110, avgVolume: 410 },
+    { value: 100, avgVolume: 400 },
+    { value: 90, avgVolume: 380 },
+
   ];
 
   // Compute maxValue from the largest avgVolume so grid scales to data.
@@ -52,18 +83,26 @@ function HydrographicChart(props: HydrographicChartProps) {
   const computedMaxValue = Math.ceil(maxAvgVolume / 50) * 50;
 
   // Memoize bar data and water drops to avoid recalculating on every render
+  // const barData = useMemo(() => {
+  //   const data: any[] = [];
+  //   hourlyData.forEach((hourData) => {
+  //     hourData.values.forEach((value) => {
+  //       data.push({
+  //         value,
+  //         frontColor: getBarColor(value),
+  //         label: '',
+  //       });
+  //     });
+  //   });
+  //   return data;
+  // }, [hourlyData]);
+
   const barData = useMemo(() => {
-    const data: any[] = [];
-    hourlyData.forEach((hourData) => {
-      hourData.values.forEach((value) => {
-        data.push({
-          value,
-          frontColor: getBarColor(value),
-          label: '',
-        });
-      });
-    });
-    return data;
+    return hourlyData.map(item => ({
+      value: item.value,
+      frontColor: getBarColor(item.value),
+      borderRadius: 6,
+    }));
   }, [hourlyData]);
 
   const waterDrops = useMemo(() => {
@@ -76,11 +115,18 @@ function HydrographicChart(props: HydrographicChartProps) {
 
   const yAxisLabelWidth = 40;
   // Make the chart compact so it doesn't take too much vertical space
-  const barWidth = SCREEN_WIDTH * 0.028;
-  const spacing = SCREEN_WIDTH * 0.01;
+  // const barWidth = SCREEN_WIDTH * 0.028;
+  // const spacing = SCREEN_WIDTH * 0.01;
+
+  const barWidth = SCREEN_WIDTH * 0.05; // to hơn trước
+  const spacing = SCREEN_WIDTH * 0.04;
+
   // derive total bars from data rather than hardcoding
-  const totalBars = hourlyData.length * 4;
+  // const totalBars = hourlyData.length * 4;
+  const totalBars = hourlyData.length;
   const barTotalWidth = barWidth + spacing;
+  const initialSpacing = spacing / 2
+  const verticalLinesShift = initialSpacing;
   const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
   const dynamicChartHeight = SCREEN_WIDTH * 0.45;
 
@@ -103,7 +149,8 @@ function HydrographicChart(props: HydrographicChartProps) {
     if (height && height !== chartHeight) setChartHeight(height);
   };
 
-  const verticalLineSpacing = barTotalWidth * 4; // every 4 bars
+  // const verticalLineSpacing = barTotalWidth * 4; // every 4 bars
+  const verticalLineSpacing = barTotalWidth;
   const waterDropSpacing = barTotalWidth * 4;
 
   const yAxisLabels = [];
@@ -134,7 +181,7 @@ function HydrographicChart(props: HydrographicChartProps) {
   };
 
   const thresholdTop = calculateThresholdPosition();
-
+  console.log('barData:', barData)
   return (
     <View style={styles.mainContainer}>
       {isLoading ? <LineBarChartSkeleton
@@ -145,7 +192,7 @@ function HydrographicChart(props: HydrographicChartProps) {
             <Svg height="2" width="30" style={styles.legendLine}>
               <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
             </Svg>
-            <Text style={styles.legendText}>Mức nước chết</Text>
+            <Text style={styles.legendText}>Mực nước chết</Text>
           </View>
 
           <View style={styles.chartContainer}>
@@ -200,57 +247,52 @@ function HydrographicChart(props: HydrographicChartProps) {
               <View style={{ width: chartContentWidth }}>
                 {/* Chart wrapper */}
                 <View style={styles.chartWrapper} onLayout={handleChartLayout}>
-                  <BarChart
-                    data={barData}
-                    width={chartContentWidth}
-                    height={dynamicChartHeight}
-                    barWidth={barWidth}
-                    spacing={spacing}
-                    barBorderRadius={4}
-                    backgroundColor="transparent"
-
-                    maxValue={maxValue}
-                    noOfSections={sections}
-
-                    yAxisColor="transparent"
-                    hideYAxisText={true}
-                    yAxisLabelWidth={0}
-
-                    xAxisColor="transparent"
-                    xAxisLabelTextStyle={{
-                      color: 'transparent',
-                      fontSize: SCREEN_WIDTH * 0.028,
-                    }}
-
-                    hideRules={true}
-                    // We draw our own rules (grid lines) with an SVG overlay so
-                    // label positions exactly match the grid. See overlay below.
-                    rulesColor="#4A5568"
-                    rulesType="dashed"
-                    dashWidth={4}
-                    dashGap={4}
-
-                    showReferenceLine1={false}
-
-                    isAnimated={false}
-                    animationDuration={0}
-
-                    showVerticalLines
-                    verticalLinesColor="#4A5568"
-                    verticalLinesStrokeDashArray={[4, 4]}
-                    verticalLinesThickness={1}
-                    verticalLinesSpacing={verticalLineSpacing}
-
-                    scrollToEnd={false}
-                    scrollAnimation={false}
-                  />
-
-                  {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
                   {(chartHeight || dynamicChartHeight) > 0 && (
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        styles.scrollableThresholdLine,
+                        {
+                            zIndex: 1, // 👈 THẤP
+                          width: chartContentWidth,
+                          height: chartHeight || dynamicChartHeight,
+                        },
+                      ]}
+                    >
+                      <Svg
+                        width={chartContentWidth}
+                        height={chartHeight || dynamicChartHeight}
+                      >
+                        {barData.map((_, index) => {
+                          const x =
+                            initialSpacing +
+                            barWidth / 2 +
+                            index * barTotalWidth +
+                            barTotalWidth / 2;
+
+                          return (
+                            <Line
+                              key={`slot-line-${index}`}
+                              x1={x}
+                              y1={0}
+                              x2={x}
+                              y2={chartHeight || dynamicChartHeight}
+                              stroke="#4A5568"
+                              strokeWidth={1}
+                              strokeDasharray={[4, 4]}
+                            />
+                          );
+                        })}
+                      </Svg>
+                    </View>
+                  )}
+
+                     {(chartHeight || dynamicChartHeight) > 0 && (
                     <View
                       style={[
                         styles.scrollableThresholdLine,
                         {
+                           zIndex: 0, // 👈 BẮT BUỘC
                           top: 0,
                           left: 0,
                           width: chartContentWidth,
@@ -307,13 +349,65 @@ function HydrographicChart(props: HydrographicChartProps) {
                       </Svg>
                     </View>
                   )}
+                  <BarChart
+                    data={barData}
+                    width={chartContentWidth}
+                    height={dynamicChartHeight}
+                    barWidth={barWidth}
+                    spacing={spacing}
+                    barBorderRadius={4}
+                    backgroundColor="transparent"
+
+                    maxValue={maxValue}
+                    noOfSections={sections}
+
+                    yAxisColor="transparent"
+                    hideYAxisText={true}
+                    yAxisLabelWidth={0}
+
+                    xAxisColor="transparent"
+                    xAxisLabelTextStyle={{
+                      color: 'transparent',
+                      fontSize: SCREEN_WIDTH * 0.028,
+                    }}
+
+                    hideRules={true}
+                    // We draw our own rules (grid lines) with an SVG overlay so
+                    // label positions exactly match the grid. See overlay below.
+                    rulesColor="#4A5568"
+                    rulesType="dashed"
+                    dashWidth={4}
+                    dashGap={4}
+
+                    showReferenceLine1={false}
+
+                    isAnimated={false}
+                    animationDuration={0}
+
+                    initialSpacing={initialSpacing}
+                    // initialSpacing={initialSpacing}
+                    // verticalLinesShift={verticalLinesShift}   // ✅ DÒNG QUYẾT ĐỊNH
+                    // // showVerticalLines
+                    // verticalLinesColor="#4A5568"
+                    // verticalLinesStrokeDashArray={[4, 4]}
+                    verticalLinesSpacing={barTotalWidth}
+                    verticalLinesThickness={1}
+                    // verticalLinesSpacing={verticalLineSpacing}
+
+                    scrollToEnd={false}
+                    scrollAnimation={false}
+                  />
+
+                  {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
+               
                 </View>
 
                 {/* Custom X-axis labels - chính giữa 4 cột */}
                 <View style={styles.customXAxisContainer}>
-                  {hourlyData.map((_, hourIndex) => {
+                  {/* {hourlyData.map((_, hourIndex) => {
                     const groupWidth = 4 * barTotalWidth;
-                    const labelPosition = (hourIndex * groupWidth) + (groupWidth / 2);
+                    // const labelPosition = (hourIndex * groupWidth) + (groupWidth / 2);
+                    const labelPosition = hourIndex * barTotalWidth + barWidth / 2;
 
                     return (
                       <View
@@ -326,7 +420,24 @@ function HydrographicChart(props: HydrographicChartProps) {
                         <Text style={styles.customXAxisText}>{hourIndex}</Text>
                       </View>
                     );
+                  })} */}
+                  {hourlyData.map((_, index) => {
+                    const labelPosition =
+                      barTotalWidth * index + barTotalWidth / 2;
+
+                    return (
+                      <View
+                        key={index}
+                        style={[
+                          styles.customXAxisLabel,
+                          { left: labelPosition },
+                        ]}
+                      >
+                        <Text style={styles.customXAxisText}>{index}</Text>
+                      </View>
+                    );
                   })}
+
                 </View>
 
                 {/* Water drops */}
