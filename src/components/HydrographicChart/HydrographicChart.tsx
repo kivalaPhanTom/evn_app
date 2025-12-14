@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, LayoutChangeEvent, ScrollView } fro
 import { BarChart } from 'react-native-gifted-charts';
 import Svg, { Line } from 'react-native-svg';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
+import LineBarChartSkeleton from '../Skeletons/LineBarChartSkeleton';
 
 interface Props { }
 
@@ -11,8 +12,11 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const getBarColor = (value: number): string => {
   return value >= 180 ? '#5B9FED' : '#E74C5C';
 };
-
-function HydrographicChart() {
+interface HydrographicChartProps {
+  isLoading: boolean
+}
+function HydrographicChart(props: HydrographicChartProps) {
+  const { isLoading = false } = props
   const [chartHeight, setChartHeight] = useState(0);
 
   const hourlyData = [
@@ -133,210 +137,214 @@ function HydrographicChart() {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.container}>
-        <View style={styles.legendContainer}>
-          <Svg height="2" width="30" style={styles.legendLine}>
-            <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
-          </Svg>
-          <Text style={styles.legendText}>Mức nước chết</Text>
-        </View>
-
-        <View style={styles.chartContainer}>
-          {/* Sticky Y-axis bên trái */}
-          <View style={styles.stickyLeftColumn}>
-            <View style={[styles.yAxisContainer, { height: chartHeight || dynamicChartHeight }]}>
-              {yAxisLabels.map((label, index) => {
-                // Use precomputed yPositions to ensure exact match with SVG grid
-                const lineTop = yPositions[index];
-                const fontSize = SCREEN_WIDTH * 0.026;
-                const containerTop = lineTop - (fontSize / 2);
-
-                return (
-                  <View
-                    key={index}
-                    style={[
-                      styles.yAxisLabelWrapper,
-                      {
-                        position: 'absolute',
-                        top: containerTop,
-                        height: fontSize,
-                        justifyContent: 'center',
-                      }
-                    ]}
-                  >
-                    <Text style={[styles.yAxisText, { fontSize, lineHeight: fontSize }]}>{label}</Text>
-                  </View>
-                );
-              })}
-            </View>
+      {isLoading ? <LineBarChartSkeleton
+        isShowLine={false}
+      /> :
+        <View style={styles.container}>
+          <View style={styles.legendContainer}>
+            <Svg height="2" width="30" style={styles.legendLine}>
+              <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
+            </Svg>
+            <Text style={styles.legendText}>Mức nước chết</Text>
           </View>
 
-          {/* Sticky label "180m" bên phải màn hình */}
-          {chartHeight > 0 && (
-            <View
-              style={[
-                styles.stickyRightLabel,
-                { top: thresholdTop - 10 }
-              ]}
-            >
-              <Text style={styles.thresholdLabelText}>180m</Text>
-            </View>
-          )}
-
-          {/* Scrollable content: Chart + Water drops */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            style={styles.scrollView}
-          >
-            <View style={{ width: chartContentWidth }}>
-              {/* Chart wrapper */}
-              <View style={styles.chartWrapper} onLayout={handleChartLayout}>
-                <BarChart
-                  data={barData}
-                  width={chartContentWidth}
-                  height={dynamicChartHeight}
-                  barWidth={barWidth}
-                  spacing={spacing}
-                  barBorderRadius={4}
-                  backgroundColor="transparent"
-
-                  maxValue={maxValue}
-                  noOfSections={sections}
-
-                  yAxisColor="transparent"
-                  hideYAxisText={true}
-                  yAxisLabelWidth={0}
-
-                  xAxisColor="transparent"
-                  xAxisLabelTextStyle={{
-                    color: 'transparent',
-                    fontSize: SCREEN_WIDTH * 0.028,
-                  }}
-
-                  hideRules={true}
-                  // We draw our own rules (grid lines) with an SVG overlay so
-                  // label positions exactly match the grid. See overlay below.
-                  rulesColor="#4A5568"
-                  rulesType="dashed"
-                  dashWidth={4}
-                  dashGap={4}
-
-                  showReferenceLine1={false}
-
-                  isAnimated={false}
-                  animationDuration={0}
-
-                  showVerticalLines
-                  verticalLinesColor="#4A5568"
-                  verticalLinesStrokeDashArray={[4, 4]}
-                  verticalLinesThickness={1}
-                  verticalLinesSpacing={verticalLineSpacing}
-
-                  scrollToEnd={false}
-                  scrollAnimation={false}
-                />
-
-                {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
-                {(chartHeight || dynamicChartHeight) > 0 && (
-                  <View
-                    style={[
-                      styles.scrollableThresholdLine,
-                      {
-                        top: 0,
-                        left: 0,
-                        width: chartContentWidth,
-                        height: chartHeight || dynamicChartHeight,
-                      }
-                    ]}
-                  >
-                    <Svg height={chartHeight || dynamicChartHeight} width={chartContentWidth}>
-                      {yAxisLabels.map((_, index) => {
-                        const y = yPositions[index];
-                        return (
-                          <Line
-                            key={`grid-${index}`}
-                            x1="0"
-                            y1={y}
-                            x2={chartContentWidth}
-                            y2={y}
-                            stroke="#4A5568"
-                            strokeWidth="1"
-                            strokeDasharray={[4, 4]}
-                            opacity={0.85}
-                          />
-                        );
-                      })}
-
-                      {/* threshold line (red dashed) */}
-                      <Line
-                        x1="0"
-                        y1={thresholdTop}
-                        x2={chartContentWidth}
-                        y2={thresholdTop}
-                        stroke="#E74C5C"
-                        strokeWidth="2"
-                        strokeDasharray={[6, 4]}
-                      />
-
-                      {/* x-axis baseline: draw at the bottom of chart area so bars sit on it */}
-                      {
-                        (() => {
-                          const actualHeight = chartHeight || dynamicChartHeight;
-                              const baselineY = actualHeight - bottomPadding - 1 - barBottomInset; // match barBottomInset
-                          return (
-                            <Line
-                              x1="0"
-                              y1={baselineY}
-                              x2={chartContentWidth}
-                              y2={baselineY}
-                              stroke="rgba(255,255,255,0.06)"
-                              strokeWidth="1"
-                            />
-                          );
-                        })()
-                      }
-                    </Svg>
-                  </View>
-                )}
-              </View>
-
-              {/* Custom X-axis labels - chính giữa 4 cột */}
-              <View style={styles.customXAxisContainer}>
-                {hourlyData.map((_, hourIndex) => {
-                  const groupWidth = 4 * barTotalWidth;
-                  const labelPosition = (hourIndex * groupWidth) + (groupWidth / 2);
+          <View style={styles.chartContainer}>
+            {/* Sticky Y-axis bên trái */}
+            <View style={styles.stickyLeftColumn}>
+              <View style={[styles.yAxisContainer, { height: chartHeight || dynamicChartHeight }]}>
+                {yAxisLabels.map((label, index) => {
+                  // Use precomputed yPositions to ensure exact match with SVG grid
+                  const lineTop = yPositions[index];
+                  const fontSize = SCREEN_WIDTH * 0.026;
+                  const containerTop = lineTop - (fontSize / 2);
 
                   return (
                     <View
-                      key={hourIndex}
+                      key={index}
                       style={[
-                        styles.customXAxisLabel,
-                        { left: labelPosition }
+                        styles.yAxisLabelWrapper,
+                        {
+                          position: 'absolute',
+                          top: containerTop,
+                          height: fontSize,
+                          justifyContent: 'center',
+                        }
                       ]}
                     >
-                      <Text style={styles.customXAxisText}>{hourIndex}</Text>
+                      <Text style={[styles.yAxisText, { fontSize, lineHeight: fontSize }]}>{label}</Text>
                     </View>
                   );
                 })}
               </View>
+            </View>
 
-              {/* Water drops */}
-              <View style={styles.waterDropContainer}>
-                <View style={[styles.waterDropRow, { paddingLeft: barTotalWidth / 2 - 5 }]}>
-                  {waterDrops.map((drop, index) => (
-                    <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
-                      <WaterDrop percent={drop.percent}/>
-                      <Text style={[styles.volumeText, { marginTop: -8 }]}>{drop.volume}</Text>
+            {/* Sticky label "180m" bên phải màn hình */}
+            {chartHeight > 0 && (
+              <View
+                style={[
+                  styles.stickyRightLabel,
+                  { top: thresholdTop - 10 }
+                ]}
+              >
+                <Text style={styles.thresholdLabelText}>180m</Text>
+              </View>
+            )}
+
+            {/* Scrollable content: Chart + Water drops */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              style={styles.scrollView}
+            >
+              <View style={{ width: chartContentWidth }}>
+                {/* Chart wrapper */}
+                <View style={styles.chartWrapper} onLayout={handleChartLayout}>
+                  <BarChart
+                    data={barData}
+                    width={chartContentWidth}
+                    height={dynamicChartHeight}
+                    barWidth={barWidth}
+                    spacing={spacing}
+                    barBorderRadius={4}
+                    backgroundColor="transparent"
+
+                    maxValue={maxValue}
+                    noOfSections={sections}
+
+                    yAxisColor="transparent"
+                    hideYAxisText={true}
+                    yAxisLabelWidth={0}
+
+                    xAxisColor="transparent"
+                    xAxisLabelTextStyle={{
+                      color: 'transparent',
+                      fontSize: SCREEN_WIDTH * 0.028,
+                    }}
+
+                    hideRules={true}
+                    // We draw our own rules (grid lines) with an SVG overlay so
+                    // label positions exactly match the grid. See overlay below.
+                    rulesColor="#4A5568"
+                    rulesType="dashed"
+                    dashWidth={4}
+                    dashGap={4}
+
+                    showReferenceLine1={false}
+
+                    isAnimated={false}
+                    animationDuration={0}
+
+                    showVerticalLines
+                    verticalLinesColor="#4A5568"
+                    verticalLinesStrokeDashArray={[4, 4]}
+                    verticalLinesThickness={1}
+                    verticalLinesSpacing={verticalLineSpacing}
+
+                    scrollToEnd={false}
+                    scrollAnimation={false}
+                  />
+
+                  {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
+                  {(chartHeight || dynamicChartHeight) > 0 && (
+                    <View
+                      style={[
+                        styles.scrollableThresholdLine,
+                        {
+                          top: 0,
+                          left: 0,
+                          width: chartContentWidth,
+                          height: chartHeight || dynamicChartHeight,
+                        }
+                      ]}
+                    >
+                      <Svg height={chartHeight || dynamicChartHeight} width={chartContentWidth}>
+                        {yAxisLabels.map((_, index) => {
+                          const y = yPositions[index];
+                          return (
+                            <Line
+                              key={`grid-${index}`}
+                              x1="0"
+                              y1={y}
+                              x2={chartContentWidth}
+                              y2={y}
+                              stroke="#4A5568"
+                              strokeWidth="1"
+                              strokeDasharray={[4, 4]}
+                              opacity={0.85}
+                            />
+                          );
+                        })}
+
+                        {/* threshold line (red dashed) */}
+                        <Line
+                          x1="0"
+                          y1={thresholdTop}
+                          x2={chartContentWidth}
+                          y2={thresholdTop}
+                          stroke="#E74C5C"
+                          strokeWidth="2"
+                          strokeDasharray={[6, 4]}
+                        />
+
+                        {/* x-axis baseline: draw at the bottom of chart area so bars sit on it */}
+                        {
+                          (() => {
+                            const actualHeight = chartHeight || dynamicChartHeight;
+                            const baselineY = actualHeight - bottomPadding - 1 - barBottomInset; // match barBottomInset
+                            return (
+                              <Line
+                                x1="0"
+                                y1={baselineY}
+                                x2={chartContentWidth}
+                                y2={baselineY}
+                                stroke="rgba(255,255,255,0.06)"
+                                strokeWidth="1"
+                              />
+                            );
+                          })()
+                        }
+                      </Svg>
                     </View>
-                  ))}
+                  )}
+                </View>
+
+                {/* Custom X-axis labels - chính giữa 4 cột */}
+                <View style={styles.customXAxisContainer}>
+                  {hourlyData.map((_, hourIndex) => {
+                    const groupWidth = 4 * barTotalWidth;
+                    const labelPosition = (hourIndex * groupWidth) + (groupWidth / 2);
+
+                    return (
+                      <View
+                        key={hourIndex}
+                        style={[
+                          styles.customXAxisLabel,
+                          { left: labelPosition }
+                        ]}
+                      >
+                        <Text style={styles.customXAxisText}>{hourIndex}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+
+                {/* Water drops */}
+                <View style={styles.waterDropContainer}>
+                  <View style={[styles.waterDropRow, { paddingLeft: barTotalWidth / 2 - 5 }]}>
+                    {waterDrops.map((drop, index) => (
+                      <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
+                        <WaterDrop percent={drop.percent} />
+                        <Text style={[styles.volumeText, { marginTop: -8 }]}>{drop.volume}</Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      }
     </View>
   );
 }

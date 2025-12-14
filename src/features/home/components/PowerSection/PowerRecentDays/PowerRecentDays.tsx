@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import { RootState } from '@/core/redux/store'
+import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
 
 interface DayPower {
   value: number
@@ -15,7 +16,7 @@ interface DayPower {
 function PowerRecentDays() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { powerByDays: { powerData } } = useSelector((state: RootState) => state.powerSlice)
+  const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'
 
@@ -31,14 +32,19 @@ function PowerRecentDays() {
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {powerData.map((day, index) => (
-              <View key={index} style={styles.valueCard}>
-                <View style={styles.valueItem}>
-                  <Text style={styles.powerValue}>{day.value}</Text>
-                  <Text style={styles.dayLabel}>{day.date}</Text>
-                </View>
-              </View>
-            ))}
+            {isLoadingNearCurrentDays ? <SquareSkelenton count={4} /> :
+              <>
+                {powerData.map((day, index) => (
+                  <View key={index} style={styles.valueCard}>
+                    <View style={styles.valueItem}>
+                      <Text style={styles.powerValue}>{day.value}</Text>
+                      <Text style={styles.dayLabel}>{day.date}</Text>
+                    </View>
+                  </View>
+                ))}
+              </>
+            }
+
           </ScrollView>
 
           {/* Bottom Info */}

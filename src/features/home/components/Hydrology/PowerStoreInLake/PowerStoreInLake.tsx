@@ -6,6 +6,7 @@ import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component
 import { px } from '@/core/utils/scale'
 import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 const PowerStoreInLake: React.FC = () => {
   const current = 13.1
@@ -19,7 +20,7 @@ const PowerStoreInLake: React.FC = () => {
     ],
     [],
   )
-
+  const isLoading = false
   return (
     <AnimatedCardContainer>
       <View style={styles.pill}>
@@ -27,22 +28,40 @@ const PowerStoreInLake: React.FC = () => {
       </View>
 
       <View style={styles.mainRow}>
-        <AnimatedNumber
-          value={current}
-          decimals={1}
-          duration={800}
-          render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
-        />
-        <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.m(20) }]}>{unit}</Text>
-        <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
-        <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
-          {reference.toFixed(1)} {unit}
-        </Text>
+        {isLoading ?
+          <View style={styles.firstSkeleton}>
+            <BarSkeleton
+              width={"90%"}
+              alignSelf="center"
+            />
+          </View> :
+          <>
+            <AnimatedNumber
+              value={current}
+              decimals={1}
+              duration={800}
+              render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
+            />
+            <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.m(20) }]}>{unit}</Text>
+            <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
+            <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
+              {reference.toFixed(1)} {unit}
+            </Text>
+          </>
+        }
       </View>
 
       {/* Stacked bar */}
       <View style={{ marginTop: px.v(10) }}>
-        <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
+        {
+          isLoading ?
+            <BarSkeleton
+              width={"100%"}
+              alignSelf="center"
+              height={20}
+            /> :
+            <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
+        }
       </View>
     </AnimatedCardContainer>
   )

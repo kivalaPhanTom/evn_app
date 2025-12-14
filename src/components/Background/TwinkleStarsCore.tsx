@@ -100,11 +100,11 @@ const TwinkleStars: React.FC<TwinkleStarsProps> = ({
 
   return (
     <View style={[styles.container, { backgroundColor: background }]}>
-      <Svg style={styles.svg} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} pointerEvents="none">
+      {/* <Svg style={styles.svg} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} pointerEvents="none">
         {stars.map((star) => (
           <Twinkle key={star.id} star={star} color={particleColor} />
         ))}
-      </Svg>
+      </Svg> */}
       <View style={styles.content}>{children}</View>
     </View>
   )

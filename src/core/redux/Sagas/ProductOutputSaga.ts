@@ -13,39 +13,49 @@ import {
   setProductOutputByDays,
   setProductCummulativeOutput,
   setCompareProductOutput,
+  setLoading
 } from '../slices/ProductOutputSlice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProductOutputByHoursSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingByHours: true }))
     const res = yield call(Service.getProductOutputByHoursApi)
     if (res.status === 200) {
       yield put(setProductOutputByHours(res.data))
     }
+    yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingByHours: false }))
     catchHandle(error)
   }
 }
 
 function* getProductOutputOverviewSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingOverview: true }))
     const res = yield call(Service.getProductOutputOverviewApi)
     if (res.status === 200) {
       yield put(setProductOutputOverview(res.data))
     }
+    yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingOverview: false }))
     catchHandle(error)
   }
 }
 
 function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputByDays>): Generator {
   try {
+    yield put(setLoading({ isLoadingNearCurrentDays: true }))
     const n = action.payload || 7 // default is 7 days
     const res = yield call(Service.getProductOutputByDaysApi, n)
     if (res.status === 200) {
       yield put(setProductOutputByDays(res.data))
     }
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
     catchHandle(error)
   }
 }
