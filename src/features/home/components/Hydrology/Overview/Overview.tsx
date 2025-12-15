@@ -4,6 +4,8 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
+import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart } from '@/core/redux/Actions/HydrologyActions'
+
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
 import { Shadow } from 'react-native-shadow-2'
@@ -444,9 +446,9 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                   </View>
                   <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
                 </View>
-                )}
-              </View>
-            </Pressable>
+              )}
+            </View>
+          </Pressable>
         </View>
       )}
     </View>
@@ -456,7 +458,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  
+
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
     if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
@@ -474,6 +476,7 @@ const Overview: React.FC = () => {
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
+  const { hydrologyCharData } = useSelector((state: any) => state.hydrologySlice)
 
   useEffect(() => {
     dispatch(getHydrologyPlantsParam())
@@ -491,7 +494,30 @@ const Overview: React.FC = () => {
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   console.log('Rendering Overview with activeTab:', activeData)
   const hydroElectricId = activeData?.abbreviation || ''
+  console.log('hydroElectricIdGGGGGG:', hydroElectricId)
+  useEffect(() => {
+    let companyId = ""
+    switch (hydroElectricId) {
+      case "buon-tua-srah":
+        companyId = "BTS"
+        break;
+      case "buon-kuop":
+        companyId = "BK"
+        break;
+      case "srepok-3":
+        companyId = "SP3"
+        break;
+      default:
+        // companyId = hydroElectricId
+        break;
+    }
+    if (companyId !== "") {
+      console.log('companyIdEDEEEE:', companyId)
+      dispatch(getHydrographicChart({ companyId: companyId }))
+    }
+    
 
+  }, [hydroElectricId])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (
@@ -553,13 +579,13 @@ const Overview: React.FC = () => {
               <Text style={styles.detailText}>
                 {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
               </Text>
-              <HydrographicChart isLoading={false} />
+              <HydrographicChart isLoading={false} data={hydrologyCharData} />
               <InflowOutflow hydroElectricId={hydroElectricId} />
             </>
           )}
         </View>
-      </View>
-    </AnimatedCardContainer>
+      </View >
+    </AnimatedCardContainer >
   )
 }
 
