@@ -333,13 +333,12 @@ const Overview: React.FC = () => {
   const dispatch = useDispatch()
   const [activeTab, setActiveTab] = useState<string>(waterData[0].id)
   const contentAnim = useRef(new Animated.Value(1)).current
-
+  const { hydrologyCharData } = useSelector((state: any) => state.hydrologySlice)
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
-  console.log('Rendering Overview with activeTab:', activeData)
-  const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SPS3'
+  const hydroElectricId = activeData.id === 'buon-tua-srah' ? 'BTS' : activeData.id === 'buon-kuop' ? 'BK' : 'SP3'
   useEffect(() => {
-    dispatch(getHydrographicChart({ companyId: "BTS" }))
-  }, [])
+    dispatch(getHydrographicChart({ companyId: hydroElectricId }))
+  }, [hydroElectricId])
   return (
     <AnimatedCardContainer backgroundColor={'transparent'} borderRadius={0}>
       <View style={[styles.container, { margin: -24 }]}>
@@ -375,6 +374,7 @@ const Overview: React.FC = () => {
           </Text>
           <HydrographicChart
             isLoading={false}
+            data = {hydrologyCharData}
           />
           <InflowOutflow hydroElectricId={hydroElectricId} />
         </Animated.View>

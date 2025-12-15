@@ -12,73 +12,21 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const getBarColor = (value: number): string => {
   return value >= 180 ? '#5B9FED' : '#E74C5C';
 };
+interface HydroChartItem {
+  avgVolume: number;
+  percent: number;
+  values: number;
+}
 interface HydrographicChartProps {
   isLoading: boolean
+  data: HydroChartItem[]
 }
 function HydrographicChart(props: HydrographicChartProps) {
-  const { isLoading = false } = props
+  const { isLoading = false, data = [] } = props
   const [chartHeight, setChartHeight] = useState(0);
 
-  // const hourlyData = [
-  //   { values: [120], avgVolume: 420 },
-  //   { values: [110, 105, 115, 120], avgVolume: 410 },
-  //   { values: [100, 95, 105, 110], avgVolume: 400 },
-  //   { values: [90, 85, 95, 100], avgVolume: 380 },
-  //   { values: [80, 75, 85, 90], avgVolume: 360 },
-  //   { values: [70, 65, 75, 80], avgVolume: 340 },
-  //   { values: [120, 130, 140, 150], avgVolume: 420 },
-  //   { values: [160, 170, 180, 190], avgVolume: 450 },
-  //   { values: [200, 210, 220, 230], avgVolume: 480 },
-  //   { values: [210, 220, 215, 225], avgVolume: 490 },
-  //   { values: [220, 230, 225, 235], avgVolume: 500 },
-  //   { values: [230, 240, 235, 245], avgVolume: 600 },
-  //   { values: [250, 260, 270, 280], avgVolume: 500 },
-  //   { values: [240, 250, 260, 270], avgVolume: 500 },
-  //   { values: [230, 240, 250, 260], avgVolume: 490 },
-  //   { values: [220, 230, 240, 250], avgVolume: 480 },
-  //   { values: [210, 220, 230, 240], avgVolume: 470 },
-  //   { values: [200, 210, 220, 230], avgVolume: 460 },
-  //   { values: [210, 180, 310, 290], avgVolume: 420 },
-  //   { values: [210, 205, 210, 215], avgVolume: 450 },
-  //   { values: [190, 185, 195, 200], avgVolume: 450 },
-  //   { values: [110, 130, 105, 90], avgVolume: 280 },
-  //   { values: [120, 140, 115, 135], avgVolume: 280 },
-  //   { values: [50, 95, 100, 120], avgVolume: 280 },
-  // ];
-  const hourlyData = [
-    { value: 120, avgVolume: 420 },
-    { value: 110, avgVolume: 410 },
-    { value: 100, avgVolume: 400 },
-    { value: 90, avgVolume: 380 },
-    { value: 80, avgVolume: 360 },
-
-    { value: 120, avgVolume: 420 },
-    { value: 110, avgVolume: 410 },
-    { value: 100, avgVolume: 400 },
-    { value: 90, avgVolume: 380 },
-    { value: 80, avgVolume: 360 },
-
-    { value: 120, avgVolume: 420 },
-    { value: 110, avgVolume: 410 },
-    { value: 100, avgVolume: 400 },
-    { value: 90, avgVolume: 380 },
-    { value: 80, avgVolume: 360 },
-
-    { value: 120, avgVolume: 420 },
-    { value: 110, avgVolume: 410 },
-    { value: 100, avgVolume: 400 },
-    { value: 90, avgVolume: 380 },
-    { value: 80, avgVolume: 360 },
-
-    { value: 120, avgVolume: 420 },
-    { value: 110, avgVolume: 410 },
-    { value: 100, avgVolume: 400 },
-    { value: 90, avgVolume: 380 },
-
-  ];
-
   // Compute maxValue from the largest avgVolume so grid scales to data.
-  const maxAvgVolume = hourlyData.length ? Math.max(...hourlyData.map(h => h.avgVolume)) : 500;
+  const maxAvgVolume = data.length ? Math.max(...data.map(h => h.avgVolume)) : 500;
   // Round up to nearest 50 for a cleaner axis
   const computedMaxValue = Math.ceil(maxAvgVolume / 50) * 50;
 
@@ -98,20 +46,20 @@ function HydrographicChart(props: HydrographicChartProps) {
   // }, [hourlyData]);
 
   const barData = useMemo(() => {
-    return hourlyData.map(item => ({
-      value: item.value,
-      frontColor: getBarColor(item.value),
+    return data.map(item => ({
+      value: item.values,
+      frontColor: getBarColor(item.values),
       borderRadius: 6,
     }));
-  }, [hourlyData]);
+  }, [JSON.stringify(data)]);
 
   const waterDrops = useMemo(() => {
-    return hourlyData.map((hourData, index) => ({
+    return data.map((item, index) => ({
       hour: index,
-      percent: Math.min(Math.round((hourData.avgVolume / computedMaxValue) * 100), 100),
-      volume: `${hourData.avgVolume}m`
+      percent: item.percent,
+      volume: `${item.avgVolume}m`
     }));
-  }, [hourlyData, computedMaxValue]);
+  }, [JSON.stringify(data), computedMaxValue]);
 
   const yAxisLabelWidth = 40;
   // Make the chart compact so it doesn't take too much vertical space
@@ -123,11 +71,13 @@ function HydrographicChart(props: HydrographicChartProps) {
 
   // derive total bars from data rather than hardcoding
   // const totalBars = hourlyData.length * 4;
-  const totalBars = hourlyData.length;
+  const totalBars = data.length;
   const barTotalWidth = barWidth + spacing;
-  const initialSpacing = spacing / 2
+  // const initialSpacing = spacing / 2
+  const initialSpacing =  barTotalWidth / 2-10;
   const verticalLinesShift = initialSpacing;
-  const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
+  // const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
+  const chartContentWidth = Math.max(totalBars * barTotalWidth, SCREEN_WIDTH);
   const dynamicChartHeight = SCREEN_WIDTH * 0.45;
 
   const maxValue = computedMaxValue;
@@ -151,8 +101,8 @@ function HydrographicChart(props: HydrographicChartProps) {
 
   // const verticalLineSpacing = barTotalWidth * 4; // every 4 bars
   const verticalLineSpacing = barTotalWidth;
-  const waterDropSpacing = barTotalWidth * 4;
-
+  // const waterDropSpacing = barTotalWidth * 4;
+  const waterDropSpacing = barTotalWidth;
   const yAxisLabels = [];
   const sections = 5;
   for (let i = 0; i <= sections; i++) {
@@ -181,6 +131,7 @@ function HydrographicChart(props: HydrographicChartProps) {
   };
 
   const thresholdTop = calculateThresholdPosition();
+
   console.log('barData:', barData)
   return (
     <View style={styles.mainContainer}>
@@ -253,7 +204,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                       style={[
                         styles.scrollableThresholdLine,
                         {
-                            zIndex: 1, // 👈 THẤP
+                          zIndex: 1, // 👈 THẤP
                           width: chartContentWidth,
                           height: chartHeight || dynamicChartHeight,
                         },
@@ -287,12 +238,12 @@ function HydrographicChart(props: HydrographicChartProps) {
                     </View>
                   )}
 
-                     {(chartHeight || dynamicChartHeight) > 0 && (
+                  {(chartHeight || dynamicChartHeight) > 0 && (
                     <View
                       style={[
                         styles.scrollableThresholdLine,
                         {
-                           zIndex: 0, // 👈 BẮT BUỘC
+                          zIndex: 0, // 👈 BẮT BUỘC
                           top: 0,
                           left: 0,
                           width: chartContentWidth,
@@ -399,7 +350,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                   />
 
                   {/* Custom grid lines + threshold drawn with SVG so we control exact positions */}
-               
+
                 </View>
 
                 {/* Custom X-axis labels - chính giữa 4 cột */}
@@ -421,7 +372,9 @@ function HydrographicChart(props: HydrographicChartProps) {
                       </View>
                     );
                   })} */}
-                  {hourlyData.map((_, index) => {
+                  {data.map((_, index) => {
+                    const xStart = initialSpacing + index * (barWidth + spacing);
+                    const xCenter = xStart + barWidth / 2;
                     const labelPosition =
                       barTotalWidth * index + barTotalWidth / 2;
 
@@ -430,7 +383,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                         key={index}
                         style={[
                           styles.customXAxisLabel,
-                          { left: labelPosition },
+                          { left: xCenter },
                         ]}
                       >
                         <Text style={styles.customXAxisText}>{index}</Text>
@@ -442,15 +395,49 @@ function HydrographicChart(props: HydrographicChartProps) {
 
                 {/* Water drops */}
                 <View style={styles.waterDropContainer}>
-                  <View style={[styles.waterDropRow, { paddingLeft: barTotalWidth / 2 - 5 }]}>
+                  <View style={styles.waterDropRow}>
+                    {waterDrops.map((drop, index) => (
+                      <View
+                        key={index}
+                        style={[
+                          styles.waterDropWrapper,
+                          {
+                            width: barTotalWidth, // đúng bằng bar + spacing
+                            alignItems: 'center',
+                          },
+                        ]}
+                      >
+                        <View style={styles.dropScale}>
+                          <WaterDrop percent={drop.percent} />
+                        </View>
+
+                        <Text style={styles.volumeText}>{drop.volume}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+                {/* <View style={styles.waterDropContainer}>
+                  <View style={[styles.waterDropRow, { paddingLeft: initialSpacing - 40 }]}>
                     {waterDrops.map((drop, index) => (
                       <View key={index} style={[styles.waterDropWrapper, { width: waterDropSpacing }]}>
                         <WaterDrop percent={drop.percent} />
                         <Text style={[styles.volumeText, { marginTop: -8 }]}>{drop.volume}</Text>
                       </View>
                     ))}
+                    {waterDrops.map((drop, index) => (
+                      <View
+                        key={index}
+                        style={[
+                          styles.waterDropWrapper,
+                          { width: barTotalWidth } // đúng bằng bar + spacing
+                        ]}
+                      >
+                        <WaterDrop percent={drop.percent} />
+                        <Text style={[styles.volumeText, { marginTop: 2 }]}>{drop.volume}</Text>
+                      </View>
+                    ))}
                   </View>
-                </View>
+                </View> */}
               </View>
             </ScrollView>
           </View>
@@ -463,11 +450,13 @@ function HydrographicChart(props: HydrographicChartProps) {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    marginBottom: 20
   },
   container: {
     // backgroundColor: '#2C3E5C',
     backgroundColor: 'transparent',
-    padding: 16,
+    padding: 0,
+    paddingTop: 10,
     borderRadius: 12,
   },
   title: {
@@ -482,7 +471,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   stickyLeftColumn: {
-    width: 40,
+    width: 35,
     position: 'relative',
     zIndex: 10,
   },
@@ -490,7 +479,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   yAxisLabelWrapper: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
     paddingRight: 8,
     width: 40,
   },
@@ -553,20 +542,20 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH * 0.025,
     fontWeight: '400',
   },
-  waterDropContainer: {
-    // reduce space between chart baseline and water drops
-    marginTop: -2,
-  },
-  waterDropRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  waterDropWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    // Scale the WaterDrop component so the droplets appear smaller
-    transform: [{ scale: 0.9 }],
-  },
+  // waterDropContainer: {
+  //   // reduce space between chart baseline and water drops
+  //   marginTop: -2,
+  // },
+  // waterDropRow: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // waterDropWrapper: {
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   // Scale the WaterDrop component so the droplets appear smaller
+  //   transform: [{ scale: 0.7 }],
+  // },
   volumeText: {
     color: '#8A94A8',
     fontSize: SCREEN_WIDTH * 0.022,
@@ -574,6 +563,36 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: 'center',
   },
+
+
+
+  // waterDropWrapper: {
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  waterDropContainer: {
+  position: 'relative',
+  left:2
+},
+  waterDropRow: {
+    flexDirection: 'row', // 👈 BẮT BUỘC
+  },
+  waterDropWrapper: {
+    justifyContent: 'flex-start', // 👈 quan trọng
+    alignItems: 'center',
+  },
+
+  dropScale: {
+    transform: [{ scale: 0.8 }],
+    marginBottom: -16, // 👈 kéo text lên sát giọt
+  },
+
+  // volumeText: {
+  //   marginTop: 0, // hoặc -2 nếu muốn sát hơn
+  //   fontSize: SCREEN_WIDTH * 0.022,
+  //   color: '#8A94A8',
+  //   textAlign: 'center',
+  // },
 });
 
 export default HydrographicChart;

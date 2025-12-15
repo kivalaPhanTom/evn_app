@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
-import { setInflowOutflow } from '../slices/HydrologySlice'
+import { setInflowOutflow, setHydrologyChart } from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -11,7 +11,7 @@ function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChar
     const res = yield call(Service.getHydrologyGraphicChartApi, companyId)
     console.log('redSSSSSSS:', res.data)
     if (res.status === 200) {
-
+      yield put(setHydrologyChart(res.data))
     }
   } catch (error) {
 
