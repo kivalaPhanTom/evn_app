@@ -14,7 +14,6 @@ function* getTokenSaga(action: any): Generator {
             username,
             password
         })
-        console.log('📡 API Response:', { status: res.status, data: res.data })
         if (res.status === 200) {
             const access_token = res.data.access_token
             console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
