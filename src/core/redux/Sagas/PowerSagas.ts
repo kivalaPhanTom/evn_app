@@ -1,45 +1,54 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower } from '../Actions/PowerActions'
-import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower } from '../slices/PowerSlice'
+import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
 import { Service } from '@/core/service/powerService'
 
 function* getPowerOverviewSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingOverview: true }))
     const res = yield call(Service.getPowerOverviewApi)
     if (res.status === 200) {
-      console.log('Power overview data:', res.data)
       yield put(setPowerOverview(res.data))
     }
+    yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingOverview: false }))
     console.log('errorXXX:', error)
   }
 }
 
 function* getPowerByTimeSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingByHours: true }))
     const res = yield call(Service.getPowerByTimeApi)
     if (res.status === 200) {
       yield put(setPowerByTime(res.data))
     }
+    yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingByHours: false }))
     console.log('getPowerByTime error:', error)
   }
 }
 
 function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generator {
   try {
+    yield put(setLoading({ isLoadingNearCurrentDays: true }))
     const n = action.payload || 7 // default is 7 days
     const res = yield call(Service.getPowerByDaysApi, n)
     if (res.status === 200) {
       yield put(setPowerByDays(res.data))
     }
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingNearCurrentDays: false }))
     console.log('getPowerByDays error:', error)
   }
 }
 
 function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Generator {
   try {
+    yield put(setLoading({ isLoadingComparePower: true }))
     const payload = action.payload as { tagetDate: string; compareDate: string }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
@@ -49,7 +58,9 @@ function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Gener
     if (res.status === 200) {
       yield put(setComparePower(res.data))
     }
+    yield put(setLoading({ isLoadingComparePower: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingComparePower: false }))
     console.log('getComparePower error:', error)
   }
 }

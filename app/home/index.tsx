@@ -10,6 +10,7 @@ import { useLocalSearchParams } from 'expo-router'
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Hydrology from '@/features/home/components/Hydrology/Hydrology'
+import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 interface Props {}
 
 function HomeNewScreen(props: Props) {
@@ -40,6 +41,7 @@ function HomeNewScreen(props: Props) {
         <PowerSection />
         <ProductionOutput />
         <Hydrology />
+        <UnitMaintenanceSchedule />
       </ScrollView>
     </TwinkleStars>
   )

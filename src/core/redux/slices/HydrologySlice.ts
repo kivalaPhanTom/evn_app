@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+interface HydroChartItem {
+  avgVolume: number;
+  percent: number;
+  values: number;
+}
 interface hydrologyState {
   inboundTraffic: number
   dischargeFlow: number
@@ -19,6 +23,17 @@ interface hydrologyState {
       label: string
       value: number
     }[]
+  },
+  hydrologyCharData:HydroChartItem[],
+  hydrologyPlants: {
+    plantsData: {
+      id: number
+      abbreviation: string
+      name: string
+      maxLevel: number
+      currentLevel: number
+      referenceLevel: number
+    }[]
   }
 }
 const initialState: hydrologyState = {
@@ -30,6 +45,10 @@ const initialState: hydrologyState = {
     qIn: [],
     qOut: [],
   },
+  hydrologyCharData:[],
+  hydrologyPlants: {
+    plantsData: [],
+  },
 }
 
 const hydrologySlice = createSlice({
@@ -39,8 +58,14 @@ const hydrologySlice = createSlice({
     setInflowOutflow: (state, action) => {
       state.inflowOutflow = action.payload
     },
+    setHydrologyChart: (state, action) => {
+      state.hydrologyCharData = action.payload
+    },
+    setHydrologyPlantsParam: (state, action) => {
+      state.hydrologyPlants = action.payload
+    },
   },
 })
 const { reducer } = hydrologySlice
-export const { setInflowOutflow } = hydrologySlice.actions
+export const { setInflowOutflow, setHydrologyChart, setHydrologyPlantsParam } = hydrologySlice.actions
 export default reducer
