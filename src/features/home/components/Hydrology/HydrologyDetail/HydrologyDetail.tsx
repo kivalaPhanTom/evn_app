@@ -54,11 +54,32 @@ const flowRateData = [
   },
 ] // Dữ liệu mẫu cho FlowRate
 
-
+function getGurrentPlantId(activeTab: string): string {
+  let result: string = ""
+  switch (activeTab) {
+    case 'buon-tua-srah':
+      result = 'BTS'
+      break;
+    case 'buon-kuop':
+      result = 'BK'
+      break;
+    case 'srepok-3':
+      result = 'SP3'
+      break;
+    default:
+      break;
+  }
+  return result
+}
 function HydrologyDetail() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>('buon-tua-srah')
-
+  
+  const formattedOneYearAgo = new Date(
+    new Date(selectedDate).setFullYear(
+      selectedDate.getFullYear() - 1
+    )
+  ).toLocaleDateString('vi-VN');
   const tabs = [
     { id: 'buon-tua-srah', label: 'Buôn Tua Srah' },
     { id: 'buon-kuop', label: 'Buôn Kuốp' },
@@ -70,7 +91,7 @@ function HydrologyDetail() {
       <SectionContainer title="">
         {/* Scrollable Tab Bar */}
         <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-        
+
         {/* Date Picker */}
         <View style={{ marginBottom: 20, paddingHorizontal: 0 }}>
           <DatePicker
@@ -84,7 +105,11 @@ function HydrologyDetail() {
         </View>
         {/* flow diagram here */}
         <View>
-          <FlowDiagramCard />
+          <FlowDiagramCard
+            dateStr={selectedDate.toLocaleDateString('vi-VN')}
+            oneYearAgo={formattedOneYearAgo}
+            currentPlantId={getGurrentPlantId(activeTab)}
+          />
         </View>
         <View style={{ marginBottom: 20 }}>
           <GeneralInformation />
