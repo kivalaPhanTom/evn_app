@@ -8,6 +8,8 @@ import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { useRouter } from 'expo-router'
 import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
+import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 function PowerByHours() {
   const router = useRouter()
@@ -15,6 +17,7 @@ function PowerByHours() {
   const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
     (state: any) => state.powerSlice.powerByTime,
   )
+  const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
 
   useEffect(() => {
     dispatch(getPowerByTime())
@@ -51,22 +54,40 @@ function PowerByHours() {
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>HIỆN TẠI ({currentTime})</Text>
-            <Text style={styles.statValueCurrent}>
-              {currentPower} {unit}
-            </Text>
-            <View style={styles.changeRow}>
-              <MetricDiff diff={currentPower} compareTo={avgPower} />
-            </View>
+            {isLoadingByHours ?
+              <>
+                <BarSkeleton />
+                <BarSkeleton
+                  width={70}
+                  height={20}
+                  marginBottom={0}
+                />
+              </> :
+              <>
+                <Text style={styles.statValueCurrent}>
+                  {currentPower} {unit}
+                </Text>
+                <View style={styles.changeRow}>
+                  <MetricDiff diff={currentPower} compareTo={avgPower} />
+                </View>
+              </>}
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>TRUNG BÌNH</Text>
-            <Text style={styles.statValueAverage}>
-              {avgPower} {unit}
-            </Text>
+            {isLoadingByHours ?
+              <BarSkeleton
+                width={95}
+                height={28}
+              /> :
+              <>
+                <Text style={styles.statValueAverage}>
+                  {avgPower} {unit}
+                </Text>
+              </>}
           </View>
         </View>
         <View>
-          <LineChart
+          {isLoadingByHours ? <LineChartSkeleton /> : <LineChart
             data={avgData}
             data2={hourlyData}
             color="#FBBF24"
@@ -74,7 +95,17 @@ function PowerByHours() {
             hideDataPoints2={false}
             hideYAxisText={true}
             hideDataPoints1={true}
-          />
+          />}
+
+          {/* <LineChart
+            data={avgData}
+            data2={hourlyData}
+            color="#FBBF24"
+            color2="#2563EB"
+            hideDataPoints2={false}
+            hideYAxisText={true}
+            hideDataPoints1={true}
+          /> */}
         </View>
         {/* Unit Label */}
         <Text style={styles.unitLabel}>Đơn vị: {unit}</Text>

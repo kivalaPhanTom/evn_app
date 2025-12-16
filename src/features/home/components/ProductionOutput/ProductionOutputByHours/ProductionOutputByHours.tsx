@@ -6,14 +6,17 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import BarChart from '@/components/BarChart/BarChart.component'
 import { useRouter } from 'expo-router'
 import { BarGroup } from '@/core/types'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByHours } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
 
 function ProductionOutputByHours() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
+  const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const title = 'Sản lượng theo giờ'
   const subtitle = `Hôm nay, ${productOutputByHours.currentDate}`
   const unit = productOutputByHours.unit
@@ -58,23 +61,41 @@ function ProductionOutputByHours() {
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Giờ hiện tại ({productOutputByHours.currentTime})</Text>
-            <Text style={[styles.statValueCurrent, { color: getColorForValue(productOutputByHours.currentPowerValue) }]}>
-              {productOutputByHours.currentPowerValue} {unit}
-            </Text>
-            <View style={styles.changeRow}>
-              <MetricDiff diff={productOutputByHours.currentPowerValue} compareTo={productOutputByHours.contractPowerValue} />
-            </View>
+            {isLoadingByHours ?
+              <>
+                <BarSkeleton />
+                <BarSkeleton
+                  width={70}
+                  height={20}
+                  marginBottom={0}
+                />
+              </> :
+              <>
+                <Text style={[styles.statValueCurrent, { color: getColorForValue(productOutputByHours.currentPowerValue) }]}>
+                  {productOutputByHours.currentPowerValue} {unit}
+                </Text>
+                <View style={styles.changeRow}>
+                  <MetricDiff diff={productOutputByHours.currentPowerValue} compareTo={productOutputByHours.contractPowerValue} />
+                </View>
+              </>}
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Hợp đồng ({productOutputByHours.currentTime})</Text>
-            <Text style={styles.statValueAverage}>
-              {productOutputByHours.contractPowerValue} {unit}
-            </Text>
+            {isLoadingByHours ?
+              <BarSkeleton
+                width={95}
+                height={28}
+              /> :
+              <>
+                <Text style={styles.statValueAverage}>
+                  {productOutputByHours.contractPowerValue} {unit}
+                </Text>
+              </>}
           </View>
         </View>
 
         <View style={styles.chartWrapper}>
-          <BarChart data={rawBarGroups} rounded />
+          {isLoadingByHours ? <BarChartSkeleton /> : <BarChart data={rawBarGroups} rounded />}
         </View>
 
         {/* Unit Label */}

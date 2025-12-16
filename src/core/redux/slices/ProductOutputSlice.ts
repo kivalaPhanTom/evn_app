@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 interface productOutputState {
+  isLoadingOverview: boolean,
+  isLoadingByHours: boolean,
+  isLoadingNearCurrentDays: boolean,
   productOutputByHours: {
     currentDate: string
     contractPowerValue: number
@@ -16,6 +19,7 @@ interface productOutputState {
       name: string
       code: string
       power: number
+      value: number
       color: string
     }[]
   }
@@ -85,6 +89,9 @@ interface productOutputState {
   }
 }
 const initialState: productOutputState = {
+  isLoadingOverview: false,
+  isLoadingByHours: false,
+  isLoadingNearCurrentDays: false,
   productOutputByHours: {
     currentDate: '',
     unit: '',
@@ -182,6 +189,12 @@ const productOutputSlice = createSlice({
     setCompareProductOutput: (state, action) => {
       state.compareProductOutput = action.payload
     },
+    setLoading: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      }
+    },
   },
 })
 const { reducer } = productOutputSlice
@@ -191,5 +204,6 @@ export const {
   setProductOutputByDays,
   setProductCummulativeOutput,
   setCompareProductOutput,
+  setLoading
 } = productOutputSlice.actions
 export default reducer

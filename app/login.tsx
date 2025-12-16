@@ -39,20 +39,19 @@ export default function LoginScreen() {
   }
  
   return (
-    // <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
           <View style={styles.logoWrap}>
             <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(200) }} contentFit="contain" />
           </View>
-
+       
           <View style={styles.titleWrap}>
             <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
           </View>
 
           {/* Form */}
           <View style={styles.formWrap}>
-         
             <LinearGradient
               pointerEvents="none"
               colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
@@ -124,7 +123,7 @@ export default function LoginScreen() {
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    // </TwinkleStars>
+    </TwinkleStars>
   )
 }
 
