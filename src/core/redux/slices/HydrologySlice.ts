@@ -4,6 +4,15 @@ interface HydroChartItem {
   percent: number;
   values: number;
 }
+interface flowChartItem {
+  label: string,
+  code: string,
+  value: {
+    current: number,
+    period: number
+  },
+  unit: string,
+}
 interface hydrologyState {
   inboundTraffic: number
   dischargeFlow: number
@@ -24,7 +33,7 @@ interface hydrologyState {
       value: number
     }[]
   },
-  hydrologyCharData:HydroChartItem[],
+  hydrologyCharData: HydroChartItem[],
   hydrologyPlants: {
     plantsData: {
       id: number
@@ -34,6 +43,18 @@ interface hydrologyState {
       currentLevel: number
       referenceLevel: number
     }[]
+  },
+  flowChart: {
+    mntl: flowChartItem,
+    qve: flowChartItem,
+    qcm: flowChartItem,
+    qxt: flowChartItem
+    qxmt: flowChartItem
+  },
+  flowChartSummary: {
+    totalInflow: number,
+    totalOutflow: number,
+    unit: string
   }
 }
 const initialState: hydrologyState = {
@@ -45,10 +66,62 @@ const initialState: hydrologyState = {
     qIn: [],
     qOut: [],
   },
-  hydrologyCharData:[],
+  hydrologyCharData: [],
   hydrologyPlants: {
     plantsData: [],
   },
+  flowChart: {
+    "mntl": {
+      "label": "Mực nước thượng lưu",
+      "code": "MNTL",
+      "value": {
+        "current": 0,
+        "period": 0
+      },
+      "unit": "m"
+    },
+    "qve": {
+      "label": "Lưu lượng về",
+      "code": "Qve",
+      "value": {
+        "current": 0,
+        "period": 0
+      },
+      "unit": "m³/s"
+    },
+    "qcm": {
+      "label": "Lưu lượng chạy máy",
+      "code": "Qcm",
+      "value": {
+        "current": 0,
+        "period": 0
+      },
+      "unit": "m³/s"
+    },
+    "qxt": {
+      "label": "Lưu lượng xả tràn",
+      "code": "Qxt",
+      "value": {
+        "current": 0,
+        "period": 0
+      },
+      "unit": "m³/s"
+    },
+    "qxmt": {
+      "label": "Lưu lượng xả qua ống xã MT",
+      "code": "Qxmt",
+      "value": {
+        "current": 0,
+        "period": 0
+      },
+      "unit": "m³/s"
+    }
+  },
+  flowChartSummary: {
+    "totalInflow": 395,
+    "totalOutflow": 395,
+    "unit": "m³/s"
+  }
 }
 
 const hydrologySlice = createSlice({
@@ -64,8 +137,13 @@ const hydrologySlice = createSlice({
     setHydrologyPlantsParam: (state, action) => {
       state.hydrologyPlants = action.payload
     },
+    setFlowChartData: (state, action) => {
+      const { flowChart, flowChartSummary } = action.payload
+      state.flowChart = flowChart
+      state.flowChartSummary = flowChartSummary
+    },
   },
 })
 const { reducer } = hydrologySlice
-export const { setInflowOutflow, setHydrologyChart, setHydrologyPlantsParam } = hydrologySlice.actions
+export const { setInflowOutflow, setHydrologyChart, setHydrologyPlantsParam, setFlowChartData } = hydrologySlice.actions
 export default reducer
