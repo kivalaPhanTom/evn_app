@@ -3,6 +3,8 @@ import type { ImageSource } from 'expo-image'
 // Group icons
 export const icons = {
   evnLogo: require('./icons/evn_logo.png') as ImageSource,
+  tickIcon: require('./icons/green_tick_icon.svg') as ImageSource,
+  toolIcon: require('./icons/tool_icon.svg') as ImageSource,
 }
 
 // Group regular images
