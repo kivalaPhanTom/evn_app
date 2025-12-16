@@ -19,6 +19,7 @@ interface productOutputState {
       name: string
       code: string
       power: number
+      value: number
       color: string
     }[]
   }
