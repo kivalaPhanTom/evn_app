@@ -1,18 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { set } from 'react-hook-form'
 interface HydroChartItem {
-  avgVolume: number;
-  percent: number;
-  values: number;
+  avgVolume: number
+  percent: number
+  values: number
 }
 interface flowChartItem {
-  label: string,
-  code: string,
+  label: string
+  code: string
   value: {
-    current: number,
+    current: number
     period: number
-  },
-  unit: string,
+  }
+  unit: string
 }
+
 interface hydrologyState {
   inboundTraffic: number
   dischargeFlow: number
@@ -32,8 +34,8 @@ interface hydrologyState {
       label: string
       value: number
     }[]
-  },
-  hydrologyCharData: HydroChartItem[],
+  }
+  hydrologyCharData: HydroChartItem[]
   hydrologyPlants: {
     plantsData: {
       id: number
@@ -43,18 +45,54 @@ interface hydrologyState {
       currentLevel: number
       referenceLevel: number
     }[]
-  },
+  }
   flowChart: {
-    mntl: flowChartItem,
-    qve: flowChartItem,
-    qcm: flowChartItem,
+    mntl: flowChartItem
+    qve: flowChartItem
+    qcm: flowChartItem
     qxt: flowChartItem
     qxmt: flowChartItem
-  },
+  }
   flowChartSummary: {
-    totalInflow: number,
-    totalOutflow: number,
+    totalInflow: number
+    totalOutflow: number
     unit: string
+  }
+  upstreamWaterLevel: {
+    unit: string
+    minValue: number
+    maxValue: number
+    avgValue: number
+    currentValue: number
+    todayUpstream: Array<{ label: string; value: number }>
+    samePeriodUpstream: Array<{ label: string; value: number }>
+  }
+  inflow: {
+    unit: string
+    minValue: number
+    maxValue: number
+    avgValue: number
+    currentValue: number
+    todayInflow: Array<{ label: string; value: number }>
+    samePeriodInflow: Array<{ label: string; value: number }>
+  }
+  outflow: {
+    unit: string
+    minValue: number
+    maxValue: number
+    avgValue: number
+    currentValue: number
+    todayOutflow: Array<{ label: string; value: number }>
+    samePeriodOutflow: Array<{ label: string; value: number }>
+  }
+  turbineflow: {
+    unit: string
+    minValue: number
+    maxValue: number
+    avgValue: number
+    currentValue: number
+    todayTurbineFlow: Array<{ label: string; value: number }>
+    samePeriodTurbineFlow: Array<{ label: string; value: number }>
   }
 }
 const initialState: hydrologyState = {
@@ -71,57 +109,93 @@ const initialState: hydrologyState = {
     plantsData: [],
   },
   flowChart: {
-    "mntl": {
-      "label": "Mực nước thượng lưu",
-      "code": "MNTL",
-      "value": {
-        "current": 0,
-        "period": 0
+    mntl: {
+      label: 'Mực nước thượng lưu',
+      code: 'MNTL',
+      value: {
+        current: 0,
+        period: 0,
       },
-      "unit": "m"
+      unit: 'm',
     },
-    "qve": {
-      "label": "Lưu lượng về",
-      "code": "Qve",
-      "value": {
-        "current": 0,
-        "period": 0
+    qve: {
+      label: 'Lưu lượng về',
+      code: 'Qve',
+      value: {
+        current: 0,
+        period: 0,
       },
-      "unit": "m³/s"
+      unit: 'm³/s',
     },
-    "qcm": {
-      "label": "Lưu lượng chạy máy",
-      "code": "Qcm",
-      "value": {
-        "current": 0,
-        "period": 0
+    qcm: {
+      label: 'Lưu lượng chạy máy',
+      code: 'Qcm',
+      value: {
+        current: 0,
+        period: 0,
       },
-      "unit": "m³/s"
+      unit: 'm³/s',
     },
-    "qxt": {
-      "label": "Lưu lượng xả tràn",
-      "code": "Qxt",
-      "value": {
-        "current": 0,
-        "period": 0
+    qxt: {
+      label: 'Lưu lượng xả tràn',
+      code: 'Qxt',
+      value: {
+        current: 0,
+        period: 0,
       },
-      "unit": "m³/s"
+      unit: 'm³/s',
     },
-    "qxmt": {
-      "label": "Lưu lượng xả qua ống xã MT",
-      "code": "Qxmt",
-      "value": {
-        "current": 0,
-        "period": 0
+    qxmt: {
+      label: 'Lưu lượng xả qua ống xã MT',
+      code: 'Qxmt',
+      value: {
+        current: 0,
+        period: 0,
       },
-      "unit": "m³/s"
-    }
+      unit: 'm³/s',
+    },
   },
   flowChartSummary: {
-    "totalInflow": 395,
-    "totalOutflow": 395,
-    "unit": "m³/s"
-  }
+    totalInflow: 395,
+    totalOutflow: 395,
+    unit: 'm³/s',
+  },
+  upstreamWaterLevel: {
+    unit: 'm',
+    minValue: 0,
+    maxValue: 0,
+    avgValue: 0,
+    currentValue: 0,
+    todayUpstream: [],
+    samePeriodUpstream: [],
+  },
+  inflow: {
+    unit: 'm³/s',
+    minValue: 0,
+    maxValue: 0,
+    avgValue: 0,
+    currentValue: 0,
+    todayInflow: [],
+    samePeriodInflow: [],
+  },
+  outflow: {
+    unit: 'm³/s',
+    minValue: 0,
+    maxValue: 0,
+    avgValue: 0,
+    currentValue: 0,
+    todayOutflow: [],
+    samePeriodOutflow: [],
+  },
+  turbineflow: {
+    unit: 'm³/s',
+    minValue: 0,
+    maxValue: 0,
+    avgValue: 0,
+    currentValue: 0,
+    todayTurbineFlow: [],
+    samePeriodTurbineFlow: [],
+  },
 }
 
 const hydrologySlice = createSlice({
@@ -142,8 +216,29 @@ const hydrologySlice = createSlice({
       state.flowChart = flowChart
       state.flowChartSummary = flowChartSummary
     },
+    setUpStreamWaterLevel: (state, action) => {
+      state.upstreamWaterLevel = action.payload
+    },
+    setInflow: (state, action) => {
+      state.inflow = action.payload
+    },
+    setOutflow: (state, action) => {
+      state.outflow = action.payload
+    },
+    setTurbineflow: (state, action) => {
+      state.turbineflow = action.payload
+    },
   },
 })
 const { reducer } = hydrologySlice
-export const { setInflowOutflow, setHydrologyChart, setHydrologyPlantsParam, setFlowChartData } = hydrologySlice.actions
+export const {
+  setInflowOutflow,
+  setHydrologyChart,
+  setHydrologyPlantsParam,
+  setFlowChartData,
+  setUpStreamWaterLevel,
+  setInflow,
+  setOutflow,
+  setTurbineflow,
+} = hydrologySlice.actions
 export default reducer

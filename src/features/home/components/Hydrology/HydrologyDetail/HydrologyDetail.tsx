@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import GeneralInformation from '../GeneralInformation/GeneralInformation'
@@ -7,10 +7,13 @@ import FlowRate from '../FlowRate/FlowRate'
 import FlowDiagramCard from '../FlowDiagramCard/FlowDiagramCard'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
+import { useDispatch, useSelector } from 'react-redux'
+import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
     data: [],
+    data2: [],
     currentColor: '#0EA5E9',
     unit: 'm',
     flowRateInfo: [
@@ -22,6 +25,7 @@ const flowRateData = [
   {
     title: 'Lưu lượng về (Qve)',
     data: [],
+    data2: [],
     currentColor: '#3B82F6',
     unit: 'm³/s',
     flowRateInfo: [
@@ -33,6 +37,7 @@ const flowRateData = [
   {
     title: 'Lưu lượng chạy máy (Qcm)',
     data: [],
+    data2: [],
     currentColor: '#10B981',
     unit: 'm³/s',
     flowRateInfo: [
@@ -44,6 +49,7 @@ const flowRateData = [
   {
     title: 'Lưu lượng xả tràn (Qxt)',
     data: [],
+    data2: [],
     currentColor: '#F59E0B',
     unit: 'm³/s',
     flowRateInfo: [
@@ -55,36 +61,106 @@ const flowRateData = [
 ] // Dữ liệu mẫu cho FlowRate
 
 function getGurrentPlantId(activeTab: string): string {
-  let result: string = ""
+  let result: string = ''
   switch (activeTab) {
     case 'buon-tua-srah':
       result = 'BTS'
-      break;
+      break
     case 'buon-kuop':
       result = 'BK'
-      break;
+      break
     case 'srepok-3':
       result = 'SP3'
-      break;
+      break
     default:
-      break;
+      break
   }
   return result
 }
 function HydrologyDetail() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>('buon-tua-srah')
-  
+
   const formattedOneYearAgo = new Date(
-    new Date(selectedDate).setFullYear(
-      selectedDate.getFullYear() - 1
-    )
-  ).toLocaleDateString('vi-VN');
+    new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
+  ).toLocaleDateString('vi-VN')
   const tabs = [
     { id: 'buon-tua-srah', label: 'Buôn Tua Srah' },
     { id: 'buon-kuop', label: 'Buôn Kuốp' },
     { id: 'srepok-3', label: 'Srepok 3' },
   ]
+
+  const dispatch = useDispatch()
+  const upstreamData = useSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
+  const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
+  const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
+  const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
+
+  useEffect(() => {
+    const payload = {
+      currentPlantId: getGurrentPlantId(activeTab),
+      date: selectedDate.toLocaleDateString('vi-VN'),
+    }
+
+    dispatch(getUpstreamWaterLevel(payload))
+    dispatch(getInflow(payload))
+    dispatch(getOutflow(payload))
+    dispatch(getTurbineflow(payload))
+  }, [])
+
+  const convertedUpstreamData = {
+    title: 'Mực nước thượng lưu (MNTL)',
+    data: upstreamData?.todayUpstream ? JSON.parse(JSON.stringify(upstreamData?.todayUpstream)) : [],
+    data2: upstreamData?.samePeriodUpstream ? JSON.parse(JSON.stringify(upstreamData?.samePeriodUpstream)) : [],
+    currentColor: '#0EA5E9',
+    unit: upstreamData?.unit,
+    flowRateInfo: [
+      { label: 'Hiện tại', value: upstreamData?.currentValue, color: '#0EA5E9' },
+      { label: 'Cao nhất', value: upstreamData?.maxValue, color: '#fff' },
+      { label: 'Thấp nhất', value: upstreamData?.minValue, color: '#fff' },
+    ],
+  }
+
+  const convertedInflowData = {
+    title: 'Lưu lượng về (Qve)',
+    data: inflow?.todayInflow ? JSON.parse(JSON.stringify(inflow?.todayInflow)) : [],
+    data2: inflow?.samePeriodInflow ? JSON.parse(JSON.stringify(inflow?.samePeriodInflow)) : [],
+    currentColor: '#3B82F6',
+    unit: inflow?.unit,
+    flowRateInfo: [
+      { label: 'Hiện tại', value: inflow?.currentValue, color: '#3B82F6' },
+      { label: 'Cao nhất', value: inflow?.maxValue, color: '#fff' },
+      { label: 'TB ngày', value: inflow?.avgValue, color: '#fff' },
+    ],
+  }
+
+  const convertedOutflowData = {
+    title: 'Lưu lượng xả tràn (Qxt)',
+    data: outflow?.todayOutflow ? JSON.parse(JSON.stringify(outflow?.todayOutflow)) : [],
+    data2: outflow?.samePeriodOutflow ? JSON.parse(JSON.stringify(outflow?.samePeriodOutflow)) : [],
+    currentColor: '#F59E0B',
+    unit: outflow?.unit,
+    flowRateInfo: [
+      { label: 'Hiện tại', value: outflow?.currentValue, color: '#F59E0B' },
+      { label: 'Cao nhất', value: outflow?.maxValue, color: '#fff' },
+      { label: 'TB ngày', value: outflow?.avgValue, color: '#fff' },
+    ],
+  }
+
+  const convertedTurbineflowData = {
+    title: 'Lưu lượng chạy máy (Qcm)',
+    data: turbineflow?.todayTurbineFlow ? JSON.parse(JSON.stringify(turbineflow?.todayTurbineFlow)) : [],
+    data2: turbineflow?.samePeriodTurbineFlow ? JSON.parse(JSON.stringify(turbineflow?.samePeriodTurbineFlow)) : [],
+    currentColor: '#10B981',
+    unit: turbineflow?.unit,
+    flowRateInfo: [
+      { label: 'Hiện tại', value: turbineflow?.currentValue, color: '#10B981' },
+      { label: 'Cao nhất', value: turbineflow?.maxValue, color: '#fff' },
+      { label: 'TB ngày', value: turbineflow?.avgValue, color: '#fff' },
+    ],
+  }
+
+  console.log('outflowww:', outflow)
 
   return (
     <ScrollView>
@@ -114,17 +190,58 @@ function HydrologyDetail() {
         <View style={{ marginBottom: 20 }}>
           <GeneralInformation />
         </View>
-        {flowRateData.map((item, index) => (
+        {/* {flowRateData.map((item, index) => (
           <View key={index} style={{ marginBottom: 20 }}>
             <FlowRate
               title={item.title}
               data={item.data}
+              data2={item.data2}
               currentColor={item.currentColor}
               unit={item.unit}
               flowRateInfo={item.flowRateInfo}
             />
           </View>
-        ))}
+        ))} */}
+        <View style={{ marginBottom: 20 }}>
+          <FlowRate
+            title={convertedUpstreamData.title}
+            data={convertedUpstreamData.data}
+            data2={convertedUpstreamData.data2}
+            currentColor={convertedUpstreamData.currentColor}
+            unit={convertedUpstreamData.unit}
+            flowRateInfo={convertedUpstreamData.flowRateInfo}
+          />
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <FlowRate
+            title={convertedInflowData.title}
+            data={convertedInflowData.data}
+            data2={convertedInflowData.data2}
+            currentColor={convertedInflowData.currentColor}
+            unit={convertedInflowData.unit}
+            flowRateInfo={convertedInflowData.flowRateInfo}
+          />
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <FlowRate
+            title={convertedTurbineflowData.title}
+            data={convertedTurbineflowData.data}
+            data2={convertedTurbineflowData.data2}
+            currentColor={convertedTurbineflowData.currentColor}
+            unit={convertedTurbineflowData.unit}
+            flowRateInfo={convertedTurbineflowData.flowRateInfo}
+          />
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <FlowRate
+            title={convertedOutflowData.title}
+            data={convertedOutflowData.data}
+            data2={convertedOutflowData.data2}
+            currentColor={convertedOutflowData.currentColor}
+            unit={convertedOutflowData.unit}
+            flowRateInfo={convertedOutflowData.flowRateInfo}
+          />
+        </View>
         <View style={{ marginBottom: 20 }}>
           <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />
         </View>
