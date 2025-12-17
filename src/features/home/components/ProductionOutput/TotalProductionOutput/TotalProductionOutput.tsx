@@ -71,7 +71,7 @@ function TotalProductionOutput(props: Props) {
                       {source.name} <Text style={styles.sourceCode}>({source.code})</Text>
                     </Text>
                   </View>
-                  <Text style={[styles.sourcePower, { color: source.color }]}>{source.power} tr.Wh</Text>
+                  <Text style={[styles.sourcePower, { color: source.color }]}>{source.value} tr.Wh</Text>
                 </View>
               ))}
             </>}

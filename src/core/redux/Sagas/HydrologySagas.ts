@@ -1,7 +1,19 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getHydrologyflowChart, getInflowOutflow, getHydrologyPlantsParam, getHydrographicChart } from '../Actions/HydrologyActions'
+import {
+  getHydrologyflowChart,
+  getInflowOutflow,
+  getHydrologyPlantsParam,
+  getHydrographicChart,
+  getHydrologyPlantsInfo,
+} from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
-import { setInflowOutflow, setHydrologyPlantsParam, setHydrologyChart, setFlowChartData } from '../slices/HydrologySlice'
+import {
+  setInflowOutflow,
+  setHydrologyPlantsParam,
+  setHydrologyChart,
+  setFlowChartData,
+  setHydrologyPlantsInfo,
+} from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -64,6 +76,18 @@ function* getHydrologyPlantsParamApiSaga(): Generator {
     console.log('getHydrologyPlantsParam error:', error)
   }
 }
+function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
+  try {
+    const payload = action.payload as { plantId: string }
+    const plantId = payload?.plantId || ''
+    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId)
+    if (res.status === 200) {
+      yield put(setHydrologyPlantsInfo(res.data))
+    }
+  } catch (error) {
+    console.log('getHydrologyPlantsInfo error:', error)
+  }
+}
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
 }
@@ -76,6 +100,10 @@ function* getHydrologyPlantsParamApi() {
   yield takeEvery(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga)
 }
 
+function* getHydrologyPlantsInfoApi() {
+  yield takeEvery(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga)
+}
+
 export function* hydrologySagaList() {
-  yield all([getHydrologyChartApi(), getHydrologyflowChartApi(), getInflowOutflowApi(), getHydrologyPlantsParamApi()])
+  yield all([getHydrologyChartApi(), getHydrologyflowChartApi(), getInflowOutflowApi(), getHydrologyPlantsParamApi(), getHydrologyPlantsInfoApi()])
 }
