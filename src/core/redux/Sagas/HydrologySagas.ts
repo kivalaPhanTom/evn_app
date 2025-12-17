@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getHydrologyflowChart, getInflowOutflow, getHydrologyPlantsParam, getHydrographicChart } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
-import { setInflowOutflow, setHydrologyPlantsParam, setHydrologyChart } from '../slices/HydrologySlice'
+import { setInflowOutflow, setHydrologyPlantsParam, setHydrologyChart, setFlowChartData } from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -16,7 +16,23 @@ function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChar
   }
 }
 
-function* getHydrologyflowChartApiSaga(): Generator { }
+function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflowChart>): Generator {
+  const payload = action.payload
+  const { currentPlantId, date } = payload
+  try {
+    const res = yield call(Service.getHydrologyFlowApi, currentPlantId, date)
+    if (res.status === 200) {
+      yield put(setFlowChartData({
+        flowChart: res.data.metrics,
+        flowChartSummary: res.data.summary
+      }))
+      // You can dispatch an action to store the data in the Redux store here
+      // yield put(setHydrologyFlowChart(res.data))
+    }
+  } catch (error) {
+    // console.log('getInflowOutflow error:', error)
+  }
+}
 
 function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): Generator {
   try {

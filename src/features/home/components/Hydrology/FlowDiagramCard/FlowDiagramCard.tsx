@@ -11,22 +11,34 @@ const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
 
 const RED_BG = "rgba(239, 68, 68, 0.10)";        // nền đỏ nhạt
 const RED_BORDER = "rgba(239, 68, 68, 0.45)";
-function FlowDiagramCard() {
+interface flowDiagramCardProps {
+    dateStr: string
+    currentPlantId: string
+    oneYearAgo: string
+}
+function FlowDiagramCard(props: flowDiagramCardProps) {
+    const { dateStr, currentPlantId, oneYearAgo} = props
     const dispatch = useDispatch();
-
+    const { flowChart, flowChartSummary } = useSelector((state: any) => state.hydrologySlice)
     useEffect(() => {
-        dispatch(getHydrologyflowChart())
-    }, [])
+        const payload = {
+            date: dateStr,
+            currentPlantId
+        }
+        dispatch(getHydrologyflowChart(payload))
+    }, [dateStr, currentPlantId])
 
     return (
         <AnimatedCardContainer>
             <View style={styles.content}>
                 <View style={styles.header}>
                     <Text style={styles.title}>{"Sơ đồ dòng chảy"}</Text>
-                    <Text style={styles.ck}>{"CK = Cùng kỳ năm ngoái (14/11/2023)"}</Text>
+                    <Text style={styles.ck}>{`CK = Cùng kỳ năm ngoái (${oneYearAgo})`}</Text>
                 </View>
                 <View style={styles.flowDiagramDetail}>
-                    <FlowDiagram />
+                    <FlowDiagram
+                        data={flowChart}
+                    />
                 </View>
                 <View style={styles.container}>
                     {/* Line phía trên */}
@@ -38,7 +50,7 @@ function FlowDiagramCard() {
                         <View style={[styles.box, styles.inboundTraffic]}>
                             <Text style={styles.titleSection}>LƯU LƯỢNG VỀ</Text>
                             <Text style={styles.valueBlue}>
-                                850 <Text style={styles.unit}>m³/s</Text>
+                                {flowChartSummary.totalInflow} <Text style={styles.unit}>{flowChartSummary.unit}</Text>
                             </Text>
                         </View>
 
@@ -46,7 +58,7 @@ function FlowDiagramCard() {
                         <View style={[styles.box, styles.dischargeFlow]}>
                             <Text style={styles.titleSection}>LƯU LƯỢNG XẢ</Text>
                             <Text style={styles.valueRed}>
-                                850 <Text style={styles.unit}>m³/s</Text>
+                                {flowChartSummary.totalOutflow} <Text style={styles.unit}>{flowChartSummary.unit}</Text>
                             </Text>
                         </View>
 
