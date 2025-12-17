@@ -6,6 +6,7 @@ export const Service = {
   getHydrologyFlowApi,
   getInflowOutflowApi,
   getHydrologyPlantsParamApi,
+  getHydrologyPlantsInfoApi,
   getUpstreamWaterLevelApi,
   getInflowApi,
   getOutflowApi,
@@ -16,6 +17,7 @@ export const servicePattern = {
   getHydrologyFlow: `${prefix_api}/FlowDiagram`,
   getInflowOutflow: `${prefix_api}/InflowOutflow`,
   getHydrologyPlantsParam: `${prefix_api}/hydrologyplant_parameters`,
+  getHydrologyPlantsInfo: `${prefix_api}/HydrologyPlantInformation`,
   getUpstreamWaterLevel: `${prefix_api}/GetUpstreamWaterLevel`,
   getInflow: `${prefix_api}/getInflow`,
   getOutflow: `${prefix_api}/getOutflow`,
@@ -36,6 +38,11 @@ function getInflowOutflowApi(hydroElectricId: string) {
 function getHydrologyPlantsParamApi() {
   return api.get(`${servicePattern.getHydrologyPlantsParam}`)
 }
+
+function getHydrologyPlantsInfoApi(plantId: string) {
+  return api.get(`${servicePattern.getHydrologyPlantsInfo}?id=${plantId}`)
+}
+
 function getUpstreamWaterLevelApi(currentPlantId: string, date: string) {
   return apiFormUrlEncoded.get(
     `${servicePattern.getUpstreamWaterLevel}?currentPlantId=${encodeURIComponent(currentPlantId)}&date=${encodeURIComponent(date)}`,

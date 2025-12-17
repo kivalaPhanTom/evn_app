@@ -36,6 +36,13 @@ interface hydrologyState {
     }[]
   }
   hydrologyCharData: HydroChartItem[]
+  hydrologyPlantsInfo: {
+    PlantsInfoData: {
+      label: string
+      value: number
+      unit: string
+    }[]
+  }
   hydrologyPlants: {
     plantsData: {
       id: number
@@ -107,6 +114,9 @@ const initialState: hydrologyState = {
   hydrologyCharData: [],
   hydrologyPlants: {
     plantsData: [],
+  },
+  hydrologyPlantsInfo: {
+    PlantsInfoData: [],
   },
   flowChart: {
     mntl: {
@@ -211,6 +221,9 @@ const hydrologySlice = createSlice({
     setHydrologyPlantsParam: (state, action) => {
       state.hydrologyPlants = action.payload
     },
+    setHydrologyPlantsInfo: (state, action) => {
+      state.hydrologyPlantsInfo = action.payload
+    },
     setFlowChartData: (state, action) => {
       const { flowChart, flowChartSummary } = action.payload
       state.flowChart = flowChart
@@ -236,6 +249,7 @@ export const {
   setHydrologyChart,
   setHydrologyPlantsParam,
   setFlowChartData,
+  setHydrologyPlantsInfo,
   setUpStreamWaterLevel,
   setInflow,
   setOutflow,

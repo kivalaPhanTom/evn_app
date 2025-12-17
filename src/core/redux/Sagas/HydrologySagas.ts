@@ -4,6 +4,7 @@ import {
   getInflowOutflow,
   getHydrologyPlantsParam,
   getHydrographicChart,
+  getHydrologyPlantsInfo,
   getUpstreamWaterLevel,
   getInflow,
   getOutflow,
@@ -15,12 +16,12 @@ import {
   setHydrologyPlantsParam,
   setHydrologyChart,
   setFlowChartData,
+  setHydrologyPlantsInfo,
   setUpStreamWaterLevel,
   setInflow,
   setOutflow,
   setTurbineflow,
 } from '../slices/HydrologySlice'
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -160,6 +161,18 @@ function* getHydrologyPlantsParamApiSaga(): Generator {
     console.log('getHydrologyPlantsParam error:', error)
   }
 }
+function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
+  try {
+    const payload = action.payload as { plantId: string }
+    const plantId = payload?.plantId || ''
+    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId)
+    if (res.status === 200) {
+      yield put(setHydrologyPlantsInfo(res.data))
+    }
+  } catch (error) {
+    console.log('getHydrologyPlantsInfo error:', error)
+  }
+}
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
 }
@@ -170,6 +183,10 @@ function* getInflowOutflowApi() {
 
 function* getHydrologyPlantsParamApi() {
   yield takeEvery(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga)
+}
+
+function* getHydrologyPlantsInfoApi() {
+  yield takeEvery(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga)
 }
 
 function* getUpstreamWaterLevelApi() {
@@ -194,6 +211,7 @@ export function* hydrologySagaList() {
     getHydrologyflowChartApi(),
     getInflowOutflowApi(),
     getHydrologyPlantsParamApi(),
+    getHydrologyPlantsInfoApi(),
     getUpstreamWaterLevelApi(),
     getInflowApi(),
     getOutflowApi(),

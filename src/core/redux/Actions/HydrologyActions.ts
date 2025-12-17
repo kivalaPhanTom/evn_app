@@ -13,3 +13,4 @@ export const getUpstreamWaterLevel = createAction<{ currentPlantId: string; date
 export const getInflow = createAction<{ currentPlantId: string; date: string }>(ACTION_TYPES.GET_INFLOW)
 export const getOutflow = createAction<{ currentPlantId: string; date: string }>(ACTION_TYPES.GET_OUTFLOW)
 export const getTurbineflow = createAction<{ currentPlantId: string; date: string }>(ACTION_TYPES.GET_TURBINE_FLOW)
+export const getHydrologyPlantsInfo = createAction<{ plantId: string }>(ACTION_TYPES.GET_HYDROLOGY_PLANTS_INFO)

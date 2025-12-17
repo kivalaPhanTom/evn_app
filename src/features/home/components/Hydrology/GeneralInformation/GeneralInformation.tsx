@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
 import styles from './GeneralInformation.style'
+import { useDispatch, useSelector } from 'react-redux'
+import { getHydrologyPlantsInfo } from '@/core/redux/Actions/HydrologyActions'
 
 interface GeneralInformationProps {
-  title?: string
+  date: string
+  currentPlantId: string
 }
 
 interface InfoCardData {
   label: string
-  value: string
+  value: number
   unit?: string
   icon?: {
     name: keyof typeof FontAwesome.glyphMap | keyof typeof MaterialCommunityIcons.glyphMap
@@ -19,56 +22,49 @@ interface InfoCardData {
   }
 }
 
-const GeneralInformation: React.FC<GeneralInformationProps> = () => {
+const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInformationProps) => {
+  const { date, currentPlantId } = props
+  const dispatch = useDispatch()
+  const { hydrologyPlantsInfo } = useSelector((state: any) => state.hydrologySlice)
+  useEffect(() => {
+    dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId }))
+  }, [date, currentPlantId, dispatch])
+
+  const plantsInfoData: { label: string; value: number; unit: string }[] =
+    hydrologyPlantsInfo?.PlantsInfoData ?? []
+
   const renderIcon = (icon: InfoCardData['icon']) => {
     if (!icon) return null
     const IconComponent = icon.type === 'material' ? MaterialCommunityIcons : FontAwesome
     return (
       <View style={styles.iconContainer}>
-        <IconComponent
-          name={icon.name as any}
-          size={24}
-          color="#000"
-        />
+        <IconComponent name={icon.name as any} size={24} color="#000" />
       </View>
     )
   }
 
-  const cardsData: InfoCardData[] = [
-    {
-      label: 'MNTL',
-      value: '612.3',
-      unit: 'm',
-      icon: {
-        name: 'hydro-power' as keyof typeof MaterialCommunityIcons.glyphMap,
-        type: 'material',
-      },
-    },
-    {
-      label: 'MNQT',
-      value: '527.8',
-      unit: 'm',
-      icon: {
-        name: 'thermometer' as keyof typeof FontAwesome.glyphMap,
-        type: 'fontawesome',
-      },
-    },
-    {
-      label: 'Δ MNQT',
-      value: '-0.7',
-      unit: 'm',
-    },
-    {
-      label: 'V HỮU ÍCH',
-      value: '145',
-      unit: 'tr.m³',
-    },
-    {
-      label: 'SỐ CỬA XẢ',
-      value: '3',
-      unit: 'cửa',
-    },
-  ]
+  const cardsData: InfoCardData[] = plantsInfoData.map((item) => {
+    const key = item.label
+    const icon: InfoCardData['icon'] | undefined =
+      key === 'MNTL'
+        ? {
+            name: 'hydro-power' as keyof typeof MaterialCommunityIcons.glyphMap,
+            type: 'material',
+          }
+        : key === 'MNQT'
+          ? {
+              name: 'thermometer' as keyof typeof FontAwesome.glyphMap,
+              type: 'fontawesome',
+            }
+          : undefined
+
+    return {
+      label: item.label,
+      value: item.value,
+      unit: item.unit,
+      ...(icon ? { icon } : {}),
+    }
+  })
 
   return (
     <AnimatedCardContainer>
@@ -84,9 +80,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = () => {
                 <Text style={styles.cardLabel}>{card.label}</Text>
                 <View style={styles.valueContainer}>
                   <Text style={styles.cardValue}>{card.value}</Text>
-                  {card.unit && (
-                    <Text style={styles.cardUnit}> {card.unit}</Text>
-                  )}
+                  {card.unit && <Text style={styles.cardUnit}> {card.unit}</Text>}
                 </View>
               </View>
             ))}
@@ -100,9 +94,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = () => {
                 <Text style={styles.cardLabel}>{card.label}</Text>
                 <View style={styles.valueContainer}>
                   <Text style={styles.cardValue}>{card.value}</Text>
-                  {card.unit && (
-                    <Text style={styles.cardUnit}> {card.unit}</Text>
-                  )}
+                  {card.unit && <Text style={styles.cardUnit}> {card.unit}</Text>}
                 </View>
               </View>
             ))}
@@ -111,13 +103,11 @@ const GeneralInformation: React.FC<GeneralInformationProps> = () => {
           {/* Row 3: SỐ CỬA XẢ - card rộng hơn, ở giữa */}
           <View style={styles.row}>
             <View style={[styles.card, styles.cardWide]}>
-              {renderIcon(cardsData[4].icon)}
-              <Text style={styles.cardLabel}>{cardsData[4].label}</Text>
+              {renderIcon(cardsData[4]?.icon)}
+              <Text style={styles.cardLabel}>{cardsData[4]?.label}</Text>
               <View style={styles.valueContainer}>
-                <Text style={styles.cardValue}>{cardsData[4].value}</Text>
-                {cardsData[4].unit && (
-                  <Text style={styles.cardUnit}> {cardsData[4].unit}</Text>
-                )}
+                <Text style={styles.cardValue}>{cardsData[4]?.value}</Text>
+                {cardsData[4]?.unit && <Text style={styles.cardUnit}> {cardsData[4]?.unit}</Text>}
               </View>
             </View>
           </View>
