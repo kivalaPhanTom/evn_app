@@ -7,6 +7,8 @@ import FlowRate from '../FlowRate/FlowRate'
 import FlowDiagramCard from '../FlowDiagramCard/FlowDiagramCard'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -72,19 +74,24 @@ function getGurrentPlantId(activeTab: string): string {
   return result
 }
 function HydrologyDetail() {
+  const dispatch = useDispatch()
+  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [activeTab, setActiveTab] = useState<string>('buon-tua-srah')
+  const [activeTab, setActiveTab] = useState<string>('BTS')
   
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(
       selectedDate.getFullYear() - 1
     )
   ).toLocaleDateString('vi-VN');
-  const tabs = [
-    { id: 'buon-tua-srah', label: 'Buôn Tua Srah' },
-    { id: 'buon-kuop', label: 'Buôn Kuốp' },
-    { id: 'srepok-3', label: 'Srepok 3' },
-  ]
+
+  const tabs = hydrologyPlants?.plantsData?.map((plant) => {
+    const plantId = getGurrentPlantId(plant.abbreviation);
+    return {
+      id: plantId,
+      label: plant.name,
+    }
+  })
 
   return (
     <ScrollView>
@@ -108,11 +115,14 @@ function HydrologyDetail() {
           <FlowDiagramCard
             dateStr={selectedDate.toLocaleDateString('vi-VN')}
             oneYearAgo={formattedOneYearAgo}
-            currentPlantId={getGurrentPlantId(activeTab)}
+            currentPlantId={activeTab}
           />
         </View>
         <View style={{ marginBottom: 20 }}>
-          <GeneralInformation />
+          <GeneralInformation
+            date={selectedDate.toLocaleDateString('vi-VN')}
+            currentPlantId={activeTab}
+          />
         </View>
         {flowRateData.map((item, index) => (
           <View key={index} style={{ marginBottom: 20 }}>
