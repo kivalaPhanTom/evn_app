@@ -20,9 +20,10 @@ interface HydroChartItem {
 interface HydrographicChartProps {
   isLoading: boolean
   data: HydroChartItem[]
+  referenceLevel: number
 }
 function HydrographicChart(props: HydrographicChartProps) {
-  const { isLoading = false, data = [] } = props
+  const { isLoading = false, data = [], referenceLevel = 0 } = props
   const [chartHeight, setChartHeight] = useState(0);
 
   // Compute maxValue from the largest avgVolume so grid scales to data.
@@ -47,8 +48,8 @@ function HydrographicChart(props: HydrographicChartProps) {
 
   const barData = useMemo(() => {
     return data.map(item => ({
-      value: item.values,
-      frontColor: getBarColor(item.values),
+      value: item.avgVolume,
+      frontColor: getBarColor(item.avgVolume),
       borderRadius: 6,
     }));
   }, [JSON.stringify(data)]);
@@ -81,7 +82,7 @@ function HydrographicChart(props: HydrographicChartProps) {
   const dynamicChartHeight = SCREEN_WIDTH * 0.45;
 
   const maxValue = computedMaxValue;
-  const thresholdValue = 180;
+  const thresholdValue = referenceLevel;
 
   const topPadding = 8;
   // Try zero bottom padding so the baseline is at the very bottom of chart area
@@ -184,7 +185,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                   { top: thresholdTop - 10 }
                 ]}
               >
-                <Text style={styles.thresholdLabelText}>180m</Text>
+                <Text style={styles.thresholdLabelText}>{`${referenceLevel}m`}</Text>
               </View>
             )}
 
