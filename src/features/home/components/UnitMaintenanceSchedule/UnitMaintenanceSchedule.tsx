@@ -66,12 +66,12 @@ function UnitMaintenanceSchedule() {
   return (
     <SectionContainer
       title="Các tổ máy có lịch sửa chữa bảo dưỡng"
-      actionButton={{
-        label: 'Thêm chi tiết',
-        onPress: onPressCard,
-      }}
+      // actionButton={{
+      //   label: 'Thêm chi tiết',
+      //   onPress: onPressCard,
+      // }}
     >
-      <View style={{ marginBottom: 20, left: -5, flexDirection: 'row', gap: 10 }}>
+      <View style={styles.infoContainer}>
         <View style={[styles.infoCard]}>
           <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>TỔNG HẠNG MỤC SỬA CHỮA</Text>
           <View style={styles.infoRow}>
