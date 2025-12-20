@@ -5,7 +5,9 @@ function FactoryDetail() {
   
 
     return (
-        <View>HIHHI</View>
+        <View>
+            <Text style={{ color: '#fff' }}>HIHHI</Text>
+        </View>
     )
 }
 

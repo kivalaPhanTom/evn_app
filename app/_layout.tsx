@@ -68,7 +68,7 @@ export default function RootLayout() {
   if (!loaded) return null
 
   return (
-    // <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <TranslationProvider>
         <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -80,6 +80,7 @@ export default function RootLayout() {
                   <Stack.Screen name="companies" />
                   <Stack.Screen name="charts" />
                   <Stack.Screen name="home/index" />
+                  <Stack.Screen name="factory-detail/index" />
                   <Stack.Screen name="product-output-detail/index" />
                   <Stack.Screen name="product-power-detail/index" />
                   <Stack.Screen name="hydrology-detail/index" />
@@ -129,8 +130,7 @@ export default function RootLayout() {
           </ThemeProvider>
         </ThemeToggleContext.Provider>
       </TranslationProvider>
-    // </GestureHandlerRootView>
-
+    </GestureHandlerRootView>
   )
 }
 

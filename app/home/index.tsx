@@ -1,8 +1,9 @@
 import React from 'react'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { runOnJS } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -19,10 +20,10 @@ function HomeNewScreen(props: Props) {
   const { } = props
   const router = useRouter()
   const swipeLeft = Gesture.Pan()
-    .activeOffsetX([-30, 30]) // CHỈ nhận vuốt ngang
+    .activeOffsetX([-30, 30])
     .onEnd(e => {
       if (e.translationX < -80) {
-        router.push('/factory-detail/index')
+        runOnJS(router.navigate)('/factory-detail')
       }
     })
   const { companyName, location } = useLocalSearchParams<{
@@ -33,7 +34,7 @@ function HomeNewScreen(props: Props) {
   const companyLocation = Array.isArray(location) ? location[0] : location
 
   return (
-    // <GestureDetector gesture={swipeLeft}>
+    <GestureDetector gesture={swipeLeft}>
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
           <View style={styles.header}>
@@ -55,7 +56,7 @@ function HomeNewScreen(props: Props) {
           </ScrollView>
         </TwinkleStars>
       </View>
-    // </GestureDetector>
+    </GestureDetector>
   )
 }
 
