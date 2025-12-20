@@ -9,8 +9,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, ScrollView } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { getToken } from '@/core/redux/Actions/AuthenActions'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { useForm, Controller } from 'react-hook-form'
@@ -29,6 +29,8 @@ export default function LoginScreen() {
   })
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
+  const insets = useSafeAreaInsets()
+  const keyboardOffset = insets.top + px.v(50)
 
   const onLogin = (data: FormValues) => {
     setLoading(true)
@@ -41,86 +43,96 @@ export default function LoginScreen() {
   return (
     <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
-          <View style={styles.logoWrap}>
-            <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(200) }} contentFit="contain" />
-          </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={keyboardOffset}
+          style={styles.flex}
+        >
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.logoWrap}>
+              <Image source={icons.evnLogo} style={{ width: px.h(160), height: px.h(160) }} contentFit="contain" />
+            </View>
        
-          <View style={styles.titleWrap}>
-            <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
-          </View>
+            <View style={styles.titleWrap}>
+              <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
+            </View>
 
-          {/* Form */}
-          <View style={styles.formWrap}>
-            <LinearGradient
-              pointerEvents="none"
-              colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.formGlow}
-            />
+            {/* Form */}
+            <View style={styles.formWrap}>
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.formGlow}
+              />
            
-            <View pointerEvents="none" style={styles.formGlowRim} />
-            <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
-              <Text style={styles.loginTitle}>Đăng nhập</Text>
-            </View>
-            <View style={{ marginBottom: px.v(14) }}>
-              <Controller
-                control={control}
-                name="username"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GradientInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="Username"
-                    onBlur={onBlur}
-                    borderColor={errors.username ? '#EF4444' : undefined}
-                    leftIcon={<Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />}
-                  />
-                )}
+              <View pointerEvents="none" style={styles.formGlowRim} />
+              <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
+                <Text style={styles.loginTitle}>Đăng nhập</Text>
+              </View>
+              <View style={{ marginBottom: px.v(14) }}>
+                <Controller
+                  control={control}
+                  name="username"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <GradientInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="Username"
+                      onBlur={onBlur}
+                      borderColor={errors.username ? '#EF4444' : undefined}
+                      leftIcon={<Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />}
+                    />
+                  )}
+                />
+                {errors.username && <Text style={styles.errorText}>{errors.username.message}</Text>}
+              </View>
+
+              <View style={{ marginBottom: px.v(12) }}>
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <GradientInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="Password"
+                      type={showPass ? 'text' : 'password'}
+                      borderColor={errors.password ? '#EE0033' : undefined}
+                      leftIcon={
+                        <Ionicons name="lock-closed-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
+                      }
+                      rightIcon={
+                        <Ionicons
+                          name={showPass ? 'eye-off-outline' : 'eye-outline'}
+                          size={px.f(18)}
+                          color={isDark ? '#A6B0BE' : '#6B7280'}
+                          onPress={() => setShowPass((v) => !v)}
+                        />
+                      }
+                    />
+                  )}
+                />
+                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+              </View>
+
+              <GradientButton
+                title="Login"
+                onPress={handleSubmit(onLogin)}
+                loading={loading}
+                gradientColors={['#0EA5E9', '#06B6D4']}
+                borderColor={{ light: '#06B6D4', dark: '#06B6D4' }}
+                style={styles.loginBtn}
               />
-              {errors.username && <Text style={styles.errorText}>{errors.username.message}</Text>}
+
             </View>
-
-            <View style={{ marginBottom: px.v(12) }}>
-              <Controller
-                control={control}
-                name="password"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GradientInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="Password"
-                    type={showPass ? 'text' : 'password'}
-                    borderColor={errors.password ? '#EF4444' : undefined}
-                    leftIcon={
-                      <Ionicons name="lock-closed-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
-                    }
-                    rightIcon={
-                      <Ionicons
-                        name={showPass ? 'eye-off-outline' : 'eye-outline'}
-                        size={px.f(18)}
-                        color={isDark ? '#A6B0BE' : '#6B7280'}
-                        onPress={() => setShowPass((v) => !v)}
-                      />
-                    }
-                  />
-                )}
-              />
-              {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
-            </View>
-
-            <GradientButton
-              title="Login"
-              onPress={handleSubmit(onLogin)}
-              loading={loading}
-              gradientColors={['#0EA5E9', '#06B6D4']}
-              borderColor={{ light: '#06B6D4', dark: '#06B6D4' }}
-              style={styles.loginBtn}
-            />
-
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </TwinkleStars>
@@ -156,7 +168,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.1)',
     borderBottomWidth: 0,
     paddingHorizontal: px.h(24),
-    marginTop: px.v(100),
+    marginTop: px.v(60),
     paddingTop: px.v(80),
     borderTopWidth: 0,
     justifyContent: 'flex-start',
