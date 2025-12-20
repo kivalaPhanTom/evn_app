@@ -1,5 +1,6 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
+import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import HydrologyDetail from '@/features/home/components/Hydrology/HydrologyDetail/HydrologyDetail'
 import React from 'react'
@@ -7,7 +8,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 const HydrologyDetailScreen: React.FC = () => {
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết Thủy văn'}

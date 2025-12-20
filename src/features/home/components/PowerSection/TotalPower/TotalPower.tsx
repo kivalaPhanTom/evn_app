@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router'
 import { RootState } from "@/core/redux/store";
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
+import { Colors } from 'toastify-react-native/config/theme'
 
 
 function TotalPower() {
