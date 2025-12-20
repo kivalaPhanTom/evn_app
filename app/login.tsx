@@ -9,8 +9,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, ScrollView } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { getToken } from '@/core/redux/Actions/AuthenActions'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { useForm, Controller } from 'react-hook-form'
@@ -24,12 +24,18 @@ export default function LoginScreen() {
   const scheme = useAppTheme()
   const dispatch = useDispatch()
   const isDark = scheme === 'dark'
-  const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: { username: '', password: '' },
     mode: 'onSubmit',
   })
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
+  const insets = useSafeAreaInsets()
+  const keyboardOffset = insets.top + px.v(50)
 
   const onLogin = (data: FormValues) => {
     setLoading(true)
@@ -38,91 +44,103 @@ export default function LoginScreen() {
       setLoading(false)
     }, 900)
   }
-  const t = useText();
+  const t = useText()
 
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <TwinkleStars
+      background={Colors.background}
+      particleDensity={50}
+      particleColor={Colors.textColor}
+      minSize={0.5}
+      maxSize={2}
+    >
       <SafeAreaView style={styles.flex} edges={['top']}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
-          <View style={styles.logoWrap}>
-            <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(120) }} contentFit="contain" />
-          </View>
-
-          <View style={styles.titleWrap}>
-            <Text style={styles.loginTitle}>{t.appName}</Text>
-          </View>
-
-          {/* Form */}
-          <View style={styles.formWrap}>
-            <LinearGradient
-              pointerEvents="none"
-              colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.formGlow}
-            />
-
-            <View pointerEvents="none" style={styles.formGlowRim} />
-            <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
-              <Text style={styles.loginTitle}>{t.auth.login}</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={keyboardOffset}
+          style={styles.flex}
+        >
+          <ScrollView style={styles.flex} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+            <View style={styles.logoWrap}>
+              <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(120) }} contentFit="contain" />
             </View>
-            <View style={{ marginBottom: px.v(14) }}>
-              <Controller
-                control={control}
-                name="username"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GradientInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder={t.auth.username}
-                    onBlur={onBlur}
-                    borderColor={errors.username ? '#EF4444' : undefined}
-                    leftIcon={<Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />}
-                  />
-                )}
+
+            <View style={styles.titleWrap}>
+              <Text style={styles.loginTitle}>{t.appName}</Text>
+            </View>
+
+            {/* Form */}
+            <View style={styles.formWrap}>
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,255,255,0.28)', 'rgba(123,97,240,0.22)', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.formGlow}
               />
-              {errors.username && <Text style={styles.errorText}>{errors.username.message}</Text>}
-            </View>
 
-            <View style={{ marginBottom: px.v(12) }}>
-              <Controller
-                control={control}
-                name="password"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GradientInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder={t.auth.password}
-                    type={showPass ? 'text' : 'password'}
-                    borderColor={errors.password ? '#EF4444' : undefined}
-                    leftIcon={
-                      <Ionicons name="lock-closed-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
-                    }
-                    rightIcon={
-                      <Ionicons
-                        name={showPass ? 'eye-off-outline' : 'eye-outline'}
-                        size={px.f(18)}
-                        color={isDark ? '#A6B0BE' : '#6B7280'}
-                        onPress={() => setShowPass((v) => !v)}
-                      />
-                    }
-                  />
-                )}
+              <View pointerEvents="none" style={styles.formGlowRim} />
+              <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
+                <Text style={styles.loginTitle}>{t.auth.login}</Text>
+              </View>
+              <View style={{ marginBottom: px.v(14) }}>
+                <Controller
+                  control={control}
+                  name="username"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <GradientInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder={t.auth.username}
+                      onBlur={onBlur}
+                      borderColor={errors.username ? '#EF4444' : undefined}
+                      leftIcon={
+                        <Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
+                      }
+                    />
+                  )}
+                />
+              </View>
+
+              <View style={{ marginBottom: px.v(12) }}>
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <GradientInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder={t.auth.password}
+                      type={showPass ? 'text' : 'password'}
+                      borderColor={errors.password ? '#EF4444' : undefined}
+                      leftIcon={
+                        <Ionicons name="lock-closed-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
+                      }
+                      rightIcon={
+                        <Ionicons
+                          name={showPass ? 'eye-off-outline' : 'eye-outline'}
+                          size={px.f(18)}
+                          color={isDark ? '#A6B0BE' : '#6B7280'}
+                          onPress={() => setShowPass((v) => !v)}
+                        />
+                      }
+                    />
+                  )}
+                />
+                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+              </View>
+
+              <GradientButton
+                title={t.auth.login}
+                onPress={handleSubmit(onLogin)}
+                loading={loading}
+                gradientColors={['#0EA5E9', '#06B6D4']}
+                borderColor={{ light: '#06B6D4', dark: '#06B6D4' }}
+                style={styles.loginBtn}
               />
-              {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
             </View>
-
-            <GradientButton
-              title={t.auth.login}
-              onPress={handleSubmit(onLogin)}
-              loading={loading}
-              gradientColors={['#0EA5E9', '#06B6D4']}
-              borderColor={{ light: '#06B6D4', dark: '#06B6D4' }}
-              style={styles.loginBtn}
-            />
-
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </TwinkleStars>
@@ -195,5 +213,5 @@ const styles = StyleSheet.create({
     color: '#EF4444',
     marginTop: px.v(6),
     fontSize: px.f(15),
-  }
+  },
 })
