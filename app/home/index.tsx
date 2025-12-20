@@ -1,6 +1,5 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
-import { lightGradients } from '@/core/constants/gradients'
 import { textGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
 import PowerSection from '@/features/home/components/PowerSection/PowerSection'
@@ -11,6 +10,8 @@ import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
+import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
+import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 interface Props {}
 
 function HomeNewScreen(props: Props) {
@@ -42,6 +43,8 @@ function HomeNewScreen(props: Props) {
         <ProductionOutput />
         <Hydrology />
         <UnitMaintenanceSchedule />
+        <RevenueDetail />
+        <ProfitDetail />
       </ScrollView>
     </TwinkleStars>
   )

@@ -2,12 +2,12 @@ import { GradientColors } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef, useState } from 'react'
-import { Animated, LayoutChangeEvent, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { Animated, LayoutChangeEvent, StyleSheet, Text, TextStyle, View, ViewStyle, ColorValue } from 'react-native'
 
 interface GradientProgressProps {
   progress: number // 0..1
   height?: number
-  colors?: GradientColors
+  colors?: GradientColors | string
   backgroundColor?: string
   borderRadius?: number
   animate?: boolean
@@ -34,6 +34,12 @@ const GradientProgress: React.FC<GradientProgressProps> = ({
   const [width, setWidth] = useState(0)
   const animatedWidth = useRef(new Animated.Value(0)).current
 
+  const gradientColors: GradientColors =
+    typeof colors === 'string'
+      ? [colors, colors]
+      : (colors as GradientColors)
+  const rightLabelColor = gradientColors[gradientColors.length - 1]
+
   useEffect(() => {
     const clamped = Math.max(0, Math.min(1, progress))
     const target = clamped * width
@@ -51,7 +57,6 @@ const GradientProgress: React.FC<GradientProgressProps> = ({
   function onLayout(e: LayoutChangeEvent) {
     const w = e.nativeEvent.layout.width
     setWidth(w)
-    // initialize width instantly if needed
     const clamped = Math.max(0, Math.min(1, progress))
     animatedWidth.setValue(clamped * w)
   }
@@ -62,7 +67,15 @@ const GradientProgress: React.FC<GradientProgressProps> = ({
         <Text numberOfLines={1} style={[styles.label, labelStyle]}>
           {leftLabel}
         </Text>
-        <Text numberOfLines={1} style={[styles.label, labelStyle, styles.labelRight]}>
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.label,
+            styles.labelRight,
+            labelStyle,
+            { color: rightLabelColor },
+          ]}
+        >
           {rightLabel}
         </Text>
       </View>
@@ -80,7 +93,7 @@ const GradientProgress: React.FC<GradientProgressProps> = ({
         onLayout={onLayout}
       >
         <Animated.View style={{ width: animatedWidth, height: '100%' }}>
-          <LinearGradient colors={colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ flex: 1 }} />
+          <LinearGradient colors={gradientColors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ flex: 1 }} />
         </Animated.View>
       </View>
     </View>
