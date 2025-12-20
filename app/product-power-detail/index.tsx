@@ -4,10 +4,11 @@ import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { Colors } from 'toastify-react-native/config/theme'
 
 const ProductOutputDetailScreen: React.FC = () => {
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết Công suất'}

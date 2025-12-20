@@ -2,6 +2,7 @@ import { images } from '@/assets'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
+import { Colors } from '@/core/constants/colors'
 import { textGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
@@ -19,7 +20,7 @@ export default function CompaniesScreen() {
   const router = useRouter()
 
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
           <SectionContainer title='Danh sách công ty'>

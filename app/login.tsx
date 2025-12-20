@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { getToken } from '@/core/redux/Actions/AuthenActions'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { useForm, Controller } from 'react-hook-form'
+import { useText } from '@/core/hooks/use-text'
 type FormValues = {
   username: string
   password: string
@@ -37,17 +38,18 @@ export default function LoginScreen() {
       setLoading(false)
     }, 900)
   }
- 
+  const t = useText();
+
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
           <View style={styles.logoWrap}>
-            <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(200) }} contentFit="contain" />
+            <Image source={icons.evnLogo} style={{ width: px.h(200), height: px.h(120) }} contentFit="contain" />
           </View>
-       
+
           <View style={styles.titleWrap}>
-            <Text style={styles.loginTitle}>HỆ THỐNG QUẢN LÝ</Text>
+            <Text style={styles.loginTitle}>{t.appName}</Text>
           </View>
 
           {/* Form */}
@@ -59,10 +61,10 @@ export default function LoginScreen() {
               end={{ x: 0, y: 1 }}
               style={styles.formGlow}
             />
-           
+
             <View pointerEvents="none" style={styles.formGlowRim} />
             <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
-              <Text style={styles.loginTitle}>Đăng nhập</Text>
+              <Text style={styles.loginTitle}>{t.auth.login}</Text>
             </View>
             <View style={{ marginBottom: px.v(14) }}>
               <Controller
@@ -72,7 +74,7 @@ export default function LoginScreen() {
                   <GradientInput
                     value={value}
                     onChangeText={onChange}
-                    placeholder="Username"
+                    placeholder={t.auth.username}
                     onBlur={onBlur}
                     borderColor={errors.username ? '#EF4444' : undefined}
                     leftIcon={<Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />}
@@ -91,7 +93,7 @@ export default function LoginScreen() {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Password"
+                    placeholder={t.auth.password}
                     type={showPass ? 'text' : 'password'}
                     borderColor={errors.password ? '#EF4444' : undefined}
                     leftIcon={
@@ -112,7 +114,7 @@ export default function LoginScreen() {
             </View>
 
             <GradientButton
-              title="Login"
+              title={t.auth.login}
               onPress={handleSubmit(onLogin)}
               loading={loading}
               gradientColors={['#0EA5E9', '#06B6D4']}
@@ -156,8 +158,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.1)',
     borderBottomWidth: 0,
     paddingHorizontal: px.h(24),
-    marginTop: px.v(100),
-    paddingTop: px.v(80),
+    marginTop: px.v(80),
+    paddingTop: px.v(50),
     borderTopWidth: 0,
     justifyContent: 'flex-start',
     overflow: 'hidden',
