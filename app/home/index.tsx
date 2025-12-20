@@ -11,6 +11,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
+import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 interface Props {}
 
@@ -25,7 +26,7 @@ function HomeNewScreen(props: Props) {
   const companyLocation = Array.isArray(location) ? location[0] : location
 
   return (
-    <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
         <GradientText
           text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}

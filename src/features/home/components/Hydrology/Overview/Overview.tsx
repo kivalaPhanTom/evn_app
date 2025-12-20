@@ -526,6 +526,7 @@ const Overview: React.FC = () => {
     }
     if (companyId !== "") {
       dispatch(getHydrographicChart({ companyId: companyId }))
+      dispatch(getInflowOutflow({ hydroElectricId: companyId }))
     }
     
 
