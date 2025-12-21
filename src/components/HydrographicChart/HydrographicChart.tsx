@@ -9,8 +9,8 @@ interface Props { }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const getBarColor = (value: number): string => {
-  return value >= 180 ? '#5B9FED' : '#E74C5C';
+const getBarColor = (value: number, referenceLevel:number): string => {
+  return value >= referenceLevel ? '#5B9FED' : '#E74C5C';
 };
 interface HydroChartItem {
   avgVolume: number;
@@ -49,7 +49,7 @@ function HydrographicChart(props: HydrographicChartProps) {
   const barData = useMemo(() => {
     return data.map(item => ({
       value: item.avgVolume,
-      frontColor: getBarColor(item.avgVolume),
+      frontColor: getBarColor(item.avgVolume, referenceLevel),
       borderRadius: 6,
     }));
   }, [JSON.stringify(data)]);

@@ -9,6 +9,7 @@ import {
   getInflow,
   getOutflow,
   getTurbineflow,
+  getPowerStoreInLake,
 } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -21,6 +22,7 @@ import {
   setInflow,
   setOutflow,
   setTurbineflow,
+  setPowerStoreInLake,
 } from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
@@ -173,12 +175,26 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     console.log('getHydrologyPlantsInfo error:', error)
   }
 }
+function* getPowerStoreInLakeApiSaga(): Generator {
+  try {
+    const res = yield call(Service.getPowerStoreInLake)
+    if (res.status === 200) {
+      yield put(setPowerStoreInLake(res.data))
+    }
+  } catch (error) {
+    console.log('PowerStoreInLake error:', error)
+  }
+}
+
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
 }
 
 function* getInflowOutflowApi() {
   yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga)
+}
+function* getPowerStoreInLakeApi() {
+  yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga)
 }
 
 function* getHydrologyPlantsParamApi() {
@@ -216,5 +232,5 @@ export function* hydrologySagaList() {
     getInflowApi(),
     getOutflowApi(),
     getTurbineflowApi(),
-  ])
-}
+    getPowerStoreInLakeApi(),
+  ])}

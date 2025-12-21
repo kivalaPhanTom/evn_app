@@ -12,6 +12,7 @@ export interface BarPoint {
   frontColor?: string
   spacing?: number
   showValuesOnTop?: boolean
+  showPrefix?: boolean
 }
 
 export interface BarGroup {
@@ -150,7 +151,7 @@ const BarChart: React.FC<Props> = ({
                         numberOfLines={1}
                         adjustsFontSizeToFit
                       >
-                        {item.value}
+                        {item.showPrefix && '+'}{item.value}
                       </Text>
                     )
                   : undefined,
@@ -201,7 +202,7 @@ const BarChart: React.FC<Props> = ({
           style={[
             styles.groupOverlay,
             {
-              left: selectedMetrics.left - 7,
+              left: selectedMetrics.left + 10,
               width: selectedMetrics.width + px.h(15),
               // đặt overlay sao cho chân chạm trục hoành (x-axis)
               top:
@@ -234,7 +235,7 @@ const BarChart: React.FC<Props> = ({
           style={[
             styles.tooltip,
             {
-              left: selectedMetrics.left - 2,
+              left: selectedMetrics.left + 10,
                 // position tooltip clearly above the overlay (no overlap)
                 top:
                 height -

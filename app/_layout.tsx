@@ -68,22 +68,21 @@ export default function RootLayout() {
   if (!loaded) return null
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <TranslationProvider>
-        <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
-          <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <StoreProvider>
-              <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
-                <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="splash" />
-                  <Stack.Screen name="login" />
-                  <Stack.Screen name="companies" />
-                  <Stack.Screen name="charts" />
-                  <Stack.Screen name="home/index" />
-                  <Stack.Screen name="factory-detail/index" />
-                  <Stack.Screen name="product-output-detail/index" />
-                  <Stack.Screen name="product-power-detail/index" />
-                  <Stack.Screen name="hydrology-detail/index" />
+    <TranslationProvider>
+      <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
+        <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <StoreProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
+              <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="splash" />
+                <Stack.Screen name="login" />
+                <Stack.Screen name="companies" />
+                <Stack.Screen name="charts" />
+                <Stack.Screen name="home/index" />
+                <Stack.Screen name="product-output-detail/index" />
+                <Stack.Screen name="product-power-detail/index" />
+                <Stack.Screen name="hydrology-detail/index" />
+                <Stack.Screen name="revenue-profit-detail/index" />
 
                   {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
@@ -130,7 +129,6 @@ export default function RootLayout() {
           </ThemeProvider>
         </ThemeToggleContext.Provider>
       </TranslationProvider>
-    </GestureHandlerRootView>
   )
 }
 
