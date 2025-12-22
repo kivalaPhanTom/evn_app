@@ -1,8 +1,5 @@
-import React, { FC } from "react";
-import { useEffect, useRef } from "react";
-import { View, StyleSheet, Animated, Easing } from "react-native";
-import { StyleProp, ViewStyle } from "react-native";
-import { DimensionValue } from "react-native";
+import React, { FC, useEffect, useRef } from "react";
+import { View, StyleSheet, Animated, Easing, DimensionValue, StyleProp, ViewStyle } from "react-native";
 import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 const BackgroundColor = "rgba(255,255,255,0.15)";

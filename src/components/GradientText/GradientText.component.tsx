@@ -17,7 +17,7 @@ interface GradientTextProps extends TextProps {
 
 const GradientText: React.FC<GradientTextProps> = ({
   text,
-  colors = ['#00E0FF', '#48FFCC'],
+  colors = ['#0EA5E9', '#06B6D4'],
   start = { x: 0, y: 0 },
   end = { x: 1, y: 0 },
   fontSize = px.f(20),

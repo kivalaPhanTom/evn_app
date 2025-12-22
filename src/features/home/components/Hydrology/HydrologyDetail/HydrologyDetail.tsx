@@ -61,8 +61,8 @@ const flowRateData = [
   },
 ] // Dữ liệu mẫu cho FlowRate
 
-function getGurrentPlantId(activeTab: string): string {
-  let result: string = ''
+function getCurrentPlantId(activeTab: string): string {
+  let result: string = '';
   switch (activeTab) {
     case 'buon-tua-srah':
       result = 'BTS'
@@ -87,9 +87,9 @@ function HydrologyDetail() {
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
-
+  console.log(hydrologyPlants);
   const tabs = hydrologyPlants?.plantsData?.map((plant) => {
-    const plantId = getGurrentPlantId(plant.abbreviation)
+    const plantId = getCurrentPlantId(plant.abbreviation)
     return {
       id: plantId,
       label: plant.name,
@@ -103,15 +103,15 @@ function HydrologyDetail() {
 
   useEffect(() => {
     const payload = {
-      currentPlantId: getGurrentPlantId(activeTab),
+      currentPlantId: activeTab,
       date: selectedDate.toLocaleDateString('vi-VN'),
     }
-
-    dispatch(getUpstreamWaterLevel(payload))
-    dispatch(getInflow(payload))
-    dispatch(getOutflow(payload))
-    dispatch(getTurbineflow(payload))
-  }, [])
+    console.log("payload", payload);
+    dispatch(getUpstreamWaterLevel(payload));
+    dispatch(getInflow(payload));
+    dispatch(getOutflow(payload));
+    dispatch(getTurbineflow(payload));
+  }, [activeTab, selectedDate, dispatch])
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -141,8 +141,8 @@ function HydrologyDetail() {
 
   const convertedOutflowData = {
     title: 'Lưu lượng xả tràn (Qxt)',
-    data: outflow?.todayOutflow ? JSON.parse(JSON.stringify(outflow?.todayOutflow)) : [],
-    data2: outflow?.samePeriodOutflow ? JSON.parse(JSON.stringify(outflow?.samePeriodOutflow)) : [],
+    data: outflow?.turbinflowData ? JSON.parse(JSON.stringify(outflow?.turbinflowData)) : [],
+    data2: outflow?.samePeriodTurbinflowData ? JSON.parse(JSON.stringify(outflow?.samePeriodTurbinflowData)) : [],
     currentColor: '#F59E0B',
     unit: outflow?.unit,
     flowRateInfo: [
@@ -154,8 +154,8 @@ function HydrologyDetail() {
 
   const convertedTurbineflowData = {
     title: 'Lưu lượng chạy máy (Qcm)',
-    data: turbineflow?.todayTurbineFlow ? JSON.parse(JSON.stringify(turbineflow?.todayTurbineFlow)) : [],
-    data2: turbineflow?.samePeriodTurbineFlow ? JSON.parse(JSON.stringify(turbineflow?.samePeriodTurbineFlow)) : [],
+    data: turbineflow?.turbinflowData ? JSON.parse(JSON.stringify(turbineflow?.turbinflowData)) : [],
+    data2: turbineflow?.samePeriodTurbinflowData ? JSON.parse(JSON.stringify(turbineflow?.samePeriodTurbinflowData)) : [],
     currentColor: '#10B981',
     unit: turbineflow?.unit,
     flowRateInfo: [
@@ -176,7 +176,7 @@ function HydrologyDetail() {
           <DatePicker
             value={selectedDate}
             onChange={setSelectedDate}
-            format="MM/DD/YYYY"
+            format="DD/MM/YYYY"
             textColor="#fff"
             borderColor="rgba(255,255,255,0.15)"
             backgroundColor="rgba(26, 35, 50, 0.6)"

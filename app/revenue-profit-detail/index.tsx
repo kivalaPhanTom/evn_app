@@ -1,17 +1,16 @@
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
-import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
-import HydrologyDetail from '@/features/home/components/Hydrology/HydrologyDetail/HydrologyDetail'
+import RevenueProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/RevenueProfitDetail'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-const HydrologyDetailScreen: React.FC = () => {
+const RevenueProfitDetailScreen: React.FC = () => {
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <View>
       <View style={styles.header}>
         <GradientText
-          text={'Chi tiết Thủy văn'}
+          text={'Chi tiết Sản lượng'}
           colors={'#FFF'}
           fontSize={px.f(30)}
           style={{ textAlign: 'center' }}
@@ -20,25 +19,31 @@ const HydrologyDetailScreen: React.FC = () => {
           <Text style={styles.locationText}>{'Công ty thủy điện Buon Kuop'}</Text>
         </View>
       </View>
-      <HydrologyDetail />
-    </TwinkleStars>
+      <RevenueProfitDetail />
+    </View>
   )
 }
 
+export default RevenueProfitDetailScreen
+
 const styles = StyleSheet.create({
+  safe: { flex: 1 },
+  container: {
+    paddingTop: px.v(12),
+    paddingBottom: px.v(40),
+  },
   header: {
-    paddingTop: px.v(20),
-    paddingBottom: px.v(10),
+    marginTop: px.v(10),
+    marginBottom: px.v(20),
+    alignItems: 'center',
   },
   locationRow: {
+    marginTop: px.v(6),
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: px.v(8),
   },
   locationText: {
-    color: '#9CA3AF',
-    fontSize: px.m(14),
+    color: '#C7D6E1',
+    fontSize: px.m(13),
   },
 })
-
-export default HydrologyDetailScreen
-

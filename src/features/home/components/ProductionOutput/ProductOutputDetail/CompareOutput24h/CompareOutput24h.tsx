@@ -12,7 +12,7 @@ import { RootState } from "@/core/redux/store";
 function ProductOutputRencentDays() {
   const dispatch = useDispatch()
   const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
-  const { Unit = '', BarChartData, compareLineChartData, Summary } = compareProductOutput
+  const { Unit = '', BarChartData, compareLineChartData, Summary, Contractvalue } = compareProductOutput
 
   return (
     <AnimatedCardContainer>
@@ -27,7 +27,7 @@ function ProductOutputRencentDays() {
         <CompareLegend displayType="output" />
 
         {/* Dashboard */}
-        <CompareDashboardOutput data={BarChartData} lineData2={compareLineChartData} />
+        <CompareDashboardOutput data={BarChartData} lineData={Contractvalue} lineData2={compareLineChartData} />
         {/* Compare Detail Stats */}
         <CompareDetailStats summary={Summary} />
       </View>
