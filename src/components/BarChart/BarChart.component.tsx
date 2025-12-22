@@ -39,6 +39,10 @@ interface Props {
   customDataPoint?: React.ReactElement
   showCustomTooltip?: boolean
   disableScroll?: boolean
+  lineData1?: any[] // first line data
+  lineColor1?: string
+  lineDataPointsShift1?: number
+  customDataPoint1?: React.ReactElement
   lineData2?: any[] // second line data
   lineColor2?: string
   lineDataPointsShift2?: number
@@ -62,6 +66,10 @@ const BarChart: React.FC<Props> = ({
   rulesType = 'solid',
   lineColor = '#A78BFA',
   customDataPoint = null,
+  lineData1,
+  lineColor1 = '#FBBF24',
+  lineDataPointsShift1 = 0,
+  customDataPoint1,
   lineData2,
   lineColor2 = '#FBD34D',
   lineDataPointsShift2 = 0,
@@ -96,13 +104,16 @@ const BarChart: React.FC<Props> = ({
   const paddedMax = useMemo(() => {
     const barMax = allValues.length > 0 ? Math.max(0, ...allValues) : 0
 
+    // Get max values from lineData1
+    const line1Max = lineData1 && lineData1.length > 0 ? Math.max(...lineData1.map((item) => item.value || 0)) : 0
+
     // Get max values from lineData2
     const line2Max = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
 
-    // The first line uses bar values, so we only need to check barMax and line2Max
-    const overallMax = Math.max(barMax, line2Max)
+    // Check barMax, line1Max, and line2Max
+    const overallMax = Math.max(barMax, line1Max, line2Max)
     return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
-  }, [allValues, lineData2])
+  }, [allValues, lineData1, lineData2])
 
   const processed =
     useMemo(() => {
@@ -127,6 +138,40 @@ const BarChart: React.FC<Props> = ({
 
             const isLastOverall = gIdx === data.length - 1 && isLastInGroup
 
+            // Tính toán offset cho label dựa trên chiều cao của lineData1 và lineData2
+            // topLabelComponent được render ở trên cùng của bar (đầu bar)
+            // Nếu line cao hơn bar, cần đẩy label lên trên để nằm trên cả line
+            // Luôn có một offset nhỏ mặc định để label không quá gần đầu bar
+            const defaultOffset = px.v(10) // Offset mặc định để label có khoảng cách với đầu bar
+            let labelOffset = defaultOffset
+            if (paddedMax > 0) {
+              const barValue = item.value
+              // Chiều cao của bar từ dưới lên trên (trong hệ tọa độ Y từ dưới lên)
+              const barHeight = (barValue / paddedMax) * height
+
+              // Kiểm tra lineData1
+              if (lineData1 && lineData1.length > globalIndex && lineData1[globalIndex]) {
+                const line1Value = lineData1[globalIndex].value || 0
+                const line1Height = (line1Value / paddedMax) * height
+                // Nếu line cao hơn bar, tính offset cần thiết
+                if (line1Height > barHeight) {
+                  const offset = line1Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+                  labelOffset = Math.max(labelOffset, offset)
+                }
+              }
+
+              // Kiểm tra lineData2
+              if (lineData2 && lineData2.length > globalIndex && lineData2[globalIndex]) {
+                const line2Value = lineData2[globalIndex].value || 0
+                const line2Height = (line2Value / paddedMax) * height
+                // Nếu line cao hơn bar, tính offset cần thiết
+                if (line2Height > barHeight) {
+                  const offset = line2Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+                  labelOffset = Math.max(labelOffset, offset)
+                }
+              }
+            }
+
             result.push({
               value: item.value,
               frontColor: front,
@@ -146,13 +191,15 @@ const BarChart: React.FC<Props> = ({
               topLabelComponent:
                 (item.showValuesOnTop ?? true)
                   ? () => (
-                      <Text
-                        style={[styles.topLabel, { color: front, width: 200 }]}
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                      >
-                        {item.showPrefix && '+'}{item.value}
-                      </Text>
+                      <View style={{ transform: [{ translateY: -labelOffset }] }}>
+                        <Text
+                          style={[styles.topLabel, { color: front, width: 200 }]}
+                          numberOfLines={1}
+                          adjustsFontSizeToFit
+                        >
+                          {item.showPrefix && '+'}{item.value}
+                        </Text>
+                      </View>
                     )
                   : undefined,
             })
@@ -166,7 +213,7 @@ const BarChart: React.FC<Props> = ({
         console.error('Error in BarChart processed useMemo:', error)
         return []
       }
-    }, [data, barWidth, groupInnerSpacing, frontColor]) || []
+    }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height]) || []
 
   // Tính toán vị trí overlay theo index nhóm
   const getGroupMetrics = (gIdx: number | null) => {
@@ -304,9 +351,29 @@ const BarChart: React.FC<Props> = ({
           initialSpacing={spacing}
           endSpacing={10}
           xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-          showLine={showLine}
+          showLine={showLine || (lineData1 && lineData1.length > 0)}
+          lineData={lineData1 && lineData1.length > 0 ? lineData1 : undefined}
           lineConfig={
-            customDataPoint
+            lineData1 && lineData1.length > 0
+              ? customDataPoint1
+                ? {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor1,
+                    dataPointsColor: lineColor1,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift1,
+                    customDataPoint: () => customDataPoint1,
+                  }
+                : {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor1,
+                    dataPointsColor: lineColor1,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift1,
+                  }
+              : customDataPoint
               ? {
                   isAnimated: true,
                   thickness: 2,
