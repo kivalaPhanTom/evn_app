@@ -25,6 +25,7 @@ interface Props {
   containerStyle?: ViewStyle
   inputStyle?: ViewStyle
   labelStyle?: TextStyle
+  allowToBeforeFrom?: boolean
 }
 
 export default function DateRangePicker({
@@ -43,6 +44,7 @@ export default function DateRangePicker({
   containerStyle,
   inputStyle,
   labelStyle,
+  allowToBeforeFrom = false,
 }: Props) {
   const [focused, setFocused] = useState<'from' | 'to' | null>(null)
   const defaultStyles = useDefaultStyles()
@@ -84,7 +86,8 @@ export default function DateRangePicker({
       const nextFrom = isFrom ? newDate : value.from
       let nextTo = focused === 'to' ? newDate : value.to
 
-      if (isFrom && value.to) {
+      // Chỉ tự động cập nhật value.to khi allowToBeforeFrom=false
+      if (isFrom && value.to && !allowToBeforeFrom) {
         const unit = chooseMode === 'day' ? 'day' : chooseMode === 'month' ? 'month' : 'year'
         if (dayjs(newDate).isAfter(dayjs(value.to), unit)) {
           nextTo = newDate
@@ -93,7 +96,7 @@ export default function DateRangePicker({
 
       onChange({ from: nextFrom, to: nextTo })
     },
-    [focused, onChange, value, chooseMode]
+    [focused, onChange, value, chooseMode, allowToBeforeFrom]
   )
 
   const getQuickDate = useCallback(() => {
@@ -115,7 +118,8 @@ export default function DateRangePicker({
     let nextFrom = focused === 'from' ? quickDate : value.from
     let nextTo = focused === 'to' ? quickDate : value.to
 
-    if (nextFrom && nextTo) {
+    // Chỉ tự động điều chỉnh khi allowToBeforeFrom=false
+    if (!allowToBeforeFrom && nextFrom && nextTo) {
       if (dayjs(nextFrom).isAfter(dayjs(nextTo), unit)) {
         if (focused === 'from') {
           nextTo = nextFrom
@@ -126,7 +130,7 @@ export default function DateRangePicker({
     }
 
     onChange({ from: nextFrom, to: nextTo })
-  }, [focused, getQuickDate, onChange, value.from, value.to, chooseMode])
+  }, [focused, getQuickDate, onChange, value.from, value.to, chooseMode, allowToBeforeFrom])
 
   const renderInput = useCallback(
     (label: string, date: any, key: 'from' | 'to') => (
@@ -161,7 +165,7 @@ export default function DateRangePicker({
         if (chooseMode !== 'day') return true
         // Không cho chọn ngày sau hôm nay
         if (dayjs(date).isAfter(today, 'day')) return true
-        if (focused === 'to') {
+        if (focused === 'to' && !allowToBeforeFrom && value.from) {
           return dayjs(date).isBefore(dayjs(value.from), 'day')
         }
         return false

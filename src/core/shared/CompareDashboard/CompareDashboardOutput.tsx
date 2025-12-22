@@ -144,10 +144,6 @@ const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) 
     const toDate = dayjs(newRange.to)
     console.log('Selected Date Range:', { from: fromDate.format('DD/MM/YYYY'), to: toDate.format('DD/MM/YYYY') })
 
-    if (fromDate.isAfter(toDate)) {
-      return
-    }
-
     dispatch(
       getCompareProductOutput({
         tagetDate: fromDate.format('DD/MM/YYYY'),
@@ -167,6 +163,7 @@ const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) 
         onChange={onChangeDateRage}
         mode="modal"
         chooseMode={'day'}
+        allowToBeforeFrom={true}
       />
       <View style={localStyles.chartContainer}>
         <View style={styles.chartWrapper}>
