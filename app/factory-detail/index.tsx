@@ -14,48 +14,55 @@ import PowerSection from '@/features/home/components/PowerSection/PowerSection'
 import ProductionOutput from '@/features/home/components/ProductionOutput/ProductionOutput'
 import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
-interface Props {}
+import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDetail'
+import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
+interface factoryDetailProps {
+  companyName: string;
+  location: string;
+}
 
-function FactoryDetail(props: Props) {
-  const { } = props
-//   const router = useRouter()
-//   const swipeLeft = Gesture.Pan()
-//     .activeOffsetX([-30, 30])
-//     .onEnd(e => {
-//       if (e.translationX < -80) {
-//         runOnJS(router.navigate)('/factory-detail')
-//       }
-//     })
-  const { companyName, location } = useLocalSearchParams<{
-    companyName?: string | string[]
-    location?: string | string[]
-  }>()
-//   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-//   const companyLocation = Array.isArray(location) ? location[0] : location
+function FactoryDetail(props: factoryDetailProps) {
+  const {companyName,  location} = props
+  //   const router = useRouter()
+  //   const swipeLeft = Gesture.Pan()
+  //     .activeOffsetX([-30, 30])
+  //     .onEnd(e => {
+  //       if (e.translationX < -80) {
+  //         runOnJS(router.navigate)('/factory-detail')
+  //       }
+  //     })
+  //   const { companyName, location } = useLocalSearchParams<{
+  //     companyName?: string | string[]
+  //     location?: string | string[]
+  //   }>()
+  // //   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
+  //   const companyLocation = Array.isArray(location) ? location[0] : location
 
   return (
     // <GestureDetector gesture={swipeLeft}>
-      <View style={{ flex: 1 }} collapsable={false}>
-        <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
-          <View style={styles.header}>
-            <GradientText
-              text={'NHÀ MÁY BUÔN KUỐP'}
-              colors={textGradients.water}
-              fontSize={px.f(30)}
-              style={{ textAlign: 'center' }}
-            />
-            <View style={styles.locationRow}>
-              <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-              <Text style={styles.locationText}>{'Krông Ana, Đắk Lắk'}</Text>
-            </View>
+    <View style={{ flex: 1 }} collapsable={false}>
+      <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+        <View style={styles.header}>
+          <GradientText
+            text={companyName}
+            colors={textGradients.water}
+            fontSize={px.f(30)}
+            style={{ textAlign: 'center' }}
+          />
+          <View style={styles.locationRow}>
+            <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
+            <Text style={styles.locationText}>{location}</Text>
           </View>
-          <ScrollView>
-            <PowerSection />
-            <ProductionOutput />
-            <Hydrology />
-          </ScrollView>
-        </TwinkleStars>
-      </View>
+        </View>
+        <ScrollView>
+          <PowerSectionFactDetail/>
+          <ProductOutputRencentDaysFactDetail/>
+          {/* <PowerSection />
+          <ProductionOutput />
+          <Hydrology /> */}
+        </ScrollView>
+      </TwinkleStars>
+    </View>
     // </GestureDetector>
   )
 }

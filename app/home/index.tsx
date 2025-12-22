@@ -47,12 +47,29 @@ function HomeNewScreen(props: Props) {
     >
       {/* PAGE 1: HOME */}
       <View key="home" style={{ flex: 1 }}>
-        <HomeContent/>
+        <HomeContent />
       </View>
 
       {/* PAGE 2: FACTORY DETAIL */}
-      <View key="factory" style={{ flex: 1 }}>
-        <FactoryDetail />
+      <View key="factory1" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY BUÔN TUA SRAH'}
+          location={'Đắk Lắk'}
+        />
+      </View>
+
+      <View key="factory2" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY BUÔN KUỐP'}
+          location={'Đắk Lắk'}
+        />
+      </View>
+
+      <View key="factory3" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY SREPOK'}
+          location={'Đắk Lắk'}
+        />
       </View>
     </PagerView>
     // <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
