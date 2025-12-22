@@ -39,6 +39,10 @@ interface Props {
   customDataPoint?: React.ReactElement
   showCustomTooltip?: boolean
   disableScroll?: boolean
+  lineData1?: any[] // first line data
+  lineColor1?: string
+  lineDataPointsShift1?: number
+  customDataPoint1?: React.ReactElement
   lineData2?: any[] // second line data
   lineColor2?: string
   lineDataPointsShift2?: number
@@ -62,6 +66,10 @@ const BarChart: React.FC<Props> = ({
   rulesType = 'solid',
   lineColor = '#A78BFA',
   customDataPoint = null,
+  lineData1,
+  lineColor1 = '#FBBF24',
+  lineDataPointsShift1 = 0,
+  customDataPoint1,
   lineData2,
   lineColor2 = '#FBD34D',
   lineDataPointsShift2 = 0,
@@ -96,13 +104,16 @@ const BarChart: React.FC<Props> = ({
   const paddedMax = useMemo(() => {
     const barMax = allValues.length > 0 ? Math.max(0, ...allValues) : 0
 
+    // Get max values from lineData1
+    const line1Max = lineData1 && lineData1.length > 0 ? Math.max(...lineData1.map((item) => item.value || 0)) : 0
+
     // Get max values from lineData2
     const line2Max = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
 
-    // The first line uses bar values, so we only need to check barMax and line2Max
-    const overallMax = Math.max(barMax, line2Max)
+    // Check barMax, line1Max, and line2Max
+    const overallMax = Math.max(barMax, line1Max, line2Max)
     return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
-  }, [allValues, lineData2])
+  }, [allValues, lineData1, lineData2])
 
   const processed =
     useMemo(() => {
@@ -304,9 +315,29 @@ const BarChart: React.FC<Props> = ({
           initialSpacing={spacing}
           endSpacing={10}
           xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-          showLine={showLine}
+          showLine={showLine || (lineData1 && lineData1.length > 0)}
+          lineData={lineData1 && lineData1.length > 0 ? lineData1 : undefined}
           lineConfig={
-            customDataPoint
+            lineData1 && lineData1.length > 0
+              ? customDataPoint1
+                ? {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor1,
+                    dataPointsColor: lineColor1,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift1,
+                    customDataPoint: () => customDataPoint1,
+                  }
+                : {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor1,
+                    dataPointsColor: lineColor1,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift1,
+                  }
+              : customDataPoint
               ? {
                   isAnimated: true,
                   thickness: 2,
