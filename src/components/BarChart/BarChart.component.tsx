@@ -138,6 +138,40 @@ const BarChart: React.FC<Props> = ({
 
             const isLastOverall = gIdx === data.length - 1 && isLastInGroup
 
+            // Tính toán offset cho label dựa trên chiều cao của lineData1 và lineData2
+            // topLabelComponent được render ở trên cùng của bar (đầu bar)
+            // Nếu line cao hơn bar, cần đẩy label lên trên để nằm trên cả line
+            // Luôn có một offset nhỏ mặc định để label không quá gần đầu bar
+            const defaultOffset = px.v(10) // Offset mặc định để label có khoảng cách với đầu bar
+            let labelOffset = defaultOffset
+            if (paddedMax > 0) {
+              const barValue = item.value
+              // Chiều cao của bar từ dưới lên trên (trong hệ tọa độ Y từ dưới lên)
+              const barHeight = (barValue / paddedMax) * height
+
+              // Kiểm tra lineData1
+              if (lineData1 && lineData1.length > globalIndex && lineData1[globalIndex]) {
+                const line1Value = lineData1[globalIndex].value || 0
+                const line1Height = (line1Value / paddedMax) * height
+                // Nếu line cao hơn bar, tính offset cần thiết
+                if (line1Height > barHeight) {
+                  const offset = line1Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+                  labelOffset = Math.max(labelOffset, offset)
+                }
+              }
+
+              // Kiểm tra lineData2
+              if (lineData2 && lineData2.length > globalIndex && lineData2[globalIndex]) {
+                const line2Value = lineData2[globalIndex].value || 0
+                const line2Height = (line2Value / paddedMax) * height
+                // Nếu line cao hơn bar, tính offset cần thiết
+                if (line2Height > barHeight) {
+                  const offset = line2Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+                  labelOffset = Math.max(labelOffset, offset)
+                }
+              }
+            }
+
             result.push({
               value: item.value,
               frontColor: front,
@@ -157,13 +191,15 @@ const BarChart: React.FC<Props> = ({
               topLabelComponent:
                 (item.showValuesOnTop ?? true)
                   ? () => (
-                      <Text
-                        style={[styles.topLabel, { color: front, width: 200 }]}
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                      >
-                        {item.showPrefix && '+'}{item.value}
-                      </Text>
+                      <View style={{ transform: [{ translateY: -labelOffset }] }}>
+                        <Text
+                          style={[styles.topLabel, { color: front, width: 200 }]}
+                          numberOfLines={1}
+                          adjustsFontSizeToFit
+                        >
+                          {item.showPrefix && '+'}{item.value}
+                        </Text>
+                      </View>
                     )
                   : undefined,
             })
@@ -177,7 +213,7 @@ const BarChart: React.FC<Props> = ({
         console.error('Error in BarChart processed useMemo:', error)
         return []
       }
-    }, [data, barWidth, groupInnerSpacing, frontColor]) || []
+    }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height]) || []
 
   // Tính toán vị trí overlay theo index nhóm
   const getGroupMetrics = (gIdx: number | null) => {
