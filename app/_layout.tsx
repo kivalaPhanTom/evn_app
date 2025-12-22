@@ -12,6 +12,7 @@ import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import ToastManager from 'toastify-react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
@@ -53,7 +54,7 @@ export default function RootLayout() {
     setPreferenceState((prev) => {
       const next = prev === 'system' ? (systemScheme === 'dark' ? 'light' : 'dark') : prev === 'dark' ? 'light' : 'dark'
       // persist
-      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => {})
+      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => { })
       return next
     })
   }
@@ -83,24 +84,24 @@ export default function RootLayout() {
                 <Stack.Screen name="hydrology-detail/index" />
                 <Stack.Screen name="revenue-profit-detail/index" />
 
-                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-              </Stack>
+                  {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                  <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+                </Stack>
 
-              {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
-                <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
-                  <TouchableOpacity
-                    onPress={() => router.back()}
-                    style={styles.backButton}
-                    hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-                  >
-                    <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
-                  </TouchableOpacity>
-                </View>
-              )}
+                {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+                  <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
+                    <TouchableOpacity
+                      onPress={() => router.back()}
+                      style={styles.backButton}
+                      hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                    >
+                      <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {/* Floating switch to toggle theme */}
-              {/* <View style={styles.switchContainer} pointerEvents="box-none">
+                {/* Floating switch to toggle theme */}
+                {/* <View style={styles.switchContainer} pointerEvents="box-none">
                 <View style={styles.inner}>
                   <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
                     {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
@@ -116,19 +117,18 @@ export default function RootLayout() {
                 </View>
               </View> */}
 
-              <ToastManager
-                theme={'dark'}
-                position={'top'}
-                animationStyle="fade"
+                <ToastManager
+                  theme={'dark'}
+                  position={'top'}
+                  animationStyle="fade"
                 // textStyle={{ fontSize: 8 }}
-              />
-
-              <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
-            </SafeAreaView>
-          </StoreProvider>
-        </ThemeProvider>
-      </ThemeToggleContext.Provider>
-    </TranslationProvider>
+                />
+                <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
+              </SafeAreaView>
+            </StoreProvider>
+          </ThemeProvider>
+        </ThemeToggleContext.Provider>
+      </TranslationProvider>
   )
 }
 

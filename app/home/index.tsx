@@ -1,53 +1,99 @@
+import React from 'react'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { runOnJS } from 'react-native-reanimated'
+import { Ionicons } from '@expo/vector-icons'
+import { useLocalSearchParams } from 'expo-router'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { textGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
 import PowerSection from '@/features/home/components/PowerSection/PowerSection'
 import ProductionOutput from '@/features/home/components/ProductionOutput/ProductionOutput'
-import { Ionicons } from '@expo/vector-icons'
-import { useLocalSearchParams } from 'expo-router'
-import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-interface Props {}
+import PagerView from 'react-native-pager-view'
+// import { View } from 'react-native'
+import FactoryDetail from 'app/factory-detail'
+import HomeContent from './HomeContent'
+interface Props { }
 
 function HomeNewScreen(props: Props) {
-  const {} = props
-
-  const { companyName, location } = useLocalSearchParams<{
-    companyName?: string | string[]
-    location?: string | string[]
-  }>()
-  const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-  const companyLocation = Array.isArray(location) ? location[0] : location
+  const { } = props
+  const router = useRouter()
+  // const swipeLeft = Gesture.Pan()
+  //   .activeOffsetX([-30, 30])
+  //   .onEnd(e => {
+  //     if (e.translationX < -80) {
+  //       runOnJS(router.navigate)('/factory-detail')
+  //     }
+  //   })
+  // const { companyName, location } = useLocalSearchParams<{
+  //   companyName?: string | string[]
+  //   location?: string | string[]
+  // }>()
+  // const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
+  // const companyLocation = Array.isArray(location) ? location[0] : location
 
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-      <View style={styles.header}>
-        <GradientText
-          text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
-          colors={textGradients.water}
-          fontSize={px.f(30)}
-          style={{ textAlign: 'center' }}
-        />
-        <View style={styles.locationRow}>
-          <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-          <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
-        </View>
+    <PagerView
+      style={{ flex: 1 }}
+      initialPage={0}
+      orientation="horizontal"
+    >
+      {/* PAGE 1: HOME */}
+      <View key="home" style={{ flex: 1 }}>
+        <HomeContent />
       </View>
-      <ScrollView>
-        <PowerSection />
-        <ProductionOutput />
-        <Hydrology />
-        <UnitMaintenanceSchedule />
-        <RevenueDetail />
-        <ProfitDetail />
-      </ScrollView>
-    </TwinkleStars>
+
+      {/* PAGE 2: FACTORY DETAIL */}
+      <View key="factory1" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY BUÔN TUA SRAH'}
+          location={'Đắk Lắk'}
+        />
+      </View>
+
+      <View key="factory2" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY BUÔN KUỐP'}
+          location={'Đắk Lắk'}
+        />
+      </View>
+
+      <View key="factory3" style={{ flex: 1 }}>
+        <FactoryDetail
+          companyName={'NHÀ MÁY SREPOK'}
+          location={'Đắk Lắk'}
+        />
+      </View>
+    </PagerView>
+    // <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    //   <View style={styles.header}>
+    //     <GradientText
+    //       text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
+    //       colors={textGradients.water}
+    //       fontSize={px.f(30)}
+    //       style={{ textAlign: 'center' }}
+    //     />
+    //     <View style={styles.locationRow}>
+    //       <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
+    //       <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
+    //     </View>
+    //   </View>
+    //   <ScrollView>
+    //     <PowerSection />
+    //     <ProductionOutput />
+    //     <Hydrology />
+    //     <UnitMaintenanceSchedule />
+    //     <RevenueDetail />
+    //     <ProfitDetail />
+    //   </ScrollView>
+    // </TwinkleStars>
   )
 }
 
