@@ -19,9 +19,9 @@ function PowerByHoursFactDetail() {
   // )
   // const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
 
-  useEffect(() => {
-    dispatch(getPowerByTime())
-  }, [])
+  // useEffect(() => {
+  //   dispatch(getPowerByTime())
+  // }, [])
 
   const title = 'Công suất theo giờ'
   // const subtitle = 'Hôm nay, ' + currentDate

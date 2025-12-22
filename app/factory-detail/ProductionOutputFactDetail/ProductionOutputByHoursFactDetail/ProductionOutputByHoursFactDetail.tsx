@@ -38,9 +38,9 @@ function ProductionOutputByHoursFactDetail() {
   //   })
   // )
 
-  useEffect(() => {
-    dispatch(getProductOutputByHours())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(getProductOutputByHours())
+  // }, [dispatch])
 
   const onPressCard = () => {
     router.push({ pathname: '/product-output-detail' })

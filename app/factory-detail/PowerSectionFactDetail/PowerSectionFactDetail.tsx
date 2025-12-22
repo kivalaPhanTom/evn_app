@@ -14,29 +14,27 @@ import PowerRecentDaysFacrDetail from './PowerRecentDaysFacrDetail/PowerRecentDa
 
 
 function PowerSectionFactDetail() {
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getPowerOverivew())
-  }, [])
+    //   useEffect(() => {
+    //     dispatch(getPowerOverivew())
+    //   }, [])
 
-  return (
-    <SectionContainer title="Công Suất">
-      <View>
-        <View style={styles.section}>
-          <TotalPowerFactDetail/>
-        </View>
-        <View style={styles.section}>
-           <PowerByHoursFactDetail/>
-          {/* <PowerByHours /> */}
-        </View>
-        <View style={styles.section}>
-            <PowerRecentDaysFacrDetail/>
-          {/* <PowerRecentDays /> */}
-        </View>
-      </View>
-    </SectionContainer>
-  )
+    return (
+        <SectionContainer title="Công Suất">
+            <View>
+                <View style={styles.section}>
+                    <TotalPowerFactDetail />
+                </View>
+                <View style={styles.section}>
+                    <PowerByHoursFactDetail />
+                </View>
+                <View style={styles.section}>
+                    <PowerRecentDaysFacrDetail />
+                </View>
+            </View>
+        </SectionContainer>
+    )
 }
 
 export default PowerSectionFactDetail
