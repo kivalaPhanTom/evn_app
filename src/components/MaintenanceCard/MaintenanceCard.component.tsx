@@ -9,6 +9,7 @@ import styles from './MaintenanceCard.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { MaintenanceIcon } from '../ui/maintenance-icon'
 import { ScheduleIcon } from '../ui/schedule-icon'
+import { px } from '@/core/utils/scale'
 
 interface MaintenanceType {
   minor: number
@@ -43,7 +44,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   }
 
   return (
-    <View style={{ marginBottom: 20, left: -5, flexDirection: 'row', gap: 10 }}>
+    <View style={styles.infoContainer}>
       <View style={styles.infoCard}>
         <View style={styles.titleRow}>
           <Text style={{ color: 'rgb(255,255,255)', fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
@@ -74,7 +75,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: 'row', gap: 10, marginTop: 15 }}>
+        <View style={styles.maintenanceInfoContainer}>
           <View style={styles.maintenanceInfoRow}>
             <View style={{ flexDirection: 'row' }}>
               <MaintenanceIcon opacity="1" width="16" height="16" />
@@ -82,7 +83,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                 style={{ color: 'rgb(255,255,255)', fontSize: 14, marginLeft: 5 }}
               >{`Hạng mục sửa chữa (${typeCount})`}</Text>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(20) }}>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
                 <Text style={{ color: '#34D399', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.minor}</Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`TIỂU TU`}</Text>
@@ -124,7 +125,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
               <ScheduleIcon opacity="1" width="16" height="16" />
               <Text style={{ color: 'rgb(255,255,255)', fontSize: 14, marginLeft: 5 }}>{`Số ngày sửa chữa`}</Text>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(10) }}>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
                 <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>
                   {mainternanceDurationData.planned}

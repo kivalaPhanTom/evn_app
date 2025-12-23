@@ -27,7 +27,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
   const dispatch = useDispatch()
   const { hydrologyPlantsInfo } = useSelector((state: any) => state.hydrologySlice)
   useEffect(() => {
-    dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId }))
+    dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId, date: date }))
   }, [date, currentPlantId, dispatch])
 
   const plantsInfoData: { label: string; value: number; unit: string }[] =

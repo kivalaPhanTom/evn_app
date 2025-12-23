@@ -9,6 +9,7 @@ import {
   getInflow,
   getOutflow,
   getTurbineflow,
+  getPowerStoreInLake,
 } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -21,6 +22,7 @@ import {
   setInflow,
   setOutflow,
   setTurbineflow,
+  setPowerStoreInLake,
 } from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
@@ -163,9 +165,10 @@ function* getHydrologyPlantsParamApiSaga(): Generator {
 }
 function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
   try {
-    const payload = action.payload as { plantId: string }
-    const plantId = payload?.plantId || ''
-    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId)
+    const payload = action.payload as { plantId: string, date: string }
+    const plantId = payload?.plantId || '';
+    const date = payload?.date || '';
+    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
       yield put(setHydrologyPlantsInfo(res.data))
     }
@@ -173,12 +176,26 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     console.log('getHydrologyPlantsInfo error:', error)
   }
 }
+function* getPowerStoreInLakeApiSaga(): Generator {
+  try {
+    const res = yield call(Service.getPowerStoreInLake)
+    if (res.status === 200) {
+      yield put(setPowerStoreInLake(res.data))
+    }
+  } catch (error) {
+    console.log('PowerStoreInLake error:', error)
+  }
+}
+
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
 }
 
 function* getInflowOutflowApi() {
   yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga)
+}
+function* getPowerStoreInLakeApi() {
+  yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga)
 }
 
 function* getHydrologyPlantsParamApi() {
@@ -216,5 +233,5 @@ export function* hydrologySagaList() {
     getInflowApi(),
     getOutflowApi(),
     getTurbineflowApi(),
-  ])
-}
+    getPowerStoreInLakeApi(),
+  ])}

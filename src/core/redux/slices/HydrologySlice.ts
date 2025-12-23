@@ -101,6 +101,17 @@ interface hydrologyState {
     todayTurbineFlow: Array<{ label: string; value: number }>
     samePeriodTurbineFlow: Array<{ label: string; value: number }>
   }
+  powerStoreInLake: {
+    currentCapaticy: number
+    previousCapacity: number
+    segments: {
+      label: string
+      order: number
+      percentOfTotal: number
+      value: number
+    }[]
+    unit: string
+  }
 }
 const initialState: hydrologyState = {
   inboundTraffic: 0,
@@ -206,6 +217,12 @@ const initialState: hydrologyState = {
     todayTurbineFlow: [],
     samePeriodTurbineFlow: [],
   },
+  powerStoreInLake: {
+    currentCapaticy: 0,
+    previousCapacity: 0,
+    segments: [],
+    unit: '',
+  },
 }
 
 const hydrologySlice = createSlice({
@@ -241,8 +258,12 @@ const hydrologySlice = createSlice({
     setTurbineflow: (state, action) => {
       state.turbineflow = action.payload
     },
+    setPowerStoreInLake: (state, action) => {
+      state.powerStoreInLake = action.payload
+    }
   },
 })
+
 const { reducer } = hydrologySlice
 export const {
   setInflowOutflow,
@@ -254,5 +275,8 @@ export const {
   setInflow,
   setOutflow,
   setTurbineflow,
+  setPowerStoreInLake,
 } = hydrologySlice.actions
+
 export default reducer
+

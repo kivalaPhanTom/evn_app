@@ -24,7 +24,15 @@ interface WaterLevelData {
   color?: string
   abbreviation?: string
 }
-
+interface PlantsData {
+  id: number
+  name: string
+  currentLevel: number
+  maxLevel: number
+  referenceLevel: number
+  color?: string
+  abbreviation?: string
+}
 // Mảng màu sắc tuần tự cho các nhà máy
 const plantColors = ['#FB923C', '#14B8A6', '#00C0E8', '#7DF0FF']
 
@@ -455,10 +463,17 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   )
 }
 
+const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
+   let result = 0
+   const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
+   if(findHydrologyItem) result = findHydrologyItem.referenceLevel
+   return result
+}
+
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-
+  
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
     if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
@@ -489,12 +504,10 @@ const Overview: React.FC = () => {
     }
   }, [waterData, activeTab])
 
-  console.log('hydrologyPlants:', hydrologyPlants)
-
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   console.log('Rendering Overview with activeTab:', activeData)
   const hydroElectricId = activeData?.abbreviation || ''
-  console.log('hydroElectricIdGGGGGG:', hydroElectricId)
+  const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
   useEffect(() => {
     let companyId = ""
     switch (hydroElectricId) {
@@ -512,8 +525,8 @@ const Overview: React.FC = () => {
         break;
     }
     if (companyId !== "") {
-      console.log('companyIdEDEEEE:', companyId)
       dispatch(getHydrographicChart({ companyId: companyId }))
+      dispatch(getInflowOutflow({ hydroElectricId: companyId }))
     }
     
 
@@ -579,7 +592,7 @@ const Overview: React.FC = () => {
               <Text style={styles.detailText}>
                 {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
               </Text>
-              <HydrographicChart isLoading={false} data={hydrologyCharData} />
+              <HydrographicChart isLoading={false} data={hydrologyCharData} referenceLevel = {referenceLevel}/>
               <InflowOutflow hydroElectricId={hydroElectricId} />
             </>
           )}
