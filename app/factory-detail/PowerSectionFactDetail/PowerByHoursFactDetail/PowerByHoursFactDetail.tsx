@@ -10,8 +10,12 @@ import { useRouter } from 'expo-router'
 import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-
-function PowerByHoursFactDetail() {
+import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
+interface PowerByHoursFactDetailProps {
+    currentPlantId: string
+}
+function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
   // const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
@@ -19,9 +23,9 @@ function PowerByHoursFactDetail() {
   // )
   // const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
 
-  // useEffect(() => {
-  //   dispatch(getPowerByTime())
-  // }, [])
+  useEffect(() => {
+    // dispatch(getPowerByTime())
+  }, [currentPlantId])
 
   const title = 'Công suất theo giờ'
   // const subtitle = 'Hôm nay, ' + currentDate

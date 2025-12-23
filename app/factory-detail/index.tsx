@@ -19,10 +19,11 @@ import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/Pro
 interface factoryDetailProps {
   companyName: string;
   location: string;
+  currentPlantId: string;
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const {companyName,  location} = props
+  const { companyName, location, currentPlantId } = props
   //   const router = useRouter()
   //   const swipeLeft = Gesture.Pan()
   //     .activeOffsetX([-30, 30])
@@ -55,15 +56,13 @@ function FactoryDetail(props: factoryDetailProps) {
           </View>
         </View>
         <ScrollView>
-          <PowerSectionFactDetail/>
-          <ProductOutputRencentDaysFactDetail/>
-          {/* <PowerSection />
-          <ProductionOutput />
-          <Hydrology /> */}
+          <PowerSectionFactDetail
+            currentPlantId={currentPlantId}
+          />
+          <ProductOutputRencentDaysFactDetail />
         </ScrollView>
       </TwinkleStars>
     </View>
-    // </GestureDetector>
   )
 }
 

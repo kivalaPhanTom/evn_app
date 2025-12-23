@@ -6,6 +6,8 @@ export const Service = {
   getPowerByTimeApi,
   getPowerByDaysApi,
   getComparePowerApi,
+  getPowerOverviewFactDetailApi,
+  getPowerByDaysFactDetailApi
 }
 export const servicePattern = {
   getPowerOverview: `${prefix_api}/overview`,
@@ -29,8 +31,16 @@ function getPowerByDaysApi(dayNumber: number = 7) {
 }
 
 function getComparePowerApi(tagetDate: string = '', compareDate: string = '') {
-  console.log('Calling getComparePowerApi with params:', { tagetDate, compareDate })
   const url = `${servicePattern.getComparePower}?tagetDate=${encodeURIComponent(tagetDate)}&compareDate=${encodeURIComponent(compareDate)}`
-  console.log('Request URL:', url)
   return api.get(url)
+}
+
+function getPowerOverviewFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getPowerOverview}?currentPlantId=${factoryId}`)
+}
+
+function getPowerByDaysFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getPowerByDays}`, {
+    params: { currentPlantId: factoryId },
+  })
 }
