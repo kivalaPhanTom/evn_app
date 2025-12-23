@@ -165,9 +165,10 @@ function* getHydrologyPlantsParamApiSaga(): Generator {
 }
 function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
   try {
-    const payload = action.payload as { plantId: string }
-    const plantId = payload?.plantId || ''
-    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId)
+    const payload = action.payload as { plantId: string, date: string }
+    const plantId = payload?.plantId || '';
+    const date = payload?.date || '';
+    const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
       yield put(setHydrologyPlantsInfo(res.data))
     }
