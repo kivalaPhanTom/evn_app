@@ -5,7 +5,6 @@ export const dashboardCommonStyles = StyleSheet.create({
   metricRow: {
     flexDirection: 'row',
     marginTop: px.v(6),
-    marginBottom: px.v(12),
     alignItems: 'center',
   },
   metricLeft: {
@@ -14,6 +13,7 @@ export const dashboardCommonStyles = StyleSheet.create({
   metricValueRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    marginTop: px.v(10),
   },
   metricRight: {
     width: px.h(56),
@@ -21,9 +21,8 @@ export const dashboardCommonStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   smallIconBox: {
-    width: px.h(44),
-    height: px.h(44),
-    borderRadius: px.h(10),
+    width: px.h(24),
+    height: px.h(24),
     backgroundColor: 'rgba(255,255,255,0.04)',
     alignItems: 'center',
     justifyContent: 'center',

@@ -6,3 +6,13 @@ export type ThemeValue<T> = {
 }
 
 export type TabType = 'day' | 'month' | 'year'
+
+export type BarGroup ={
+  label: string
+  items: {
+    value: number
+    frontColor?: string
+    showValuesOnTop?: boolean
+    showPrefix?: boolean
+  }[]
+}

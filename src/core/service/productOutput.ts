@@ -27,7 +27,7 @@ function getProductOutputByHoursApi() {
 }
 
 function getProductOutputOverviewApi() {
-  return api.get(`${servicePattern.getProductOutputOverview}`)
+  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { currentPlantId: '' } })
 }
 
 function getProductOutputByDaysApi(dayNumber: number = 7) {
@@ -38,11 +38,11 @@ function getProductOutputByDaysApi(dayNumber: number = 7) {
 
 function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) {
   return api.get(`${servicePattern.getProductCummulativeOutput}`, {
-    params: { 
+    params: {
       type: params.type,
       from: params.from,
       to: params.to
-     }
+    }
   })
 }
 

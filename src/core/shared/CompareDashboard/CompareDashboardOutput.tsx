@@ -41,10 +41,11 @@ const localStyles = StyleSheet.create({
 
 interface CompareDashboardProps {
   data: { value: number; label: string }[]
+  lineData?: number
   lineData2?: { value: number }[]
 }
 
-const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
+const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) => {
   const dispatch = useDispatch()
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
@@ -82,6 +83,30 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
     </View>
   )
 
+  const customDataPointContract = (
+    <View
+      style={{
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#FBBF24',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: -5,
+        marginTop: -5,
+      }}
+    >
+      <View
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: '#FFFFFF',
+        }}
+      />
+    </View>
+  )
+
   // Data sử dụng BarGroup format giống BarChart.component.tsx
   const convertData = data?.map((item) => ({
     label: item.label,
@@ -102,6 +127,10 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
     value: item,
   }))
 
+  const lineData1Converted = data?.map(() => ({
+    value: lineData,
+  }))
+
   useEffect(() => {
     dispatch(getCompareProductOutput({ 
       tagetDate: range.from.format('DD/MM/YYYY'),
@@ -114,10 +143,6 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
     console.log('Selected Date Range:', { from: fromDate.format('DD/MM/YYYY'), to: toDate.format('DD/MM/YYYY') })
-
-    if (fromDate.isAfter(toDate)) {
-      return
-    }
 
     dispatch(
       getCompareProductOutput({
@@ -138,6 +163,7 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
         onChange={onChangeDateRage}
         mode="modal"
         chooseMode={'day'}
+        allowToBeforeFrom={true}
       />
       <View style={localStyles.chartContainer}>
         <View style={styles.chartWrapper}>
@@ -147,12 +173,17 @@ const CompareDashboard = ({ data, lineData2 }: CompareDashboardProps) => {
             barWidth={barWidth}
             spacing={barSpacing}
             showLine={true}
-            // lineDataPointsShift={-15}
+            lineDataPointsShift={-15}
             noOfSection={4}
             rulesType="dash"
             // lineColor="#A78BFA"
             lineColor="transparent"
+            lineData1={lineData1Converted}
+            lineColor1="#FBBF24"
+            lineDataPointsShift1={0}
+            customDataPoint1={customDataPointContract}
             customDataPoint2={customDataPoint}
+            // lineData={lineData}
             lineData2={lineData2Converted}
             lineColor2="#A78BFA"
             lineDataPointsShift2={0}

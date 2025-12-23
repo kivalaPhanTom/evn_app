@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React, { useEffect } from 'react'
+import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
@@ -7,20 +7,31 @@ import { px } from '@/core/utils/scale'
 import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
 
 const PowerStoreInLake: React.FC = () => {
-  const current = 13.1
-  const reference = 12.9
-  const unit = 'tr.Wh'
-  const data = useMemo<StackedItem[]>(
-    () => [
-      { label: 'BTS', value: 2.1, color: '#F59E0B' },
-      { label: 'BK', value: 6.5, color: '#00B3A4' },
-      { label: 'SP3', value: 4.5, color: '#00D9FF' },
-    ],
-    [],
-  )
-  const isLoading = false
+  const dispatch = useDispatch()
+  const { powerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
+  const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
+  const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
+  const isLoading: boolean = false
+
+  const segments = powerStoreInLake?.segments ?? []
+  const data: StackedItem[] = segments
+    .slice()
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map((s, idx) => ({
+      label: s.label,
+      value: s.value,
+      color: colorMap[s.label] ?? fallbackColors[idx % fallbackColors.length],
+    }))
+
+  useEffect(() => {
+    dispatch(getPowerStoreInLake())
+  }, [dispatch])
+
   return (
     <AnimatedCardContainer>
       <View style={styles.pill}>
@@ -28,40 +39,36 @@ const PowerStoreInLake: React.FC = () => {
       </View>
 
       <View style={styles.mainRow}>
-        {isLoading ?
+        {isLoading ? (
           <View style={styles.firstSkeleton}>
-            <BarSkeleton
-              width={"90%"}
-              alignSelf="center"
-            />
-          </View> :
+            <BarSkeleton width={'90%'} alignSelf="center" />
+          </View>
+        ) : (
           <>
             <AnimatedNumber
-              value={current}
+              value={Number(powerStoreInLake?.currentCapaticy ?? 0)}
               decimals={1}
               duration={800}
               render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
             />
-            <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.m(20) }]}>{unit}</Text>
+            <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.m(20) }]}>
+              {powerStoreInLake?.unit ?? ''}
+            </Text>
             <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
             <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
-              {reference.toFixed(1)} {unit}
+              {powerStoreInLake?.previousCapacity ?? 0} {powerStoreInLake?.unit ?? ''}
             </Text>
           </>
-        }
+        )}
       </View>
 
       {/* Stacked bar */}
       <View style={{ marginTop: px.v(10) }}>
-        {
-          isLoading ?
-            <BarSkeleton
-              width={"100%"}
-              alignSelf="center"
-              height={20}
-            /> :
-            <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
-        }
+        {isLoading ? (
+          <BarSkeleton width={'100%'} alignSelf="center" height={20} />
+        ) : (
+          <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
+        )}
       </View>
     </AnimatedCardContainer>
   )
