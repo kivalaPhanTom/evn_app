@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 
@@ -44,7 +44,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   }
 
   return (
-    <View style={styles.infoContainer}>
+    <TouchableOpacity style={styles.infoContainer} onPress={onPressCard} activeOpacity={0.8}>
       <View style={styles.infoCard}>
         <View style={styles.titleRow}>
           <Text style={{ color: 'rgb(255,255,255)', fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
@@ -152,6 +152,6 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
