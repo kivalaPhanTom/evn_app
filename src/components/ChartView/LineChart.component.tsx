@@ -11,6 +11,8 @@ export interface LineCharProps {
   data2?: any[]
   color: string
   color2: string
+  startFillColor2?: string
+  endFillColor2?: string
   gradient?: boolean
   height?: number
   loading?: boolean
@@ -29,6 +31,8 @@ export interface LineCharProps {
   pointerConfig?: boolean
   xAxisColor?: string
   strokeDashArray2?: number[]
+  strokedashArray1?: number[]
+  spacing?: number
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
@@ -36,6 +40,8 @@ export const LineChart: React.FC<LineCharProps> = ({
   data2 = [],
   color = '#FBBF24',
   color2 = '#2563EB',
+  startFillColor2 = '#2563EB',
+  endFillColor2 = '#2563EB',
   gradient = true,
   height = isTablet() ? px.v(320) : px.v(220),
   loading = false,
@@ -53,6 +59,8 @@ export const LineChart: React.FC<LineCharProps> = ({
   pointerConfig = false,
   xAxisColor = 'rgba(255,255,255,0.05)',
   strokeDashArray2,
+  strokedashArray1,
+  spacing = 5,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -100,15 +108,18 @@ export const LineChart: React.FC<LineCharProps> = ({
       <GiftedLineChart
         {...commonProps}
         curved
-        areaChart={areaChart}
-        startFillColor2={color2}
-        endFillColor2={color2}
+        areaChart={false}
+        areaChart2={true}
+        startFillColor2={startFillColor2}
+        endFillColor2={endFillColor2}
         startOpacity={0.3}
         endOpacity={0.3}
-        spacing={screenWidth / 5}
+        spacing={screenWidth / spacing}
         thickness={px.h(5)}
         color={color}
         color2={color2}
+        startOpacity2={0.3}
+        endOpacity1={0}
         height={height}
         maxValue={yAxisMaxValue}
         hideDataPoints1={hideDataPoints1}
@@ -131,6 +142,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         rulesType={ruleTypes}
         initialSpacing={15}
         endSpacing={15}
+        strokeDashArray1={strokedashArray1}
         strokeDashArray2={strokeDashArray2}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
