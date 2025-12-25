@@ -1,64 +1,44 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import styles from './ProductOutputRencentDaysFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputByDaysFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
 }
-
-function ProductOutputRencentDaysFactDetail(props:Props) {
+interface productionData {
+  date: string
+  actual: number
+  contract: number
+}
+function ProductOutputRencentDaysFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
+
   const dispatch = useDispatch()
-  // const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
+  const [productionData, setProductionData] = useState<productionData[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const unit = 'tr.Wh'
 
-  // useEffect(() => {
-  //   dispatch(getProductOutputByDays(7))
-  // }, [])
-  const isLoadingNearCurrentDays = false
-  const productionData =[
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    },
-    {
-      actual:0,
-      contract:0,
-      date:"22/12/2025"
-    }
-  ]
+  useEffect(() => {
+    dispatch(getProductOutputByDaysFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
+  }, [])
+
+  const setLoading = (value: boolean) => {
+    setIsLoading(value)
+  }
+  const getDataFromApi = (data: productionData[]) => {
+    setProductionData(data)
+  }
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -79,7 +59,7 @@ function ProductOutputRencentDaysFactDetail(props:Props) {
           style={styles.tableBody}
         // showsVerticalScrollIndicator={false}
         >
-          {isLoadingNearCurrentDays ?
+          {isLoading ?
             <>
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />

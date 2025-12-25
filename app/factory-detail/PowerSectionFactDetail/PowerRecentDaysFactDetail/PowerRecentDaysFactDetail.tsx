@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import styles from './PowerRecentDaysFacrDetail.styles'
+import styles from './PowerRecentDaysFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
 import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
@@ -17,7 +17,7 @@ interface PowerByDays {
 interface Props { 
    currentPlantId: string
 }
-function PowerRecentDaysFacrDetail(props: Props) {
+function PowerRecentDaysFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
@@ -77,4 +77,4 @@ function PowerRecentDaysFacrDetail(props: Props) {
   )
 }
 
-export default PowerRecentDaysFacrDetail
+export default PowerRecentDaysFactDetail

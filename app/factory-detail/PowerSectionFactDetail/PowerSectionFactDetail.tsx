@@ -10,7 +10,7 @@ import { getPowerOverivew } from '@/core/redux/Actions/PowerActions'
 import TotalPower from '@/features/home/components/PowerSection/TotalPower/TotalPower'
 import TotalPowerFactDetail from './TotalPowerFactDetail/TotalPowerFactDetail'
 import PowerByHoursFactDetail from './PowerByHoursFactDetail/PowerByHoursFactDetail'
-import PowerRecentDaysFacrDetail from './PowerRecentDaysFacrDetail/PowerRecentDaysFacrDetail'
+import PowerRecentDaysFacrDetail from './PowerRecentDaysFactDetail/PowerRecentDaysFactDetail'
 interface Props { 
    currentPlantId: string
 }

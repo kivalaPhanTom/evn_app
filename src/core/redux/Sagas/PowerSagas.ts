@@ -59,7 +59,6 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
     setLoading(false)
   } catch (error) {
     setLoading(false)
-    yield put(setLoading({ isLoadingByHours: false }))
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import styles from './ProductionOutputByHoursFactDetail.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
@@ -8,44 +8,76 @@ import { useRouter } from 'expo-router'
 import { BarGroup } from '@/core/types'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByHours } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
+}
+interface productOutputByHours {
+  currentDate: string
+  contractPowerValue: number
+  currentPowerValue: number
+  currentTime: string
+  unit: string
+  listValueByHours: { label: string; value: number }[]
 }
 
-function ProductionOutputByHoursFactDetail(props:Props) {
+function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
-  // const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
-  const isLoadingByHours = false
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [contractPowerValue, setContractPowerValue] = useState<number>(0)
+  const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
+  const [listValueByHours, setListValueByHours] = useState<{ label: string; value: number }[]>([])
+
+  const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const title = 'Sản lượng theo giờ'
-  const subtitle = `Hôm nay, ${'22/12/2025'}`
-  // const unit = productOutputByHours.unit
-  const unit ='MWh'
+  const subtitle = `Hôm nay, ${productOutputByHours.currentDate}`
+  // const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
+
+  const unit = productOutputByHours.unit
 
   // const THRESHOLD = productOutputByHours.contractPowerValue
   const THRESHOLD = 0
   const getColorForValue = (value: number, threshold = THRESHOLD): string =>
     value >= threshold ? '#00b300' : '#ee0033'
+  const setLoading = (value: boolean) => {
+    setIsLoading(value)
+  }
 
-  // const rawBarGroups: BarGroup[] = (productOutputByHours.barGroups || []).map(
-  //   (group: { label: string; value: number }) => ({
-  //     label: group.label,
-  //     items: [
-  //       { value: group.value, frontColor: getColorForValue(group.value) },
-  //       { value: THRESHOLD, frontColor: '#fcba03' },
-  //     ],
-  //   })
-  // )
+  const rawBarGroups: BarGroup[] = (listValueByHours || []).map(
+    (group: { label: string; value: number }) => ({
+      label: group.label,
+      items: [
+        { value: group.value, frontColor: getColorForValue(group.value) },
+        { value: THRESHOLD, frontColor: '#fcba03' },
+      ],
+    })
+  )
 
-  // useEffect(() => {
-  //   dispatch(getProductOutputByHours())
-  // }, [dispatch])
+  useEffect(() => {
+    dispatch(getProductOutputByHoursFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
+  }, [dispatch])
 
+  const getDataFromApi = (data: productOutputByHours) => {
+    // state.productOutputByHours.currentDate = action.payload.currentDate
+    // state.productOutputByHours.contractPowerValue = action.payload.contractPowerValue
+    // state.productOutputByHours.currentPowerValue = action.payload.currentPowerValue
+    // state.productOutputByHours.currentTime = action.payload.currentTime
+    // state.productOutputByHours.barGroups = action.payload.listValueByHours
+    // state.productOutputByHours.unit = action.payload.unit
+    // setProductionData(data)
+    setContractPowerValue(data.contractPowerValue)
+    setCurrentPowerValue(data.currentPowerValue)
+    setListValueByHours(data.listValueByHours)
+  }
   const onPressCard = () => {
     router.push({ pathname: '/product-output-detail' })
   }
@@ -67,8 +99,8 @@ function ProductionOutputByHoursFactDetail(props:Props) {
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Giờ hiện tại ({'22/12/2025'})</Text>
-            {isLoadingByHours ?
+            <Text style={styles.statLabel}>Giờ hiện tại ({productOutputByHours.currentDate})</Text>
+            {isLoading ?
               <>
                 <BarSkeleton />
                 <BarSkeleton
@@ -79,7 +111,7 @@ function ProductionOutputByHoursFactDetail(props:Props) {
               </> :
               <>
                 <Text style={[styles.statValueCurrent, { color: getColorForValue(0) }]}>
-                  {0} {unit}
+                  {currentPowerValue} {unit}
                 </Text>
                 <View style={styles.changeRow}>
                   <MetricDiff diff={0} compareTo={0} />
@@ -87,22 +119,22 @@ function ProductionOutputByHoursFactDetail(props:Props) {
               </>}
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Hợp đồng ({'22/12/2025'})</Text>
-            {isLoadingByHours ?
+            <Text style={styles.statLabel}>Hợp đồng ({productOutputByHours.currentDate})</Text>
+            {isLoading ?
               <BarSkeleton
                 width={95}
                 height={28}
               /> :
               <>
                 <Text style={styles.statValueAverage}>
-                  {0} {unit}
+                  {contractPowerValue} {unit}
                 </Text>
               </>}
           </View>
         </View>
 
         <View style={styles.chartWrapper}>
-          {isLoadingByHours ? <BarChartSkeleton /> : <BarChart data={[]} rounded />}
+          {isLoading ? <BarChartSkeleton /> : <BarChart data={rawBarGroups} rounded />}
         </View>
 
         {/* Unit Label */}

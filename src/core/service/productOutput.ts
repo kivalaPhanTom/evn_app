@@ -8,7 +8,10 @@ export const Service = {
   getProductOutputOverviewApi,
   getProductOutputByDaysApi,
   getProductCummulativeOutputApi,
-  getCompareProductOutputApi
+  getCompareProductOutputApi,
+  getProductOutputOverviewFactDetailApi,
+  getProductOutputByHoursFactDetailApi,
+  getProductOutputByDaysFactDetailApi
 }
 export const servicePattern = {
   getProductOutputByHours: `${prefix_api}/ProductByHours`,
@@ -38,11 +41,11 @@ function getProductOutputByDaysApi(dayNumber: number = 7) {
 
 function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) {
   return api.get(`${servicePattern.getProductCummulativeOutput}`, {
-    params: { 
+    params: {
       type: params.type,
       from: params.from,
       to: params.to
-     }
+    }
   })
 }
 
@@ -52,5 +55,25 @@ function getCompareProductOutputApi(tagetDate: string, compareDate: string) {
       tagetDate: tagetDate,
       compareDate: compareDate
     }
+  })
+}
+
+function getProductOutputOverviewFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getProductOutputOverview}`, {
+    params: { currentPlantId: factoryId },
+  })
+}
+
+function getProductOutputByHoursFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getProductOutputByHours}`, {
+    params: {
+      currentPlantId: factoryId
+    }
+  })
+}
+
+function getProductOutputByDaysFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getProductOutputByDays}`, {
+    params: { currentPlantId: factoryId },
   })
 }

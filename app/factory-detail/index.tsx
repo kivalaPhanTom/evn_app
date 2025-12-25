@@ -16,6 +16,7 @@ import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDetail'
 import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
+import ProductionOutputFactDetail from './ProductionOutputFactDetail/ProductionOutputFactDetail'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -24,23 +25,8 @@ interface factoryDetailProps {
 
 function FactoryDetail(props: factoryDetailProps) {
   const { companyName, location, currentPlantId } = props
-  //   const router = useRouter()
-  //   const swipeLeft = Gesture.Pan()
-  //     .activeOffsetX([-30, 30])
-  //     .onEnd(e => {
-  //       if (e.translationX < -80) {
-  //         runOnJS(router.navigate)('/factory-detail')
-  //       }
-  //     })
-  //   const { companyName, location } = useLocalSearchParams<{
-  //     companyName?: string | string[]
-  //     location?: string | string[]
-  //   }>()
-  // //   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-  //   const companyLocation = Array.isArray(location) ? location[0] : location
 
   return (
-    // <GestureDetector gesture={swipeLeft}>
     <View style={{ flex: 1 }} collapsable={false}>
       <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
         <View style={styles.header}>
@@ -59,7 +45,10 @@ function FactoryDetail(props: factoryDetailProps) {
           <PowerSectionFactDetail
             currentPlantId={currentPlantId}
           />
-          <ProductOutputRencentDaysFactDetail />
+          <ProductionOutputFactDetail
+            currentPlantId={currentPlantId}
+          />
+          {/* <ProductOutputRencentDaysFactDetail /> */}
         </ScrollView>
       </TwinkleStars>
     </View>

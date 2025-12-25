@@ -51,11 +51,11 @@ function HomeContent(props: Props) {
       </View>
       <ScrollView>
         <PowerSection />
-        {/* <ProductionOutput />
+        <ProductionOutput />
         <Hydrology />
         <UnitMaintenanceSchedule />
         <RevenueDetail />
-        <ProfitDetail /> */}
+        <ProfitDetail />
       </ScrollView>
     </TwinkleStars>
   )

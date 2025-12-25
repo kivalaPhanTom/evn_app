@@ -5,6 +5,10 @@ import {
   getProductOutputByDays,
   getProductCummulativeOutput,
   getCompareProductOutput,
+
+  getProductOutputOverviewFactDetail,
+  getProductOutputByHoursFactDetail,
+  getProductOutputByDaysFactDetail
 } from '../Actions/ProductOutputActions'
 import { Service } from '@/core/service/productOutput'
 import {
@@ -63,10 +67,8 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
 function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCummulativeOutput>): Generator {
   try {
     const params = action.payload
-    console.log('Fetching Cummulative Output with params:', params)
     const res = yield call(Service.getProductCummulativeOutputApi, params)
     if (res.status === 200) {
-      console.log('Cummulative Output Data:', res.data)
       yield put(setProductCummulativeOutput(res.data))
     }
   } catch (error) {
@@ -86,10 +88,53 @@ function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProduc
     }
   } catch (error) {
     catchHandle(error)
-    console.log('getCompareProductOutput error:', error)
   }
 }
 
+
+function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getProductOutputOverviewFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getProductOutputOverviewFactDetailApi, factoryId)
+    console.log('res.data:', res.data)
+    if (res.status === 200) {
+      getDataFromApi(res.data)
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
+  }
+}
+function* getProductOutputByHoursFactDetailSaga(action: ReturnType<typeof getProductOutputByHoursFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId)
+    if (res.status === 200) {
+      getDataFromApi(res.data)
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
+  }
+}
+function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProductOutputByDaysFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getProductOutputByDaysFactDetailApi, factoryId)
+    if (res.status === 200) {
+      getDataFromApi(res.data)
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
+  }
+}
 function* handleGetProductOutputByHoursApi() {
   yield takeEvery(getProductOutputByHours, getProductOutputByHoursSaga)
 }
@@ -105,6 +150,17 @@ function* handleGetProductCummulativeOutputApi() {
 function* handleGetCompareProductOutputApi() {
   yield takeEvery(getCompareProductOutput, getCompareProductOutputSaga)
 }
+function* handleGetProductOutputOverviewFactDetailApi() {
+  yield takeEvery(getProductOutputOverviewFactDetail, getProductOutputOverviewFactDetailSaga)
+}
+
+function* getProductOutputByHoursFactDetailSagaApi() {
+  yield takeEvery(getProductOutputByHoursFactDetail, getProductOutputByHoursFactDetailSaga)
+}
+
+function* getProductOutputByDaysFactDetailSagaApi() {
+  yield takeEvery(getProductOutputByDaysFactDetail, getProductOutputByDaysFactDetailSaga)
+}
 export function* productOutputSagaList() {
   yield all([
     handleGetProductOutputByHoursApi(),
@@ -112,5 +168,9 @@ export function* productOutputSagaList() {
     handleGetProductOutputByDaysApi(),
     handleGetProductCummulativeOutputApi(),
     handleGetCompareProductOutputApi(),
+    handleGetProductOutputOverviewFactDetailApi(),
+    getProductOutputByHoursFactDetailSagaApi(),
+    getProductOutputByDaysFactDetailSagaApi()
+
   ])
 }

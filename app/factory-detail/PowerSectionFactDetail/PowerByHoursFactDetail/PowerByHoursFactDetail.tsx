@@ -65,7 +65,7 @@ function PowerByHoursFactDetail(props: Props) {
   const onPressCard = () => {
     router.push({ pathname: '/product-power-detail' })
   }
-  const isLoadingByHours = false
+ 
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -105,7 +105,7 @@ function PowerByHoursFactDetail(props: Props) {
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>TRUNG BÌNH</Text>
-            {isLoadingByHours ?
+            {isLoading ?
               <BarSkeleton
                 width={95}
                 height={28}
@@ -118,7 +118,7 @@ function PowerByHoursFactDetail(props: Props) {
           </View>
         </View>
         <View>
-          {isLoadingByHours ? <LineChartSkeleton /> : <LineChart
+          {isLoading ? <LineChartSkeleton /> : <LineChart
             data={avgData}
             data2={hourlyData}
             color="#FBBF24"
