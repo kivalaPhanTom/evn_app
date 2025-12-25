@@ -16,7 +16,6 @@ import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceS
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-import ReservoirWaterLevel from '@/features/home/components/ReservoirWaterLevel/ReservoirWaterLevel'
 interface Props {}
 
 function HomeContent(props: Props) {
@@ -57,7 +56,6 @@ function HomeContent(props: Props) {
         <UnitMaintenanceSchedule />
         <RevenueDetail />
         <ProfitDetail />
-        <ReservoirWaterLevel />
       </ScrollView>
     </TwinkleStars>
   )
