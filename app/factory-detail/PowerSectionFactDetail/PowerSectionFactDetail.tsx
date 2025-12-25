@@ -11,10 +11,10 @@ import TotalPower from '@/features/home/components/PowerSection/TotalPower/Total
 import TotalPowerFactDetail from './TotalPowerFactDetail/TotalPowerFactDetail'
 import PowerByHoursFactDetail from './PowerByHoursFactDetail/PowerByHoursFactDetail'
 import PowerRecentDaysFacrDetail from './PowerRecentDaysFacrDetail/PowerRecentDaysFacrDetail'
-interface PowerSectionFactDetailProps {
-    currentPlantId: string
+interface Props { 
+   currentPlantId: string
 }
-function PowerSectionFactDetail(props: PowerSectionFactDetailProps) {
+function PowerSectionFactDetail(props: Props) {
     const { currentPlantId } = props
     return (
         <SectionContainer title="Công Suất">

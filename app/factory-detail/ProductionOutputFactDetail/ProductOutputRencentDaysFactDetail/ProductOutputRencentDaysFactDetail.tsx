@@ -7,8 +7,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+interface Props { 
+   currentPlantId: string
+}
 
-function ProductOutputRencentDaysFactDetail() {
+function ProductOutputRencentDaysFactDetail(props:Props) {
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
   // const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)

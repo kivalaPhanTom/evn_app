@@ -14,10 +14,10 @@ interface PowerByDays {
   value: number
   date: string
 }
-interface PowerRecentDaysFacrDetailProps {
-  currentPlantId: string
+interface Props { 
+   currentPlantId: string
 }
-function PowerRecentDaysFacrDetail(props: PowerRecentDaysFacrDetailProps) {
+function PowerRecentDaysFacrDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()

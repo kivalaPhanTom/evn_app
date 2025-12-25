@@ -12,10 +12,12 @@ import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 
-interface Props { }
+interface Props { 
+   currentPlantId: string
+}
 
 function TotalProductionOutputFactDetail(props: Props) {
-  const { } = props
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
   // const {

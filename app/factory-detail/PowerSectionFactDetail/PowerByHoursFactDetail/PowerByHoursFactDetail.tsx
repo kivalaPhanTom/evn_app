@@ -12,8 +12,8 @@ import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
 import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
-interface PowerByHoursFactDetailProps {
-  currentPlantId: string
+interface Props { 
+   currentPlantId: string
 }
 interface HourlyPowerList {
   value: number
@@ -26,7 +26,7 @@ interface PowerByTime {
   avgPower: number
   HourlyPowerList: HourlyPowerList[]
 }
-function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
+function PowerByHoursFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()

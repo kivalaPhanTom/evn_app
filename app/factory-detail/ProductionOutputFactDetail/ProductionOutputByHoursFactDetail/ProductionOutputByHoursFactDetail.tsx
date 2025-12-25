@@ -12,8 +12,12 @@ import { getProductOutputByHours } from '@/core/redux/Actions/ProductOutputActio
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
+interface Props { 
+   currentPlantId: string
+}
 
-function ProductionOutputByHoursFactDetail() {
+function ProductionOutputByHoursFactDetail(props:Props) {
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
   // const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)

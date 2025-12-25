@@ -15,10 +15,10 @@ interface PowerDetail {
   name: string
   value: number
 }
-interface TotalPowerFactDetailProps {
-  currentPlantId: string
+interface Props { 
+   currentPlantId: string
 }
-function TotalPowerFactDetail(props: TotalPowerFactDetailProps) {
+function TotalPowerFactDetail(props: Props) {
   const { currentPlantId } = props
   const dispatch = useDispatch()
   const [average, setAverage] = useState<number>(0)
