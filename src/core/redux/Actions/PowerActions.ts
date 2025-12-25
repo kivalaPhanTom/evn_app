@@ -7,3 +7,4 @@ export const getPowerByDays = createAction<number>(ACTION_TYPES.GET_POWER_BY_DAY
 export const getComparePower = createAction<{ tagetDate: string; compareDate: string }>(ACTION_TYPES.GET_COMPARE_POWER)
 export const getPowerOverivewFactDetail = createAction<{ factoryId: string, getDataFromApi: any, setLoading: any }>(ACTION_TYPES.GET_POWER_OVERVIEW_FACT_DETAIL)
 export const getPowerByDaysFactDetail = createAction<{ factoryId: string, getDataFromApi: any, setLoading: any }>(ACTION_TYPES.GET_POWER_BY_DAYS_FACT_DETAIL)
+export const getPowerByTimeFactDetail = createAction<{ factoryId: string, getDataFromApi: any, setLoading: any }>(ACTION_TYPES.GET_POWER_BY_TIME_FACT_DETAIL)

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Pressable, TouchableOpacity } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './PowerByHoursFactDetail.styles'
@@ -10,32 +10,57 @@ import { useRouter } from 'expo-router'
 import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
 import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
 interface PowerByHoursFactDetailProps {
-    currentPlantId: string
+  currentPlantId: string
+}
+interface HourlyPowerList {
+  value: number
+  label: string
+}
+interface PowerByTime {
+  currentDate: string
+  currentPower: number
+  currentTime: string
+  avgPower: number
+  HourlyPowerList: HourlyPowerList[]
 }
 function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
-  // const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
-  //   (state: any) => state.powerSlice.powerByTime,
-  // )
-  // const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
+  const [HourlyPowerList, setHourlyPowerList] = useState<HourlyPowerList[]>([])
+  const [avgPower, setAvgPower] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [currentPower, setCurrentPower] = useState<number>(0)
+  const { currentDate } = useSelector((state: any) => state.powerSlice.powerByTime)
 
   useEffect(() => {
-    // dispatch(getPowerByTime())
+    dispatch(getPowerByTimeFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
   }, [currentPlantId])
 
   const title = 'Công suất theo giờ'
-  // const subtitle = 'Hôm nay, ' + currentDate
-  const subtitle = 'Hôm nay, ' + '22/12/2025'
-  // const hourlyData = HourlyPowerList ? HourlyPowerList.map((d: any) => ({ ...d })) : []
+  const subtitle = 'Hôm nay, ' + currentDate
+  const hourlyData = HourlyPowerList ? HourlyPowerList.map((d: any) => ({ ...d })) : []
   const unit = 'MW'
 
-  // const avgData = Array(hourlyData.length)
-  //   .fill(0)
-  //   .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
+  const getDataFromApi = (data: PowerByTime) => {
+    setAvgPower(data.avgPower)
+    setCurrentPower(data.currentPower)
+    setHourlyPowerList(data.HourlyPowerList)
+  }
+
+  const setLoading = (value: boolean) => {
+    setIsLoading(value)
+  }
+  const avgData = Array(hourlyData.length)
+    .fill(0)
+    .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
   const onPressCard = () => {
     router.push({ pathname: '/product-power-detail' })
@@ -59,8 +84,8 @@ function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>HIỆN TẠI ({'22/12/2025'})</Text>
-            {isLoadingByHours ?
+            <Text style={styles.statLabel}>HIỆN TẠI ({currentDate})</Text>
+            {isLoading ?
               <>
                 <BarSkeleton />
                 <BarSkeleton
@@ -71,10 +96,10 @@ function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
               </> :
               <>
                 <Text style={styles.statValueCurrent}>
-                  {0} {unit}
+                  {currentPower} {unit}
                 </Text>
                 <View style={styles.changeRow}>
-                  <MetricDiff diff={0} compareTo={0} />
+                  <MetricDiff diff={0} compareTo={avgPower} />
                 </View>
               </>}
           </View>
@@ -87,15 +112,15 @@ function PowerByHoursFactDetail(props: PowerByHoursFactDetailProps) {
               /> :
               <>
                 <Text style={styles.statValueAverage}>
-                  {0} {unit}
+                  {avgPower} {unit}
                 </Text>
               </>}
           </View>
         </View>
         <View>
           {isLoadingByHours ? <LineChartSkeleton /> : <LineChart
-            data={[]}
-            data2={[]}
+            data={avgData}
+            data2={hourlyData}
             color="#FBBF24"
             color2="#2563EB"
             hideDataPoints2={false}

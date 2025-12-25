@@ -1,5 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
+import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail,
+getPowerByTimeFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
 import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '../slices/PowerFactDetailSlice'
 import { Service } from '@/core/service/powerService'
@@ -24,7 +25,6 @@ function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOveri
     setLoading(true)
     const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId)
     if (res.status === 200) {
-      console.log('res.dataRRRRR:', res.data)
       getDataFromApi(res.data)
     }
     setLoading(false)
@@ -43,7 +43,23 @@ function* getPowerByTimeSaga(): Generator {
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingByHours: false }))
-    console.log('getPowerByTime error:', error)
+  }
+}
+
+function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeFactDetail>): Generator {
+  try {
+   
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId)
+    if (res.status === 200) {
+      yield put(getDataFromApi(res.data))
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
+    yield put(setLoading({ isLoadingByHours: false }))
   }
 }
 
@@ -112,6 +128,9 @@ function* handleGetComparePowerApi() {
 function* handleGetPowerOverviewFactDetailApi() {
   yield takeEvery(getPowerOverivewFactDetail, getPowerOverviewFactDetailSaga)
 }
+function* handleGetPowerByTimeFactDetailApi() {
+  yield takeEvery(getPowerByTimeFactDetail, getPowerByTimeFactDetailSaga)
+}
 function* handleGetPowerByDaysFactDetailApi() {
   yield takeEvery(getPowerByDaysFactDetail, getPowerByDaysFactDetailSaga)
 }
@@ -123,6 +142,7 @@ export function* powerSagaList() {
     handleGetPowerByDaysApi(),
     handleGetComparePowerApi(),
     handleGetPowerOverviewFactDetailApi(),
+    handleGetPowerByTimeFactDetailApi(),
     handleGetPowerByDaysFactDetailApi()
   ])
 }

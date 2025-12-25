@@ -7,6 +7,7 @@ export const Service = {
   getPowerByDaysApi,
   getComparePowerApi,
   getPowerOverviewFactDetailApi,
+  getPowerByTimeFactDetailApi,
   getPowerByDaysFactDetailApi
 }
 export const servicePattern = {
@@ -38,7 +39,9 @@ function getComparePowerApi(tagetDate: string = '', compareDate: string = '') {
 function getPowerOverviewFactDetailApi(factoryId: string = '') {
   return api.get(`${servicePattern.getPowerOverview}?currentPlantId=${factoryId}`)
 }
-
+function getPowerByTimeFactDetailApi(factoryId: string = '') {
+  return api.get(`${servicePattern.getPowerByTime}?currentPlantId=${factoryId}`)
+}
 function getPowerByDaysFactDetailApi(factoryId: string = '') {
   return api.get(`${servicePattern.getPowerByDays}`, {
     params: { currentPlantId: factoryId },
