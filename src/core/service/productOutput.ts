@@ -30,7 +30,7 @@ function getProductOutputByHoursApi() {
 }
 
 function getProductOutputOverviewApi() {
-  return api.get(`${servicePattern.getProductOutputOverview}`)
+  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { currentPlantId: '' } })
 }
 
 function getProductOutputByDaysApi(dayNumber: number = 7) {

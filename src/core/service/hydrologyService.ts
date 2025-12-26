@@ -41,8 +41,8 @@ function getHydrologyPlantsParamApi() {
   return api.get(`${servicePattern.getHydrologyPlantsParam}`)
 }
 
-function getHydrologyPlantsInfoApi(plantId: string) {
-  return api.get(`${servicePattern.getHydrologyPlantsInfo}?id=${plantId}`)
+function getHydrologyPlantsInfoApi(plantId: string, date: string) {
+  return api.get(`${servicePattern.getHydrologyPlantsInfo}?currentPlantId=${plantId}&date=${date}`)
 }
 
 function getUpstreamWaterLevelApi(currentPlantId: string, date: string) {

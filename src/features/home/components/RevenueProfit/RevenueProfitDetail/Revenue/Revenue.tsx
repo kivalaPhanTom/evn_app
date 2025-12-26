@@ -7,11 +7,81 @@ import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
 import { Ionicons } from '@expo/vector-icons'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
+import { LineChart } from '@/components/ChartView/LineChart.component'
+import CompareLegend from '@/core/shared/CompareLegend'
 
 export default function RevenueDetail() {
   const RevenueData = [
     { label: 'Hợp đồng', value: 1.85, unit: '%' },
     { label: 'Hôm qua', value: 1.77, unit: 'tỷ' },
+  ]
+
+  const data = [
+    { value: 1.3, label: '01' },
+    { value: 1.8, label: '02' },
+    { value: 1.1, label: '03' },
+    { value: 1.6, label: '04' },
+    { value: 1.9, label: '05' },
+    { value: 1.4, label: '06' },
+    { value: 1.2, label: '07' },
+    { value: 1.7, label: '08' },
+    { value: 1.5, label: '09' },
+    { value: 1.8, label: '10' },
+    { value: 1.3, label: '11' },
+    { value: 1.9, label: '12' },
+    { value: 1.1, label: '13' },
+    { value: 1.6, label: '14' },
+    { value: 1.4, label: '15' },
+    { value: 1.7, label: '16' },
+    { value: 1.2, label: '17' },
+    { value: 1.8, label: '18' },
+    { value: 1.5, label: '19' },
+    { value: 1.9, label: '20' },
+    { value: 1.3, label: '21' },
+    { value: 1.6, label: '22' },
+    { value: 1.1, label: '23' },
+    { value: 1.7, label: '24' },
+    { value: 1.4, label: '25' },
+    { value: 1.8, label: '26' },
+    { value: 1.2, label: '27' },
+    { value: 1.5, label: '28' },
+    { value: 1.9, label: '29' },
+    { value: 1.3, label: '30' },
+    { value: 1.6, label: '31' },
+  ]
+
+  const data2 = [
+    { value: 1.7, label: '01' },
+    { value: 1.2, label: '02' },
+    { value: 1.9, label: '03' },
+    { value: 1.4, label: '04' },
+    { value: 1.6, label: '05' },
+    { value: 1.1, label: '06' },
+    { value: 1.8, label: '07' },
+    { value: 1.3, label: '08' },
+    { value: 1.5, label: '09' },
+    { value: 1.9, label: '10' },
+    { value: 1.2, label: '11' },
+    { value: 1.6, label: '12' },
+    { value: 1.4, label: '13' },
+    { value: 1.8, label: '14' },
+    { value: 1.1, label: '15' },
+    { value: 1.7, label: '16' },
+    { value: 1.3, label: '17' },
+    { value: 1.9, label: '18' },
+    { value: 1.5, label: '19' },
+    { value: 1.2, label: '20' },
+    { value: 1.6, label: '21' },
+    { value: 1.8, label: '22' },
+    { value: 1.4, label: '23' },
+    { value: 1.7, label: '24' },
+    { value: 1.1, label: '25' },
+    { value: 1.9, label: '26' },
+    { value: 1.3, label: '27' },
+    { value: 1.5, label: '28' },
+    { value: 1.8, label: '29' },
+    { value: 1.2, label: '30' },
+    { value: 1.6, label: '31' },
   ]
 
   return (
@@ -37,7 +107,7 @@ export default function RevenueDetail() {
               <Text style={styles.cardValue}>
                 {item.value} <Text style={styles.cardUnit}>tỷ</Text>
               </Text>
-              <MetricDiff diff={1.85} compareTo={1.77} unit={item.unit}/>
+              <MetricDiff diff={1.85} compareTo={1.77} unit={item.unit} />
             </View>
           ))}
         </View>
@@ -84,11 +154,33 @@ export default function RevenueDetail() {
                 <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>08 - 14/11</Text>
               </View>
             </View>
-            <View style={[styles.chartWrapper]}>
-              
-            </View>
+            <View style={[styles.chartWrapper]}></View>
 
             {/* X-Axis below chart */}
+            <LineChart
+              data={data}
+              data2={data2}
+              color="rgba(255, 255, 255, 0.25)"
+              color2="#4ADE80"
+              hideDataPoints2={false}
+              hideYAxisText={true}
+              hideDataPoints1={true}
+              strokedashArray1={[12, 6]}
+              spacing={9}
+              startFillColor2="#4ADE80"
+              endFillColor2="#4ADE80"
+            />
+            <View style={styles.line} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <View style={[styles.legendLine]} />
+                <Text style={styles.legendLabel}>{'Thực tế'}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 17 }}>
+                <View style={[styles.legendDashLine]} />
+                <Text style={styles.legendLabel}>{'Hợp đồng'}</Text>
+              </View>
+            </View>
           </View>
         </View>
         <View style={{ marginTop: px.v(15) }}>
@@ -250,5 +342,31 @@ const styles = StyleSheet.create({
   cardUnit: {
     fontSize: 16,
     fontWeight: '300',
+  },
+  line: {
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginBottom: 15,
+  },
+  legendLine: {
+    width: 20,
+    height: 2.5,
+    backgroundColor: '#4ADE80',
+    borderRadius: 1.5,
+  },
+  legendDashLine: {
+    width: 4,
+    height: 2.5,
+    backgroundColor: '#9CA3AF',
+    boxShadow: `
+    6px 0 #9CA3AF,
+    12px 0 #9CA3AF
+  `,
+    borderRadius: 1.5,
+  },
+  legendLabel: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    fontWeight: '500',
   },
 })
