@@ -10,27 +10,28 @@ import { getPowerOverivew } from '@/core/redux/Actions/PowerActions'
 import TotalPower from '@/features/home/components/PowerSection/TotalPower/TotalPower'
 import TotalPowerFactDetail from './TotalPowerFactDetail/TotalPowerFactDetail'
 import PowerByHoursFactDetail from './PowerByHoursFactDetail/PowerByHoursFactDetail'
-import PowerRecentDaysFacrDetail from './PowerRecentDaysFacrDetail/PowerRecentDaysFacrDetail'
-
-
-function PowerSectionFactDetail() {
-    const dispatch = useDispatch()
-
-    //   useEffect(() => {
-    //     dispatch(getPowerOverivew())
-    //   }, [])
-
+import PowerRecentDaysFacrDetail from './PowerRecentDaysFactDetail/PowerRecentDaysFactDetail'
+interface Props { 
+   currentPlantId: string
+}
+function PowerSectionFactDetail(props: Props) {
+    const { currentPlantId } = props
     return (
         <SectionContainer title="Công Suất">
             <View>
                 <View style={styles.section}>
-                    <TotalPowerFactDetail />
+                    <TotalPowerFactDetail
+                        currentPlantId={currentPlantId}
+                    />
                 </View>
                 <View style={styles.section}>
-                    <PowerByHoursFactDetail />
+                    <PowerByHoursFactDetail
+                        currentPlantId={currentPlantId}
+                    />
                 </View>
                 <View style={styles.section}>
-                    <PowerRecentDaysFacrDetail />
+                    <PowerRecentDaysFacrDetail
+                        currentPlantId={currentPlantId} />
                 </View>
             </View>
         </SectionContainer>

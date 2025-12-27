@@ -102,7 +102,7 @@ interface hydrologyState {
     samePeriodTurbineFlow: Array<{ label: string; value: number }>
   }
   powerStoreInLake: {
-    currentCapaticy: number
+    currentCapacity: number
     previousCapacity: number
     segments: {
       label: string
@@ -218,7 +218,7 @@ const initialState: hydrologyState = {
     samePeriodTurbineFlow: [],
   },
   powerStoreInLake: {
-    currentCapaticy: 0,
+    currentCapacity: 0,
     previousCapacity: 0,
     segments: [],
     unit: '',

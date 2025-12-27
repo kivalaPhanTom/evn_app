@@ -1,6 +1,8 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower } from '../Actions/PowerActions'
+import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail,
+getPowerByTimeFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
+import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '../slices/PowerFactDetailSlice'
 import { Service } from '@/core/service/powerService'
 
 function* getPowerOverviewSaga(): Generator {
@@ -13,7 +15,23 @@ function* getPowerOverviewSaga(): Generator {
     yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingOverview: false }))
-    console.log('errorXXX:', error)
+  }
+}
+
+function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOverivewFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    console.log('payloadTTTTTT:', payload)
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId)
+    console.log('res.dataHHHH:', res.data)
+    if (res.status === 200) {
+      getDataFromApi(res.data)
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
   }
 }
 
@@ -27,7 +45,22 @@ function* getPowerByTimeSaga(): Generator {
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingByHours: false }))
-    console.log('getPowerByTime error:', error)
+  }
+}
+
+function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId)
+    if (res.status === 200) {
+      getDataFromApi(res.data)
+    }
+    setLoading(false)
+  } catch (error) {
+    console.log('error:', error)
+    setLoading(false)
   }
 }
 
@@ -65,6 +98,21 @@ function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Gener
   }
 }
 
+function* getPowerByDaysFactDetailSaga(action: ReturnType<typeof getPowerByDaysFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const { factoryId, getDataFromApi, setLoading } = payload
+    setLoading(true)
+    const res = yield call(Service.getPowerByDaysFactDetailApi, factoryId)
+    if (res.status === 200) {
+      getDataFromApi(res.data.detail)
+    }
+    setLoading(false)
+  } catch (error) {
+    setLoading(false)
+  }
+}
+
 function* handleGetPowerOverviewApi() {
   yield takeEvery(getPowerOverivew, getPowerOverviewSaga)
 }
@@ -77,11 +125,25 @@ function* handleGetPowerByDaysApi() {
 function* handleGetComparePowerApi() {
   yield takeEvery(getComparePower, getComparePowerSaga)
 }
+
+function* handleGetPowerOverviewFactDetailApi() {
+  yield takeEvery(getPowerOverivewFactDetail, getPowerOverviewFactDetailSaga)
+}
+function* handleGetPowerByTimeFactDetailApi() {
+  yield takeEvery(getPowerByTimeFactDetail, getPowerByTimeFactDetailSaga)
+}
+function* handleGetPowerByDaysFactDetailApi() {
+  yield takeEvery(getPowerByDaysFactDetail, getPowerByDaysFactDetailSaga)
+}
+
 export function* powerSagaList() {
   yield all([
     handleGetPowerOverviewApi(),
     handleGetPowerByTimeApi(),
     handleGetPowerByDaysApi(),
     handleGetComparePowerApi(),
+    handleGetPowerOverviewFactDetailApi(),
+    handleGetPowerByTimeFactDetailApi(),
+    handleGetPowerByDaysFactDetailApi()
   ])
 }
