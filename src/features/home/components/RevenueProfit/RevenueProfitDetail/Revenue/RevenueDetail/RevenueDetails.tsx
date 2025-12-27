@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import PowerPrices from './PowerPrices';
 import TotalRevenueExpenses from './TotalRevenueExpenses';
-
+import ReveneCompareByTime from './ReveneCompareByTime';
+import DatePicker from '@/components/DatePicker/DatePicker.component'
+import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 interface Props { }
 
 const data = {
@@ -37,12 +42,88 @@ const data = {
 function SectionBox({ children, style }: any) {
     return <View style={style}>{children}</View>;
 }
-
+function getCurrentPlantId(activeTab: string): string {
+    let result: string = '';
+    switch (activeTab) {
+        case 'buon-tua-srah':
+            result = 'BTS'
+            break
+        case 'buon-kuop':
+            result = 'BK'
+            break
+        case 'srepok-3':
+            result = 'SP3'
+            break
+        default:
+            break
+    }
+    return result
+}
 export default function RevenueDetail(props: Props) {
+    const dispatch = useDispatch()
+    // const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+    const [activeTab, setActiveTab] = useState<string>('BTS')
+    const hydrologyPlants = {
+        plantsData: [
+            { abbreviation: 'buon-tua-srah', name: 'Buôn Tua Srah' },
+            { abbreviation: 'buon-kuop', name: 'Buôn Kuốp' },
+            { abbreviation: 'srepok-3', name: 'Srepok 3' }, 
+        ]
+    }
+    const formattedOneYearAgo = new Date(
+        new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
+    ).toLocaleDateString('vi-VN')
+
+    const tabs = hydrologyPlants?.plantsData?.map((plant) => {
+        const plantId = getCurrentPlantId(plant.abbreviation)
+        return {
+            id: plantId,
+            label: plant.name,
+        }
+    })
+
+    const upstreamData = useSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
+    const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
+    const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
+    const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
+
+    useEffect(() => {
+        const payload = {
+            currentPlantId: activeTab,
+            date: selectedDate.toLocaleDateString('vi-VN'),
+        }
+        dispatch(getUpstreamWaterLevel(payload));
+        dispatch(getInflow(payload));
+        dispatch(getOutflow(payload));
+        dispatch(getTurbineflow(payload));
+    }, [activeTab, selectedDate, dispatch])
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
+            <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+
+            {/* Date Picker */}
+            <View style={{ marginBottom: 20, paddingHorizontal: 0 }}>
+                <DatePicker
+                    value={selectedDate}
+                    onChange={setSelectedDate}
+                    format="DD/MM/YYYY"
+                    textColor="#fff"
+                    borderColor="rgba(255,255,255,0.15)"
+                    backgroundColor="rgba(26, 35, 50, 0.6)"
+                />
+            </View>
             <PowerPrices />
-            <TotalRevenueExpenses/>
+            <TotalRevenueExpenses />
+            <ReveneCompareByTime
+                fromDate="01/11/2024"
+                toDate="14/11/2024"
+                metricLabel="Tổng doanh thu theo thị trường điện"
+                onPressFrom={() => console.log('Pick from date')}
+                onPressTo={() => console.log('Pick to date')}
+                onPressMetric={() => console.log('Open dropdown')}
+            />
         </ScrollView>
     );
 }
