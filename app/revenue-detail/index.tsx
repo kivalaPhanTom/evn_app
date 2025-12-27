@@ -68,7 +68,7 @@ export default function RevenueDetail(props: Props) {
         plantsData: [
             { abbreviation: 'buon-tua-srah', name: 'Buôn Tua Srah' },
             { abbreviation: 'buon-kuop', name: 'Buôn Kuốp' },
-            { abbreviation: 'srepok-3', name: 'Srepok 3' }, 
+            { abbreviation: 'srepok-3', name: 'Srepok 3' },
         ]
     }
     const formattedOneYearAgo = new Date(
@@ -101,6 +101,7 @@ export default function RevenueDetail(props: Props) {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
+            <Text style={styles.title}>Chi tiết Doanh thu</Text>
             <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Date Picker */}
@@ -129,6 +130,13 @@ export default function RevenueDetail(props: Props) {
 }
 
 const styles = StyleSheet.create({
+    title: {
+        fontSize: 30,
+        fontWeight: "600",
+        textAlign:"center",
+        color: "white",
+        marginBottom:20
+    },
     container: {
         flex: 1,
         backgroundColor: '#0B1220',

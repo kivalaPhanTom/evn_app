@@ -17,8 +17,7 @@ export default function HomeScreen() {
   }
   const { id, name } = useSelector((state: any) => state.exampleSlice)
   const dispatch = useDispatch()
-  console.log(' id:', id)
-  console.log('name:', name)
+
   useEffect(() => {
     dispatch(callApiSample({ id: 1, name: 'Test Redux Saga' }))
   }, [dispatch])

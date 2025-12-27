@@ -84,6 +84,7 @@ export default function RootLayout() {
                 <Stack.Screen name="hydrology-detail/index" />
                 <Stack.Screen name="revenue-profit-detail/index" />
                 <Stack.Screen name="unit-maintenance-schedule-detail/index" />
+                <Stack.Screen name="revenue-detail/index" />
 
                   {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />

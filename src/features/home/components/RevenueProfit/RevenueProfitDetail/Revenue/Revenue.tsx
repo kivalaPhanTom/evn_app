@@ -1,6 +1,7 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { px } from '@/core/utils/scale'
+import { Stack, usePathname, useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
@@ -11,6 +12,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 
 export default function RevenueDetail() {
+  const router = useRouter()
   const RevenueData = [
     { label: 'Hợp đồng', value: 1.85, unit: '%' },
     { label: 'Hôm qua', value: 1.77, unit: 'tỷ' },
@@ -83,9 +85,24 @@ export default function RevenueDetail() {
     { value: 1.2, label: '30' },
     { value: 1.6, label: '31' },
   ]
-
+  const onPressCard = () => {
+   router.push({ pathname: '/revenue-detail' })
+    // router.push({
+    //   pathname: '/revenue-detail',
+    //   // params: { currentPlantId: currentPlantId, },
+    // })
+  }
   return (
     <SectionContainer title="Doanh thu">
+      <View style={styles.gotoDetail}>
+        <TouchableOpacity
+          onPress={onPressCard}
+          style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+          <Text style={styles.actionButtonIcon}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+
       <AnimatedCardContainer>
         <View>
           <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
@@ -368,5 +385,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9CA3AF',
     fontWeight: '500',
+  },
+
+  gotoDetail: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
   },
 })

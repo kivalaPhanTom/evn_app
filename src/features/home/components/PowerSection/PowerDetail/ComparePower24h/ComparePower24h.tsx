@@ -10,10 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getComparePower } from '@/core/redux/Actions/PowerActions'
 import dayjs from 'dayjs'
 
-function ComparePower24h() {
+function ComparePower24h(props: { currentPlantId?: string }) {
+  const { currentPlantId } = props;
   const dispatch = useDispatch()
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
-  const {isLoadingComparePower} = useSelector((state: any) => state.powerSlice)
+  const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
 
   const [range, setRange] = useState({
@@ -25,6 +26,7 @@ function ComparePower24h() {
       getComparePower({
         tagetDate: range.from.format('DD/MM/YYYY'),
         compareDate: range.to.format('DD/MM/YYYY'),
+        currentPlantId: currentPlantId || '',
       }),
     )
   }, [dispatch])
@@ -42,6 +44,7 @@ function ComparePower24h() {
       getComparePower({
         tagetDate: fromDate.format('DD/MM/YYYY'),
         compareDate: toDate.format('DD/MM/YYYY'),
+        currentPlantId: currentPlantId || '',
       }),
     )
   }
@@ -64,12 +67,12 @@ function ComparePower24h() {
           lineData2={compareLineChartData}
           range={range}
           onChangeDateRage={onChangeDateRage}
-          isLoading ={isLoadingComparePower}
+          isLoading={isLoadingComparePower}
         />
         {/* Compare Detail Stats */}
-        <CompareDetailStats 
-        summary={Summary} 
-        isLoading = {isLoadingComparePower}
+        <CompareDetailStats
+          summary={Summary}
+          isLoading={isLoadingComparePower}
         />
       </View>
     </AnimatedCardContainer>

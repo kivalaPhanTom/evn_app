@@ -4,9 +4,15 @@ import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Colors } from 'toastify-react-native/config/theme'
+import { Colors } from '@/core/constants/colors'
+import { useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 const ProductOutputDetailScreen: React.FC = () => {
+  const { t } = useTranslation()
+  const { currentPlantId } = useLocalSearchParams<{
+    currentPlantId: string;
+  }>();
   return (
     <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
@@ -17,10 +23,10 @@ const ProductOutputDetailScreen: React.FC = () => {
           style={{ textAlign: 'center' }}
         />
         <View style={styles.locationRow}>
-          <Text style={styles.locationText}>{'Công ty thủy điện Buon Kuop'}</Text>
+          <Text style={styles.locationText}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
         </View>
       </View>
-      <PowerDetail />
+      <PowerDetail currentPlantId={currentPlantId} />
     </TwinkleStars>
   )
 }

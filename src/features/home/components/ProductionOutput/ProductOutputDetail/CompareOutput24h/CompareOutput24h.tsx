@@ -9,7 +9,8 @@ import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashbo
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from "@/core/redux/store";
 
-function ProductOutputRencentDays() {
+function ProductOutputRencentDays(props: { currentPlantId?: string }) {
+  const { currentPlantId } = props;
   const dispatch = useDispatch()
   const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
   const { Unit = '', BarChartData, compareLineChartData, Summary, Contractvalue } = compareProductOutput
@@ -27,7 +28,7 @@ function ProductOutputRencentDays() {
         <CompareLegend displayType="output" />
 
         {/* Dashboard */}
-        <CompareDashboardOutput data={BarChartData} lineData={Contractvalue} lineData2={compareLineChartData} />
+        <CompareDashboardOutput currentPlantId={currentPlantId} data={BarChartData} lineData={Contractvalue} lineData2={compareLineChartData} />
         {/* Compare Detail Stats */}
         <CompareDetailStats summary={Summary} />
       </View>
