@@ -31,8 +31,8 @@ function getPowerByDaysApi(dayNumber: number = 7) {
   })
 }
 
-function getComparePowerApi(tagetDate: string = '', compareDate: string = '') {
-  const url = `${servicePattern.getComparePower}?tagetDate=${encodeURIComponent(tagetDate)}&compareDate=${encodeURIComponent(compareDate)}`
+function getComparePowerApi(tagetDate: string = '', compareDate: string = '', currentPlantId: string = '') {
+  const url = `${servicePattern.getComparePower}?tagetDate=${encodeURIComponent(tagetDate)}&compareDate=${encodeURIComponent(compareDate)}&currentPlantId=${currentPlantId}`
   return api.get(url)
 }
 

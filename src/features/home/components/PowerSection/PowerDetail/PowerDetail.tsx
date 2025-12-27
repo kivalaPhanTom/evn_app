@@ -5,7 +5,8 @@ import ComparePower24h from './ComparePower24h/ComparePower24h'
 import style from './PowerDetail.styles'
 import { useLocalSearchParams } from 'expo-router'
 
-export default function PowerDetail() {
+export default function PowerDetail(props: { currentPlantId?: string }) {
+  const { currentPlantId } = props;
   const { type } = useLocalSearchParams<{ type?: string }>()
 
   // Mặc định hiển thị CompareOutput24h nếu không có type hoặc type = 'output'
@@ -14,7 +15,7 @@ export default function PowerDetail() {
     <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={style.section}>
-          <ComparePower24h />
+          <ComparePower24h currentPlantId={currentPlantId} />
         </View>
       </View>
     </ScrollView>

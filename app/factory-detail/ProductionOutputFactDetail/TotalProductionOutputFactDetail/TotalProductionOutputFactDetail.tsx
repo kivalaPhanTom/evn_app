@@ -36,8 +36,7 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [totalPower, setTotalPower] = useState<number>(0)
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
-  console.log('isLoading:', isLoading)
-  console.log('powerSources:', powerSources)
+  
   // const {
   //   productOutputOverview: { totalPower, averagePower, powerSources },
   //   isLoadingOverview
@@ -57,7 +56,6 @@ function TotalProductionOutputFactDetail(props: Props) {
     setPowerSources(data.detail)
   }
   const setLoading = (value: boolean) => {
-    console.log('valueRRRRRRRR:', value)
     setIsLoading(value)
   }
 

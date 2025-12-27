@@ -12,8 +12,8 @@ import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
 import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
 }
 interface HourlyPowerList {
   value: number
@@ -63,9 +63,13 @@ function PowerByHoursFactDetail(props: Props) {
     .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-power-detail' })
+    router.push({
+      pathname: '/product-power-detail', params: {
+        currentPlantId: currentPlantId,
+      },
+    })
   }
- 
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>

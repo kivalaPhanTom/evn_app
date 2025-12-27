@@ -79,7 +79,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
     setListValueByHours(data.listValueByHours)
   }
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail' })
+    router.push({ pathname: '/product-output-detail', params: { currentPlantId: currentPlantId } })
   }
   return (
     <AnimatedCardContainer>

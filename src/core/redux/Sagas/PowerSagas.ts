@@ -21,11 +21,9 @@ function* getPowerOverviewSaga(): Generator {
 function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOverivewFactDetail>): Generator {
   try {
     const payload = action.payload
-    console.log('payloadTTTTTT:', payload)
     const { factoryId, getDataFromApi, setLoading } = payload
     setLoading(true)
     const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId)
-    console.log('res.dataHHHH:', res.data)
     if (res.status === 200) {
       getDataFromApi(res.data)
     }
@@ -82,11 +80,12 @@ function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generat
 function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Generator {
   try {
     yield put(setLoading({ isLoadingComparePower: true }))
-    const payload = action.payload as { tagetDate: string; compareDate: string }
+    const payload = action.payload as { tagetDate: string; compareDate: string, currentPlantId: string }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
+    const currentPlantId = payload?.currentPlantId || ''
 
-    const res = yield call(Service.getComparePowerApi, tagetDate, compareDate)
+    const res = yield call(Service.getComparePowerApi, tagetDate, compareDate, currentPlantId)
 
     if (res.status === 200) {
       yield put(setComparePower(res.data))
