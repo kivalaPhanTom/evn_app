@@ -46,7 +46,7 @@ const PowerStoreInLake: React.FC = () => {
         ) : (
           <>
             <AnimatedNumber
-              value={Number(powerStoreInLake?.currentCapaticy ?? 0)}
+              value={Number(powerStoreInLake?.currentCapacity ?? 0)}
               decimals={1}
               duration={800}
               render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
