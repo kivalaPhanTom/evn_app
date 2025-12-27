@@ -78,11 +78,12 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
 
 function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProductOutput>): Generator {
   try {
-    const payload = action.payload as { tagetDate: string; compareDate: string }
+    const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
+    const currentPlantId = payload?.currentPlantId || ''
 
-    const res = yield call(Service.getCompareProductOutputApi, tagetDate, compareDate)
+    const res = yield call(Service.getCompareProductOutputApi, tagetDate, compareDate, currentPlantId)
     if (res.status === 200) {
       yield put(setCompareProductOutput(res.data))
     }

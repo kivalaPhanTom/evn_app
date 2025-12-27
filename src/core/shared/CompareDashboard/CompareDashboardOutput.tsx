@@ -43,9 +43,10 @@ interface CompareDashboardProps {
   data: { value: number; label: string }[]
   lineData?: number
   lineData2?: { value: number }[]
+  currentPlantId?: string
 }
 
-const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) => {
+const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: CompareDashboardProps) => {
   const dispatch = useDispatch()
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
@@ -134,7 +135,8 @@ const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) 
   useEffect(() => {
     dispatch(getCompareProductOutput({ 
       tagetDate: range.from.format('DD/MM/YYYY'),
-      compareDate: range.to.format('DD/MM/YYYY')
+      compareDate: range.to.format('DD/MM/YYYY'),
+      currentPlantId: currentPlantId || '',
     }))
   }, [dispatch])
 
@@ -148,6 +150,7 @@ const CompareDashboard = ({ data, lineData, lineData2 }: CompareDashboardProps) 
       getCompareProductOutput({
         tagetDate: fromDate.format('DD/MM/YYYY'),
         compareDate: toDate.format('DD/MM/YYYY'),
+        currentPlantId: currentPlantId || '',
       }),
     )
   }
