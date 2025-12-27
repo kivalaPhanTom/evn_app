@@ -1,36 +1,47 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { View, Text } from 'react-native'
 import styles from './TotalPowerFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import { px } from '@/core/utils/scale'
 import GradientText from '@/components/GradientText/GradientText.component'
-import { useRouter } from 'expo-router'
-import { RootState } from "@/core/redux/store";
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
-import { Colors } from 'toastify-react-native/config/theme'
+import { getPowerOverivewFactDetail } from '@/core/redux/Actions/PowerActions'
+interface PowerDetail {
+  code: string
+  color: string
+  name: string
+  value: number
+}
+interface Props { 
+   currentPlantId: string
+}
+function TotalPowerFactDetail(props: Props) {
+  const { currentPlantId } = props
+  const dispatch = useDispatch()
+  const [average, setAverage] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0)
+  const [detail, setDetail] = useState<PowerDetail[]>([])
+  const [isLoadingOverview, setIsLoadingOverview] = useState<boolean>(false)
 
+  const getDataFromApi = (payload: any) => {
+    setAverage(payload.average)
+    setTotal(payload.total)
+    setDetail(payload.detail)
+  }
+  const setLoading = (value: boolean) => {
+    setIsLoadingOverview(value)
+  }
+  useEffect(() => {
+    dispatch(getPowerOverivewFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
+  }, [currentPlantId])
 
-function TotalPowerFactDetail() {
-  const router = useRouter()
-//   const { average, total, detail, isLoadingOverview } = useSelector((state: RootState) => state.powerSlice)
-const detail = [
-    {
-        name:"Tổ máy H1",
-        code:"TM01",
-        value: 27,
-        color:"white"
-    },
-     {
-        name:"Tổ máy H2",
-        code:"TM02",
-        value: 27,
-        color:"white"
-    }
-]
-  const isLoadingOverview = false
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -41,7 +52,7 @@ const detail = [
             <>
               <Text style={styles.title}>TỔNG CÔNG SUẤT</Text>
               <AnimatedNumber
-                value={0}
+                value={total}
                 duration={900}
                 decimals={2}
                 formatter={(n) => Number(n.toFixed(2)).toString()}
@@ -57,7 +68,7 @@ const detail = [
             /> :
             <>
               <Text style={styles.unit}>MW</Text>
-              <Text style={styles.average}>TB: {0} MW</Text>
+              <Text style={styles.average}>TB: {average} MW</Text>
             </>
           }
         </View>

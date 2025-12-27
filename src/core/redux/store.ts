@@ -5,6 +5,7 @@ import exampleSlice from './slices/ExampleSlice'
 import powerSlice from './slices/PowerSlice'
 import productOutputSlice from './slices/ProductOutputSlice'
 import hydrologySlice from './slices/HydrologySlice'
+import powerFactDetailSlice from './slices/PowerFactDetailSlice'
 
 let sagaMiddleware = createSagaMiddleware()
 
@@ -12,13 +13,20 @@ const allReducer = {
   exampleSlice,
   powerSlice,
   productOutputSlice,
-  hydrologySlice
+  hydrologySlice,
+  powerFactDetailSlice
 }
 const store = configureStore({
   reducer: {
     ...allReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: false,
+      serializableCheck: false, // 🔥 cho phép function
+    }).concat(sagaMiddleware),
+// })
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 })
 sagaMiddleware.run(rootSaga)
 export type RootState = ReturnType<typeof store.getState>;

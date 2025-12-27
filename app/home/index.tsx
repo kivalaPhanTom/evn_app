@@ -3,6 +3,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { runOnJS } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
+import { useSelector } from 'react-redux'
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
@@ -15,6 +16,7 @@ import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
+import { RootState } from '@/core/redux/store'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import PagerView from 'react-native-pager-view'
 // import { View } from 'react-native'
@@ -25,6 +27,7 @@ interface Props { }
 function HomeNewScreen(props: Props) {
   const { } = props
   const router = useRouter()
+  const { detail } = useSelector((state: RootState) => state.powerSlice)
   // const swipeLeft = Gesture.Pan()
   //   .activeOffsetX([-30, 30])
   //   .onEnd(e => {
@@ -51,26 +54,17 @@ function HomeNewScreen(props: Props) {
       </View>
 
       {/* PAGE 2: FACTORY DETAIL */}
-      <View key="factory1" style={{ flex: 1 }}>
-        <FactoryDetail
-          companyName={'NHÀ MÁY BUÔN TUA SRAH'}
-          location={'Đắk Lắk'}
-        />
-      </View>
-
-      <View key="factory2" style={{ flex: 1 }}>
-        <FactoryDetail
-          companyName={'NHÀ MÁY BUÔN KUỐP'}
-          location={'Đắk Lắk'}
-        />
-      </View>
-
-      <View key="factory3" style={{ flex: 1 }}>
-        <FactoryDetail
-          companyName={'NHÀ MÁY SREPOK'}
-          location={'Đắk Lắk'}
-        />
-      </View>
+      {
+        detail.map((factory, index) => (
+          <View key={`factory${index}`} style={{ flex: 1 }}>
+            <FactoryDetail
+              companyName={`Nhà máy ${factory.name}`}
+              location={'Đắk Lắk'}
+              currentPlantId={factory.code}
+            />
+          </View>
+        ))
+      }
     </PagerView>
     // <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
     //   <View style={styles.header}>
