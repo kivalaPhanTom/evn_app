@@ -32,7 +32,7 @@ function PowerByHoursFactDetail(props: Props) {
   const dispatch = useDispatch()
   const [HourlyPowerList, setHourlyPowerList] = useState<HourlyPowerList[]>([])
   const [avgPower, setAvgPower] = useState<number>(0)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [currentPower, setCurrentPower] = useState<number>(0)
   const { currentDate } = useSelector((state: any) => state.powerSlice.powerByTime)
 

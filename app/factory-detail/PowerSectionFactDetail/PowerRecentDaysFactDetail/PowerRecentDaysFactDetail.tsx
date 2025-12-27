@@ -22,7 +22,7 @@ function PowerRecentDaysFactDetail(props: Props) {
   const router = useRouter()
   const dispatch = useDispatch()
   const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   // const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'

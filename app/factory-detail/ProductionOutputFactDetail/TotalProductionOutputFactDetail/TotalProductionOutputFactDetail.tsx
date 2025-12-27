@@ -25,14 +25,14 @@ interface powerSources {
 
 interface productOutputOverview {
   total: number
-  Contract: number
+  average: number
   detail: powerSources[]
 }
 function TotalProductionOutputFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPower, setTotalPower] = useState<number>(0)
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
@@ -53,26 +53,14 @@ function TotalProductionOutputFactDetail(props: Props) {
 
   const getDataFromApi = (data: productOutputOverview) => {
     setTotalPower(data.total)
-    setAveragePower(data.Contract)
+    setAveragePower(data.average)
     setPowerSources(data.detail)
   }
   const setLoading = (value: boolean) => {
+    console.log('valueRRRRRRRR:', value)
     setIsLoading(value)
   }
-  // const powerSources = [
-  //   {
-  //     code: "Tổ máy H1",
-  //     name: "TM01",
-  //     value: 0,
-  //     color: "white"
-  //   },
-  //   {
-  //     code: "Tổ máy H2",
-  //     name: "TM02",
-  //     value: 0,
-  //     color: "white"
-  //   }
-  // ]
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>

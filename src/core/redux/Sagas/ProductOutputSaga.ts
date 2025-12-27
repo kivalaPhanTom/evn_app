@@ -98,12 +98,12 @@ function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getPr
     const { factoryId, getDataFromApi, setLoading } = payload
     setLoading(true)
     const res = yield call(Service.getProductOutputOverviewFactDetailApi, factoryId)
-    console.log('res.data:', res.data)
     if (res.status === 200) {
       getDataFromApi(res.data)
     }
     setLoading(false)
   } catch (error) {
+    console.log('errorRRRRR:', error)
     setLoading(false)
   }
 }

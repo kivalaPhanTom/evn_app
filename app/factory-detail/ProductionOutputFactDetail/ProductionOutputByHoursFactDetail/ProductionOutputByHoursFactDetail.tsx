@@ -28,7 +28,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)
   const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
   const [listValueByHours, setListValueByHours] = useState<{ label: string; value: number }[]>([])

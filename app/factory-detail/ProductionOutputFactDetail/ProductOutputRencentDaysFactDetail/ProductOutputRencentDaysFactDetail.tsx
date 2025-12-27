@@ -21,7 +21,7 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
 
   const dispatch = useDispatch()
   const [productionData, setProductionData] = useState<productionData[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const unit = 'tr.Wh'
 
   useEffect(() => {
