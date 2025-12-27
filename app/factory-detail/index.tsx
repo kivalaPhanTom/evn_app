@@ -25,7 +25,7 @@ interface factoryDetailProps {
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const { companyName, location, currentPlantId } = props
+  const { companyName, location, currentPlantId } = props;
 
   return (
     <View style={{ flex: 1 }} collapsable={false}>

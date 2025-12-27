@@ -82,7 +82,7 @@ const initialState: powerOverviewState = {
   isLoadingOverview: false,
   isLoadingByHours: false,
   isLoadingNearCurrentDays: false,
-  isLoadingComparePower:false,
+  isLoadingComparePower: false,
   powerByTime: {
     currentDate: '',
     currentPower: 0,
@@ -139,7 +139,7 @@ const initialState: powerOverviewState = {
 }
 
 const powerFactDetailSlice = createSlice({
-  name: 'powerFactDetailSlice', 
+  name: 'powerFactDetailSlice',
   initialState,
   reducers: {
     setPowerOverviewFactDetail: (state, action) => {

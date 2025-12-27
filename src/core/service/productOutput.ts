@@ -2,6 +2,7 @@ import { api } from './api.service'
 import { prefix_api } from '../constants/vars'
 import { ProductCummulativeOutputParams } from '../model/productOutput.request'
 import dayjs from 'dayjs'
+import { current } from '@reduxjs/toolkit'
 
 export const Service = {
   getProductOutputByHoursApi,
@@ -44,16 +45,18 @@ function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) 
     params: {
       type: params.type,
       from: params.from,
-      to: params.to
+      to: params.to,
+      currentPlantId: params.currentPlantId || ''
     }
   })
 }
 
-function getCompareProductOutputApi(tagetDate: string, compareDate: string) {
+function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string) {
   return api.get(`${servicePattern.getCompareProductOutput}`, {
     params: {
       tagetDate: tagetDate,
-      compareDate: compareDate
+      compareDate: compareDate,
+      currentPlantId: currentPlantId
     }
   })
 }
