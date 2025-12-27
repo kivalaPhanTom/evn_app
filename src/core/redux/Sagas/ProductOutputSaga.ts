@@ -104,7 +104,6 @@ function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getPr
     }
     setLoading(false)
   } catch (error) {
-    console.log('errorRRRRR:', error)
     setLoading(false)
   }
 }
