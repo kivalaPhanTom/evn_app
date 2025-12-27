@@ -16,6 +16,7 @@ import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDetail'
 import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
+import ReservoirWaterLevel from './ReservoirWaterLevel/ReservoirWaterLevel'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -60,6 +61,7 @@ function FactoryDetail(props: factoryDetailProps) {
           {/* <PowerSection />
           <ProductionOutput />
           <Hydrology /> */}
+          <ReservoirWaterLevel />
         </ScrollView>
       </TwinkleStars>
     </View>
