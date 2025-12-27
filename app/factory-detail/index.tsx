@@ -49,10 +49,6 @@ function FactoryDetail(props: factoryDetailProps) {
           <ProductionOutputFactDetail
             currentPlantId={currentPlantId}
           />
-          {/* <ProductOutputRencentDaysFactDetail /> */}
-          {/* <PowerSection />
-          <ProductionOutput />
-          <Hydrology /> */}
           <ReservoirWaterLevel />
         </ScrollView>
       </TwinkleStars>
