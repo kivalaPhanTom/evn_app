@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { useRouter } from 'expo-router'
 import { px } from '@/core/utils/scale'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -16,6 +17,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 
 export default function ProfitDetail() {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
 
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
@@ -332,7 +334,19 @@ export default function ProfitDetail() {
           <View>
             {profit.Breakdown.map((plant, idx) => {
               return (
-                <View key={idx} style={[styles.revenueCard, { backgroundColor: '#1e2838' }]}>
+                <TouchableOpacity
+                  key={idx}
+                  onPress={() => {
+                    router.push({
+                      pathname: '/profit-detail' as any,
+                      params: {
+                        plantName: plant.PlantName,
+                        plantId: plant.PlantCode || idx.toString(),
+                      },
+                    })
+                  }}
+                  style={[styles.revenueCard, { backgroundColor: '#1e2838' }]}
+                >
                   <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <View
@@ -358,7 +372,7 @@ export default function ProfitDetail() {
                     </Text>
                     <MetricDiff diff={plant.Percent / 100} />
                   </View>
-                </View>
+                </TouchableOpacity>
               )
             })}
           </View>
