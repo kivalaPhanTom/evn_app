@@ -87,7 +87,6 @@ function HydrologyDetail() {
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
-  console.log(hydrologyPlants);
   const tabs = hydrologyPlants?.plantsData?.map((plant) => {
     const plantId = getCurrentPlantId(plant.abbreviation)
     return {
@@ -106,7 +105,6 @@ function HydrologyDetail() {
       currentPlantId: activeTab,
       date: selectedDate.toLocaleDateString('vi-VN'),
     }
-    console.log("payload", payload);
     dispatch(getUpstreamWaterLevel(payload));
     dispatch(getInflow(payload));
     dispatch(getOutflow(payload));

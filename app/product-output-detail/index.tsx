@@ -3,10 +3,16 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import ProductOutputDetail from '@/features/home/components/ProductionOutput/ProductOutputDetail/ProductOutputDetail'
+import { useLocalSearchParams } from 'expo-router'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 
 const ProductOutputDetailScreen: React.FC = () => {
+  const { t } = useTranslation()
+  const { currentPlantId } = useLocalSearchParams<{
+    currentPlantId: string;
+  }>();
   return (
     <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
@@ -17,10 +23,10 @@ const ProductOutputDetailScreen: React.FC = () => {
           style={{ textAlign: 'center' }}
         />
         <View style={styles.locationRow}>
-          <Text style={styles.locationText}>{'Công ty thủy điện Buon Kuop'}</Text>
+          <Text style={styles.locationText}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
         </View>
       </View>
-      <ProductOutputDetail />
+      <ProductOutputDetail currentPlantId={currentPlantId}/>
     </TwinkleStars>
   )
 }

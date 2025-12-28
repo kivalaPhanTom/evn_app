@@ -60,7 +60,6 @@ function HomeContent(props: Props) {
     </TwinkleStars>
   )
 }
-
 export default HomeContent
 
 const styles = StyleSheet.create({

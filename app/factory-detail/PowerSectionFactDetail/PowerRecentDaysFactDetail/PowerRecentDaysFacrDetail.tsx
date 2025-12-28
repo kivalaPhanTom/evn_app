@@ -1,54 +1,44 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
-import styles from './PowerRecentDaysFacrDetail.styles'
+import { useSelector, useDispatch } from 'react-redux'
+import styles from './PowerRecentDaysFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
-import { useDispatch, useSelector } from 'react-redux'
 import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import { RootState } from '@/core/redux/store'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
-
-interface DayPower {
+import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
+import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
+// import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
+interface PowerByDays {
   value: number
   date: string
 }
-
-function PowerRecentDaysFacrDetail() {
+interface Props { 
+   currentPlantId: string
+}
+function PowerRecentDaysFacrDetail(props: Props) {
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   // const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'
-  const isLoadingNearCurrentDays = false
-  const powerData = [
-    {
-      date: "Hôm nay",
-      value: 0
-    },
-    {
-      date: "Hôm nay",
-      value: 0
-    },
-    {
-      date: "Hôm nay",
-      value: 0
-    },
-    {
-      date: "Hôm nay",
-      value: 0
-    },
-    {
-      date: "Hôm nay",
-      value: 0
-    },
-    {
-      date: "Hôm nay",
-      value: 0
-    }
-  ]
-  // useEffect(() => {
-  //   dispatch(getPowerByDays(7))
-  // }, [])
+  const getDataFromApi = (data: PowerByDays[]) => {
+    setPowerByDays(data)
+  }
+  const setLoading = (value: boolean) => {
+    setIsLoading(value)
+  }
+  useEffect(() => {
+    dispatch(getPowerByDaysFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
+  }, [currentPlantId])
 
   return (
     <AnimatedCardContainer>
@@ -58,7 +48,7 @@ function PowerRecentDaysFacrDetail() {
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {isLoadingNearCurrentDays ? <SquareSkelenton count={4} /> :
+            {isLoading ? <SquareSkelenton count={4} /> :
               <>
                 {powerData.map((day, index) => (
                   <View key={index} style={styles.valueCard}>

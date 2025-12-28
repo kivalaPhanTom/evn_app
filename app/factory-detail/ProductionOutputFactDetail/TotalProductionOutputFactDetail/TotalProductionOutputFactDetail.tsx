@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './TotalProductionOutputFactDetail.styles'
@@ -7,50 +7,69 @@ import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import { useRouter } from 'expo-router'
-import { getProductOutputOverview } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 
-interface Props { }
+interface Props {
+  currentPlantId: string
+}
+interface powerSources {
+  name: string
+  code: string
+  power: number
+  value: number
+  color: string
+}
 
+interface productOutputOverview {
+  total: number
+  average: number
+  detail: powerSources[]
+}
 function TotalProductionOutputFactDetail(props: Props) {
-  const { } = props
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [totalPower, setTotalPower] = useState<number>(0)
+  const [averagePower, setAveragePower] = useState<number>(0)
+  const [powerSources, setPowerSources] = useState<powerSources[]>([])
+  
   // const {
   //   productOutputOverview: { totalPower, averagePower, powerSources },
   //   isLoadingOverview
   // } = useSelector((state: RootState) => state.productOutputSlice)
-   const isLoadingOverview = false
-  // useEffect(() => {
-  //   dispatch(getProductOutputOverview())
-  // }, [])
-  const powerSources = [
-    {
-      code:"Tổ máy H1",
-      name:"TM01",
-      value:0,
-      color:"white"
-    },
-     {
-      code:"Tổ máy H2",
-      name:"TM02",
-      value:0,
-      color:"white"
-    }
-  ]
+
+  useEffect(() => {
+    dispatch(getProductOutputOverviewFactDetail({
+      factoryId: currentPlantId,
+      getDataFromApi: getDataFromApi,
+      setLoading: setLoading
+    }))
+  }, [])
+
+  const getDataFromApi = (data: productOutputOverview) => {
+    setTotalPower(data.total)
+    setAveragePower(data.average)
+    setPowerSources(data.detail)
+  }
+  const setLoading = (value: boolean) => {
+    setIsLoading(value)
+  }
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
           {/* <Text style={styles.totalPower}>{totalPower}</Text> */}
-          {isLoadingOverview ? <BarSkeleton /> :
+          {isLoading ? <BarSkeleton /> :
             <>
               <Text style={styles.title}>TỔNG SẢN LƯỢNG</Text>
               <AnimatedNumber
-                value={0}
+                value={totalPower}
                 duration={900}
                 decimals={2}
                 formatter={(n) => Number(n.toFixed(2)).toString()}
@@ -58,21 +77,21 @@ function TotalProductionOutputFactDetail(props: Props) {
               />
             </>
           }
-          {isLoadingOverview ?
+          {isLoading ?
             <BarSkeleton
               width={95}
               height={28}
             /> :
             <>
               <Text style={styles.unit}>tr.Wh</Text>
-              <Text style={styles.average}>TB: {0} tr.Wh</Text>
+              <Text style={styles.average}>TB: {averagePower} tr.Wh</Text>
             </>
           }
         </View>
 
         {/* Right side - Power Sources */}
         <View style={styles.rightSection}>
-          {isLoadingOverview ?
+          {isLoading ?
             <>
               <DotBarSkeleton />
             </> : <>
