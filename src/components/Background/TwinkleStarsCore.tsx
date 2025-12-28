@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Dimensions, StyleSheet, View } from 'react-native'
+import { Dimensions, ImageBackground, ImageSourcePropType, StyleSheet, View } from 'react-native'
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -73,10 +73,12 @@ interface TwinkleStarsProps {
   particleDensity?: number
   particleColor?: string
   children?: React.ReactNode
+  backgroundImage?: ImageSourcePropType
 }
 
 const TwinkleStars: React.FC<TwinkleStarsProps> = ({
   background = 'transparent',
+  backgroundImage,
   minSize = 2,
   maxSize = 4,
   particleDensity = 100,
@@ -97,16 +99,27 @@ const TwinkleStars: React.FC<TwinkleStarsProps> = ({
     }
     return starArray
   }, [particleDensity, minSize, maxSize])
+  const Wrapper: React.ElementType = backgroundImage ? ImageBackground : View
 
   return (
-    <View style={[styles.container, { backgroundColor: background }]}>
+    <Wrapper
+      source={backgroundImage}
+      resizeMode={backgroundImage ? 'cover' : undefined}
+      style={[
+        styles.container,
+        !backgroundImage && { backgroundColor: background },
+      ]}
+    >
+
       {/* <Svg style={styles.svg} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} pointerEvents="none">
         {stars.map((star) => (
           <Twinkle key={star.id} star={star} color={particleColor} />
         ))}
       </Svg> */}
       <View style={styles.content}>{children}</View>
-    </View>
+
+    </Wrapper>
+
   )
 }
 
