@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Pressable, TouchableOpacity } from 'react-native'
+import { RootState } from '@/core/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './PowerByHoursFactDetail.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
@@ -14,6 +15,7 @@ import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
 import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
 interface Props {
   currentPlantId: string
+  keyTab: number
 }
 interface HourlyPowerList {
   value: number
@@ -27,9 +29,10 @@ interface PowerByTime {
   HourlyPowerList: HourlyPowerList[]
 }
 function PowerByHoursFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [HourlyPowerList, setHourlyPowerList] = useState<HourlyPowerList[]>([])
   const [avgPower, setAvgPower] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -37,12 +40,14 @@ function PowerByHoursFactDetail(props: Props) {
   const { currentDate } = useSelector((state: any) => state.powerSlice.powerByTime)
 
   useEffect(() => {
-    dispatch(getPowerByTimeFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [currentPlantId])
+    if (activeTabIndex === keyTab) {
+      dispatch(getPowerByTimeFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [currentPlantId, activeTabIndex])
 
   const title = 'Công suất theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate

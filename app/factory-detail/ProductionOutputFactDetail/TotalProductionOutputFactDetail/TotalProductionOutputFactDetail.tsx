@@ -14,6 +14,7 @@ import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 
 interface Props {
   currentPlantId: string
+  keyTab: number
 }
 interface powerSources {
   name: string
@@ -29,26 +30,28 @@ interface productOutputOverview {
   detail: powerSources[]
 }
 function TotalProductionOutputFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPower, setTotalPower] = useState<number>(0)
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
-  
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   // const {
   //   productOutputOverview: { totalPower, averagePower, powerSources },
   //   isLoadingOverview
   // } = useSelector((state: RootState) => state.productOutputSlice)
 
   useEffect(() => {
-    dispatch(getProductOutputOverviewFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [])
+    if (activeTabIndex === keyTab) {
+      dispatch(getProductOutputOverviewFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [activeTabIndex])
 
   const getDataFromApi = (data: productOutputOverview) => {
     setTotalPower(data.total)
