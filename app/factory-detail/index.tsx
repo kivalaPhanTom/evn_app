@@ -18,6 +18,8 @@ import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDet
 import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
 import ProductionOutputFactDetail from './ProductionOutputFactDetail/ProductionOutputFactDetail'
 import ReservoirWaterLevel from './ReservoirWaterLevel/ReservoirWaterLevel'
+import HydrologyFactDetail from './HydrologyFactDetail/HydrologyFactDetail'
+import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMaintenanceSchedule'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -53,6 +55,8 @@ function FactoryDetail(props: factoryDetailProps) {
             keyTab = {keyTab}
           />
           <ReservoirWaterLevel />
+          <HydrologyFactDetail keyTab = {keyTab} currentPlantId={currentPlantId} />
+          <FactoryMaintenanceSchedule />
         </ScrollView>
       </TwinkleStars>
     </View>
@@ -81,4 +85,3 @@ const styles = StyleSheet.create({
     fontSize: px.m(13),
   },
 })
-
