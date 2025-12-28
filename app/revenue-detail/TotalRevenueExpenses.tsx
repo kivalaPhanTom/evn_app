@@ -6,7 +6,7 @@ import TotalRevenueExpensesItem from './TotalRevenueExpensesItem';
 export default function TotalRevenueExpenses() {
     return (
         <View style={[styles.card]}>
-            <Text style={{ color: '#94A3B8', marginTop: 24, fontWeight: '700' }}>
+            <Text style={{ color: '#94A3B8', marginTop: 5, fontWeight: '700' }}>
                 TỔNG DOANH THU VÀ CHI PHÍ
             </Text>
             <TotalRevenueExpensesItem
@@ -49,6 +49,6 @@ export default function TotalRevenueExpenses() {
 }
 const styles = StyleSheet.create({
     card: {
-       marginTop:12,
+       marginTop:0,
     },
 });
