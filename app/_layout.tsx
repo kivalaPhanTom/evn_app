@@ -1,4 +1,5 @@
 import { ThemePref, ThemeToggleContext } from '@/core/context/theme'
+import { AuthProvider } from '@/core/context/AuthProvider'
 import { useColorScheme as useSystemColorScheme } from '@/core/hooks/use-color-scheme.web'
 import { TranslationProvider } from '@/core/i18n/TranslationProvider'
 import StoreProvider from '@/core/redux/StoreProvider'
@@ -68,28 +69,27 @@ export default function RootLayout() {
   if (!loaded) return null
 
   return (
-    <TranslationProvider>
-      <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
-        <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <StoreProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
-              <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="splash" />
-                <Stack.Screen name="login" />
-                <Stack.Screen name="companies" />
-                <Stack.Screen name="charts" />
-                <Stack.Screen name="home/index" />
-                <Stack.Screen name="product-output-detail/index" />
-                <Stack.Screen name="product-power-detail/index" />
-                <Stack.Screen name="hydrology-detail/index" />
-                <Stack.Screen name="revenue-profit-detail/index" />
-                <Stack.Screen name="unit-maintenance-schedule-detail/index" />
-                <Stack.Screen name="revenue-detail/index" />
-
+    <AuthProvider>
+      <TranslationProvider>
+        <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
+          <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <StoreProvider>
+              <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
+                <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="splash" />
+                  <Stack.Screen name="login" />
+                  <Stack.Screen name="companies" />
+                  <Stack.Screen name="charts" />
+                  <Stack.Screen name="home/index" />
+                  <Stack.Screen name="product-output-detail/index" />
+                  <Stack.Screen name="product-power-detail/index" />
+                  <Stack.Screen name="hydrology-detail/index" />
+                  <Stack.Screen name="revenue-profit-detail/index" />
+                  <Stack.Screen name="unit-maintenance-schedule-detail/index" />
+                  <Stack.Screen name="revenue-detail/index" />
                   {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
                 </Stack>
-
                 {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
                   <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
                     <TouchableOpacity
@@ -101,29 +101,10 @@ export default function RootLayout() {
                     </TouchableOpacity>
                   </View>
                 )}
-
-                {/* Floating switch to toggle theme */}
-                {/* <View style={styles.switchContainer} pointerEvents="box-none">
-                <View style={styles.inner}>
-                  <Text style={[styles.label, effectiveScheme === 'dark' ? styles.labelDark : styles.labelLight]}>
-                    {effectiveScheme === 'dark' ? 'Dark' : 'Light'}
-                  </Text>
-                  <Switch
-                    value={effectiveScheme === 'dark'}
-                    onValueChange={() => {
-                      toggle()
-                    }}
-                    trackColor={{ false: '#ccc', true: '#4f46e5' }}
-                    thumbColor={effectiveScheme === 'dark' ? '#fff' : '#fff'}
-                  />
-                </View>
-              </View> */}
-
                 <ToastManager
                   theme={'dark'}
                   position={'top'}
                   animationStyle="fade"
-                // textStyle={{ fontSize: 8 }}
                 />
                 <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
               </SafeAreaView>
@@ -131,6 +112,7 @@ export default function RootLayout() {
           </ThemeProvider>
         </ThemeToggleContext.Provider>
       </TranslationProvider>
+    </AuthProvider>
   )
 }
 
