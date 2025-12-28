@@ -22,10 +22,11 @@ interface factoryDetailProps {
   companyName: string;
   location: string;
   currentPlantId: string;
+  keyTab: number;
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const { companyName, location, currentPlantId } = props;
+  const { companyName, location, currentPlantId, keyTab } = props;
 
   return (
     <View style={{ flex: 1 }} collapsable={false}>
@@ -45,9 +46,11 @@ function FactoryDetail(props: factoryDetailProps) {
         <ScrollView>
           <PowerSectionFactDetail
             currentPlantId={currentPlantId}
+            keyTab = {keyTab}
           />
           <ProductionOutputFactDetail
             currentPlantId={currentPlantId}
+            keyTab = {keyTab}
           />
           <ReservoirWaterLevel />
         </ScrollView>
