@@ -102,6 +102,7 @@ export default function RevenueDetail(props: Props) {
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
             <Text style={styles.title}>Chi tiết Doanh thu</Text>
+            <Text style={styles.companyName} >Công ty thủy điện Buôn Kuốp</Text>
             <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Date Picker */}
@@ -133,9 +134,14 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 30,
         fontWeight: "600",
-        textAlign:"center",
+        textAlign: "center",
         color: "white",
-        marginBottom:20
+        marginBottom: 5
+    },
+    companyName: {
+        textAlign: "center",
+        color: "white",
+         marginBottom: 20
     },
     container: {
         flex: 1,
