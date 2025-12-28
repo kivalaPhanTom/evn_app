@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
@@ -10,88 +10,49 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
+import { useDispatch, useSelector } from 'react-redux'
+import { getRevenue } from '@/core/redux/Actions/RevenueProfitActions'
+import { RootState } from '@/core/redux/store'
 
 export default function RevenueDetail() {
+  const dispatch = useDispatch()
   const router = useRouter()
-  const RevenueData = [
-    { label: 'Hợp đồng', value: 1.85, unit: '%' },
-    { label: 'Hôm qua', value: 1.77, unit: 'tỷ' },
-  ]
 
-  const data = [
-    { value: 1.3, label: '01' },
-    { value: 1.8, label: '02' },
-    { value: 1.1, label: '03' },
-    { value: 1.6, label: '04' },
-    { value: 1.9, label: '05' },
-    { value: 1.4, label: '06' },
-    { value: 1.2, label: '07' },
-    { value: 1.7, label: '08' },
-    { value: 1.5, label: '09' },
-    { value: 1.8, label: '10' },
-    { value: 1.3, label: '11' },
-    { value: 1.9, label: '12' },
-    { value: 1.1, label: '13' },
-    { value: 1.6, label: '14' },
-    { value: 1.4, label: '15' },
-    { value: 1.7, label: '16' },
-    { value: 1.2, label: '17' },
-    { value: 1.8, label: '18' },
-    { value: 1.5, label: '19' },
-    { value: 1.9, label: '20' },
-    { value: 1.3, label: '21' },
-    { value: 1.6, label: '22' },
-    { value: 1.1, label: '23' },
-    { value: 1.7, label: '24' },
-    { value: 1.4, label: '25' },
-    { value: 1.8, label: '26' },
-    { value: 1.2, label: '27' },
-    { value: 1.5, label: '28' },
-    { value: 1.9, label: '29' },
-    { value: 1.3, label: '30' },
-    { value: 1.6, label: '31' },
-  ]
+  const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
 
-  const data2 = [
-    { value: 1.7, label: '01' },
-    { value: 1.2, label: '02' },
-    { value: 1.9, label: '03' },
-    { value: 1.4, label: '04' },
-    { value: 1.6, label: '05' },
-    { value: 1.1, label: '06' },
-    { value: 1.8, label: '07' },
-    { value: 1.3, label: '08' },
-    { value: 1.5, label: '09' },
-    { value: 1.9, label: '10' },
-    { value: 1.2, label: '11' },
-    { value: 1.6, label: '12' },
-    { value: 1.4, label: '13' },
-    { value: 1.8, label: '14' },
-    { value: 1.1, label: '15' },
-    { value: 1.7, label: '16' },
-    { value: 1.3, label: '17' },
-    { value: 1.9, label: '18' },
-    { value: 1.5, label: '19' },
-    { value: 1.2, label: '20' },
-    { value: 1.6, label: '21' },
-    { value: 1.8, label: '22' },
-    { value: 1.4, label: '23' },
-    { value: 1.7, label: '24' },
-    { value: 1.1, label: '25' },
-    { value: 1.9, label: '26' },
-    { value: 1.3, label: '27' },
-    { value: 1.5, label: '28' },
-    { value: 1.8, label: '29' },
-    { value: 1.2, label: '30' },
-    { value: 1.6, label: '31' },
-  ]
   const onPressCard = () => {
-   router.push({ pathname: '/revenue-detail' })
-    // router.push({
-    //   pathname: '/revenue-detail',
-    //   // params: { currentPlantId: currentPlantId, },
-    // })
-  }
+    router.push({ pathname: '/revenue-detail' })
+     // router.push({
+     //   pathname: '/revenue-detail',
+     //   // params: { currentPlantId: currentPlantId, },
+     // })
+   }
+
+  useEffect(() => {
+    // Dispatch actions to fetch data if needed
+    dispatch(getRevenue())
+  }, [dispatch])
+
+  const data: { label: string; value: number }[] = revenue.Chart.Data.map(
+    (item: { Contract: number; Date: string }) => ({
+      value: item.Contract,
+      label: item.Date?.split('-')[2] ?? '',
+    }),
+  )
+
+  const data2: { label: string; value: number }[] = revenue.Chart.Data.map(
+    (item: { Actual: number; Date: string }) => ({
+      value: item.Actual,
+      label: item.Date?.split('-')[2] ?? '',
+    }),
+  )
+
+  const fromParts = revenue.Chart.Period.From?.split('-') ?? []
+  const toParts = revenue.Chart.Period.To?.split('-') ?? []
+  const fromDay = fromParts[2] ?? ''
+  const toDay = toParts[2] ?? ''
+  const toMonth = toParts[1] ?? ''
+
   return (
     <SectionContainer title="Doanh thu">
       <View style={styles.gotoDetail}>
@@ -107,50 +68,40 @@ export default function RevenueDetail() {
         <View>
           <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
-            {1.92} <Text style={styles.cardUnit}>{`tỷ`}</Text>
+            {revenue.Today.Value} <Text style={styles.cardUnit}>{revenue.Today.Unit}</Text>
           </Text>
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            diff={1.85}
-            compareTo={1.77}
+            diff={revenue.Today.ChangePercent / 100}
             label="so với hôm qua"
           />
-        </View>
-        <View style={[dashboardCommonStyles.summaryRow]}>
-          {RevenueData.map((item, idx) => (
-            <View key={idx} style={styles.cumulativeCard}>
-              <Text style={styles.cardTitle}>{item.label}</Text>
-              <Text style={styles.cardValue}>
-                {item.value} <Text style={styles.cardUnit}>tỷ</Text>
-              </Text>
-              <MetricDiff diff={1.85} compareTo={1.77} unit={item.unit} />
-            </View>
-          ))}
         </View>
         <View style={{ marginTop: px.v(10) }}>
           <View style={styles.revenueCard}>
             <View>
               <Text style={[styles.cardTitle, { color: '#A5B4FC' }]}>{`Lũy kế tuần`}</Text>
               <Text style={styles.cardValue}>
-                {2.49} <Text style={styles.cardUnit}>{`tỷ`}</Text>
+                {revenue.Cumulative.Week.Value} <Text style={styles.cardUnit}>{revenue.Cumulative.Week.Unit}</Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={1.85} compareTo={1.77} />
+              <MetricDiff withBackground diff={revenue.Cumulative.Week.ChangePercent / 100} />
             </View>
           </View>
         </View>
         <View>
           <View style={[styles.revenueCard, { backgroundColor: 'rgba(251, 191, 36, 0.1)' }]}>
             <View>
-              <Text style={[styles.cardTitle, { color: '#FCD34D' }]}>{`Lũy kế tháng 11`}</Text>
+              <Text
+                style={[styles.cardTitle, { color: '#FCD34D' }]}
+              >{`Lũy kế tháng ${revenue.Cumulative.Month.month?.split('-')[1] ?? ''}`}</Text>
               <Text style={styles.cardValue}>
-                {6.38} <Text style={styles.cardUnit}>{`tỷ`}</Text>
+                {revenue.Cumulative.Month.Value} <Text style={styles.cardUnit}>{revenue.Cumulative.Month.Unit}</Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={1.85} compareTo={1.77} />
+              <MetricDiff withBackground diff={revenue.Cumulative.Month.ChangePercent / 100} />
             </View>
           </View>
         </View>
@@ -168,7 +119,9 @@ export default function RevenueDetail() {
                   borderColor: 'rgba(255,255,255,0.12)',
                 }}
               >
-                <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>08 - 14/11</Text>
+                <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>
+                  {fromDay} - {toDay}/{toMonth}
+                </Text>
               </View>
             </View>
             <View style={[styles.chartWrapper]}></View>
@@ -203,9 +156,11 @@ export default function RevenueDetail() {
         <View style={{ marginTop: px.v(15) }}>
           <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
           <View>
-            {['Buôn Kuốp', 'Srepok 3', 'Buôn Tua Srah'].map((name, idx) => {
-              const palette = ['#F87171', '#60A5FA', '#34D399']
-              const circleColor = palette[idx % palette.length]
+            {revenue.Breakdown.map((plant, idx) => {
+              const dataPlant: { label: string; value: number }[] = plant.Sparkline.map((item) => ({
+                value: item,
+                label: '',
+              }))
               return (
                 <View key={idx} style={[styles.revenueCard, { backgroundColor: '#1e2838' }]}>
                   <View>
@@ -215,12 +170,12 @@ export default function RevenueDetail() {
                           width: px.h(20),
                           height: px.h(20),
                           borderRadius: '100%',
-                          backgroundColor: circleColor,
+                          backgroundColor: plant.Color,
                           marginRight: px.h(10),
                         }}
                       />
                       <View>
-                        <Text style={[styles.cardTitle, { fontSize: px.f(20) }]}>{name}</Text>
+                        <Text style={[styles.cardTitle, { fontSize: px.f(20) }]}>{plant.PlantName}</Text>
                         <Text style={{ color: Colors.green, fontSize: px.f(30) }}>
                           <Ionicons name="analytics-outline" size={px.f(24)} color={Colors.green} />
                         </Text>
@@ -229,9 +184,9 @@ export default function RevenueDetail() {
                   </View>
                   <View>
                     <Text style={[styles.cardValue, { fontSize: px.f(24) }]}>
-                      {6.38} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{`tỷ`}</Text>
+                      {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
                     </Text>
-                    <MetricDiff diff={1.85} compareTo={1.77} />
+                    <MetricDiff diff={plant.Percent / 100} />
                   </View>
                 </View>
               )

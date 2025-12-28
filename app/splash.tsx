@@ -4,17 +4,22 @@ import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import React, { useEffect } from 'react'
+import { useAuth } from '@/core/context/AuthProvider'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
+
 
 export default function Splash() {
   const router = useRouter()
+  const { isAuthenticated, loading } = useAuth()
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    if (loading) return
+    if (isAuthenticated) {
+      router.replace('/companies')
+    } else {
       router.replace('/login')
-    }, 900)
-    return () => clearTimeout(t)
-  }, [router])
+    }
+  }, [isAuthenticated, loading, router])
 
   return (
     <LinearGradient
