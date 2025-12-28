@@ -22,5 +22,19 @@
   "companyName": "Công ty thủy điện Buôn Kuốp",
   "BTS": "Nhà máy thủy điện Buôn Tua Srah",
   "BK": "Nhà máy thủy điện Buôn Kuốp",
-  "SP3": "Nhà máy thủy điện Srepok 3"
+  "SP3": "Nhà máy thủy điện Srepok 3",
+  "common": {
+    "ok": "Đồng ý",
+    "cancel": "Hủy",
+    "loading": "Đang tải..."
+  },
+
+  "auth": {
+    "login": "Đăng nhập",
+    "username": "Tên đăng nhập",
+    "logout": "Đăng xuất",
+    "email": "Email",
+    "password": "Mật khẩu"
+  },
+  "appName": "Ứng dụng Quản lý Nhà máy Thủy Điện EVNGENCO3"
 }
