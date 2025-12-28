@@ -1,4 +1,5 @@
 import type { ImageSource } from 'expo-image'
+import { ImageSourcePropType } from 'react-native'
 
 // Group icons
 export const icons = {
@@ -12,6 +13,7 @@ export const images = {
   // Example: bgLogin: require('./images/bg-login.png') as ImageSource,
   waves: require('./images/wave.png') as ImageSource,
   buonKuopBg: require('./images/buon-kuop-bg.jpg') as ImageSource,
+  bgLogin: require('./images/bg-login.jpg') as ImageSourcePropType,
 }
 
 // Default export for convenience

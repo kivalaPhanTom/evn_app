@@ -15,6 +15,12 @@ interface flowChartItem {
   unit: string
 }
 
+interface waterLevelRangeItem {
+  fromDate: string
+  toDate: string
+  fromLevel: number
+  toLevel: number
+}
 interface hydrologyState {
   inboundTraffic: number
   dischargeFlow: number
@@ -111,6 +117,9 @@ interface hydrologyState {
       value: number
     }[]
     unit: string
+  }
+  operateWaterLevel: {
+    waterLevelRange: waterLevelRangeItem[]
   }
 }
 const initialState: hydrologyState = {
@@ -223,6 +232,9 @@ const initialState: hydrologyState = {
     segments: [],
     unit: '',
   },
+  operateWaterLevel: {
+    waterLevelRange: [],
+  }
 }
 
 const hydrologySlice = createSlice({
@@ -260,7 +272,10 @@ const hydrologySlice = createSlice({
     },
     setPowerStoreInLake: (state, action) => {
       state.powerStoreInLake = action.payload
-    }
+    },
+    setOperateWaterLevel: (state, action) => {
+      state.operateWaterLevel = action.payload
+    },
   },
 })
 
@@ -276,6 +291,7 @@ export const {
   setOutflow,
   setTurbineflow,
   setPowerStoreInLake,
+  setOperateWaterLevel,
 } = hydrologySlice.actions
 
 export default reducer
