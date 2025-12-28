@@ -16,31 +16,18 @@ import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDetail'
 import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
+import ProductionOutputFactDetail from './ProductionOutputFactDetail/ProductionOutputFactDetail'
 import ReservoirWaterLevel from './ReservoirWaterLevel/ReservoirWaterLevel'
 interface factoryDetailProps {
   companyName: string;
   location: string;
+  currentPlantId: string;
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const {companyName,  location} = props
-  //   const router = useRouter()
-  //   const swipeLeft = Gesture.Pan()
-  //     .activeOffsetX([-30, 30])
-  //     .onEnd(e => {
-  //       if (e.translationX < -80) {
-  //         runOnJS(router.navigate)('/factory-detail')
-  //       }
-  //     })
-  //   const { companyName, location } = useLocalSearchParams<{
-  //     companyName?: string | string[]
-  //     location?: string | string[]
-  //   }>()
-  // //   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-  //   const companyLocation = Array.isArray(location) ? location[0] : location
+  const { companyName, location, currentPlantId } = props;
 
   return (
-    // <GestureDetector gesture={swipeLeft}>
     <View style={{ flex: 1 }} collapsable={false}>
       <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
         <View style={styles.header}>
@@ -56,16 +43,16 @@ function FactoryDetail(props: factoryDetailProps) {
           </View>
         </View>
         <ScrollView>
-          <PowerSectionFactDetail/>
-          <ProductOutputRencentDaysFactDetail/>
-          {/* <PowerSection />
-          <ProductionOutput />
-          <Hydrology /> */}
+          <PowerSectionFactDetail
+            currentPlantId={currentPlantId}
+          />
+          <ProductionOutputFactDetail
+            currentPlantId={currentPlantId}
+          />
           <ReservoirWaterLevel />
         </ScrollView>
       </TwinkleStars>
     </View>
-    // </GestureDetector>
   )
 }
 

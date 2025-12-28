@@ -505,7 +505,6 @@ const Overview: React.FC = () => {
   }, [waterData, activeTab])
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
-  console.log('Rendering Overview with activeTab:', activeData)
   const hydroElectricId = activeData?.abbreviation || ''
   const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
   useEffect(() => {

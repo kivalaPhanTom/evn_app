@@ -21,7 +21,7 @@ interface CumulativeSummaryItem {
   periodLabel: string
 }
 
-export default function ProductCumulativeOutput() {
+export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const dispatch = useDispatch()
   const { productCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
@@ -39,6 +39,7 @@ export default function ProductCumulativeOutput() {
         type: tab,
         from: dayjs().subtract(10, 'day').format('DD/MM/YYYY'),
         to: dayjs().format('DD/MM/YYYY'),
+        currentPlantId: props.currentPlantId || '',
       }),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,6 +82,7 @@ export default function ProductCumulativeOutput() {
         type: tab,
         from: fromDate.format('DD/MM/YYYY'),
         to: toDate.format('DD/MM/YYYY'),
+        currentPlantId: props.currentPlantId || '',
       }),
     )
   }
@@ -96,6 +98,7 @@ export default function ProductCumulativeOutput() {
         type: newTab,
         from: dayjs(range.from).format('DD/MM/YYYY'),
         to: dayjs(range.to).format('DD/MM/YYYY'),
+        currentPlantId: props.currentPlantId || '',
       }),
     )
   }
