@@ -4,10 +4,15 @@ import { resolveThemeValue } from '@/core/utils/utils'
 import { Image, type ImageSource } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef } from 'react'
+import { BlurView } from 'expo-blur'
 import { Animated, Pressable, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
 
 const DEFAULT_CARD_BG: ThemeValue<string | GradientColors> = {
-  dark: ['#1a2332', '#2a3544', '#1a2332'],
+  dark: [
+    'rgba(255,255,255,0.14)', // highlight
+    'rgba(255,255,255,0.08)', // glass body
+    'rgba(255,255,255,0.04)', // edge fade
+  ],
   light: '#fff',
 }
 
@@ -54,14 +59,14 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
     borderRadius = 16,
     borderWidth = 1,
     showGradient = false,
-    opacityBg = 0.8,
+    opacityBg = 1,
     backgroundColor: propBackgroundColor = DEFAULT_CARD_BG,
     borderColor: propBorderColor = 'rgba(255,255,255,0.04)',
     backgroundImage,
     backgroundImageOpacity = 1,
     backgroundImageContentFit = 'cover',
     backgroundImageStyle,
-    onPress = () => {},
+    onPress = () => { },
   } = props
 
   const hasOnPressProp = typeof props.onPress === 'function'
@@ -89,7 +94,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
     ]).start()
   }, [opacity, scale, delay])
 
-  const defaultBorder = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.1)'
+  const defaultBorder = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)'
 
   const resolvedBg = resolveThemeValue<string | GradientColors>(propBackgroundColor, isDark)
   const borderColor = resolveThemeValue(propBorderColor, isDark) ?? defaultBorder
@@ -141,6 +146,19 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
               pointerEvents="none"
             />
           )}
+          {!backgroundImage && (<BlurView
+            intensity={isDark ? 40 : 30}
+            tint={isDark ? 'dark' : 'light'}
+            style={[
+              StyleSheet.absoluteFillObject,
+              {
+                borderRadius,
+                backgroundColor: isDark
+                  ? 'rgba(26,35,50,0.3)'
+                  : 'rgba(255,255,255,0.3)',
+              },
+            ]}
+          />)}
           {Array.isArray(resolvedBg) && (
             <LinearGradient
               colors={resolvedBg as GradientColors}
@@ -166,7 +184,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
           )}
         </View>
       </Animated.View>
-    </Pressable>
+    </Pressable >
   )
 }
 

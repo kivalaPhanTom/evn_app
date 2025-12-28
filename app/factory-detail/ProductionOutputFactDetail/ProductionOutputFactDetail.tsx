@@ -7,19 +7,20 @@ import ProuductOutputByHoursFactDetail from './ProductionOutputByHoursFactDetail
 import ProductOutputRencentDaysFactDetail from './ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
 interface Props { 
    currentPlantId: string
+   keyTab: number
 }
 function ProductionOutputFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   return (
     <SectionContainer title="Sản lượng">
       <View style={styles.section}>
-        <TotalProductionOutputFactDetail currentPlantId={currentPlantId} />
+        <TotalProductionOutputFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
       </View>
       <View style={styles.section}>
-        <ProuductOutputByHoursFactDetail currentPlantId={currentPlantId} />
+        <ProuductOutputByHoursFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
       </View>
       <View style={styles.section}>
-        <ProductOutputRencentDaysFactDetail currentPlantId={currentPlantId} />
+        <ProductOutputRencentDaysFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
       </View>
     </SectionContainer>
   )

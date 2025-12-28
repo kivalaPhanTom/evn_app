@@ -10,6 +10,7 @@ import {
   getOutflow,
   getTurbineflow,
   getPowerStoreInLake,
+  getOperateWaterLevel,
 } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -23,6 +24,7 @@ import {
   setOutflow,
   setTurbineflow,
   setPowerStoreInLake,
+  setOperateWaterLevel,
 } from '../slices/HydrologySlice'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
@@ -187,6 +189,19 @@ function* getPowerStoreInLakeApiSaga(): Generator {
   }
 }
 
+function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterLevel>): Generator {
+  try {
+    const payload = action.payload as { selectedMonth: string }
+    const selectedMonth = payload?.selectedMonth || ''
+    const res = yield call(Service.getOperateWaterLevel, selectedMonth)
+    if (res.status === 200) {
+      yield put(setOperateWaterLevel(res.data))
+    }
+  } catch (error) {
+    console.log('OperateWaterLevel error:', error)
+  }
+}
+
 function* getHydrologyflowChartApi() {
   yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
 }
@@ -222,6 +237,10 @@ function* getTurbineflowApi() {
   yield takeEvery(getTurbineflow, getTurbineflowApiSaga)
 }
 
+function* getOperateWaterLevelApi() {
+  yield takeEvery(getOperateWaterLevel, getOperateWaterLevelApiSaga)
+}
+
 export function* hydrologySagaList() {
   yield all([
     getHydrologyChartApi(),
@@ -234,4 +253,5 @@ export function* hydrologySagaList() {
     getOutflowApi(),
     getTurbineflowApi(),
     getPowerStoreInLakeApi(),
+    getOperateWaterLevelApi(),
   ])}

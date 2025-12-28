@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
 import dayjs from 'dayjs'
 import styles from './RegulationWaterLevel.style'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { getOperateWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 
 interface RegulationWaterLevelProps {
   title?: string
@@ -17,29 +20,58 @@ interface TimeRangeData {
 }
 
 const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
+  const dispatch = useDispatch()
+  const { operateWaterLevel } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedMonth, setSelectedMonth] = useState(dayjs())
 
-  // Dữ liệu mẫu - 3 hàng dữ liệu
-  const tableData: TimeRangeData[] = [
-    {
-      fromDate: '21/11/2025',
-      toDate: '30/11/2025',
-      mnqtFrom: 482,
-      mnqtTo: 484,
-    },
-    {
-      fromDate: '11/11/2025',
-      toDate: '20/11/2025',
-      mnqtFrom: 480,
-      mnqtTo: 483,
-    },
-    {
-      fromDate: '01/11/2025',
-      toDate: '10/11/2025',
-      mnqtFrom: 478,
-      mnqtTo: 481,
-    },
-  ]
+  // Tạo dữ liệu mặc định khi không có dữ liệu từ API
+  const generateDefaultData = (month: dayjs.Dayjs): TimeRangeData[] => {
+    const daysInMonth = month.daysInMonth()
+    const startOfMonth = month.startOf('month')
+
+    return [
+      {
+        fromDate: startOfMonth.clone().date(1).format('DD/MM/YYYY'),
+        toDate: startOfMonth.clone().date(10).format('DD/MM/YYYY'),
+        mnqtFrom: 0,
+        mnqtTo: 0,
+      },
+      {
+        fromDate: startOfMonth.clone().date(11).format('DD/MM/YYYY'),
+        toDate: startOfMonth.clone().date(20).format('DD/MM/YYYY'),
+        mnqtFrom: 0,
+        mnqtTo: 0,
+      },
+      {
+        fromDate: startOfMonth.clone().date(21).format('DD/MM/YYYY'),
+        toDate: startOfMonth.clone().date(daysInMonth).format('DD/MM/YYYY'),
+        mnqtFrom: 0,
+        mnqtTo: 0,
+      },
+    ]
+  }
+
+  // Map dữ liệu từ API sang format của component, hoặc tạo dữ liệu mặc định nếu rỗng
+  const tableData: TimeRangeData[] = useMemo(() => {
+    const apiData = operateWaterLevel?.waterLevelRange || []
+    
+    if (apiData.length === 0) {
+      return generateDefaultData(selectedMonth)
+    }
+    
+    return apiData.map((item) => ({
+      fromDate: item.fromDate,
+      toDate: item.toDate,
+      mnqtFrom: item.fromLevel,
+      mnqtTo: item.toLevel,
+    }))
+  }, [operateWaterLevel?.waterLevelRange, selectedMonth])
+
+  // Gọi API khi component mount hoặc khi selectedMonth thay đổi
+  useEffect(() => {
+    const formattedDate = selectedMonth.format('MM/YYYY')
+    dispatch(getOperateWaterLevel({ selectedMonth: formattedDate }))
+  }, [selectedMonth, dispatch])
 
   const handleConfirm = (date: dayjs.Dayjs) => {
     setSelectedMonth(date)
