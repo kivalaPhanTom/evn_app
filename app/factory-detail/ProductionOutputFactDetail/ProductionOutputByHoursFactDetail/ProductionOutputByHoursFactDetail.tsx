@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
+
 import styles from './ProductionOutputByHoursFactDetail.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -14,6 +15,7 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
 interface Props {
   currentPlantId: string
+  keyTab: number
 }
 interface productOutputByHours {
   currentDate: string
@@ -25,9 +27,10 @@ interface productOutputByHours {
 }
 
 function ProductionOutputByHoursFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)
   const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
@@ -59,12 +62,14 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   )
 
   useEffect(() => {
-    dispatch(getProductOutputByHoursFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [dispatch])
+    if (activeTabIndex === keyTab) {
+      dispatch(getProductOutputByHoursFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [activeTabIndex])
 
   const getDataFromApi = (data: productOutputByHours) => {
     // state.productOutputByHours.currentDate = action.payload.currentDate

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { useDispatch, useSelector } from 'react-redux'
 import { View, Text } from 'react-native'
 import styles from './TotalPowerFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -15,11 +16,13 @@ interface PowerDetail {
   name: string
   value: number
 }
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
+  keyTab: number
 }
 function TotalPowerFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const dispatch = useDispatch()
   const [average, setAverage] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
@@ -35,12 +38,14 @@ function TotalPowerFactDetail(props: Props) {
     setIsLoadingOverview(value)
   }
   useEffect(() => {
-    dispatch(getPowerOverivewFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [currentPlantId])
+    if (activeTabIndex === keyTab) {
+      dispatch(getPowerOverivewFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [currentPlantId, activeTabIndex])
 
   return (
     <AnimatedCardContainer>

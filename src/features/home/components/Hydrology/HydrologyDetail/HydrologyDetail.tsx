@@ -244,7 +244,7 @@ function HydrologyDetail() {
           />
         </View>
         <View style={{ marginBottom: 20 }}>
-          <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />
+          {activeTab === 'BTS' && <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />}
         </View>
       </SectionContainer>
     </ScrollView>
