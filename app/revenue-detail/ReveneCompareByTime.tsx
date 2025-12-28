@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     wrapper: {
         // paddingVertical: 16,
         // paddingHorizontal: 16,
-        marginTop: 12,
+        marginTop: 14,
         borderBottomLeftRadius: 24,
         borderBottomRightRadius: 24,
     },
