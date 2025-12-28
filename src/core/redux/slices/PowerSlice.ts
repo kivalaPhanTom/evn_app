@@ -21,6 +21,7 @@ interface powerOverviewState {
   isLoadingByHours: boolean
   isLoadingNearCurrentDays: boolean
   isLoadingComparePower: boolean
+  activeTabIndex: number
   powerByTime: {
     currentDate: string
     currentPower: number
@@ -82,7 +83,8 @@ const initialState: powerOverviewState = {
   isLoadingOverview: false,
   isLoadingByHours: false,
   isLoadingNearCurrentDays: false,
-  isLoadingComparePower:false,
+  isLoadingComparePower: false,
+  activeTabIndex: 0,
   powerByTime: {
     currentDate: '',
     currentPower: 0,
@@ -142,6 +144,11 @@ const powerSlice = createSlice({
   name: 'powerSlice',
   initialState,
   reducers: {
+    setActiveTab: (state, action) => {
+      let newState = { ...state }
+      newState.activeTabIndex = action.payload
+      return newState
+    },
     setPowerOverview: (state, action) => {
       let newState = { ...state }
       newState.average = action.payload.average
@@ -170,5 +177,5 @@ const powerSlice = createSlice({
   },
 })
 const { reducer } = powerSlice
-export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } = powerSlice.actions
+export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading, setActiveTab } = powerSlice.actions
 export default reducer

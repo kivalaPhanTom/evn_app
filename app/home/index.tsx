@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { runOnJS } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
@@ -18,6 +18,7 @@ import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfi
 import { Colors } from '@/core/constants/colors'
 import { RootState } from '@/core/redux/store'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
+import { setActiveTab } from '@/core/redux/slices/PowerSlice'
 import PagerView from 'react-native-pager-view'
 // import { View } from 'react-native'
 import FactoryDetail from 'app/factory-detail'
@@ -27,7 +28,10 @@ interface Props { }
 function HomeNewScreen(props: Props) {
   const { } = props
   const router = useRouter()
+  const dispatch = useDispatch();
+
   const { detail } = useSelector((state: RootState) => state.powerSlice)
+
   // const swipeLeft = Gesture.Pan()
   //   .activeOffsetX([-30, 30])
   //   .onEnd(e => {
@@ -41,11 +45,14 @@ function HomeNewScreen(props: Props) {
   // }>()
   // const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   // const companyLocation = Array.isArray(location) ? location[0] : location
-
+  const onSetActiveTab = (index: number) => {
+    dispatch(setActiveTab(index))
+  }
   return (
     <PagerView
       style={{ flex: 1 }}
       initialPage={0}
+      onPageSelected={(e) => onSetActiveTab(e.nativeEvent.position)}
       orientation="horizontal"
     >
       {/* PAGE 1: HOME */}
@@ -61,6 +68,8 @@ function HomeNewScreen(props: Props) {
               companyName={`Nhà máy ${factory.name}`}
               location={'Đắk Lắk'}
               currentPlantId={factory.code}
+              keyTab={index + 1}
+
             />
           </View>
         ))

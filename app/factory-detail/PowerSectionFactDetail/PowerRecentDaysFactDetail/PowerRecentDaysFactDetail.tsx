@@ -14,13 +14,15 @@ interface PowerByDays {
   value: number
   date: string
 }
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
+  keyTab: number
 }
 function PowerRecentDaysFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   // const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
@@ -33,12 +35,14 @@ function PowerRecentDaysFactDetail(props: Props) {
     setIsLoading(value)
   }
   useEffect(() => {
-    dispatch(getPowerByDaysFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [currentPlantId])
+    if (activeTabIndex === keyTab) {
+      dispatch(getPowerByDaysFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [currentPlantId, activeTabIndex])
 
   return (
     <AnimatedCardContainer>

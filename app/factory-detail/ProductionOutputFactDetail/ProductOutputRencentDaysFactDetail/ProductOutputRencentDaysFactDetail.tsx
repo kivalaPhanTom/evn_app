@@ -9,6 +9,7 @@ import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 interface Props {
   currentPlantId: string
+  keyTab: number
 }
 interface productionData {
   date: string
@@ -16,21 +17,24 @@ interface productionData {
   contract: number
 }
 function ProductOutputRencentDaysFactDetail(props: Props) {
-  const { currentPlantId } = props
+  const { currentPlantId, keyTab } = props
   const router = useRouter()
 
   const dispatch = useDispatch()
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const unit = 'tr.Wh'
 
   useEffect(() => {
-    dispatch(getProductOutputByDaysFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [])
+    if (activeTabIndex === keyTab) {
+      dispatch(getProductOutputByDaysFactDetail({
+        factoryId: currentPlantId,
+        getDataFromApi: getDataFromApi,
+        setLoading: setLoading
+      }))
+    }
+  }, [activeTabIndex])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)
