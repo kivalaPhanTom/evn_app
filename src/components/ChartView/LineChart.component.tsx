@@ -9,8 +9,10 @@ import { LineChart as GiftedLineChart } from 'react-native-gifted-charts'
 export interface LineCharProps {
   data: any[]
   data2?: any[]
+  data3?: any[]
   color: string
   color2: string
+  color3?: string
   startFillColor2?: string
   endFillColor2?: string
   gradient?: boolean
@@ -22,24 +24,31 @@ export interface LineCharProps {
   areaChart?: boolean
   hideDataPoints1?: boolean
   hideDataPoints2?: boolean
+  hideDataPoints3?: boolean
   hideYAxisText?: boolean
   customDataPoint?: React.ReactElement
   customDataPoint2?: React.ReactElement
   rulesColor?: string
   label1?: string
   label2?: string
-  pointerConfig?: boolean
+  pointerConfig?: string
   xAxisColor?: string
   strokeDashArray2?: number[]
   strokedashArray1?: number[]
   spacing?: number
+  curved?: boolean
+  areaChart2?: boolean
+  areaChart3?: boolean
+  showValuesAsDataPointsText?: boolean
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
   data,
-  data2 = [],
+  data2 = undefined,
+  data3 = undefined,
   color = '#FBBF24',
   color2 = '#2563EB',
+  color3 = '#22D3EE',
   startFillColor2 = '#2563EB',
   endFillColor2 = '#2563EB',
   gradient = true,
@@ -50,17 +59,22 @@ export const LineChart: React.FC<LineCharProps> = ({
   areaChart = true,
   hideDataPoints1 = false,
   hideDataPoints2 = false,
+  hideDataPoints3 = false,
   hideYAxisText = false,
   customDataPoint,
   customDataPoint2,
   rulesColor = 'rgba(255,255,255, 0.1)',
   label1,
   label2,
-  pointerConfig = false,
+  pointerConfig,
   xAxisColor = 'rgba(255,255,255,0.05)',
   strokeDashArray2,
   strokedashArray1,
   spacing = 5,
+  curved = true,
+  areaChart2 = false,
+  areaChart3 = false,
+  showValuesAsDataPointsText = true,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -81,6 +95,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   const commonProps = {
     data,
     data2,
+    data3,
     animateOnDataChange: true,
     animationDuration,
     yAxisTextStyle: {
@@ -107,9 +122,10 @@ export const LineChart: React.FC<LineCharProps> = ({
     <View style={{ overflow: 'hidden', paddingTop: px.v(4) }}>
       <GiftedLineChart
         {...commonProps}
-        curved
-        areaChart={false}
-        areaChart2={true}
+        curved={curved}
+        areaChart={areaChart}
+        areaChart2={areaChart2}
+        areaChart3={areaChart3}
         startFillColor2={startFillColor2}
         endFillColor2={endFillColor2}
         startOpacity={0.3}
@@ -118,17 +134,21 @@ export const LineChart: React.FC<LineCharProps> = ({
         thickness={px.h(5)}
         color={color}
         color2={color2}
+        color3={color3}
         startOpacity2={0.3}
         endOpacity1={0}
         height={height}
         maxValue={yAxisMaxValue}
         hideDataPoints1={hideDataPoints1}
         hideDataPoints2={hideDataPoints2}
+        hideDataPoints3={hideDataPoints3}
         dataPointsColor1={color}
         dataPointsColor2={color2}
+        dataPointsColor3={color3}
         dataPointsRadius1={px.h(6)}
         dataPointsRadius2={px.h(6)}
-        showValuesAsDataPointsText
+        dataPointsRadius3={px.h(6)}
+        showValuesAsDataPointsText={showValuesAsDataPointsText}
         textColor2={color2}
         textFontSize2={px.m(13)}
         textShiftY={-10}
@@ -146,71 +166,83 @@ export const LineChart: React.FC<LineCharProps> = ({
         strokeDashArray2={strokeDashArray2}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
-          pointerConfig
+          pointerConfig === '1' //simple
             ? {
-                pointerStripHeight: height,
-                pointerStripColor: 'rgba(255,255,255,0.3)',
-                pointerStripWidth: 2,
-                strokeDashArray: [5, 5],
-                pointerColor: color,
-                radius: px.h(6),
-                pointerLabelWidth: px.h(100),
-                pointerLabelHeight: px.v(90),
-                activatePointersOnLongPress: true,
-                autoAdjustPointerLabelPosition: true,
-                persistPointer: true,
-                resetPointerOnDataChange: false,
-                pointer1Color: color,
-                pointer2Color: color2,
                 pointerLabelComponent: (items: any) => {
                   return (
-                    <View
-                      style={{
-                        height: px.v(90),
-                        width: px.h(120),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: px.v(-30),
-                        marginLeft: px.h(-40),
-                      }}
-                    >
-                      <View
-                        style={{
-                          paddingHorizontal: px.h(14),
-                          paddingVertical: px.v(6),
-                          borderRadius: px.m(8),
-                          backgroundColor: isDark ? '#1f2937' : '#f9fafb',
-                          borderWidth: 1,
-                          borderColor: isDark ? '#374151' : '#e5e7eb',
-                        }}
-                      >
-                        <Text
-                          style={{
-                            textAlign: 'left',
-                            color: color,
-                            fontSize: px.m(16),
-                          }}
-                        >
-                          {label1 + items[0]?.value}
-                        </Text>
-                        {items[1] && (
-                          <Text
-                            style={{
-                              textAlign: 'left',
-                              color: color2,
-                              fontSize: px.m(16),
-                              marginTop: px.v(4),
-                            }}
-                          >
-                            {label2 + items[1]?.value}
-                          </Text>
-                        )}
+                    <View>
+                      <View>
+                        <Text>{items[0]}</Text>
                       </View>
                     </View>
                   )
                 },
               }
-            : undefined
+            : pointerConfig === '2' //card
+              ? {
+                  pointerStripHeight: height,
+                  pointerStripColor: 'rgba(255,255,255,0.3)',
+                  pointerStripWidth: 2,
+                  strokeDashArray: [5, 5],
+                  pointerColor: color,
+                  radius: px.h(6),
+                  pointerLabelWidth: px.h(100),
+                  pointerLabelHeight: px.v(90),
+                  activatePointersOnLongPress: true,
+                  autoAdjustPointerLabelPosition: true,
+                  persistPointer: true,
+                  resetPointerOnDataChange: false,
+                  pointer1Color: color,
+                  pointer2Color: color2,
+                  pointerLabelComponent: (items: any) => {
+                    return (
+                      <View
+                        style={{
+                          height: px.v(90),
+                          width: px.h(120),
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          marginTop: px.v(-30),
+                          marginLeft: px.h(-40),
+                        }}
+                      >
+                        <View
+                          style={{
+                            paddingHorizontal: px.h(14),
+                            paddingVertical: px.v(6),
+                            borderRadius: px.m(8),
+                            backgroundColor: isDark ? '#1f2937' : '#f9fafb',
+                            borderWidth: 1,
+                            borderColor: isDark ? '#374151' : '#e5e7eb',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              textAlign: 'left',
+                              color: color,
+                              fontSize: px.m(16),
+                            }}
+                          >
+                            {label1 + items[0]?.value}
+                          </Text>
+                          {items[1] && (
+                            <Text
+                              style={{
+                                textAlign: 'left',
+                                color: color2,
+                                fontSize: px.m(16),
+                                marginTop: px.v(4),
+                              }}
+                            >
+                              {label2 + items[1]?.value}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                    )
+                  },
+                }
+              : undefined
         }
       />
     </View>

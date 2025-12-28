@@ -16,9 +16,10 @@ function* getTokenSaga(action: any): Generator {
         })
         if (res.status === 200) {
             const access_token = res.data.access_token
+            const expires_in = res.data.expires_in
             console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
             Toast.success('Đăng nhập thành công!')
-            yield call(setAuthToken, access_token)
+            yield call(setAuthToken, access_token, expires_in)
             router.push('/companies')
         } else {
             console.log('❌ Unexpected status:', res.status)
