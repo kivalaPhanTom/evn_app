@@ -10,6 +10,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.component'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
+import { t } from 'i18next'
 
 function UnitMaintenanceSchedule() {
   const router = useRouter()
@@ -65,11 +66,11 @@ function UnitMaintenanceSchedule() {
 
   return (
     <SectionContainer
-      title="Các tổ máy có lịch sửa chữa bảo dưỡng"
-      // actionButton={{
-      //   label: 'Thêm chi tiết',
-      //   onPress: onPressCard,
-      // }}
+      title={t('repairMaintenance')}
+      actionButton={{
+        label: 'Thêm chi tiết',
+        onPress: onPressCard,
+      }}
     >
       <View style={styles.infoContainer}>
         <View style={[styles.infoCard]}>
