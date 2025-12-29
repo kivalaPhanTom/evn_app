@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+    paddingHorizontal: px.h(10),
   },
   contentContainer: {
     paddingHorizontal: px.h(16),
@@ -89,5 +90,20 @@ export const styles = StyleSheet.create({
     fontSize: px.f(14),
     fontWeight: '400',
     marginLeft: px.h(4),
+  },
+  profitTimeTitle: {
+    fontSize: px.f(24),
+    fontWeight: 'bold',
+    marginBottom: px.v(12),
+    color: '#fff',
+  },
+  lineContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  gradientLine: {
+    borderRadius: 1,
   },
 })
