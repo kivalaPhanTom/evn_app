@@ -26,16 +26,6 @@ export const styles = StyleSheet.create({
     borderRadius: px.h(16),
     minHeight: px.v(140),
     overflow: 'hidden',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)', // Base background color
-    // Shadow/glow effect
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
   leftCard: {
     flex: 0.6, // 60% width
