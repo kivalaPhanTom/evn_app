@@ -7,6 +7,7 @@ import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
+import { getRevebnuePowerPrices, getRevenueTotalExpense } from '@/core/redux/Actions/RevenueProfitActions'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 interface Props { }
 
@@ -93,11 +94,13 @@ export default function RevenueDetail(props: Props) {
             currentPlantId: activeTab,
             date: selectedDate.toLocaleDateString('vi-VN'),
         }
-        dispatch(getUpstreamWaterLevel(payload));
-        dispatch(getInflow(payload));
-        dispatch(getOutflow(payload));
-        dispatch(getTurbineflow(payload));
-    }, [activeTab, selectedDate, dispatch])
+        dispatch(getUpstreamWaterLevel(payload))
+        dispatch(getInflow(payload))
+        dispatch(getOutflow(payload))
+        dispatch(getTurbineflow(payload))
+        dispatch(getRevebnuePowerPrices(payload))
+        dispatch(getRevenueTotalExpense(payload))
+    }, [activeTab, selectedDate])
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     companyName: {
         textAlign: "center",
         color: "white",
-         marginBottom: 20
+        marginBottom: 20
     },
     container: {
         flex: 1,
