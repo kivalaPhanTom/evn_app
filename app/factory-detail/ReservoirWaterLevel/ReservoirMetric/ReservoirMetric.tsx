@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
 import { styles } from './ReservoirMetric.styles'
+import GradientCard from '@/components/GradientCard/GradientCard.component'
 
 interface ReservoirFlowCardProps {
   label: string // "Qvề" hoặc "Qxa"
@@ -25,19 +25,11 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
   samePeriodUnit,
   gradientColors,
 }) => {
-  // Calculate gradient direction for 132.12deg
-  const angle = 132.12 * (Math.PI / 180)
-  const startX = 0.5 - 0.5 * Math.sin(angle)
-  const startY = 0.5 - 0.5 * Math.cos(angle)
-  const endX = 0.5 + 0.5 * Math.sin(angle)
-  const endY = 0.5 + 0.5 * Math.cos(angle)
-
   return (
-    <LinearGradient
+    <GradientCard
       colors={gradientColors}
       locations={[0, 1]}
-      start={{ x: startX, y: startY }}
-      end={{ x: endX, y: endY }}
+      angle={132.12}
       style={styles.card}
     >
       {/* Header với icon tròn và label */}
@@ -64,7 +56,7 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
           {samePeriodValue} {samePeriodUnit}
         </Text>
       </View>
-    </LinearGradient>
+    </GradientCard>
   )
 }
 

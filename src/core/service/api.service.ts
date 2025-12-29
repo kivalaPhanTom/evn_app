@@ -34,12 +34,17 @@ export async function loadAuthTokenFromStorage(): Promise<void> {
 }
 
 // Set auth token
-export function setAuthToken(token: string | null) {
+export function setAuthToken(token: string | null, expiresIn?: number) {
   authToken = token
   if (token) {
     AsyncStorage.setItem('auth_token', token).catch(() => {})
+    if (expiresIn) {
+      const expiresAt = Date.now() + expiresIn * 1000
+      AsyncStorage.setItem('auth_expires_at', expiresAt.toString()).catch(() => {})
+    }
   } else {
     AsyncStorage.removeItem('auth_token').catch(() => {})
+    AsyncStorage.removeItem('auth_expires_at').catch(() => {})
   }
 }
 export function clearAuthToken() {
