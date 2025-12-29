@@ -13,6 +13,8 @@ import CompareLegend from '@/core/shared/CompareLegend'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRevenue } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
+import BarChart from '@/components/BarChart/BarChart.component'
+import { BarGroup } from '@/core/types'
 
 export default function RevenueDetail() {
   const dispatch = useDispatch()
@@ -22,11 +24,11 @@ export default function RevenueDetail() {
 
   const onPressCard = () => {
     router.push({ pathname: '/revenue-detail' })
-     // router.push({
-     //   pathname: '/revenue-detail',
-     //   // params: { currentPlantId: currentPlantId, },
-     // })
-   }
+    // router.push({
+    //   pathname: '/revenue-detail',
+    //   // params: { currentPlantId: currentPlantId, },
+    // })
+  }
 
   useEffect(() => {
     // Dispatch actions to fetch data if needed
@@ -52,13 +54,66 @@ export default function RevenueDetail() {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
-
+  const profit = [
+    {
+      Date: '2025-12-21',
+      value: 13.03,
+    },
+    {
+      Date: '2025-12-22',
+      value: 0.55,
+    },
+    {
+      Date: '2025-12-23',
+      value: -1,
+    },
+    {
+      Date: '2025-12-24',
+      value: 0.54,
+    },
+    {
+      Date: '2025-12-25',
+      value: 0.56,
+    },
+    {
+      Date: '2025-12-26',
+      value: 0.51,
+    },
+    {
+      Date: '2025-12-27',
+      value: 0.49,
+    },
+  ]
+  const values: { label: string; value: number }[] = profit?.map((item: { value: number }) => ({
+    label: '',
+    value: Number(item.value),
+  }))
+  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
+    label,
+    items: [
+      {
+        value,
+        frontColor: value < 0 ? Colors.red : Colors.green,
+        showValuesOnTop: true,
+        showPrefix: value > 0,
+      },
+    ],
+  }))
+  const today = new Date()
+  const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`
+  const formatDayWithMonth = (d: Date) =>
+    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const endDate = new Date(today)
+  endDate.setDate(today.getDate() - 1) //
+  const xAxisLabels = values.map((_, idx) => {
+    const d = new Date(endDate)
+    d.setDate(endDate.getDate() - (values.length - 1 - idx))
+    return formatDayWithMonth(d)
+  })
   return (
     <SectionContainer title="Doanh thu">
       <View style={styles.gotoDetail}>
-        <TouchableOpacity
-          onPress={onPressCard}
-          style={styles.actionButton}>
+        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
           <Text style={styles.actionButtonIcon}>{'>'}</Text>
         </TouchableOpacity>
@@ -149,6 +204,39 @@ export default function RevenueDetail() {
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 17 }}>
                 <View style={[styles.legendDashLine]} />
                 <Text style={styles.legendLabel}>{'Hợp đồng'}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View>
+          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+            <View style={[styles.chartWrapper]}>
+              <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
+            </View>
+            <View style={styles.axisContainer}>
+              <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
+                {xAxisLabels.map((label, idx) => {
+                  const isToday = idx === xAxisLabels.length - 1
+                  const isNegative = values[idx].value < 0
+                  const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
+                  return (
+                    <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
+                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
+                    </View>
+                  )
+                })}
+              </View>
+              <View style={styles.axisDivider} />
+              {/* Legend */}
+              <View style={styles.legendRow}>
+                <View style={[styles.legendItem]}>
+                  <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
+                  <Text style={styles.legendText}>Lãi</Text>
+                </View>
+                <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
+                  <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
+                  <Text style={styles.legendText}>Lỗ</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -346,7 +434,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 12
+    marginBottom: 12,
   },
   actionButton: {
     flexDirection: 'row',
