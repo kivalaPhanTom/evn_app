@@ -19,33 +19,6 @@ interface InflowOutflowProps {
 }
 
 const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
-  const customDataPoint = () => (
-    <View
-      style={{
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: '#00DF73',
-        borderColor: '#FFF',
-        borderWidth: 2,
-        transform: [{ translateX: -6 }, { translateY: -6 }],
-      }}
-    />
-  )
-
-  const customDataPoint2 = () => (
-    <View
-      style={{
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: '#FB923C',
-        borderColor: '#FFF',
-        borderWidth: 2,
-      }}
-    />
-  )
-
   const dispatch = useDispatch()
   const inflowOutflowData = useSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
@@ -54,40 +27,18 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   const qIn = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))
   const qOut = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))
 
-  useEffect(() => {
-    // Dispatch action to fetch inflow/outflow data
-    dispatch(getInflowOutflow({ hydroElectricId: hydroElectricId }))
-  }, [dispatch, hydroElectricId])
-
   return (
     <>
       {!isEmptyData && (
         <AnimatedCardContainer>
-          <View style={styles.content}>
-            <View style={styles.summaryCard}>
-              <FlowMetricCard
-                label="Q"
-                label1="về"
-                value={inflow?.value}
-                unit={inflow?.unit}
-                color="#00DF73"
-                icon="↑"
-              />
-              <FlowMetricCard
-                label="Q"
-                label1="xa"
-                value={outflow?.value}
-                unit={outflow?.unit}
-                color="#FF0000"
-                icon="↓"
-              />
+          <View style={styles.headerRow}>
+            <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Lưu lượng theo giờ</Text>
+            <View style={styles.notePanel}>
+              <CircleLineIcon color="#00DF73" />
+              <Text style={styles.noteText}>Qvề</Text>
+              <CircleLineIcon color="#FB923C" />
+              <Text style={styles.noteText}>Qxa</Text>
             </View>
-          </View>
-          <View style={styles.notePanel}>
-            <CircleLineIcon color="#00DF73" />
-            <Text style={styles.noteText}>Qvề</Text>
-            <CircleLineIcon color="#FB923C" />
-            <Text style={styles.noteText}>Qxa (Qcm + Qxt)</Text>
           </View>
           <View>
             {qIn.length > 0 && qOut.length > 0 && (
@@ -106,7 +57,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                 label1="Qvề: "
                 label2="Qxa: "
                 height={px.v(150)}
-                pointerConfig="2"
+                pointerConfig={true}
                 xAxisColor="#E5E5EF"
               />
             )}

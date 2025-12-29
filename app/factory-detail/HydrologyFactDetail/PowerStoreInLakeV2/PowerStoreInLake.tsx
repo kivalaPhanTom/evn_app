@@ -4,14 +4,15 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import GradientText from '@/components/GradientText/GradientText.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import { px } from '@/core/utils/scale'
-import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
+import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
+import styles from './PowerStoreInLake.styles'
 
-const PowerStoreInLake: React.FC = () => {
+const PowerStoreInLakeV2: React.FC = () => {
   const dispatch = useDispatch()
   const { powerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
@@ -35,7 +36,8 @@ const PowerStoreInLake: React.FC = () => {
   return (
     <AnimatedCardContainer>
       <View style={styles.pill}>
-        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Điện năng tích trữ trong hồ</Text>
+        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Điện năng tích trữ</Text>
+        <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={1.85} compareTo={1.77} />
       </View>
 
       <View style={styles.mainRow}>
@@ -70,8 +72,22 @@ const PowerStoreInLake: React.FC = () => {
           <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
         )}
       </View>
+
+      <View style={{ marginTop: px.v(10) }}>
+        <View style={styles.revenueCard}>
+          <View>
+            <Text style={[styles.cardTitle, { color: '#FFF' }]}>{`Cùng kỳ năm ngoái`}</Text>
+            <Text style={styles.cardValue}>
+              {2.49} <Text style={styles.cardUnit}>{`tr.Wh`}</Text>
+            </Text>
+          </View>
+          <View>
+            <Text style={{ fontSize: px(24), color: '#A855F7', fontWeight: 'bold' }}>84%</Text>
+          </View>
+        </View>
+      </View>
     </AnimatedCardContainer>
   )
 }
 
-export default PowerStoreInLake
+export default PowerStoreInLakeV2
