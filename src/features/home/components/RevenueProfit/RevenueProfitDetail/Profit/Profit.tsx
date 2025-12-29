@@ -170,9 +170,15 @@ export default function ProfitDetail() {
       return { dateStr: formatDayWithMonth(d), value: v.value }
     })
     .filter((x) => x.value < 0)
+  const onPressCard = () => { 
+    router.push({ pathname: '/factory-profit-detail' as any })  
+  }
 
   return (
-    <SectionContainer title="Lợi nhuận">
+    <SectionContainer title="Lợi nhuận" actionButton={{
+      label: 'Thêm chi tiết',
+      onPress: onPressCard,
+    }}>
       <AnimatedCardContainer>
         <View>
           <Text style={styles.revenueTitle}>{`Lợi nhuận hôm nay`}</Text>

@@ -60,13 +60,14 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
             fontWeight="600"
             style={styles.title}
           />
-          {actionButton && (
-            <TouchableOpacity onPress={actionButton.onPress} style={styles.actionButton}>
-              <Text style={styles.actionButtonText}>{actionButton.label}</Text>
-              <Text style={styles.actionButtonIcon}>{'>'}</Text>
-            </TouchableOpacity>
-          )}
+
         </View>
+        {actionButton && (
+          <TouchableOpacity onPress={actionButton.onPress} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>{actionButton.label}</Text>
+            <Text style={styles.actionButtonIcon}>{'>'}</Text>
+          </TouchableOpacity>
+        )}
       </View>
       {showDivider && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
       <View
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-end',
     gap: 4,
   },
   actionButtonText: {
