@@ -1,2 +1,4 @@
 export const GET_REVENUE: string = 'GET_REVENUE'
 export const GET_PROFIT: string = 'GET_PROFIT'
+export const GET_REVENUE_POWER_PRICES: string = 'GET_REVENUE_POWER_PRICES'
+export const GET_REVENUE_TOTAL_EXPENSES: string = 'GET_REVENUE_TOTAL_EXPENSES'
