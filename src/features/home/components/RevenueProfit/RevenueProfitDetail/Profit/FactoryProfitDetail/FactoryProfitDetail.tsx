@@ -10,6 +10,10 @@ import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.compon
 import dayjs from 'dayjs'
 import { styles } from './FactoryProfitDetail.styles'
 import { LinearGradient } from 'expo-linear-gradient'
+import { BarGroup } from '@/core/types'
+import { Colors } from '@/core/constants/colors'
+import BarChart from '@/components/BarChart/BarChart.component'
+import { px } from '@/core/utils/scale'
 
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
@@ -21,7 +25,7 @@ function FactoryProfitDetail() {
   })
   const [selectedOption, setSelectedOption] = useState<string>('Tổng')
   const [showSelectModal, setShowSelectModal] = useState(false)
-  
+
   const selectOptions = ['Tổng', 'BTS', 'BK', 'SP3']
 
   useEffect(() => {
@@ -45,6 +49,63 @@ function FactoryProfitDetail() {
 
   // Plant colors mapping
   const plantColors = ['#A78BFA', '#4ADE80', '#22D3EE']
+
+  const profitData = [
+    {
+      Date: '2025-12-21',
+      value: 13.03,
+    },
+    {
+      Date: '2025-12-22',
+      value: 0.55,
+    },
+    {
+      Date: '2025-12-23',
+      value: -1,
+    },
+    {
+      Date: '2025-12-24',
+      value: 0.54,
+    },
+    {
+      Date: '2025-12-25',
+      value: 0.56,
+    },
+    {
+      Date: '2025-12-26',
+      value: 0.51,
+    },
+    {
+      Date: '2025-12-27',
+      value: 0.49,
+    },
+  ]
+  const values: { label: string; value: number }[] = profitData?.map((item: { value: number }) => ({
+    label: '',
+    value: Number(item.value),
+  }))
+  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
+    label,
+    items: [
+      {
+        value,
+        frontColor: value < 0 ? Colors.red : Colors.green,
+        showValuesOnTop: true,
+        showPrefix: value > 0,
+      },
+    ],
+  }))
+  const today = new Date()
+  const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`
+  const formatDayWithMonth = (d: Date) =>
+    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const endDate = new Date(today)
+  endDate.setDate(today.getDate() - 1) //
+  const xAxisLabels = values.map((_, idx) => {
+    const d = new Date(endDate)
+    d.setDate(endDate.getDate() - (values.length - 1 - idx))
+    return formatDayWithMonth(d)
+  })
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -138,37 +199,27 @@ function FactoryProfitDetail() {
       {/* Lãi/Lỗ theo thời gian */}
       <AnimatedCardContainer>
         <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
-        <TouchableOpacity
-          style={styles.selectContainer}
-          onPress={() => setShowSelectModal(true)}
-        >
+        <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
           <Text style={styles.selectText}>{selectedOption}</Text>
         </TouchableOpacity>
-        <Modal visible={showSelectModal} transparent animationType="fade" onRequestClose={() => setShowSelectModal(false)}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setShowSelectModal(false)}
-          >
+        <Modal
+          visible={showSelectModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowSelectModal(false)}
+        >
+          <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowSelectModal(false)}>
             <View style={styles.modalContent}>
               {selectOptions.map((option) => (
                 <TouchableOpacity
                   key={option}
-                  style={[
-                    styles.selectOption,
-                    selectedOption === option && styles.selectOptionActive,
-                  ]}
+                  style={[styles.selectOption, selectedOption === option && styles.selectOptionActive]}
                   onPress={() => {
                     setSelectedOption(option)
                     setShowSelectModal(false)
                   }}
                 >
-                  <Text
-                    style={[
-                      styles.selectOptionText,
-                      selectedOption === option && styles.selectOptionTextActive,
-                    ]}
-                  >
+                  <Text style={[styles.selectOptionText, selectedOption === option && styles.selectOptionTextActive]}>
                     {option}
                   </Text>
                 </TouchableOpacity>
@@ -177,6 +228,37 @@ function FactoryProfitDetail() {
           </TouchableOpacity>
         </Modal>
         <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
+        <View>
+          <View style={[styles.chartWrapper]}>
+            <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
+          </View>
+          <View style={styles.axisContainer}>
+            <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
+              {xAxisLabels.map((label, idx) => {
+                const isToday = idx === xAxisLabels.length - 1
+                const isNegative = values[idx].value < 0
+                const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
+                return (
+                  <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
+                    <Text style={[styles.axisLabel, { color }]}>{label}</Text>
+                  </View>
+                )
+              })}
+            </View>
+            <View style={styles.axisDivider} />
+            {/* Legend */}
+            <View style={styles.legendRow}>
+              <View style={[styles.legendItem]}>
+                <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
+                <Text style={styles.legendText}>Lãi</Text>
+              </View>
+              <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
+                <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
+                <Text style={styles.legendText}>Lỗ</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </AnimatedCardContainer>
     </ScrollView>
   )
