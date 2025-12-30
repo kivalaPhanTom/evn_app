@@ -171,7 +171,7 @@ export default function ProfitDetail() {
     })
     .filter((x) => x.value < 0)
   const onPressCard = () => { 
-    router.push({ pathname: '/profit-detail' as any })  
+    router.push({ pathname: '/factory-profit-detail' as any })  
   }
 
   return (
