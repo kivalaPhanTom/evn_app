@@ -132,8 +132,6 @@ function HydrographicChart(props: HydrographicChartProps) {
   };
 
   const thresholdTop = calculateThresholdPosition();
-
-  console.log('barData:', barData)
   return (
     <View style={styles.mainContainer}>
       {isLoading ? <LineBarChartSkeleton
