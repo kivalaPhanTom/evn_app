@@ -463,23 +463,23 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   )
 }
 
-const getMaxReferenceLevel = (hydrologyPlants: PlantsData[]): number => {
+const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
+  let result = 0
+  const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
+  if (findHydrologyItem) result = findHydrologyItem.referenceLevel
+  return result
+}
+
+const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
   return hydrologyPlants.reduce(
-    (max, item) => Math.max(max, item.referenceLevel),
+    (max, item) => Math.max(max, item.maxLevel),
     0
   )
 }
-// const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
-//    let result = 0
-//    const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
-//    if(findHydrologyItem) result = findHydrologyItem.referenceLevel
-//    return result
-// }
-
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  
+
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
     if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
@@ -512,7 +512,8 @@ const Overview: React.FC = () => {
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const hydroElectricId = activeData?.abbreviation || ''
-  const referenceLevel = getMaxReferenceLevel(hydrologyPlants.plantsData)
+  const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
+  const maxLevel = getMaxLevel(hydrologyPlants.plantsData)
   useEffect(() => {
     let companyId = ""
     switch (hydroElectricId) {
@@ -533,7 +534,7 @@ const Overview: React.FC = () => {
       dispatch(getHydrographicChart({ companyId: companyId }))
       dispatch(getInflowOutflow({ hydroElectricId: companyId }))
     }
-    
+
 
   }, [hydroElectricId])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
@@ -597,7 +598,12 @@ const Overview: React.FC = () => {
               <Text style={styles.detailText}>
                 {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
               </Text>
-              <HydrographicChart isLoading={false} data={hydrologyCharData} referenceLevel = {referenceLevel}/>
+              <HydrographicChart
+                isLoading={false}
+                data={hydrologyCharData}
+                referenceLevel={referenceLevel}
+                maxLevel={maxLevel}
+              />
               <InflowOutflow hydroElectricId={hydroElectricId} />
             </>
           )}

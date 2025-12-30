@@ -21,13 +21,14 @@ interface HydrographicChartProps {
   isLoading: boolean
   data: HydroChartItem[]
   referenceLevel: number
+  maxLevel?: number
 }
 function HydrographicChart(props: HydrographicChartProps) {
-  const { isLoading = false, data = [], referenceLevel = 0 } = props
+  const { isLoading = false, data = [], referenceLevel = 0, maxLevel= 0} = props
   const [chartHeight, setChartHeight] = useState(0);
 
   // Compute maxValue from the largest avgVolume so grid scales to data.
-  const maxAvgVolume = data.length ? Math.max(...data.map(h => h.avgVolume)) : 500;
+  const maxAvgVolume = maxLevel ? maxLevel : data.length ? Math.max(...data.map(h => h.avgVolume)) : 500;
   // Round up to nearest 50 for a cleaner axis
   const computedMaxValue = Math.ceil(maxAvgVolume / 50) * 50;
 
