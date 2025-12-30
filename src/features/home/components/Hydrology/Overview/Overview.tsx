@@ -463,12 +463,18 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   )
 }
 
-const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
-   let result = 0
-   const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
-   if(findHydrologyItem) result = findHydrologyItem.referenceLevel
-   return result
+const getMaxReferenceLevel = (hydrologyPlants: PlantsData[]): number => {
+  return hydrologyPlants.reduce(
+    (max, item) => Math.max(max, item.referenceLevel),
+    0
+  )
 }
+// const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
+//    let result = 0
+//    const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
+//    if(findHydrologyItem) result = findHydrologyItem.referenceLevel
+//    return result
+// }
 
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
@@ -506,7 +512,7 @@ const Overview: React.FC = () => {
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const hydroElectricId = activeData?.abbreviation || ''
-  const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
+  const referenceLevel = getMaxReferenceLevel(hydrologyPlants.plantsData)
   useEffect(() => {
     let companyId = ""
     switch (hydroElectricId) {
