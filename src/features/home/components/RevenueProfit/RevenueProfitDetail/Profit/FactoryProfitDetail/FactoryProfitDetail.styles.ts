@@ -181,4 +181,48 @@ export const styles = StyleSheet.create({
   gradientLine: {
     borderRadius: 1,
   },
+  chartWrapper: {
+    marginTop: px.v(8),
+    marginBottom: px.v(12),
+    marginLeft: px.h(-12),
+    width: '100%',
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+  },
+  axisContainer: {
+    marginTop: px.v(8), // space below chart
+    paddingTop: px.v(8),
+  },
+  axisDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    marginVertical: px.v(20),
+  },
+  axisLabelsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  axisLabel: {
+    fontSize: px.f(14),
+  },
+  legendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendSwatch: {
+    width: px.h(16),
+    height: px.h(16),
+    borderRadius: 4,
+    marginRight: px.h(8),
+  },
+  legendText: {
+    color: '#8b92a0',
+    fontSize: px.f(16),
+  },
 })

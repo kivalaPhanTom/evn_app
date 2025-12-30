@@ -31,7 +31,8 @@ export interface LineCharProps {
   rulesColor?: string
   label1?: string
   label2?: string
-  pointerConfig?: string
+  label3?: string
+  pointerConfig?: boolean
   xAxisColor?: string
   strokeDashArray2?: number[]
   strokedashArray1?: number[]
@@ -66,6 +67,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   rulesColor = 'rgba(255,255,255, 0.1)',
   label1,
   label2,
+  label3,
   pointerConfig,
   xAxisColor = 'rgba(255,255,255,0.05)',
   strokeDashArray2,
@@ -166,83 +168,83 @@ export const LineChart: React.FC<LineCharProps> = ({
         strokeDashArray2={strokeDashArray2}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
-          pointerConfig === '1' //simple
+          pointerConfig
             ? {
+                pointerStripHeight: height,
+                pointerStripColor: 'rgba(255,255,255,0.3)',
+                pointerStripWidth: 2,
+                strokeDashArray: [5, 5],
+                pointerColor: color,
+                radius: px.h(6),
+                pointerLabelWidth: px.h(100),
+                pointerLabelHeight: px.v(90),
+                activatePointersOnLongPress: true,
+                autoAdjustPointerLabelPosition: true,
+                persistPointer: true,
+                resetPointerOnDataChange: false,
+                pointer1Color: color,
+                pointer2Color: color2,
                 pointerLabelComponent: (items: any) => {
                   return (
-                    <View>
-                      <View>
-                        <Text>{items[0]}</Text>
+                    <View
+                      style={{
+                        height: px.v(90),
+                        width: px.h(200),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: px.v(-30),
+                        marginLeft: px.h(-40),
+                      }}
+                    >
+                      <View
+                        style={{
+                          paddingHorizontal: px.h(14),
+                          paddingVertical: px.v(6),
+                          borderRadius: px.m(8),
+                          backgroundColor: isDark ? '#1f2937' : '#f9fafb',
+                          borderWidth: 1,
+                          borderColor: isDark ? '#374151' : '#e5e7eb',
+                        }}
+                      >
+                        <Text
+                          style={{
+                            textAlign: 'left',
+                            color: color,
+                            fontSize: px.m(16),
+                          }}
+                        >
+                          {label1 + items[0]?.value}
+                        </Text>
+                        {items[1] && (
+                          <Text
+                            style={{
+                              textAlign: 'left',
+                              color: color2,
+                              fontSize: px.m(16),
+                              marginTop: px.v(4),
+                            }}
+                          >
+                            {label2 + items[1]?.value}
+                          </Text>
+                        )}
+                        {items[2] && (
+                          <Text
+                            style={{
+                              textAlign: 'left',
+                              color: color3,
+                              fontSize: px.m(16),
+                              marginTop: px.v(4),
+                            }}
+                          >
+                            {label3 + items[2]?.value}
+                          </Text>
+                        )}
                       </View>
                     </View>
                   )
                 },
               }
-            : pointerConfig === '2' //card
-              ? {
-                  pointerStripHeight: height,
-                  pointerStripColor: 'rgba(255,255,255,0.3)',
-                  pointerStripWidth: 2,
-                  strokeDashArray: [5, 5],
-                  pointerColor: color,
-                  radius: px.h(6),
-                  pointerLabelWidth: px.h(100),
-                  pointerLabelHeight: px.v(90),
-                  activatePointersOnLongPress: true,
-                  autoAdjustPointerLabelPosition: true,
-                  persistPointer: true,
-                  resetPointerOnDataChange: false,
-                  pointer1Color: color,
-                  pointer2Color: color2,
-                  pointerLabelComponent: (items: any) => {
-                    return (
-                      <View
-                        style={{
-                          height: px.v(90),
-                          width: px.h(120),
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          marginTop: px.v(-30),
-                          marginLeft: px.h(-40),
-                        }}
-                      >
-                        <View
-                          style={{
-                            paddingHorizontal: px.h(14),
-                            paddingVertical: px.v(6),
-                            borderRadius: px.m(8),
-                            backgroundColor: isDark ? '#1f2937' : '#f9fafb',
-                            borderWidth: 1,
-                            borderColor: isDark ? '#374151' : '#e5e7eb',
-                          }}
-                        >
-                          <Text
-                            style={{
-                              textAlign: 'left',
-                              color: color,
-                              fontSize: px.m(16),
-                            }}
-                          >
-                            {label1 + items[0]?.value}
-                          </Text>
-                          {items[1] && (
-                            <Text
-                              style={{
-                                textAlign: 'left',
-                                color: color2,
-                                fontSize: px.m(16),
-                                marginTop: px.v(4),
-                              }}
-                            >
-                              {label2 + items[1]?.value}
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                    )
-                  },
-                }
-              : undefined
+            : undefined
         }
       />
     </View>

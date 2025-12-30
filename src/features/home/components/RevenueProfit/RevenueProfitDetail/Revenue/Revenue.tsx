@@ -54,62 +54,7 @@ export default function RevenueDetail() {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
-  const profit = [
-    {
-      Date: '2025-12-21',
-      value: 13.03,
-    },
-    {
-      Date: '2025-12-22',
-      value: 0.55,
-    },
-    {
-      Date: '2025-12-23',
-      value: -1,
-    },
-    {
-      Date: '2025-12-24',
-      value: 0.54,
-    },
-    {
-      Date: '2025-12-25',
-      value: 0.56,
-    },
-    {
-      Date: '2025-12-26',
-      value: 0.51,
-    },
-    {
-      Date: '2025-12-27',
-      value: 0.49,
-    },
-  ]
-  const values: { label: string; value: number }[] = profit?.map((item: { value: number }) => ({
-    label: '',
-    value: Number(item.value),
-  }))
-  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
-    label,
-    items: [
-      {
-        value,
-        frontColor: value < 0 ? Colors.red : Colors.green,
-        showValuesOnTop: true,
-        showPrefix: value > 0,
-      },
-    ],
-  }))
-  const today = new Date()
-  const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`
-  const formatDayWithMonth = (d: Date) =>
-    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
-  const endDate = new Date(today)
-  endDate.setDate(today.getDate() - 1) //
-  const xAxisLabels = values.map((_, idx) => {
-    const d = new Date(endDate)
-    d.setDate(endDate.getDate() - (values.length - 1 - idx))
-    return formatDayWithMonth(d)
-  })
+
   return (
     <SectionContainer title="Doanh thu">
       <View style={styles.gotoDetail}>
@@ -208,39 +153,6 @@ export default function RevenueDetail() {
             </View>
           </View>
         </View>
-        <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
-            <View style={[styles.chartWrapper]}>
-              <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
-            </View>
-            <View style={styles.axisContainer}>
-              <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
-                {xAxisLabels.map((label, idx) => {
-                  const isToday = idx === xAxisLabels.length - 1
-                  const isNegative = values[idx].value < 0
-                  const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
-                  return (
-                    <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
-                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
-                    </View>
-                  )
-                })}
-              </View>
-              <View style={styles.axisDivider} />
-              {/* Legend */}
-              <View style={styles.legendRow}>
-                <View style={[styles.legendItem]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
-                  <Text style={styles.legendText}>Lãi</Text>
-                </View>
-                <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
-                  <Text style={styles.legendText}>Lỗ</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
         <View style={{ marginTop: px.v(15) }}>
           <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
           <View>
@@ -327,42 +239,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: 'transparent',
     overflow: 'hidden',
-  },
-  // X-Axis & Legend styles
-  axisContainer: {
-    marginTop: px.v(8), // space below chart
-    paddingTop: px.v(8),
-  },
-  axisDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    marginVertical: px.v(20),
-  },
-  axisLabelsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  axisLabel: {
-    fontSize: px.f(14),
-  },
-  legendRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  legendSwatch: {
-    width: px.h(16),
-    height: px.h(16),
-    borderRadius: 4,
-    marginRight: px.h(8),
-  },
-  legendText: {
-    color: '#8b92a0',
-    fontSize: px.f(16),
   },
   // Warning card styles
   warningCard: {
