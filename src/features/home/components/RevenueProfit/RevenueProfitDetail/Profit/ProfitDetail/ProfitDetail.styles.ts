@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+    paddingHorizontal: px.h(10),
   },
   contentContainer: {
     paddingHorizontal: px.h(16),
@@ -25,16 +26,6 @@ export const styles = StyleSheet.create({
     borderRadius: px.h(16),
     minHeight: px.v(140),
     overflow: 'hidden',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)', // Base background color
-    // Shadow/glow effect
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
   leftCard: {
     flex: 0.6, // 60% width
@@ -89,5 +80,20 @@ export const styles = StyleSheet.create({
     fontSize: px.f(14),
     fontWeight: '400',
     marginLeft: px.h(4),
+  },
+  profitTimeTitle: {
+    fontSize: px.f(24),
+    fontWeight: 'bold',
+    marginBottom: px.v(12),
+    color: '#fff',
+  },
+  lineContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  gradientLine: {
+    borderRadius: 1,
   },
 })

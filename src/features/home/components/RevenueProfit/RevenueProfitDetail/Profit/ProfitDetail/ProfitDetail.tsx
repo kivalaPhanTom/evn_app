@@ -5,7 +5,11 @@ import { getProfit } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
+import dayjs from 'dayjs'
 import { styles } from './ProfitDetail.styles'
+import { LinearGradient } from 'expo-linear-gradient'
 
 interface ProfitDetailProps {
   plantName?: string
@@ -16,6 +20,10 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const dispatch = useDispatch()
   const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [range, setRange] = useState({
+    from: dayjs().subtract(10, 'day'),
+    to: dayjs(),
+  })
 
   useEffect(() => {
     dispatch(getProfit())
@@ -23,6 +31,10 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
 
   // Get month number from profit.Cumulative.Month.month (format: "2024-11")
   const monthNumber = profit.Cumulative.Month.month?.split('-')[1] ?? new Date().getMonth() + 1
+  const widthLine = '93%'
+  const heightLine = 1
+  const colorLine = '#7a8596'
+  const lineStyle = { marginVertical: 10 }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -72,6 +84,22 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
           </View>
         </GradientCard>
       </View>
+
+      <View style={[styles.lineContainer, lineStyle]}>
+        <LinearGradient
+          colors={[`${colorLine}00`, `${colorLine}AA`, `${colorLine}00`]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          locations={[0, 0.5, 1]}
+          style={[styles.gradientLine, { width: widthLine, height: heightLine }]}
+        />
+      </View>
+
+      {/* Lãi/Lỗ theo thời gian */}
+      <AnimatedCardContainer>
+        <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
+        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
+      </AnimatedCardContainer>
     </ScrollView>
   )
 }
