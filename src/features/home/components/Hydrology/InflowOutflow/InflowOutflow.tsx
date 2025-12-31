@@ -106,7 +106,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                 label1="Qvề: "
                 label2="Qxa: "
                 height={px.v(150)}
-                pointerConfig="2"
+                pointerConfig={true}
                 xAxisColor="#E5E5EF"
               />
             )}
