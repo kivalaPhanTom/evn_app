@@ -53,9 +53,9 @@ function HomeContent(props: Props) {
         <PowerSection />
         <ProductionOutput />
         <Hydrology />
-        <UnitMaintenanceSchedule />
         <RevenueDetail />
         <ProfitDetail />
+        <UnitMaintenanceSchedule />
       </ScrollView>
     </TwinkleStars>
   )
