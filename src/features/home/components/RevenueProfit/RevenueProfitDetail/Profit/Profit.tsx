@@ -31,108 +31,6 @@ export default function ProfitDetail() {
     value: Number(item.value),
   }))
 
-  const data = [
-    { value: 1.3, label: '01/11' },
-    { value: 1.8, label: '02/11' },
-    { value: 1.1, label: '03/11' },
-    { value: 1.6, label: '04/11' },
-    { value: 1.9, label: '05/11' },
-    { value: 1.4, label: '06/11' },
-    { value: 1.2, label: '07/11' },
-    { value: 1.7, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.8, label: '10/11' },
-    { value: 1.3, label: '11/11' },
-    { value: 1.9, label: '12/11' },
-    { value: 1.1, label: '13/11' },
-    { value: 1.6, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.2, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.9, label: '20/11' },
-    { value: 1.3, label: '21/11' },
-    { value: 1.6, label: '22/11' },
-    { value: 1.1, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.4, label: '25/11' },
-    { value: 1.8, label: '26/11' },
-    { value: 1.2, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.9, label: '29/11' },
-    { value: 1.3, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
-
-  const data2 = [
-    { value: 1.7, label: '01/11' },
-    { value: 1.2, label: '02/11' },
-    { value: 1.9, label: '03/11' },
-    { value: 1.4, label: '04/11' },
-    { value: 1.6, label: '05/11' },
-    { value: 1.1, label: '06/11' },
-    { value: 1.8, label: '07/11' },
-    { value: 1.3, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.9, label: '10/11' },
-    { value: 1.2, label: '11/11' },
-    { value: 1.6, label: '12/11' },
-    { value: 1.4, label: '13/11' },
-    { value: 1.8, label: '14/11' },
-    { value: 1.1, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.3, label: '17/11' },
-    { value: 1.9, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.2, label: '20/11' },
-    { value: 1.6, label: '21/11' },
-    { value: 1.8, label: '22/11' },
-    { value: 1.4, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.1, label: '25/11' },
-    { value: 1.9, label: '26/11' },
-    { value: 1.3, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.8, label: '29/11' },
-    { value: 1.2, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
-
-  const data3 = [
-    { value: 1.2, label: '01/11' },
-    { value: 1.7, label: '02/11' },
-    { value: 1.4, label: '03/11' },
-    { value: 1.8, label: '04/11' },
-    { value: 1.1, label: '05/11' },
-    { value: 1.2, label: '06/11' },
-    { value: 1.5, label: '07/11' },
-    { value: 1.6, label: '08/11' },
-    { value: 1.9, label: '09/11' },
-    { value: 1.7, label: '10/11' },
-    { value: 1, label: '11/11' },
-    { value: 1.3, label: '12/11' },
-    { value: 1.2, label: '13/11' },
-    { value: 1.1, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.5, label: '16/11' },
-    { value: 1.9, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.6, label: '20/11' },
-    { value: 1.8, label: '21/11' },
-    { value: 1.4, label: '22/11' },
-    { value: 1.8, label: '23/11' },
-    { value: 1.1, label: '24/11' },
-    { value: 1.7, label: '25/11' },
-    { value: 1.4, label: '26/11' },
-    { value: 1.6, label: '27/11' },
-    { value: 1.2, label: '28/11' },
-    { value: 1.3, label: '29/11' },
-    { value: 1.7, label: '30/11' },
-    { value: 1.9, label: '31/11' },
-  ]
-
   const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
     label,
     items: [
@@ -170,15 +68,18 @@ export default function ProfitDetail() {
       return { dateStr: formatDayWithMonth(d), value: v.value }
     })
     .filter((x) => x.value < 0)
-  const onPressCard = () => { 
-    router.push({ pathname: '/factory-profit-detail' as any })  
+  const onPressCard = () => {
+    router.push({ pathname: '/factory-profit-detail' as any })
   }
 
   return (
-    <SectionContainer title="Lợi nhuận" actionButton={{
-      label: 'Thêm chi tiết',
-      onPress: onPressCard,
-    }}>
+    <SectionContainer
+      title="Lợi nhuận"
+      actionButton={{
+        label: 'Thêm chi tiết',
+        onPress: onPressCard,
+      }}
+    >
       <AnimatedCardContainer>
         <View>
           <Text style={styles.revenueTitle}>{`Lợi nhuận hôm nay`}</Text>
@@ -285,52 +186,6 @@ export default function ProfitDetail() {
                     </Text>
                   </View>
                 ))}
-              </View>
-            </View>
-          </View>
-        </View>
-        <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={styles.profitByDayTitle}>So sánh theo thời giannn</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>Đơn vị: Tr Đồng</Text>
-            </View>
-            <View style={[styles.chartWrapper]}></View>
-
-            {/* X-Axis below chart */}
-            <LineChart
-              data={data}
-              data2={data2}
-              data3={data3}
-              color="#4ADE80"
-              color2="#22D3EE"
-              color3="#A78BFA"
-              hideDataPoints2={false}
-              hideYAxisText={true}
-              hideDataPoints1={false}
-              spacing={9}
-              curved={false}
-              ruleTypes="solid"
-              areaChart2={true}
-              areaChart3={true}
-              showValuesAsDataPointsText={false}
-              pointerConfig="2"
-            />
-            <View style={styles.line} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#A78BFA' }]} />
-                <Text style={styles.legendLabel}>{'Buôn Tua Srah'}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#4ADE80' }]} />
-                <Text style={styles.legendLabel}>{'Buôn Kuốp'}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#22D3EE' }]} />
-                <Text style={styles.legendLabel}>{'Srepok 3'}</Text>
               </View>
             </View>
           </View>
