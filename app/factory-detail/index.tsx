@@ -20,6 +20,8 @@ import ProductionOutputFactDetail from './ProductionOutputFactDetail/ProductionO
 import ReservoirWaterLevel from './ReservoirWaterLevel/ReservoirWaterLevel'
 import HydrologyFactDetail from './HydrologyFactDetail/HydrologyFactDetail'
 import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMaintenanceSchedule'
+import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
+import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -48,14 +50,16 @@ function FactoryDetail(props: factoryDetailProps) {
         <ScrollView>
           <PowerSectionFactDetail
             currentPlantId={currentPlantId}
-            keyTab = {keyTab}
+            keyTab={keyTab}
           />
           <ProductionOutputFactDetail
             currentPlantId={currentPlantId}
-            keyTab = {keyTab}
+            keyTab={keyTab}
           />
           <ReservoirWaterLevel />
-          <HydrologyFactDetail keyTab = {keyTab} currentPlantId={currentPlantId} />
+          <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+          <RevenueDetail />
+          <ProfitDetail />
           <FactoryMaintenanceSchedule />
         </ScrollView>
       </TwinkleStars>
