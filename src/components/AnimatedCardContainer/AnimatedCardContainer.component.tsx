@@ -4,7 +4,6 @@ import { resolveThemeValue } from '@/core/utils/utils'
 import { Image, type ImageSource } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useEffect, useRef } from 'react'
-import { BlurView } from 'expo-blur'
 import { Animated, Pressable, StyleSheet, View, ViewStyle, type ImageStyle } from 'react-native'
 
 const DEFAULT_CARD_BG: ThemeValue<string | GradientColors> = {
@@ -146,19 +145,6 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
               pointerEvents="none"
             />
           )}
-          {!backgroundImage && (<BlurView
-            intensity={isDark ? 40 : 30}
-            tint={isDark ? 'dark' : 'light'}
-            style={[
-              StyleSheet.absoluteFillObject,
-              {
-                borderRadius,
-                backgroundColor: isDark
-                  ? 'rgba(26,35,50,0.3)'
-                  : 'rgba(255,255,255,0.3)',
-              },
-            ]}
-          />)}
           {Array.isArray(resolvedBg) && (
             <LinearGradient
               colors={resolvedBg as GradientColors}
