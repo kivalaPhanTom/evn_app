@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
   },
   revenueTitle: {
     color: '#8b92a0',
-    fontSize: 20,
+    fontSize: px(20),
     textTransform: 'uppercase',
   },
   revenueCard: {
