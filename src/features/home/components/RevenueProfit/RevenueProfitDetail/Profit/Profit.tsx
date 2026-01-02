@@ -19,7 +19,7 @@ export default function ProfitDetail() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
   const toParts = profit.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -45,7 +45,7 @@ export default function ProfitDetail() {
 
   useEffect(() => {
     dispatch(getProfit())
-  }, [dispatch])
+  }, [countRefesh])
 
   // Build x-axis labels: last 6 days + "Nay" for today
   const today = new Date()

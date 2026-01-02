@@ -19,7 +19,7 @@ import { BarGroup } from '@/core/types'
 export default function RevenueDetail() {
   const dispatch = useDispatch()
   const router = useRouter()
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
 
   const onPressCard = () => {
@@ -33,7 +33,7 @@ export default function RevenueDetail() {
   useEffect(() => {
     // Dispatch actions to fetch data if needed
     dispatch(getRevenue())
-  }, [dispatch])
+  }, [countRefesh])
 
   const data: { label: string; value: number }[] = revenue.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({
