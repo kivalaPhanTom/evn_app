@@ -180,13 +180,6 @@ const BarChart: React.FC<Props> = ({
               onPress: () => {
                 setSelectedGroupIndex(gIdx)
                 setSelectedGroupItems(group.items)
-                console.log('Pressed bar:', {
-                  groupIndex: gIdx,
-                  itemIndex: idx,
-                  globalIndex,
-                  value: item.value,
-                  groupLabel: group.label,
-                })
               },
               topLabelComponent:
                 (item.showValuesOnTop ?? true)

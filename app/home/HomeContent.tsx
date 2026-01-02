@@ -39,16 +39,15 @@ function HomeContent(props: Props) {
   }>()
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
-  console.log('countRefeshTTTT:', countRefesh)
+ 
   const onRefresh = async () => {
-    console.log('sdsdsdsdsdsd')
     setRefreshing(true);
     setTimeout(() => {
+      setRefreshing(false);
       dispatch(saveState({
         countRefesh: countRefesh + 1
       }))
-      setRefreshing(false);
-    }, 1000);
+    }, 80);
   };
   return (
     <ScrollView
