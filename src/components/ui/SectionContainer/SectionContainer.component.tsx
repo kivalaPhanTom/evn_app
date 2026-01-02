@@ -63,7 +63,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
 
         </View>
         {actionButton && (
-          <TouchableOpacity onPress={actionButton.onPress} style={styles.actionButton}>
+          <TouchableOpacity onPress={actionButton.onPress} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
             <Text style={styles.actionButtonText}>{actionButton.label}</Text>
             <Text style={styles.actionButtonIcon}>{'>'}</Text>
           </TouchableOpacity>

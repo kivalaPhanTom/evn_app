@@ -58,7 +58,7 @@ export default function RevenueDetail() {
   return (
     <SectionContainer title="Doanh thu">
       <View style={styles.gotoDetail}>
-        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+        <TouchableOpacity onPress={onPressCard} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
           <Text style={styles.actionButtonIcon}>{'>'}</Text>
         </TouchableOpacity>
