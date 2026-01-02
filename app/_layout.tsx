@@ -75,7 +75,7 @@ export default function RootLayout() {
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <StoreProvider>
               <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
-                <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
+                <Stack initialRouteName="splash" screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200, }}>
                   <Stack.Screen name="splash" />
                   <Stack.Screen name="login" />
                   <Stack.Screen name="companies" />
@@ -97,6 +97,7 @@ export default function RootLayout() {
                     <TouchableOpacity
                       onPress={() => router.back()}
                       style={styles.backButton}
+                      delayPressIn={0}
                       hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     >
                       <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
