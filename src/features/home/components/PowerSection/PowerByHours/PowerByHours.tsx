@@ -14,6 +14,7 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 function PowerByHours() {
   const router = useRouter()
   const dispatch = useDispatch()
+   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
     (state: any) => state.powerSlice.powerByTime,
   )
@@ -21,7 +22,7 @@ function PowerByHours() {
 
   useEffect(() => {
     dispatch(getPowerByTime())
-  }, [])
+  }, [countRefesh])
 
   const title = 'Công suất theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate

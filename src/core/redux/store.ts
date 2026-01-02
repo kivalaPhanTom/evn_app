@@ -7,6 +7,7 @@ import productOutputSlice from './slices/ProductOutputSlice'
 import hydrologySlice from './slices/HydrologySlice'
 import powerFactDetailSlice from './slices/PowerFactDetailSlice'
 import revenueProfitSlice from './slices/RevenueProfitSlice'
+import homeSlice from './slices/HomeSlice'
 
 let sagaMiddleware = createSagaMiddleware()
 
@@ -17,6 +18,7 @@ const allReducer = {
   hydrologySlice,
   powerFactDetailSlice,
   revenueProfitSlice,
+  homeSlice
 }
 const store = configureStore({
   reducer: {

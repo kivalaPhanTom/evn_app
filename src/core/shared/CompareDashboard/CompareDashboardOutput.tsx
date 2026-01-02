@@ -144,7 +144,6 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: Compare
     setRange(newRange)
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
-    console.log('Selected Date Range:', { from: fromDate.format('DD/MM/YYYY'), to: toDate.format('DD/MM/YYYY') })
 
     dispatch(
       getCompareProductOutput({

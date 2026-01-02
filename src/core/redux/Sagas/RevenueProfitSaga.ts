@@ -20,7 +20,6 @@ function* getRevenueApiSaga(): Generator {
   try {
     const res = yield call(Service.getRevenueApi)
     if (res.status === 200) {
-      console.log('Revenue data:', res.data)
       yield put(setRevenueData(res.data))
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
