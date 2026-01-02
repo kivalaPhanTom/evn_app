@@ -16,7 +16,7 @@ function ComparePower24h(props: { currentPlantId?: string }) {
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
   const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
@@ -29,7 +29,7 @@ function ComparePower24h(props: { currentPlantId?: string }) {
         currentPlantId: currentPlantId || '',
       }),
     )
-  }, [dispatch])
+  }, [countRefesh])
 
   const onChangeDateRage = (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => {
     setRange(newRange)

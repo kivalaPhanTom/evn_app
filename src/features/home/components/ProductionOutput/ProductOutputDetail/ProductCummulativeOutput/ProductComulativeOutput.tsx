@@ -71,7 +71,6 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
     setRange(newRange)
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
-    console.log('Selected Date Range:', { from: fromDate.format('DD/MM/YYYY'), to: toDate.format('DD/MM/YYYY') })
 
     if (fromDate.isAfter(toDate)) {
       return

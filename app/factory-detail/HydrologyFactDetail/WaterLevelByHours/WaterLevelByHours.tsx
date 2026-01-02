@@ -24,9 +24,7 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const dispatch = useDispatch()
   const { hydrologyCharData } = useSelector((state: RootState) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  console.log('hydrologyPlants', hydrologyPlants)
   const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
-    console.log('hydroElectricId', hydroElectricId)
     let result = 0
     const findHydrologyItem = hydrologyPlants.find(e => e.symbol === hydroElectricId)
     if(findHydrologyItem) result = findHydrologyItem.referenceLevel

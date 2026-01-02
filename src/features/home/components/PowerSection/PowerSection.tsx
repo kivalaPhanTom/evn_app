@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import TotalPower from './TotalPower/TotalPower'
 import PowerRecentDays from './PowerRecentDays/PowerRecentDays'
 import styles from './PowerSection.styles'
@@ -10,10 +10,10 @@ import { getPowerOverivew } from '@/core/redux/Actions/PowerActions'
 
 function PowerSection() {
   const dispatch = useDispatch()
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   useEffect(() => {
     dispatch(getPowerOverivew())
-  }, [])
+  }, [countRefesh])
 
   return (
     <SectionContainer title="Công Suất">
