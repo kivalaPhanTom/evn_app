@@ -25,7 +25,12 @@ function getRevenueApi() {
 }
 
 function getRevenuePowerPricesApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getRevenuePowerPrices}`)
+  return api.get(`${servicePattern.getRevenuePowerPrices}`,{
+    params: {
+      currentPlantId: currentPlantId,
+      date: date,
+    }
+  })
 }
 
 function getRevenueTotalExpensesApi(currentPlantId: string, date: string) {

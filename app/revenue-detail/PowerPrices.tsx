@@ -1,42 +1,62 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-
+import { useSelector } from 'react-redux'
+import { formatNumber } from '@/core/utils/utils'
 interface Props { }
-
-const data = {
-    powerPrices: [
-        { label: 'GIÁ TT BÌNH QUÂN NGÀY', value: '1,245', unit: 'Đồng/kWh', type: 'blue' },
-        { label: 'GIÁ CÔNG SUẤT BQ', value: '156', unit: 'Đồng/kWh', type: 'gray' },
-
-        // ✅ FULL WIDTH
-        {
-            label: 'GIÁ THỊ TRƯỜNG TOÀN PHẦN',
-            value: '1,401',
-            unit: 'Đồng/kWh',
-            type: 'green',
-            full: true,
-        },
-
-        { label: 'GIÁ TRẦN CHÀO', value: '1,590', unit: 'Đồng/kWh', type: 'gray' },
-        { label: 'GIÁ HĐ THÁNG (TẠM TÍNH)', value: '1,180', unit: 'Đồng/kWh', type: 'gray' },
-
-        // ✅ FULL WIDTH
-        {
-            label: 'GIÁ BIẾN ĐỔI NHIÊN LIỆU',
-            value: '0',
-            unit: 'Đồng/kWh',
-            note: 'Thuỷ điện không áp dụng',
-            type: 'gray',
-            full: true,
-        },
-    ],
-};
 
 function SectionBox({ children, style }: any) {
     return <View style={style}>{children}</View>;
 }
 
 export default function PowerPrices(props: Props) {
+    const { powerPriceDetail } = useSelector((state: any) => state.revenueProfitSlice)
+    const data = {
+        powerPrices: [
+            {
+                label: 'GIÁ TT BÌNH QUÂN NGÀY',
+                value: powerPriceDetail.AvgMarketPrice.Value || 0,
+                unit: powerPriceDetail.AvgMarketPrice.Unit || 'Đồng/kWh',
+                type: 'blue'
+            },
+            {
+                label: 'GIÁ CÔNG SUẤT BQ',
+                value: powerPriceDetail.AvgCapacityPrice.Value || 0,
+                unit: powerPriceDetail.AvgCapacityPrice.Unit || 'Đồng/kWh',
+                type: 'gray'
+            },
+
+            // ✅ FULL WIDTH
+            {
+                label: 'GIÁ THỊ TRƯỜNG TOÀN PHẦN',
+                value: powerPriceDetail.FullMarketPrice.Value || 0,
+                unit: powerPriceDetail.FullMarketPrice.Unit || 'Đồng/kWh',
+                type: 'green',
+                full: true,
+            },
+            {
+                label: 'GIÁ TRẦN CHÀO',
+                value: powerPriceDetail.PriceCeiling.Value || 0,
+                unit: powerPriceDetail.PriceCeiling.Unit || 'Đồng/kWh',
+                type: 'gray'
+            },
+            {
+                label: 'GIÁ HĐ THÁNG (TẠM TÍNH)',
+                value: powerPriceDetail.MonthlyContractPrice.Value || 0,
+                unit: powerPriceDetail.MonthlyContractPrice.Unit || 'Đồng/kWh',
+                type: 'gray'
+            },
+
+            // ✅ FULL WIDTH
+            {
+                label: 'GIÁ BIẾN ĐỔI NHIÊN LIỆU',
+                value: powerPriceDetail.FuelVariablePrice.Value || 0,
+                unit: powerPriceDetail.FuelVariablePrice.Unit || 'Đồng/kWh',
+                note: powerPriceDetail.FuelVariablePrice.Note,
+                type: 'gray',
+                full: true,
+            },
+        ],
+    };
     return (
         <View style={styles.container}>
             <Text style={styles.sectionTitle}>GIÁ ĐIỆN</Text>
@@ -54,7 +74,7 @@ export default function PowerPrices(props: Props) {
                     return (
                         <SectionBox key={idx} style={boxStyle}>
                             <Text style={styles.label}>{item.label}</Text>
-                            <Text style={styles.value}>{item.value}</Text>
+                            <Text style={styles.value}>{formatNumber(item.value)}</Text>
                             <Text style={styles.unit}>{item.unit}</Text>
                             {item.note && <Text style={styles.note}>{item.note}</Text>}
                         </SectionBox>

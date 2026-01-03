@@ -86,3 +86,7 @@ export const catchHandle = (e: any): void => {
   }
 };
 
+export const formatNumber = (num: number): string => {
+  const formatted = num.toLocaleString('vi-VN');
+  return formatted
+}
