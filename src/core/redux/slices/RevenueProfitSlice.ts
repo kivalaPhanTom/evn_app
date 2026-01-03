@@ -6,6 +6,16 @@ interface PowerPriceDetailItem {
   Estimated: boolean
   Note: string
 }
+interface RevenueCostSummaryPlantItem {
+  PlantCode: string,
+  PlantName: string,
+  Value: number
+}
+interface RevenueCostSummaryItem {
+  Total: number,
+  Unit: string,
+  ByPlant: RevenueCostSummaryPlantItem[]
+}
 interface RevenueProfitState {
   isLoadingProfit: boolean
   isLoadingRevenue: boolean
@@ -93,7 +103,13 @@ interface RevenueProfitState {
     MonthlyContractPrice: Omit<PowerPriceDetailItem, 'Note'>,
     FuelVariablePrice: Omit<PowerPriceDetailItem, 'Estimated'>,
   },
-  isLoadingPowerPrice: boolean
+  isLoadingPowerPrice: boolean,
+  revenueCostSummary: {
+    MarketRevenue: RevenueCostSummaryItem
+    ContractRevenue: RevenueCostSummaryItem
+    TotalCost: RevenueCostSummaryItem
+  },
+  isLoadingRevenueCostSummary: boolean
 }
 const initialState: RevenueProfitState = {
   isLoadingProfit: false,
@@ -186,7 +202,73 @@ const initialState: RevenueProfitState = {
       "Note": "Thủy điện không áp dụng"
     }
   },
-  isLoadingPowerPrice: false
+  isLoadingPowerPrice: false,
+  revenueCostSummary: {
+    "MarketRevenue": {
+      "Total": 0,
+      "Unit": "tỷ Đồng",
+      "ByPlant": [
+        {
+          "PlantCode": "SP3",
+          "PlantName": "Srepok 3",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BK",
+          "PlantName": "Buôn Kuốp",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BTS",
+          "PlantName": "Buôn Tua Srah",
+          "Value": 0
+        }
+      ]
+    },
+    "ContractRevenue": {
+      "Total": 0,
+      "Unit": "tỷ Đồng",
+      "ByPlant": [
+        {
+          "PlantCode": "SP3",
+          "PlantName": "Srepok 3",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BK",
+          "PlantName": "Buôn Kuốp",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BTS",
+          "PlantName": "Buôn Tua Srah",
+          "Value": 0
+        }
+      ]
+    },
+    "TotalCost": {
+      "Total": 0,
+      "Unit": "tỷ Đồng",
+      "ByPlant": [
+        {
+          "PlantCode": "SP3",
+          "PlantName": "Srepok 3",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BK",
+          "PlantName": "Buôn Kuốp",
+          "Value": 0
+        },
+        {
+          "PlantCode": "BTS",
+          "PlantName": "Buôn Tua Srah",
+          "Value": 0
+        }
+      ]
+    }
+  },
+  isLoadingRevenueCostSummary: false,
 }
 
 const revenueProfitSlice = createSlice({
@@ -202,6 +284,9 @@ const revenueProfitSlice = createSlice({
     setPowerPrices: (state, action) => {
       state.powerPriceDetail = action.payload
     },
+    setRevenueCostSummary: (state, action) => {
+      state.revenueCostSummary = action.payload
+    },
     setLoading: (state, action) => {
       return {
         ...state,
@@ -211,5 +296,5 @@ const revenueProfitSlice = createSlice({
   },
 })
 const { reducer } = revenueProfitSlice
-export const { setLoading, setProfitData, setRevenueData, setPowerPrices } = revenueProfitSlice.actions
+export const { setLoading, setProfitData, setRevenueData, setPowerPrices, setRevenueCostSummary } = revenueProfitSlice.actions
 export default reducer

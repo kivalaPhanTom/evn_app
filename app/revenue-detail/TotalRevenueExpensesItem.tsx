@@ -1,16 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
+import { formatNumber } from '@/core/utils/utils'
 interface Item {
-    label: string;
-    value: string;
-    unit: string;
+    PlantCode: string;
+    PlantName: string;
+    Value: number;
 }
 
 interface Props {
     title: string;
     items: Item[];
-    total: string;
+    total: number;
     totalUnit: string;
     variant?: 'blue' | 'purple' | 'red';
 }
@@ -29,16 +29,16 @@ export default function TotalRevenueExpensesItem({
 
                 {items.map((item, idx) => (
                     <View key={idx} style={styles.row}>
-                        <Text style={styles.label}>{item.label}:</Text>
+                        <Text style={styles.label}>{item.PlantName}:</Text>
                         <Text style={styles.value}>
-                            {item.value} {item.unit}
+                            {formatNumber(item.Value)} Tỷ
                         </Text>
                     </View>
                 ))}
             </View>
 
             <View style={styles.right}>
-                <Text style={styles.total}>{total}</Text>
+                <Text style={styles.total}>{formatNumber(total)}</Text>
                 <Text style={styles.totalUnit}>{totalUnit}</Text>
             </View>
         </View>
