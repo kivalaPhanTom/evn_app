@@ -7,8 +7,8 @@ import { textGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import { Ionicons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
-import React, { useMemo } from 'react'
+import { useFocusEffect, useRouter } from 'expo-router'
+import React, { useMemo, useRef } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -18,7 +18,9 @@ export default function CompaniesScreen() {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const router = useRouter()
-
+  const onPress = (c: any) => {
+    router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
+  };
   return (
     <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
@@ -27,7 +29,7 @@ export default function CompaniesScreen() {
             {COMPANIES.map((c) => (
               <Pressable
                 key={c.name}
-                onPress={() => router.push({ pathname: '/home', params: { companyName: c.name, location: c.location } })}
+                onPress={() => onPress(c)}
                 style={{ marginBottom: px.v(12) }}
               >
                 <AnimatedCardContainer
