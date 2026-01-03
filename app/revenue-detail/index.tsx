@@ -104,7 +104,9 @@ export default function RevenueDetail(props: Props) {
         dispatch(getOutflow(payload))
         dispatch(getTurbineflow(payload))
         dispatch(getRevebnuePowerPrices(payload))
-        dispatch(getRevenueTotalExpense(payload))
+        dispatch(getRevenueTotalExpense({
+            date: formattedDate,
+        }))
     }, [activeTab, selectedDate])
 
     return (
