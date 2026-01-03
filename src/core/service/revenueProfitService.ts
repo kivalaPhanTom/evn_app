@@ -11,9 +11,9 @@ export const servicePattern = {
   getProfit: `${prefix_api}/profit`,
   getRevenue: `${prefix_api}/revenue`,
 
-  getRevenuePowerPrices: `${prefix_api}/revenue`,
+  getRevenuePowerPrices: `${prefix_api}/electricityPrices`,
 
-  getRevenueTotalExpenses: `${prefix_api}/revenue`,
+  getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
 }
 
 function getProfitApi() {
@@ -21,13 +21,13 @@ function getProfitApi() {
 }
 
 function getRevenueApi() {
-  return api.get(`${servicePattern.getRevenuePowerPrices}`)
+  return api.get(`${servicePattern.getRevenue}`)
 }
 
 function getRevenuePowerPricesApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getRevenueTotalExpenses}`)
+  return api.get(`${servicePattern.getRevenuePowerPrices}`)
 }
 
 function getRevenueTotalExpensesApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getRevenue}`)
+  return api.get(`${servicePattern.getRevenueTotalExpenses}`)
 }
