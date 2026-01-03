@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/revenueProfitService'
 import { getProfit, getRevenue, getRevebnuePowerPrices, getRevenueTotalExpense } from '../Actions/RevenueProfitActions'
-import { setProfitData, setRevenueData } from '../slices/RevenueProfitSlice'
+import { setProfitData, setRevenueData, setPowerPrices, setLoading } from '../slices/RevenueProfitSlice'
 
 function* getProfitApiSaga(): Generator {
   try {
@@ -31,15 +31,22 @@ function* getRevenueApiSaga(): Generator {
 
 function* getRevebnuePowerPricesSaga(action: ReturnType<typeof getRevebnuePowerPrices>): Generator {
   try {
+    yield put(setLoading({
+      isLoadingPowerPrice: true
+    }))
     const payload = action.payload
     const { currentPlantId, date } = payload
-    // const res = yield call(Service.getRevenuePowerPricesApi, currentPlantId, date)
-    // if (res.status === 200) {
-
-
-    // }
+    const res = yield call(Service.getRevenuePowerPricesApi, currentPlantId, date)
+    if (res.status === 200) {
+      yield put(setPowerPrices(res.data.Prices))
+    }
+    yield put(setLoading({
+      isLoadingPowerPrice: false
+    }))
   } catch (error) {
-    // console.log('getInflowOutflow error:', error)
+    yield put(setLoading({
+      isLoadingPowerPrice: false
+    }))
   }
 }
 
@@ -67,7 +74,7 @@ function* getRevenueApi() {
   yield takeEvery(getRevenue, getRevenueApiSaga)
 }
 
-function* getRevebnuePowerPricesApi() {
+function* getRevenuePowerPricesApi() {
   yield takeEvery(getRevebnuePowerPrices, getRevebnuePowerPricesSaga)
 }
 
@@ -78,7 +85,7 @@ export function* revenueProfitSagaList() {
   yield all([
     getProfitApi(),
     getRevenueApi(),
-    getRevebnuePowerPricesApi(),
+    getRevenuePowerPricesApi(),
     getRevenueTotalExpenseApi()
   ])
 }

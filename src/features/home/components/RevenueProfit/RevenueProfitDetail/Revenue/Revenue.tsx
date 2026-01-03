@@ -23,11 +23,7 @@ export default function RevenueDetail() {
   const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
 
   const onPressCard = () => {
-    router.push({ pathname: '/revenue-detail' })
-    // router.push({
-    //   pathname: '/revenue-detail',
-    //   // params: { currentPlantId: currentPlantId, },
-    // })
+    router.navigate({ pathname: '/revenue-detail' })
   }
 
   useEffect(() => {

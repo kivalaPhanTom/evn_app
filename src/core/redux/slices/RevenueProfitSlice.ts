@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+interface PowerPriceDetailItem {
+  Value: number
+  Unit: string
+  Estimated: boolean
+  Note: string
+}
 interface RevenueProfitState {
   isLoadingProfit: boolean
   isLoadingRevenue: boolean
@@ -78,7 +84,16 @@ interface RevenueProfitState {
       Value: number
     }
     lossWarning: any
-  }
+  },
+  powerPriceDetail: {
+    AvgMarketPrice: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>,
+    AvgCapacityPrice: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>,
+    FullMarketPrice: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>,
+    PriceCeiling: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>,
+    MonthlyContractPrice: Omit<PowerPriceDetailItem, 'Note'>,
+    FuelVariablePrice: Omit<PowerPriceDetailItem, 'Estimated'>,
+  },
+  isLoadingPowerPrice: boolean
 }
 const initialState: RevenueProfitState = {
   isLoadingProfit: false,
@@ -143,6 +158,35 @@ const initialState: RevenueProfitState = {
     },
     lossWarning: [],
   },
+  powerPriceDetail: {
+    "AvgMarketPrice": {
+      "Value": 0,
+      "Unit": "Đồng/kWh"
+    },
+    "AvgCapacityPrice": {
+      "Value": 0,
+      "Unit": "Đồng/kWh"
+    },
+    "FullMarketPrice": {
+      "Value": 0,
+      "Unit": "Đồng/kWh"
+    },
+    "PriceCeiling": {
+      "Value": 0,
+      "Unit": "Đồng/kWh"
+    },
+    "MonthlyContractPrice": {
+      "Value": 0,
+      "Unit": "Đồng/kWh",
+      "Estimated": false
+    },
+    "FuelVariablePrice": {
+      "Value": 0,
+      "Unit": "Đồng/kWh",
+      "Note": "Thủy điện không áp dụng"
+    }
+  },
+  isLoadingPowerPrice: false
 }
 
 const revenueProfitSlice = createSlice({
@@ -150,10 +194,13 @@ const revenueProfitSlice = createSlice({
   initialState,
   reducers: {
     setProfitData: (state, action) => {
-      state.profit = action.payload     
+      state.profit = action.payload
     },
     setRevenueData: (state, action) => {
-      state.revenue = action.payload     
+      state.revenue = action.payload
+    },
+    setPowerPrices: (state, action) => {
+      state.powerPriceDetail = action.payload
     },
     setLoading: (state, action) => {
       return {
@@ -164,5 +211,5 @@ const revenueProfitSlice = createSlice({
   },
 })
 const { reducer } = revenueProfitSlice
-export const { setLoading, setProfitData, setRevenueData } = revenueProfitSlice.actions
+export const { setLoading, setProfitData, setRevenueData, setPowerPrices } = revenueProfitSlice.actions
 export default reducer
