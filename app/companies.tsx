@@ -18,18 +18,9 @@ export default function CompaniesScreen() {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const router = useRouter()
-  const navigatingRef = useRef(false);
   const onPress = (c: any) => {
-    if (navigatingRef.current) return;
-    navigatingRef.current = true;
-
-    router.push({ pathname: '/home', params: { companyName: c.name, location: c.location } })
+    router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      navigatingRef.current = false;
-    }, [])
-  );
   return (
     <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <SafeAreaView style={styles.flex} edges={['top']}>
