@@ -13,6 +13,7 @@ interface PlantsData {
   referenceLevel: number
   color?: string
   abbreviation?: string
+  symbol?: string
 }
 
 interface WaterLevelByHoursProps {
@@ -25,7 +26,7 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
     let result = 0
-    const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
+    const findHydrologyItem = hydrologyPlants.find(e => e.symbol === hydroElectricId)
     if(findHydrologyItem) result = findHydrologyItem.referenceLevel
     return result
  }

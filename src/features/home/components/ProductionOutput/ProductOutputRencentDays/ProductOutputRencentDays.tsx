@@ -11,12 +11,13 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 function ProductOutputRencentDays() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
   const unit = 'tr.Wh'
 
   useEffect(() => {
     dispatch(getProductOutputByDays(7))
-  }, [])
+  }, [countRefesh])
 
   return (
     <AnimatedCardContainer>

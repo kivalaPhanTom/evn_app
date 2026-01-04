@@ -16,6 +16,7 @@ import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
 function ProductionOutputByHours() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const title = 'Sản lượng theo giờ'
   const subtitle = `Hôm nay, ${productOutputByHours.currentDate}`
@@ -37,7 +38,7 @@ function ProductionOutputByHours() {
 
   useEffect(() => {
     dispatch(getProductOutputByHours())
-  }, [dispatch])
+  }, [countRefesh])
 
   const onPressCard = () => {
     router.push({ pathname: '/product-output-detail' })

@@ -23,6 +23,7 @@ import PagerView from 'react-native-pager-view'
 // import { View } from 'react-native'
 import FactoryDetail from 'app/factory-detail'
 import HomeContent from './HomeContent'
+import BlankPageSkeleton from '@/components/Skeletons/BlankPageSkeleton'
 interface Props { }
 
 function HomeNewScreen(props: Props) {
@@ -31,6 +32,7 @@ function HomeNewScreen(props: Props) {
   const dispatch = useDispatch();
 
   const { detail } = useSelector((state: RootState) => state.powerSlice)
+  const activeTab = useSelector((state: RootState) => state.powerSlice.activeTabIndex)
 
   // const swipeLeft = Gesture.Pan()
   //   .activeOffsetX([-30, 30])
@@ -57,20 +59,19 @@ function HomeNewScreen(props: Props) {
     >
       {/* PAGE 1: HOME */}
       <View key="home" style={{ flex: 1 }}>
-        <HomeContent />
+        {activeTab === 0 ? <HomeContent /> : <BlankPageSkeleton />}
       </View>
 
       {/* PAGE 2: FACTORY DETAIL */}
       {
         detail.map((factory, index) => (
           <View key={`factory${index}`} style={{ flex: 1 }}>
-            <FactoryDetail
+            {activeTab === index + 1 ? <FactoryDetail
               companyName={`Nhà máy ${factory.name}`}
               location={'Đắk Lắk'}
               currentPlantId={factory.code}
               keyTab={index + 1}
-
-            />
+            /> : <BlankPageSkeleton />}
           </View>
         ))
       }

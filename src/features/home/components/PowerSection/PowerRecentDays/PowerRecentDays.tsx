@@ -16,13 +16,14 @@ interface DayPower {
 function PowerRecentDays() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'
 
   useEffect(() => {
     dispatch(getPowerByDays(7))
-  }, [])
+  }, [countRefesh])
 
   return (
     <AnimatedCardContainer>

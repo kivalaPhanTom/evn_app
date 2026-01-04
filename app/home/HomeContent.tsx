@@ -1,6 +1,5 @@
-import React from 'react'
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { runOnJS } from 'react-native-reanimated'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
@@ -16,48 +15,70 @@ import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceS
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-interface Props {}
+import { saveState } from '@/core/redux/slices/HomeSlice'
+import { RefreshControl } from "react-native";
+interface Props { }
 
 function HomeContent(props: Props) {
   const { } = props
   const router = useRouter()
-//   const swipeLeft = Gesture.Pan()
-//     .activeOffsetX([-30, 30])
-//     .onEnd(e => {
-//       if (e.translationX < -80) {
-//         runOnJS(router.navigate)('/factory-detail')
-//       }
-//     })
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState(false);
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+
+  //   const swipeLeft = Gesture.Pan()
+  //     .activeOffsetX([-30, 30])
+  //     .onEnd(e => {
+  //       if (e.translationX < -80) {
+  //         runOnJS(router.navigate)('/factory-detail')
+  //       }
+  //     })
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]
     location?: string | string[]
   }>()
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
-
+ 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      dispatch(saveState({
+        countRefesh: countRefesh + 1
+      }))
+    }, 80);
+  };
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-      <View style={styles.header}>
-        <GradientText
-          text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
-          colors={textGradients.water}
-          fontSize={px.f(30)}
-          style={{ textAlign: 'center' }}
-        />
-        <View style={styles.locationRow}>
-          <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-          <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+        <View style={styles.header}>
+          <GradientText
+            text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
+            colors={textGradients.water}
+            fontSize={px.f(30)}
+            style={{ textAlign: 'center' }}
+          />
+          <View style={styles.locationRow}>
+            <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
+            <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
+          </View>
         </View>
-      </View>
-      <ScrollView>
-        <PowerSection />
-        <ProductionOutput />
-        <Hydrology />
-        <UnitMaintenanceSchedule />
-        <RevenueDetail />
-        <ProfitDetail />
-      </ScrollView>
-    </TwinkleStars>
+        <ScrollView>
+          <PowerSection />
+          <ProductionOutput />
+          <Hydrology />
+          <RevenueDetail />
+          <ProfitDetail />
+          <UnitMaintenanceSchedule />
+        </ScrollView>
+      </TwinkleStars>
+    </ScrollView>
+
   )
 }
 export default HomeContent

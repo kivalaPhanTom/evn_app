@@ -17,6 +17,7 @@ interface Props { }
 function TotalProductionOutput(props: Props) {
   const { } = props
   const router = useRouter()
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const dispatch = useDispatch()
   const {
     productOutputOverview: { totalPower, averagePower, powerSources },
@@ -25,7 +26,7 @@ function TotalProductionOutput(props: Props) {
 
   useEffect(() => {
     dispatch(getProductOutputOverview())
-  }, [])
+  }, [countRefesh])
 
   return (
     <AnimatedCardContainer>
