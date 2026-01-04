@@ -67,7 +67,7 @@ function FactoryDetail(props: factoryDetailProps) {
   )
 }
 
-export default FactoryDetail
+export default React.memo(FactoryDetail)
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },

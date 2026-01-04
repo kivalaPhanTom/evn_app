@@ -90,16 +90,23 @@ export default function RevenueDetail(props: Props) {
     const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
 
     useEffect(() => {
+        const formattedDate = selectedDate.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
         const payload = {
             currentPlantId: activeTab,
-            date: selectedDate.toLocaleDateString('vi-VN'),
+            date: formattedDate,
         }
         dispatch(getUpstreamWaterLevel(payload))
         dispatch(getInflow(payload))
         dispatch(getOutflow(payload))
         dispatch(getTurbineflow(payload))
         dispatch(getRevebnuePowerPrices(payload))
-        dispatch(getRevenueTotalExpense(payload))
+        dispatch(getRevenueTotalExpense({
+            date: formattedDate,
+        }))
     }, [activeTab, selectedDate])
 
     return (

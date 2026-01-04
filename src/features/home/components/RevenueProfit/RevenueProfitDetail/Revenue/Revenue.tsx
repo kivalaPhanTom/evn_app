@@ -19,21 +19,17 @@ import { BarGroup } from '@/core/types'
 export default function RevenueDetail() {
   const dispatch = useDispatch()
   const router = useRouter()
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
 
   const onPressCard = () => {
-    router.push({ pathname: '/revenue-detail' })
-    // router.push({
-    //   pathname: '/revenue-detail',
-    //   // params: { currentPlantId: currentPlantId, },
-    // })
+    router.navigate({ pathname: '/revenue-detail' })
   }
 
   useEffect(() => {
     // Dispatch actions to fetch data if needed
     dispatch(getRevenue())
-  }, [dispatch])
+  }, [countRefesh])
 
   const data: { label: string; value: number }[] = revenue.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({
@@ -58,7 +54,7 @@ export default function RevenueDetail() {
   return (
     <SectionContainer title="Doanh thu">
       <View style={styles.gotoDetail}>
-        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+        <TouchableOpacity onPress={onPressCard} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
           <Text style={styles.actionButtonIcon}>{'>'}</Text>
         </TouchableOpacity>

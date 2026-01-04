@@ -84,7 +84,6 @@ function* getUpstreamWaterLevelApiSaga(action: ReturnType<typeof getUpstreamWate
 
     const res = yield call(Service.getUpstreamWaterLevelApi, currentPlantId, date)
     if (res.status === 200) {
-      console.log('upstream chart dataaaaaaa:', res.data)
       yield put(setUpStreamWaterLevel(res.data))
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
