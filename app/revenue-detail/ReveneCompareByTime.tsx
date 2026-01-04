@@ -63,18 +63,26 @@ export default function ReveneCompareByTime({
       }),
     )
   }, [dispatch, dayjs(range?.from).format('DD/MM/YYYY'), dayjs(range?.to).format('DD/MM/YYYY'), selected.value])
-  const data =
-    revenueByPeriod?.Series?.find((series: any) => series.PlantCode === 'BK')?.Values?.map(
-      (item: any, idx: number) => ({ value: item, label: revenueByPeriod.Dates[idx].substring(0, 5) }),
-    ) || []
-  const data2 =
-    revenueByPeriod?.Series?.find((series: any) => series.PlantCode === 'SP3')?.Values?.map(
-      (item: any, idx: number) => ({ value: item, label: revenueByPeriod.Dates[idx].substring(0, 5) }),
-    ) || []
-  const data3 =
-    revenueByPeriod?.Series?.find((series: any) => series.PlantCode === 'BTS')?.Values?.map(
-      (item: any, idx: number) => ({ value: item, label: revenueByPeriod.Dates[idx].substring(0, 5) }),
-    ) || []
+
+  const data = revenueByPeriod?.Series[0]
+  const data2 = revenueByPeriod?.Series[1]
+  const data3 = revenueByPeriod?.Series[2]
+
+  const chartData =
+    data?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
+  const chartData2 =
+    data2?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
+  const chartData3 =
+    data3?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
 
   return (
     <View style={styles.wrapper}>
@@ -132,16 +140,16 @@ export default function ReveneCompareByTime({
         </View>
         <View>
           <View style={{ alignItems: 'flex-end', marginTop: px.v(24) }}>
-            <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>Đơn vị: Tr Đồng</Text>
+            <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>{`Đơn vị: ${revenueByPeriod?.Unit}`}</Text>
           </View>
           <View style={[styles.chartWrapper]}></View>
           <LineChart
-            data={data}
-            data2={data2}
-            data3={data3}
-            color="#4ADE80"
-            color2="#22D3EE"
-            color3="#A78BFA"
+            data={chartData}
+            data2={chartData2}
+            data3={chartData3}
+            color={data?.Color ? `#${data?.Color}` : '#A78BFA'}
+            color2={data2?.Color ? `#${data2?.Color}` : '#4ADE80'}
+            color3={data3?.Color ? `#${data3?.Color}` : '#22D3EE'}
             hideDataPoints2={false}
             hideYAxisText={true}
             hideDataPoints1={false}
@@ -152,23 +160,23 @@ export default function ReveneCompareByTime({
             areaChart3={true}
             showValuesAsDataPointsText={false}
             pointerConfig={true}
-            label1="Buôn Kuốp: "
-            label2="Srepok 3: "
-            label3="Buôn Tua Srah: "
+            label1={`${data?.PlantName}: `}
+            label2={`${data2?.PlantName}: `}
+            label3={`${data3?.PlantName}: `}
           />
           <View style={styles.line} />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#A78BFA' }]} />
-              <Text style={styles.legendLabel}>{'Buôn Tua Srah'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data?.Color ? `#${data?.Color}` : '#A78BFA'}` }]} />
+              <Text style={styles.legendLabel}>{data?.PlantName}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#4ADE80' }]} />
-              <Text style={styles.legendLabel}>{'Buôn Kuốp'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data2?.Color ? `#${data2?.Color}` : '#4ADE80'}` }]} />
+              <Text style={styles.legendLabel}>{data2?.PlantName}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#22D3EE' }]} />
-              <Text style={styles.legendLabel}>{'Srepok 3'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data3?.Color ? `#${data3?.Color}` : '#22D3EE'}` }]} />
+              <Text style={styles.legendLabel}>{data3?.PlantName}</Text>
             </View>
           </View>
         </View>

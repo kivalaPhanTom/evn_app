@@ -12,7 +12,7 @@ import { getPowerByTime } from '@/core/redux/Actions/PowerActions'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
-import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
+
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -32,6 +32,7 @@ function PowerByHoursFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [HourlyPowerList, setHourlyPowerList] = useState<HourlyPowerList[]>([])
   const [avgPower, setAvgPower] = useState<number>(0)
@@ -47,7 +48,7 @@ function PowerByHoursFactDetail(props: Props) {
         setLoading: setLoading
       }))
     }
-  }, [currentPlantId, activeTabIndex])
+  }, [currentPlantId, activeTabIndex, countRefesh])
 
   const title = 'Công suất theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate

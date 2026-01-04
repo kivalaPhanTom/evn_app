@@ -12,13 +12,9 @@ const homeSlice = createSlice({
     initialState,
     reducers: {
         saveState: (state, action) => {
-            // Duyệt mỗi key trong action.payload
-           
             Object.entries(action.payload).forEach(([key, value]) => {
                 // @ts-ignore
                 if (state[key] !== value) {
-                    // Nếu khác mới gán (update)
-                    // immer sẽ handle tạo bản mới
                     // @ts-ignore
                     state[key] = value;
                 }
