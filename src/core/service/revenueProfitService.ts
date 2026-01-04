@@ -1,11 +1,12 @@
-import { api } from './api.service'
+import { api, get } from './api.service'
 import { prefix_api } from '../constants/vars'
 
 export const Service = {
   getProfitApi,
   getRevenueApi,
   getRevenuePowerPricesApi,
-  getRevenueTotalExpensesApi
+  getRevenueTotalExpensesApi,
+  getRevenueByPeriodApi,
 }
 export const servicePattern = {
   getProfit: `${prefix_api}/profit`,
@@ -14,6 +15,7 @@ export const servicePattern = {
   getRevenuePowerPrices: `${prefix_api}/electricityPrices`,
 
   getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
+  getRevenueByPeriod: `${prefix_api}/revenueByPeriod`,
 }
 
 function getProfitApi() {
@@ -25,11 +27,11 @@ function getRevenueApi() {
 }
 
 function getRevenuePowerPricesApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getRevenuePowerPrices}`,{
+  return api.get(`${servicePattern.getRevenuePowerPrices}`, {
     params: {
       currentPlantId: currentPlantId,
       date: date,
-    }
+    },
   })
 }
 
@@ -37,6 +39,16 @@ function getRevenueTotalExpensesApi(date: string) {
   return api.get(`${servicePattern.getRevenueTotalExpenses}`, {
     params: {
       date: date,
-    }
+    },
+  })
+}
+
+function getRevenueByPeriodApi(startDate: string, endDate: string, type: string) {
+  return api.get(`${servicePattern.getRevenueByPeriod}`, {
+    params: {
+      startDate: startDate,
+      endDate: endDate,
+      type: type,
+    },
   })
 }

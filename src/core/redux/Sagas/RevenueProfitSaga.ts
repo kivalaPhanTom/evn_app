@@ -1,7 +1,20 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/revenueProfitService'
-import { getProfit, getRevenue, getRevebnuePowerPrices, getRevenueTotalExpense } from '../Actions/RevenueProfitActions'
-import { setProfitData, setRevenueData, setPowerPrices, setLoading, setRevenueCostSummary } from '../slices/RevenueProfitSlice'
+import {
+  getProfit,
+  getRevenue,
+  getRevebnuePowerPrices,
+  getRevenueTotalExpense,
+  getRevenueByPeriod,
+} from '../Actions/RevenueProfitActions'
+import {
+  setProfitData,
+  setRevenueData,
+  setPowerPrices,
+  setLoading,
+  setRevenueCostSummary,
+  setRevenueByPeriod,
+} from '../slices/RevenueProfitSlice'
 
 function* getProfitApiSaga(): Generator {
   try {
@@ -31,30 +44,38 @@ function* getRevenueApiSaga(): Generator {
 
 function* getRevebnuePowerPricesSaga(action: ReturnType<typeof getRevebnuePowerPrices>): Generator {
   try {
-    yield put(setLoading({
-      isLoadingPowerPrice: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingPowerPrice: true,
+      }),
+    )
     const payload = action.payload
     const { currentPlantId, date } = payload
     const res = yield call(Service.getRevenuePowerPricesApi, currentPlantId, date)
     if (res.status === 200) {
       yield put(setPowerPrices(res.data.Prices))
     }
-    yield put(setLoading({
-      isLoadingPowerPrice: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingPowerPrice: false,
+      }),
+    )
   } catch (error) {
-    yield put(setLoading({
-      isLoadingPowerPrice: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingPowerPrice: false,
+      }),
+    )
   }
 }
 
 function* getRevenueTotalExpenseSaga(action: ReturnType<typeof getRevenueTotalExpense>): Generator {
   try {
-    yield put(setLoading({
-      isLoadingRevenueCostSummary: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenueCostSummary: true,
+      }),
+    )
     const payload = action.payload
     const { date } = payload
     const res = yield call(Service.getRevenueTotalExpensesApi, date)
@@ -62,23 +83,59 @@ function* getRevenueTotalExpenseSaga(action: ReturnType<typeof getRevenueTotalEx
       const data = {
         MarketRevenue: res.data.MarketRevenue,
         ContractRevenue: res.data.ContractRevenue,
-        TotalCost: res.data.TotalCost
+        TotalCost: res.data.TotalCost,
       }
       yield put(setRevenueCostSummary(data))
       // yield put(setRevenueData(res.data))
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
     }
-    yield put(setLoading({
-      isLoadingRevenueCostSummary: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenueCostSummary: false,
+      }),
+    )
   } catch (error) {
-    yield put(setLoading({
-      isLoadingRevenueCostSummary: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenueCostSummary: false,
+      }),
+    )
     // console.log('getInflowOutflow error:', error)
   }
 }
+
+function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>): Generator {
+  try {
+    yield put(
+      setLoading({
+        isLoadingRevenueByPeriod: true,
+      }),
+    )
+    const payload = action.payload
+    const { startDate, endDate, type } = payload
+    const res = yield call(Service.getRevenueByPeriodApi, startDate, endDate, type)
+    if (res.status === 200) {
+      yield put(setRevenueByPeriod(res.data))
+      // yield put(setRevenueData(res.data))
+      // You can dispatch an action to store the data in the Redux store here
+      // yield put(setHydrologyFlowChart(res.data))
+    }
+    yield put(
+      setLoading({
+        isLoadingRevenueByPeriod: false,
+      }),
+    )
+  } catch (error) {
+    yield put(
+      setLoading({
+        isLoadingRevenueByPeriod: false,
+      }),
+    )
+    // console.log('getInflowOutflow error:', error)
+  }
+}
+
 function* getProfitApi() {
   yield takeEvery(getProfit, getProfitApiSaga)
 }
@@ -94,11 +151,17 @@ function* getRevenuePowerPricesApi() {
 function* getRevenueTotalExpenseApi() {
   yield takeEvery(getRevenueTotalExpense, getRevenueTotalExpenseSaga)
 }
+
+function* getRevenueByPeriodApi() {
+  yield takeEvery(getRevenueByPeriod, getRevenueByPeriodSaga)
+}
+
 export function* revenueProfitSagaList() {
   yield all([
     getProfitApi(),
     getRevenueApi(),
     getRevenuePowerPricesApi(),
-    getRevenueTotalExpenseApi()
+    getRevenueTotalExpenseApi(),
+    getRevenueByPeriodApi(),
   ])
 }
