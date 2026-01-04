@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit, getDailyAndCumulativeData } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
@@ -18,7 +18,7 @@ interface ProfitDetailProps {
 
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const dispatch = useDispatch()
-  const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { dailyAndCumulativeData } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -29,8 +29,13 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
     dispatch(getProfit())
   }, [dispatch])
 
-  // Get month number from profit.Cumulative.Month.month (format: "2024-11")
-  const monthNumber = profit.Cumulative.Month.month?.split('-')[1] ?? new Date().getMonth() + 1
+  useEffect(() => {
+    const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
+    dispatch(getDailyAndCumulativeData({ currentPlantId: plantId || '', date: formattedDate }))
+  }, [dispatch, selectedDate, plantId])
+
+  // Get month number from selectedDate (format: "DD/MM/YYYY")
+  const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
   const heightLine = 1
   const colorLine = '#7a8596'
@@ -62,8 +67,8 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
           <View style={styles.cardContent}>
             <Text style={styles.cardLabel}>LỢI NHUẬN RÒNG HÔM NAY</Text>
             <View style={styles.cardValueContainer}>
-              <Text style={styles.cardValue}>{profit.Today.Value}</Text>
-              <Text style={styles.cardUnit}>tỷ VNĐ</Text>
+              <Text style={styles.cardValue}>{dailyAndCumulativeData.ProfitToday.Value}</Text>
+              <Text style={styles.cardUnit}>{dailyAndCumulativeData.ProfitToday.Unit}</Text>
             </View>
           </View>
         </GradientCard>
@@ -78,8 +83,8 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
           <View style={styles.cardContent}>
             <Text style={styles.cardLabelYellow}>LŨY KẾ THÁNG {monthNumber}</Text>
             <View style={styles.cardValueContainer}>
-              <Text style={styles.cardValueYellow}>{profit.Cumulative.Month.Value}</Text>
-              <Text style={styles.cardUnitYellow}>tỷ</Text>
+              <Text style={styles.cardValueYellow}>{dailyAndCumulativeData.ProfitMonth.Value}</Text>
+              <Text style={styles.cardUnitYellow}>{dailyAndCumulativeData.ProfitMonth.Unit}</Text>
             </View>
           </View>
         </GradientCard>
