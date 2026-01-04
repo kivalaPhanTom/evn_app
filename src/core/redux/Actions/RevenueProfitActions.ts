@@ -10,3 +10,6 @@ export const getRevenueTotalExpense = createAction<{ date: string }>(ACTION_TYPE
 export const getRevenueByPeriod = createAction<{ startDate: string; endDate: string; type: string }>(
   ACTION_TYPES.GET_REVENUE_BY_PERIOD,
 )
+export const getDailyAndCumulativeData = createAction<{ currentPlantId: string; date: string }>(
+  ACTION_TYPES.GET_DAILY_AND_CUMULATIVE_DATA,
+)

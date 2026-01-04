@@ -6,6 +6,7 @@ import {
   getRevebnuePowerPrices,
   getRevenueTotalExpense,
   getRevenueByPeriod,
+  getDailyAndCumulativeData,
 } from '../Actions/RevenueProfitActions'
 import {
   setProfitData,
@@ -14,6 +15,7 @@ import {
   setLoading,
   setRevenueCostSummary,
   setRevenueByPeriod,
+  setDailyAndCumulativeData,
 } from '../slices/RevenueProfitSlice'
 
 function* getProfitApiSaga(): Generator {
@@ -136,6 +138,18 @@ function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>):
   }
 }
 
+function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCumulativeData>): Generator {
+  try {
+    const payload = action.payload
+    const { currentPlantId, date } = payload
+    const res = yield call(Service.getDailyAndCumulativeApi, currentPlantId, date)
+    if (res.status === 200) {
+      yield put(setDailyAndCumulativeData(res.data))
+    }
+  } catch (error) {
+  }
+}
+
 function* getProfitApi() {
   yield takeEvery(getProfit, getProfitApiSaga)
 }
@@ -156,6 +170,10 @@ function* getRevenueByPeriodApi() {
   yield takeEvery(getRevenueByPeriod, getRevenueByPeriodSaga)
 }
 
+function* getDailyAndCumulativeDataApi() {
+  yield takeEvery(getDailyAndCumulativeData, getDailyAndCumulativeDataSaga)
+}
+
 export function* revenueProfitSagaList() {
   yield all([
     getProfitApi(),
@@ -163,5 +181,6 @@ export function* revenueProfitSagaList() {
     getRevenuePowerPricesApi(),
     getRevenueTotalExpenseApi(),
     getRevenueByPeriodApi(),
+    getDailyAndCumulativeDataApi(),
   ])
 }
