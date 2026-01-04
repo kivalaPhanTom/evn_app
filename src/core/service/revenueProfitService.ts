@@ -16,12 +16,20 @@ export const servicePattern = {
   getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
 }
 
-function getProfitApi() {
-  return api.get(`${servicePattern.getProfit}`)
+function getProfitApi(currentPlantId: string = '') {
+  return api.get(`${servicePattern.getProfit}`, {
+    params: {
+      currentPlantId: currentPlantId,
+    }
+  })
 }
 
-function getRevenueApi() {
-  return api.get(`${servicePattern.getRevenue}`)
+function getRevenueApi(currentPlantId: string = '') {
+  return api.get(`${servicePattern.getRevenue}`, {
+    params: {
+      currentPlantId: currentPlantId,
+    }
+  })
 }
 
 function getRevenuePowerPricesApi(currentPlantId: string, date: string) {

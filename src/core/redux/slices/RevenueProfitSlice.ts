@@ -57,6 +57,35 @@ interface RevenueProfitState {
     }
     lossWarning: any
   }
+  profitFactDetail: {
+    Chart: {
+      Data: any
+      Period: {
+        From: string
+        To: string
+      }
+      Unit: string
+    }
+    Cumulative: {
+      Month: {
+        ChangePercent: number
+        Unit: string
+        Value: number
+        month: string
+      }
+      Week: {
+        ChangePercent: number
+        Unit: string
+        Value: number
+      }
+    }
+    Today: {
+      ChangePercent: number
+      Unit: string
+      Value: number
+    }
+    lossWarning: any
+  }
   revenue: {
     Breakdown: {
       Color: string
@@ -110,12 +139,71 @@ interface RevenueProfitState {
     TotalCost: RevenueCostSummaryItem
   },
   isLoadingRevenueCostSummary: boolean
-}
+  revenueFactDetail: {
+    Chart: {
+      Data: any
+      Period: {
+        From: string
+        To: string
+      }
+      Unit: string
+    }
+    Cumulative: {
+      Month: {
+        ChangePercent: number
+        Unit: string
+        Value: number
+        month: string
+      }
+      Week: {
+        ChangePercent: number
+        Unit: string
+        Value: number
+      }
+    }
+    Today: {
+      ChangePercent: number
+      Unit: string
+      Value: number
+    }
+    lossWarning: any
+  }
+  }
+
 const initialState: RevenueProfitState = {
   isLoadingProfit: false,
   isLoadingRevenue: false,
   profit: {
     Breakdown: [],
+    Chart: {
+      Data: [],
+      Period: {
+        From: '',
+        To: '',
+      },
+      Unit: '',
+    },
+    Cumulative: {
+      Month: {
+        ChangePercent: 0,
+        Unit: '',
+        Value: 0,
+        month: '',
+      },
+      Week: {
+        ChangePercent: 0,
+        Unit: '',
+        Value: 0,
+      },
+    },
+    Today: {
+      ChangePercent: 0,
+      Unit: '',
+      Value: 0,
+    },
+    lossWarning: [],
+  },
+  profitFactDetail: {
     Chart: {
       Data: [],
       Period: {
@@ -269,6 +357,35 @@ const initialState: RevenueProfitState = {
     }
   },
   isLoadingRevenueCostSummary: false,
+  revenueFactDetail: {
+    Chart: {
+      Data: [],
+      Period: {
+        From: '',
+        To: '',
+      },
+      Unit: '',
+    },
+    Cumulative: {
+      Month: {
+        ChangePercent: 0,
+        Unit: '',
+        Value: 0,
+        month: '',
+      },
+      Week: {
+        ChangePercent: 0,
+        Unit: '',
+        Value: 0,
+      },
+    },
+    Today: {
+      ChangePercent: 0,
+      Unit: '',
+      Value: 0,
+    },
+    lossWarning: [],
+  },
 }
 
 const revenueProfitSlice = createSlice({
@@ -277,6 +394,9 @@ const revenueProfitSlice = createSlice({
   reducers: {
     setProfitData: (state, action) => {
       state.profit = action.payload
+    },
+    setProfitFactDetailData: (state, action) => {
+      state.profitFactDetail = action.payload     
     },
     setRevenueData: (state, action) => {
       state.revenue = action.payload
@@ -287,6 +407,9 @@ const revenueProfitSlice = createSlice({
     setRevenueCostSummary: (state, action) => {
       state.revenueCostSummary = action.payload
     },
+    setRevenueFactDetailData: (state, action) => {
+      state.revenueFactDetail = action.payload     
+    },
     setLoading: (state, action) => {
       return {
         ...state,
@@ -296,5 +419,5 @@ const revenueProfitSlice = createSlice({
   },
 })
 const { reducer } = revenueProfitSlice
-export const { setLoading, setProfitData, setRevenueData, setPowerPrices, setRevenueCostSummary } = revenueProfitSlice.actions
+export const { setLoading, setProfitData, setRevenueData, setPowerPrices, setRevenueCostSummary, setProfitFactDetailData, setRevenueFactDetailData } = revenueProfitSlice.actions
 export default reducer

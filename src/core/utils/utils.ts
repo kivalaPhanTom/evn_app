@@ -58,30 +58,37 @@ export type ApiResponse<T = any> = {
   headers?: Record<string, any>
 }
 
-export const catchHandle = (e: any): void => {
+export const catchHandle = (e: any, fnName?: string): void => {
   const { status, data }: ApiResponse = e;
   const { Message: message } = (data ?? {}) as { Message?: string };
 
+  const location = fnName ? ` [${fnName}]` : '';
+  console.log(`API Error${location}:`, e);
+
+  const notify = (fallback: string) => {
+    Toast.error(message || fallback);
+  };
+
   switch (status) {
     case 401: {
-      Toast.error('Vui lòng đăng nhập lại để tiếp tục.');
+      notify('Vui lòng đăng nhập lại để tiếp tục.');
       router.replace('/login');
       break;
     }
     case 404: {
-      Toast.error('Yêu cầu không tồn tại. Vui lòng thử lại sau.');
+      notify('Yêu cầu không tồn tại. Vui lòng thử lại sau.');
       break;
     }
     case 500: {
-      Toast.error('Đã có lỗi xảy ra ở phía máy chủ. Vui lòng thử lại sau.');
+      notify('Đã có lỗi xảy ra ở phía máy chủ. Vui lòng thử lại sau.');
       break;
     }
     case 400: {
-      Toast.error('Yêu cầu không hợp lệ. Vui lòng thử lại sau.');
+      notify('Yêu cầu không hợp lệ. Vui lòng thử lại sau.');
       break;
     }
     default: {
-      Toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau.');
+      notify('Đã có lỗi xảy ra, vui lòng thử lại sau.');
     }
   }
 };

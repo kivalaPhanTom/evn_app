@@ -1,31 +1,90 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/revenueProfitService'
-import { getProfit, getRevenue, getRevebnuePowerPrices, getRevenueTotalExpense } from '../Actions/RevenueProfitActions'
-import { setProfitData, setRevenueData, setPowerPrices, setLoading, setRevenueCostSummary } from '../slices/RevenueProfitSlice'
+import { getProfit, getRevenue, getRevebnuePowerPrices, getRevenueTotalExpense, getProfitFactDetail, getRevenueFactDetail } from '../Actions/RevenueProfitActions'
+import { setProfitData, setRevenueData, setPowerPrices, setLoading, setRevenueCostSummary, setProfitFactDetailData, setRevenueFactDetailData } from '../slices/RevenueProfitSlice'
+import { catchHandle } from '@/core/utils/utils'
 
 function* getProfitApiSaga(): Generator {
   try {
-    const res = yield call(Service.getProfitApi)
+    yield put(setLoading({
+      isLoadingProfit: true
+    }))
+    const res = yield call(Service.getProfitApi, '')
     if (res.status === 200) {
       yield put(setProfitData(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
+    yield put(setLoading({
+      isLoadingProfit: false
+    }))
   } catch (error) {
-    // console.log('getInflowOutflow error:', error)
+    catchHandle(error, 'getProfitApiSaga')
+    yield put(setLoading({
+      isLoadingProfit: false
+    }))
+  }
+}
+
+function* getProfitFactDetailApiSaga(action: ReturnType<typeof getProfitFactDetail>): Generator {
+  try {
+    yield put(setLoading({
+      isLoadingProfit: true
+    }))
+    const payload = action.payload
+    const { currentPlantId } = payload
+    const res = yield call(Service.getProfitApi, currentPlantId)
+    if (res.status === 200) {
+      yield put(setProfitFactDetailData(res.data))
+    }
+    yield put(setLoading({
+      isLoadingProfit: false
+    }))
+  } catch (error) {
+    catchHandle(error, 'getProfitFactDetailApiSaga')
+    yield put(setLoading({
+      isLoadingProfit: false
+    }))
   }
 }
 
 function* getRevenueApiSaga(): Generator {
   try {
-    const res = yield call(Service.getRevenueApi)
+    yield put(setLoading({
+      isLoadingRevenue: true
+    }))
+    const res = yield call(Service.getRevenueApi, '')
     if (res.status === 200) {
       yield put(setRevenueData(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
+    yield put(setLoading({
+      isLoadingRevenue: false
+    }))
   } catch (error) {
-    // console.log('getInflowOutflow error:', error)
+    catchHandle(error, 'getRevenueApiSaga')
+    yield put(setLoading({
+      isLoadingRevenue: false
+    }))
+  }
+}
+
+function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDetail>): Generator {
+  try {
+    yield put(setLoading({
+      isLoadingRevenue: true
+    }))
+    const payload = action.payload
+    const { currentPlantId } = payload
+    const res = yield call(Service.getRevenueApi, currentPlantId)
+    if (res.status === 200) {
+      yield put(setRevenueFactDetailData(res.data))
+    }
+    yield put(setLoading({
+      isLoadingRevenue: false
+    }))
+  } catch (error) {
+    catchHandle(error, 'getRevenueFactDetailApiSaga')
+    yield put(setLoading({
+      isLoadingRevenue: false
+    }))
   }
 }
 
@@ -94,9 +153,19 @@ function* getRevenuePowerPricesApi() {
 function* getRevenueTotalExpenseApi() {
   yield takeEvery(getRevenueTotalExpense, getRevenueTotalExpenseSaga)
 }
+
+function* getProfitFactDetailApi() {
+  yield takeEvery(getProfitFactDetail, getProfitFactDetailApiSaga)
+}
+
+function* getRevenueFactDetailApi() {
+  yield takeEvery(getRevenueFactDetail, getRevenueFactDetailApiSaga)
+}
 export function* revenueProfitSagaList() {
   yield all([
     getProfitApi(),
+    getProfitFactDetailApi(),
+    getRevenueFactDetailApi(),
     getRevenueApi(),
     getRevenuePowerPricesApi(),
     getRevenueTotalExpenseApi()

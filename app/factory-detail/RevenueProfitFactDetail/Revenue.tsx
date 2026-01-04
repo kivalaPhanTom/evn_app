@@ -1,0 +1,416 @@
+import React, { act, useEffect } from 'react'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { px } from '@/core/utils/scale'
+import { Stack, usePathname, useRouter } from 'expo-router'
+import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
+import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
+import { Ionicons } from '@expo/vector-icons'
+import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
+import { Colors } from '@/core/constants/colors'
+import { LineChart } from '@/components/ChartView/LineChart.component'
+import CompareLegend from '@/core/shared/CompareLegend'
+import { useDispatch, useSelector } from 'react-redux'
+import { getRevenueFactDetail } from '@/core/redux/Actions/RevenueProfitActions'
+import { RootState } from '@/core/redux/store'
+import BarChart from '@/components/BarChart/BarChart.component'
+import { BarGroup } from '@/core/types'
+
+interface RevenueFactDetailProps {
+  currentPlantId: string
+  keyTab: number
+}
+
+export default function RevenueDetail(props: RevenueFactDetailProps) {
+  const { currentPlantId, keyTab } = props
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const { revenueFactDetail, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+
+  const onPressCard = () => {
+    router.navigate({ pathname: '/revenue-detail' })
+  }
+
+  useEffect(() => {
+    if(activeTabIndex === keyTab) {
+      dispatch(getRevenueFactDetail({ currentPlantId }))
+    }
+  }, [dispatch, currentPlantId, activeTabIndex, keyTab])
+
+  const data: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
+    (item: { Contract: number; Date: string }) => ({
+      value: item.Contract,
+      label: item.Date?.split('-')[2] ?? '',
+    }),
+  )
+
+  const data2: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
+    (item: { Actual: number; Date: string }) => ({
+      value: item.Actual,
+      label: item.Date?.split('-')[2] ?? '',
+    }),
+  )
+
+  const fromParts = revenueFactDetail.Chart.Period.From?.split('-') ?? []
+  const toParts = revenueFactDetail.Chart.Period.To?.split('-') ?? []
+  const fromDay = fromParts[2] ?? ''
+  const toDay = toParts[2] ?? ''
+  const toMonth = toParts[1] ?? ''
+  const profit = [
+    {
+      Date: '2025-12-21',
+      value: 13.03,
+    },
+    {
+      Date: '2025-12-22',
+      value: 0.55,
+    },
+    {
+      Date: '2025-12-23',
+      value: -1,
+    },
+    {
+      Date: '2025-12-24',
+      value: 0.54,
+    },
+    {
+      Date: '2025-12-25',
+      value: 0.56,
+    },
+    {
+      Date: '2025-12-26',
+      value: 0.51,
+    },
+    {
+      Date: '2025-12-27',
+      value: 0.49,
+    },
+  ]
+  const values: { label: string; value: number }[] = profit?.map((item: { value: number }) => ({
+    label: '',
+    value: Number(item.value),
+  }))
+  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
+    label,
+    items: [
+      {
+        value,
+        frontColor: value < 0 ? Colors.red : Colors.green,
+        showValuesOnTop: true,
+        showPrefix: value > 0,
+      },
+    ],
+  }))
+  const today = new Date()
+  const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`
+  const formatDayWithMonth = (d: Date) =>
+    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const endDate = new Date(today)
+  endDate.setDate(today.getDate() - 1) //
+  const xAxisLabels = values.map((_, idx) => {
+    const d = new Date(endDate)
+    d.setDate(endDate.getDate() - (values.length - 1 - idx))
+    return formatDayWithMonth(d)
+  })
+  return (
+    <SectionContainer title="Doanh thu">
+      <View style={styles.gotoDetail}>
+        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+          <Text style={styles.actionButtonIcon}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <AnimatedCardContainer>
+        <View>
+          <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
+          <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
+            {revenueFactDetail.Today.Value} <Text style={styles.cardUnit}>{revenueFactDetail.Today.Unit}</Text>
+          </Text>
+          <MetricDiff
+            style={{ fontSize: px.f(20) }}
+            withBackground
+            diff={revenueFactDetail.Today.ChangePercent / 100}
+            label="so với hôm qua"
+          />
+        </View>
+        <View style={{ marginTop: px.v(10) }}>
+          <View style={styles.revenueCard}>
+            <View>
+              <Text style={[styles.cardTitle, { color: '#A5B4FC' }]}>{`Lũy kế tuần`}</Text>
+              <Text style={styles.cardValue}>
+                {revenueFactDetail.Cumulative.Week.Value} <Text style={styles.cardUnit}>{revenueFactDetail.Cumulative.Week.Unit}</Text>
+              </Text>
+            </View>
+            <View>
+              <MetricDiff withBackground diff={revenueFactDetail.Cumulative.Week.ChangePercent / 100} />
+            </View>
+          </View>
+        </View>
+        <View>
+          <View style={[styles.revenueCard, { backgroundColor: 'rgba(251, 191, 36, 0.1)' }]}>
+            <View>
+              <Text
+                style={[styles.cardTitle, { color: '#FCD34D' }]}
+              >{`Lũy kế tháng ${revenueFactDetail.Cumulative.Month.month?.split('-')[1] ?? ''}`}</Text>
+              <Text style={styles.cardValue}>
+                {revenueFactDetail.Cumulative.Month.Value} <Text style={styles.cardUnit}>{revenueFactDetail.Cumulative.Month.Unit}</Text>
+              </Text>
+            </View>
+            <View>
+              <MetricDiff withBackground diff={revenueFactDetail.Cumulative.Month.ChangePercent / 100} />
+            </View>
+          </View>
+        </View>
+        <View>
+          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
+              <View
+                style={{
+                  paddingHorizontal: px.h(12),
+                  paddingVertical: px.v(6),
+                  backgroundColor: '#1f2937',
+                  borderRadius: px.h(18),
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.12)',
+                }}
+              >
+                <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>
+                  {fromDay} - {toDay}/{toMonth}
+                </Text>
+              </View>
+            </View>
+            <View style={[styles.chartWrapper]}></View>
+
+            {/* X-Axis below chart */}
+            <LineChart
+              data={data}
+              data2={data2}
+              color="rgba(255, 255, 255, 0.25)"
+              color2="#4ADE80"
+              hideDataPoints2={false}
+              hideYAxisText={true}
+              hideDataPoints1={true}
+              strokedashArray1={[12, 6]}
+              spacing={9}
+              startFillColor2="#4ADE80"
+              endFillColor2="#4ADE80"
+            />
+            <View style={styles.line} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <View style={[styles.legendLine]} />
+                <Text style={styles.legendLabel}>{'Thực tế'}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 17 }}>
+                <View style={[styles.legendDashLine]} />
+                <Text style={styles.legendLabel}>{'Hợp đồng'}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View>
+          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+            <View style={[styles.chartWrapper]}>
+              <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
+            </View>
+            <View style={styles.axisContainer}>
+              <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
+                {xAxisLabels.map((label, idx) => {
+                  const isToday = idx === xAxisLabels.length - 1
+                  const isNegative = values[idx].value < 0
+                  const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
+                  return (
+                    <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
+                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
+                    </View>
+                  )
+                })}
+              </View>
+              <View style={styles.axisDivider} />
+              {/* Legend */}
+              <View style={styles.legendRow}>
+                <View style={[styles.legendItem]}>
+                  <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
+                  <Text style={styles.legendText}>Lãi</Text>
+                </View>
+                <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
+                  <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
+                  <Text style={styles.legendText}>Lỗ</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </AnimatedCardContainer>
+    </SectionContainer>
+  )
+}
+
+const styles = StyleSheet.create({
+  cumulativeCard: {
+    backgroundColor: '#1e2838',
+    borderRadius: 12,
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    width: '49%',
+  },
+  revenueCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    borderRadius: 12,
+    marginTop: px.v(20),
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  profitCard: {
+    flexDirection: 'column',
+    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    borderRadius: 12,
+    marginTop: px.v(20),
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  chartWrapper: {
+    marginTop: px.v(8),
+    marginBottom: px.v(12),
+    marginLeft: px.h(-12),
+    width: '100%',
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+  },
+  // X-Axis & Legend styles
+  axisContainer: {
+    marginTop: px.v(8), // space below chart
+    paddingTop: px.v(8),
+  },
+  axisDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    marginVertical: px.v(20),
+  },
+  axisLabelsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  axisLabel: {
+    fontSize: px.f(14),
+  },
+  legendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendSwatch: {
+    width: px.h(16),
+    height: px.h(16),
+    borderRadius: 4,
+    marginRight: px.h(8),
+  },
+  legendText: {
+    color: '#8b92a0',
+    fontSize: px.f(16),
+  },
+  // Warning card styles
+  warningCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(239, 68, 68, 0.08)',
+    borderRadius: px.h(12),
+    paddingHorizontal: px.h(12),
+    paddingVertical: px.v(10),
+    marginTop: px.v(8),
+  },
+  warningText: {
+    color: Colors.red,
+    fontSize: px.f(18),
+  },
+  cardTitle: {
+    color: '#8b92a0',
+    fontSize: px.f(16),
+    textTransform: 'uppercase',
+  },
+  profitByDayTitle: {
+    color: '#fff',
+    fontSize: px.f(20),
+  },
+  revenueTitle: {
+    color: '#8b92a0',
+    fontSize: 20,
+    textTransform: 'uppercase',
+  },
+  cardValue: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: px.v(6),
+  },
+  cardUnit: {
+    fontSize: 16,
+    fontWeight: '300',
+  },
+  line: {
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginBottom: 15,
+  },
+  legendLine: {
+    width: 20,
+    height: 2.5,
+    backgroundColor: '#4ADE80',
+    borderRadius: 1.5,
+  },
+  legendDashLine: {
+    width: 4,
+    height: 2.5,
+    backgroundColor: '#9CA3AF',
+    boxShadow: `
+    6px 0 #9CA3AF,
+    12px 0 #9CA3AF
+  `,
+    borderRadius: 1.5,
+  },
+  legendLabel: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    fontWeight: '500',
+  },
+
+  gotoDetail: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+})
