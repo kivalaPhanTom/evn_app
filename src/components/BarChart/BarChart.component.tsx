@@ -4,6 +4,7 @@ import { px } from '@/core/utils/scale'
 import React, { Component, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart as GiftedBarChart } from 'react-native-gifted-charts'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 
 export interface BarPoint {
   value: number
@@ -233,6 +234,8 @@ const BarChart: React.FC<Props> = ({
 
   const selectedMetrics = getGroupMetrics(selectedGroupIndex)
 
+  console.log('processed.length:', processed.length)
+
   return (
     <View style={styles.wrap}>
       {/* Overlay xám bao nhóm */}
@@ -408,7 +411,9 @@ const BarChart: React.FC<Props> = ({
           }
         />
       ) : (
-        <Text>No data</Text>
+        <View style={{ height, justifyContent: 'center' }}>
+          <LineBarChartSkeleton isShowLine={showLine || (lineData1 && lineData1.length > 0) || (lineData2 && lineData2.length > 0)} />
+        </View>
       )}
     </View>
   )
