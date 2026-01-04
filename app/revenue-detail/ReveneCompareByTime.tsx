@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import { px } from '@/core/utils/scale'
 import { LineChart } from '@/components/ChartView/LineChart.component'
+import { getRevenueByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
 
 interface Props {
   fromDate: string
@@ -15,7 +16,11 @@ interface Props {
   onPressTo?: () => void
   onPressMetric?: () => void
 }
-const OPTIONS = ['Tổng doanh thu theo thị trường điện', 'Tổng doanh thu theo giá hợp đồng', 'Tổng chi phí']
+const OPTIONS = [
+  { value: 'market', label: 'Tổng doanh thu theo thị trường điện' },
+  { value: 'contract', label: 'Tổng doanh thu theo giá hợp đồng' },
+  { value: 'cost', label: 'Tổng chi phí' },
+]
 export default function ReveneCompareByTime({
   fromDate,
   toDate,
@@ -26,13 +31,13 @@ export default function ReveneCompareByTime({
 }: Props) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState(OPTIONS[0])
+  const revenueByPeriod = useSelector((state: any) => state.revenueProfitSlice.revenueByPeriod)
 
-  const onSelect = (value: string) => {
+  const onSelect = (value: any) => {
     setSelected(value)
     setOpen(false)
     // onChangeOption?.(value);
   }
-
   const [range, setRange] = useState({ from: dayjs().subtract(1, 'day'), to: dayjs() })
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     setRange(newRange)
@@ -47,108 +52,38 @@ export default function ReveneCompareByTime({
     //   }),
     // )
   }
+  const dispatch = useDispatch()
+  useEffect(() => {
+    // Dispatch an action to fetch revenue by period data when the component mounts
+    dispatch(
+      getRevenueByPeriod({
+        startDate: dayjs(range?.from).format('DD/MM/YYYY'),
+        endDate: dayjs(range?.to).format('DD/MM/YYYY'),
+        type: selected.value,
+      }),
+    )
+  }, [dispatch, dayjs(range?.from).format('DD/MM/YYYY'), dayjs(range?.to).format('DD/MM/YYYY'), selected.value])
 
-  const data = [
-    { value: 1.3, label: '01/11' },
-    { value: 1.8, label: '02/11' },
-    { value: 1.1, label: '03/11' },
-    { value: 1.6, label: '04/11' },
-    { value: 1.9, label: '05/11' },
-    { value: 1.4, label: '06/11' },
-    { value: 1.2, label: '07/11' },
-    { value: 1.7, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.8, label: '10/11' },
-    { value: 1.3, label: '11/11' },
-    { value: 1.9, label: '12/11' },
-    { value: 1.1, label: '13/11' },
-    { value: 1.6, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.2, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.9, label: '20/11' },
-    { value: 1.3, label: '21/11' },
-    { value: 1.6, label: '22/11' },
-    { value: 1.1, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.4, label: '25/11' },
-    { value: 1.8, label: '26/11' },
-    { value: 1.2, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.9, label: '29/11' },
-    { value: 1.3, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
+  const data = revenueByPeriod?.Series[0]
+  const data2 = revenueByPeriod?.Series[1]
+  const data3 = revenueByPeriod?.Series[2]
 
-  const data2 = [
-    { value: 1.7, label: '01/11' },
-    { value: 1.2, label: '02/11' },
-    { value: 1.9, label: '03/11' },
-    { value: 1.4, label: '04/11' },
-    { value: 1.6, label: '05/11' },
-    { value: 1.1, label: '06/11' },
-    { value: 1.8, label: '07/11' },
-    { value: 1.3, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.9, label: '10/11' },
-    { value: 1.2, label: '11/11' },
-    { value: 1.6, label: '12/11' },
-    { value: 1.4, label: '13/11' },
-    { value: 1.8, label: '14/11' },
-    { value: 1.1, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.3, label: '17/11' },
-    { value: 1.9, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.2, label: '20/11' },
-    { value: 1.6, label: '21/11' },
-    { value: 1.8, label: '22/11' },
-    { value: 1.4, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.1, label: '25/11' },
-    { value: 1.9, label: '26/11' },
-    { value: 1.3, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.8, label: '29/11' },
-    { value: 1.2, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
+  const chartData =
+    data?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
+  const chartData2 =
+    data2?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
+  const chartData3 =
+    data3?.Values?.map((item: any, idx: number) => ({
+      value: item,
+      label: revenueByPeriod.Dates[idx].substring(0, 5),
+    })) || []
 
-  const data3 = [
-    { value: 1.2, label: '01/11' },
-    { value: 1.7, label: '02/11' },
-    { value: 1.4, label: '03/11' },
-    { value: 1.8, label: '04/11' },
-    { value: 1.1, label: '05/11' },
-    { value: 1.2, label: '06/11' },
-    { value: 1.5, label: '07/11' },
-    { value: 1.6, label: '08/11' },
-    { value: 1.9, label: '09/11' },
-    { value: 1.7, label: '10/11' },
-    { value: 1, label: '11/11' },
-    { value: 1.3, label: '12/11' },
-    { value: 1.2, label: '13/11' },
-    { value: 1.1, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.5, label: '16/11' },
-    { value: 1.9, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.6, label: '20/11' },
-    { value: 1.8, label: '21/11' },
-    { value: 1.4, label: '22/11' },
-    { value: 1.8, label: '23/11' },
-    { value: 1.1, label: '24/11' },
-    { value: 1.7, label: '25/11' },
-    { value: 1.4, label: '26/11' },
-    { value: 1.6, label: '27/11' },
-    { value: 1.2, label: '28/11' },
-    { value: 1.3, label: '29/11' },
-    { value: 1.7, label: '30/11' },
-    { value: 1.9, label: '31/11' },
-  ]
   return (
     <View style={styles.wrapper}>
       <AnimatedCardContainer>
@@ -183,7 +118,7 @@ export default function ReveneCompareByTime({
         {/* DROPDOWN */}
         <View>
           <TouchableOpacity style={styles.dropdown} onPress={() => setOpen(!open)} activeOpacity={0.8}>
-            <Text style={styles.dropdownText}>{selected}</Text>
+            <Text style={styles.dropdownText}>{selected?.label}</Text>
             <Text style={styles.arrow}>{open ? '▲' : '▼'}</Text>
           </TouchableOpacity>
 
@@ -191,11 +126,13 @@ export default function ReveneCompareByTime({
             <View style={styles.menu}>
               {OPTIONS.map((option) => (
                 <TouchableOpacity
-                  key={option}
-                  style={[styles.menuItem, selected === option && styles.menuItemActive]}
+                  key={option.value}
+                  style={[styles.menuItem, selected?.value === option.value && styles.menuItemActive]}
                   onPress={() => onSelect(option)}
                 >
-                  <Text style={[styles.menuText, selected === option && styles.menuTextActive]}>{option}</Text>
+                  <Text style={[styles.menuText, selected?.label === option.label && styles.menuTextActive]}>
+                    {option.label}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -203,16 +140,16 @@ export default function ReveneCompareByTime({
         </View>
         <View>
           <View style={{ alignItems: 'flex-end', marginTop: px.v(24) }}>
-            <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>Đơn vị: Tr Đồng</Text>
+            <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>{`Đơn vị: ${revenueByPeriod?.Unit}`}</Text>
           </View>
           <View style={[styles.chartWrapper]}></View>
           <LineChart
-            data={data}
-            data2={data2}
-            data3={data3}
-            color="#4ADE80"
-            color2="#22D3EE"
-            color3="#A78BFA"
+            data={chartData}
+            data2={chartData2}
+            data3={chartData3}
+            color={data?.Color ? `#${data?.Color}` : '#A78BFA'}
+            color2={data2?.Color ? `#${data2?.Color}` : '#4ADE80'}
+            color3={data3?.Color ? `#${data3?.Color}` : '#22D3EE'}
             hideDataPoints2={false}
             hideYAxisText={true}
             hideDataPoints1={false}
@@ -223,23 +160,23 @@ export default function ReveneCompareByTime({
             areaChart3={true}
             showValuesAsDataPointsText={false}
             pointerConfig={true}
-            label1="Buôn Kuốp: "
-            label2="Srepok 3: "
-            label3="Buôn Tua Srah: "
+            label1={`${data?.PlantName}: `}
+            label2={`${data2?.PlantName}: `}
+            label3={`${data3?.PlantName}: `}
           />
           <View style={styles.line} />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#A78BFA' }]} />
-              <Text style={styles.legendLabel}>{'Buôn Tua Srah'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data?.Color ? `#${data?.Color}` : '#A78BFA'}` }]} />
+              <Text style={styles.legendLabel}>{data?.PlantName}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#4ADE80' }]} />
-              <Text style={styles.legendLabel}>{'Buôn Kuốp'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data2?.Color ? `#${data2?.Color}` : '#4ADE80'}` }]} />
+              <Text style={styles.legendLabel}>{data2?.PlantName}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <View style={[styles.circle, { backgroundColor: '#22D3EE' }]} />
-              <Text style={styles.legendLabel}>{'Srepok 3'}</Text>
+              <View style={[styles.circle, { backgroundColor: `${data3?.Color ? `#${data3?.Color}` : '#22D3EE'}` }]} />
+              <Text style={styles.legendLabel}>{data3?.PlantName}</Text>
             </View>
           </View>
         </View>
