@@ -2,7 +2,6 @@ import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail,
 getPowerByTimeFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
-import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '../slices/PowerFactDetailSlice'
 import { Service } from '@/core/service/powerService'
 
 function* getPowerOverviewSaga(): Generator {

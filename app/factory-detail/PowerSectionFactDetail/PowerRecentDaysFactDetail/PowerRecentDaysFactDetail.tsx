@@ -8,7 +8,6 @@ import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import { RootState } from '@/core/redux/store'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
 import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
-import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
 // import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 interface PowerByDays {
   value: number
