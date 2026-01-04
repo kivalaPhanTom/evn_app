@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit, getDailyAndCumulativeData } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
@@ -14,10 +14,11 @@ import { BarGroup } from '@/core/types'
 import { Colors } from '@/core/constants/colors'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { px } from '@/core/utils/scale'
+import { useLocalSearchParams } from 'expo-router'
 
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
-  const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { profit, dailyAndCumulativeData } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -26,14 +27,24 @@ function FactoryProfitDetail() {
   const [selectedOption, setSelectedOption] = useState<string>('Tổng')
   const [showSelectModal, setShowSelectModal] = useState(false)
 
+  const { currentPlantId } = useLocalSearchParams<{
+    currentPlantId?: string
+  }>()
+  const plantId = currentPlantId || ''
+
   const selectOptions = ['Tổng', 'BTS', 'BK', 'SP3']
 
   useEffect(() => {
     dispatch(getProfit())
   }, [dispatch])
 
-  // Get month number from profit.Cumulative.Month.month (format: "2024-11")
-  const monthNumber = profit.Cumulative.Month.month?.split('-')[1] ?? new Date().getMonth() + 1
+  useEffect(() => {
+    const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
+    dispatch(getDailyAndCumulativeData({ currentPlantId: plantId, date: formattedDate }))
+  }, [dispatch, selectedDate, plantId])
+
+  // Get month number from selectedDate (format: "DD/MM/YYYY")
+  const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
   const heightLine = 1
   const colorLine = '#7a8596'
@@ -127,13 +138,13 @@ function FactoryProfitDetail() {
           <View style={styles.cardContent}>
             <Text style={[styles.cardLabel, { color: labelColor }]}>LỢI NHUẬN RÒNG HÔM NAY</Text>
             <View style={styles.cardValueContainer}>
-              <Text style={[styles.cardValue, { color: valueColor }]}>{profit.Today.Value}</Text>
-              <Text style={[styles.cardUnit, { color: valueColor }]}>tỷ VNĐ</Text>
+              <Text style={[styles.cardValue, { color: valueColor }]}>{dailyAndCumulativeData.ProfitToday.Value}</Text>
+              <Text style={[styles.cardUnit, { color: valueColor }]}>{dailyAndCumulativeData.ProfitToday.Unit}</Text>
             </View>
             {/* Plant Breakdown */}
             <View style={styles.plantBreakdown}>
-              {profit.Breakdown.map((plant, idx) => {
-                const plantColor = plantColors[idx] || plant.Color
+              {dailyAndCumulativeData.ByPlantToday.map((plant, idx) => {
+                const plantColor = plantColors[idx] || '#A78BFA'
                 return (
                   <Text key={idx} style={[styles.plantItem, { color: plantColor }]}>
                     {plant.PlantName}: {plant.Value} tỷ
@@ -168,13 +179,13 @@ function FactoryProfitDetail() {
             <View style={styles.cardContentHorizontal}>
               <View style={styles.cardValueContainerLeft}>
                 <View style={styles.cardValueRowLeft}>
-                  <Text style={styles.cardValueLeft}>{profit.Cumulative.Month.Value}</Text>
-                  <Text style={styles.cardUnitLeft}>tỷ</Text>
+                  <Text style={styles.cardValueLeft}>{dailyAndCumulativeData.ProfitMonth.Value}</Text>
+                  <Text style={styles.cardUnitLeft}>{dailyAndCumulativeData.ProfitMonth.Unit}</Text>
                 </View>
               </View>
               <View style={styles.plantBreakdownHorizontal}>
-                {profit.Breakdown.map((plant, idx) => {
-                  const plantColor = plantColors[idx] || plant.Color
+                {dailyAndCumulativeData.ByPlantMonth.map((plant, idx) => {
+                  const plantColor = plantColors[idx] || '#A78BFA'
                   return (
                     <Text key={idx} style={[styles.plantItem, { color: plantColor }]}>
                       {plant.PlantName}: {plant.Value} tỷ
