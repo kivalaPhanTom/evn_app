@@ -23,6 +23,7 @@ interface Props {
 function TotalPowerFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const dispatch = useDispatch()
   const [average, setAverage] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
@@ -45,7 +46,7 @@ function TotalPowerFactDetail(props: Props) {
         setLoading: setLoading
       }))
     }
-  }, [currentPlantId, activeTabIndex])
+  }, [currentPlantId, activeTabIndex, countRefesh])
 
   return (
     <AnimatedCardContainer>

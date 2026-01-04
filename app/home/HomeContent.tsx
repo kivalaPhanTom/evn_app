@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -16,14 +16,13 @@ import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfi
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
-import { RefreshControl } from "react-native";
 interface Props { }
 
 function HomeContent(props: Props) {
   const { } = props
   const router = useRouter()
   const dispatch = useDispatch()
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
 
   //   const swipeLeft = Gesture.Pan()
