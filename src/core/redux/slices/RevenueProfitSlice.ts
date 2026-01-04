@@ -125,6 +125,19 @@ interface RevenueProfitState {
     Series: RevenueSeriesItem[]
   }
   isLoadingRevenueByPeriod: boolean
+  dailyAndCumulativeData: {
+    Date: string
+    ProfitToday: {
+      Value: number
+      Unit: string
+    }
+    ByPlantToday: RevenueCostSummaryPlantItem[]
+    ProfitMonth: {
+      Value: number
+      Unit: string
+    }
+    ByPlantMonth: RevenueCostSummaryPlantItem[]
+  }
 }
 
 const initialState: RevenueProfitState = {
@@ -292,6 +305,19 @@ const initialState: RevenueProfitState = {
     Series: [],
   },
   isLoadingRevenueByPeriod: false,
+  dailyAndCumulativeData: {
+    Date: '',
+    ProfitToday: {
+        Value: 0,
+        Unit: 'tỷ Đồng'
+    },
+    ByPlantToday: [],
+    ProfitMonth: {
+        Value: 0,
+        Unit: 'tỷ Đồng'
+    },
+    ByPlantMonth: []
+  },
 }
 
 const revenueProfitSlice = createSlice({
@@ -319,9 +345,19 @@ const revenueProfitSlice = createSlice({
         ...action.payload,
       }
     },
+    setDailyAndCumulativeData: (state, action) => {
+      state.dailyAndCumulativeData = action.payload
+    },
   },
 })
 const { reducer } = revenueProfitSlice
-export const { setLoading, setProfitData, setRevenueData, setPowerPrices, setRevenueCostSummary, setRevenueByPeriod } =
-  revenueProfitSlice.actions
+export const {
+  setLoading,
+  setProfitData,
+  setRevenueData,
+  setPowerPrices,
+  setRevenueCostSummary,
+  setRevenueByPeriod,
+  setDailyAndCumulativeData,
+} = revenueProfitSlice.actions
 export default reducer
