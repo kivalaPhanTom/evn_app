@@ -234,8 +234,6 @@ const BarChart: React.FC<Props> = ({
 
   const selectedMetrics = getGroupMetrics(selectedGroupIndex)
 
-  console.log('processed.length:', processed.length)
-
   return (
     <View style={styles.wrap}>
       {/* Overlay xám bao nhóm */}
