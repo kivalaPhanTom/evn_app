@@ -15,4 +15,5 @@ export const getOutflow = createAction<{ currentPlantId: string; date: string }>
 export const getTurbineflow = createAction<{ currentPlantId: string; date: string }>(ACTION_TYPES.GET_TURBINE_FLOW)
 export const getHydrologyPlantsInfo = createAction<{ plantId: string, date:string }>(ACTION_TYPES.GET_HYDROLOGY_PLANTS_INFO)
 export const getPowerStoreInLake = createAction(ACTION_TYPES.GET_POWER_STORE_IN_LAKE)
+export const getPowerStoreInLakeFactDetail = createAction<{ currentPlantId: string }>(ACTION_TYPES.GET_POWER_STORE_IN_LAKE_FACT_DETAIL)
 export const getOperateWaterLevel = createAction<{ selectedMonth: string }>(ACTION_TYPES.GET_OPERATE_WATER_LEVEL)
