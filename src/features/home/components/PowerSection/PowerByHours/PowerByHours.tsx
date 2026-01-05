@@ -34,7 +34,7 @@ function PowerByHours() {
     .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-power-detail' })
+    router.navigate({ pathname: '/product-power-detail' })
   }
   return (
     <AnimatedCardContainer>
