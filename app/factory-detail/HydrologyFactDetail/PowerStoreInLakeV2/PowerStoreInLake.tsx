@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -6,38 +6,26 @@ import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component
 import { px } from '@/core/utils/scale'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import styles from './PowerStoreInLake.styles'
+import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
 
 const PowerStoreInLakeV2: React.FC = () => {
-  const dispatch = useDispatch()
-  const { powerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
+  const { powerStoreInLakeFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
   const isLoading: boolean = false
 
-  const segments = powerStoreInLake?.segments ?? []
-  const data: StackedItem[] = segments
-    .slice()
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .map((s, idx) => ({
-      label: s.label,
-      value: s.value,
-      color: colorMap[s.label] ?? fallbackColors[idx % fallbackColors.length],
-    }))
-
-  useEffect(() => {
-    dispatch(getPowerStoreInLake())
-  }, [dispatch])
+  const powerStoreInLakeData = powerStoreInLakeFactDetail ? powerStoreInLakeFactDetail[0] : ({} as any)
 
   return (
     <AnimatedCardContainer>
       <View style={styles.pill}>
-        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Điện năng tích trữ</Text>
-        <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={1.85} compareTo={1.77} />
+        <Text style={[styles.pillText, { color: '#A855F7' }]}>Điện năng tích trữ</Text>
+        <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData?.rateOfChange / 100} />
       </View>
 
       <View style={styles.mainRow}>
@@ -48,17 +36,17 @@ const PowerStoreInLakeV2: React.FC = () => {
         ) : (
           <>
             <AnimatedNumber
-              value={Number(powerStoreInLake?.currentCapacity ?? 0)}
+              value={Number(powerStoreInLakeData?.currentCapacity ?? 0)}
               decimals={1}
               duration={800}
               render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
             />
             <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}>
-              {powerStoreInLake?.unit ?? ''}
+              {powerStoreInLakeData?.unit ?? ''}
             </Text>
             <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
             <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
-              {powerStoreInLake?.previousCapacity ?? 0} {powerStoreInLake?.unit ?? ''}
+              {powerStoreInLakeData?.capacity ?? 0} {powerStoreInLakeData?.unit ?? ''}
             </Text>
           </>
         )}
@@ -69,7 +57,7 @@ const PowerStoreInLakeV2: React.FC = () => {
         {isLoading ? (
           <BarSkeleton width={'100%'} alignSelf="center" height={20} />
         ) : (
-          <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
+          <GradientProgress colors={['#EC4899', '#F97316']} progress={powerStoreInLakeData?.currentCapacity / powerStoreInLakeData?.capacity}/>
         )}
       </View>
 
@@ -78,11 +66,16 @@ const PowerStoreInLakeV2: React.FC = () => {
           <View>
             <Text style={[styles.cardTitle, { color: '#FFF' }]}>{`Cùng kỳ năm ngoái`}</Text>
             <Text style={styles.cardValue}>
-              {2.49} <Text style={styles.cardUnit}>{`tr.Wh`}</Text>
+              {powerStoreInLakeData?.previousCapacity ?? 0}{' '}
+              <Text style={styles.cardUnit}>
+                {powerStoreInLakeData?.unit ?? ''} ({powerStoreInLakeData?.previousPercentCapacity ?? 0}%)
+              </Text>
             </Text>
           </View>
           <View>
-            <Text style={{ fontSize: px(24), color: '#A855F7', fontWeight: 'bold' }}>84%</Text>
+            <Text style={{ fontSize: px(24), color: '#A855F7', fontWeight: 'bold' }}>
+              {powerStoreInLakeData?.currentPercentCapacity ?? 0}%
+            </Text>
           </View>
         </View>
       </View>
