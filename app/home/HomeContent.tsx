@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager, FlatList } from 'react-native'
 import { useRouter } from 'expo-router'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -16,6 +16,7 @@ import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfi
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
+
 interface Props { }
 
 function HomeContent(props: Props) {
@@ -38,7 +39,6 @@ function HomeContent(props: Props) {
   }>()
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
- 
   const onRefresh = async () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -48,6 +48,13 @@ function HomeContent(props: Props) {
       }))
     }, 80);
   };
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setReady(true);
+    });
+  }, []);
   return (
     <ScrollView
       refreshControl={
@@ -69,11 +76,11 @@ function HomeContent(props: Props) {
         </View>
         <ScrollView>
           <PowerSection />
-          <ProductionOutput />
-          <Hydrology />
-          <RevenueDetail />
-          <ProfitDetail />
-          <UnitMaintenanceSchedule />
+          { ready && <ProductionOutput />}
+          { ready && <Hydrology />}
+          { ready && <RevenueDetail />}
+          { ready && <ProfitDetail />}
+          { ready && <UnitMaintenanceSchedule />}
         </ScrollView>
       </TwinkleStars>
     </ScrollView>
