@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text } from 'react-native'
 import styles from './ProductOutputRencentDaysFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import { useRouter } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByDaysFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
@@ -18,9 +17,8 @@ interface productionData {
 }
 function ProductOutputRencentDaysFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
-  const router = useRouter()
-
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -34,7 +32,7 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
         setLoading: setLoading
       }))
     }
-  }, [activeTabIndex])
+  }, [activeTabIndex, countRefesh])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)

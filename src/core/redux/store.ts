@@ -5,7 +5,7 @@ import exampleSlice from './slices/ExampleSlice'
 import powerSlice from './slices/PowerSlice'
 import productOutputSlice from './slices/ProductOutputSlice'
 import hydrologySlice from './slices/HydrologySlice'
-import powerFactDetailSlice from './slices/PowerFactDetailSlice'
+import factoryDetailSlice from './slices/FactoryDetailSlice'
 import revenueProfitSlice from './slices/RevenueProfitSlice'
 import homeSlice from './slices/HomeSlice'
 
@@ -16,7 +16,7 @@ const allReducer = {
   powerSlice,
   productOutputSlice,
   hydrologySlice,
-  powerFactDetailSlice,
+  factoryDetailSlice,
   revenueProfitSlice,
   homeSlice
 }

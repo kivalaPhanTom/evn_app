@@ -1,27 +1,19 @@
-import React from 'react'
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { runOnJS } from 'react-native-reanimated'
+import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
-import { lightGradients } from '@/core/constants/gradients'
 import { textGradients } from '@/core/constants/gradients'
 import { px } from '@/core/utils/scale'
-import PowerSection from '@/features/home/components/PowerSection/PowerSection'
-import ProductionOutput from '@/features/home/components/ProductionOutput/ProductionOutput'
-import Hydrology from '@/features/home/components/Hydrology/Hydrology'
-import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import PowerSectionFactDetail from './PowerSectionFactDetail/PowerSectionFactDetail'
-import ProductOutputRencentDaysFactDetail from './ProductionOutputFactDetail/ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
 import ProductionOutputFactDetail from './ProductionOutputFactDetail/ProductionOutputFactDetail'
 import ReservoirWaterLevel from './ReservoirWaterLevel/ReservoirWaterLevel'
 import HydrologyFactDetail from './HydrologyFactDetail/HydrologyFactDetail'
 import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMaintenanceSchedule'
 import RevenueDetail from './RevenueProfitFactDetail/Revenue'
 import ProfitDetail from './RevenueProfitFactDetail/Profit'
+import { saveState } from '@/core/redux/slices/FactoryDetailSlice'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -30,40 +22,59 @@ interface factoryDetailProps {
 }
 
 function FactoryDetail(props: factoryDetailProps) {
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      dispatch(saveState({
+        countRefesh: countRefesh + 1
+      }))
+    }, 80);
+  };
 
   return (
-    <View style={{ flex: 1 }} collapsable={false}>
-      <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
-        <View style={styles.header}>
-          <GradientText
-            text={companyName}
-            colors={textGradients.water}
-            fontSize={px.f(30)}
-            style={{ textAlign: 'center' }}
-          />
-          <View style={styles.locationRow}>
-            <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-            <Text style={styles.locationText}>{location}</Text>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View style={{ flex: 1 }} collapsable={false}>
+        <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+          <View style={styles.header}>
+            <GradientText
+              text={companyName}
+              colors={textGradients.water}
+              fontSize={px.f(30)}
+              style={{ textAlign: 'center' }}
+            />
+            <View style={styles.locationRow}>
+              <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
+              <Text style={styles.locationText}>{location}</Text>
+            </View>
           </View>
-        </View>
-        <ScrollView>
-          <PowerSectionFactDetail
-            currentPlantId={currentPlantId}
-            keyTab={keyTab}
-          />
-          <ProductionOutputFactDetail
-            currentPlantId={currentPlantId}
-            keyTab={keyTab}
-          />
-          <ReservoirWaterLevel />
-          <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-          <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-          <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-          <FactoryMaintenanceSchedule />
-        </ScrollView>
-      </TwinkleStars>
-    </View>
+          <ScrollView>
+            <PowerSectionFactDetail
+              currentPlantId={currentPlantId}
+              keyTab={keyTab}
+            />
+            <ProductionOutputFactDetail
+              currentPlantId={currentPlantId}
+              keyTab={keyTab}
+            />
+            <ReservoirWaterLevel />
+            <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            <FactoryMaintenanceSchedule />
+          </ScrollView>
+        </TwinkleStars>
+      </View>
+    </ScrollView>
   )
 }
 

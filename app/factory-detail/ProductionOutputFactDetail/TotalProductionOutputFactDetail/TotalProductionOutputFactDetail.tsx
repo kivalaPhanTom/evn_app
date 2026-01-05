@@ -38,10 +38,7 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  // const {
-  //   productOutputOverview: { totalPower, averagePower, powerSources },
-  //   isLoadingOverview
-  // } = useSelector((state: RootState) => state.productOutputSlice)
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
@@ -51,7 +48,7 @@ function TotalProductionOutputFactDetail(props: Props) {
         setLoading: setLoading
       }))
     }
-  }, [activeTabIndex])
+  }, [activeTabIndex, countRefesh])
 
   const getDataFromApi = (data: productOutputOverview) => {
     setTotalPower(data.total)
