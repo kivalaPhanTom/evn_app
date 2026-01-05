@@ -18,6 +18,7 @@ interface Props {
 }
 function PowerSectionFactDetail(props: Props) {
     const { currentPlantId, keyTab } = props
+    
     return (
         <SectionContainer title="Công Suất">
             <View>

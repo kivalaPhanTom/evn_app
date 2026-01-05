@@ -30,17 +30,15 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)
   const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
   const [listValueByHours, setListValueByHours] = useState<{ label: string; value: number }[]>([])
-
   const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const title = 'Sản lượng theo giờ'
   const subtitle = `Hôm nay, ${productOutputByHours.currentDate}`
-  // const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
-
   const unit = productOutputByHours.unit
 
   // const THRESHOLD = productOutputByHours.contractPowerValue
@@ -69,16 +67,9 @@ function ProductionOutputByHoursFactDetail(props: Props) {
         setLoading: setLoading
       }))
     }
-  }, [activeTabIndex])
+  }, [activeTabIndex, countRefesh])
 
   const getDataFromApi = (data: productOutputByHours) => {
-    // state.productOutputByHours.currentDate = action.payload.currentDate
-    // state.productOutputByHours.contractPowerValue = action.payload.contractPowerValue
-    // state.productOutputByHours.currentPowerValue = action.payload.currentPowerValue
-    // state.productOutputByHours.currentTime = action.payload.currentTime
-    // state.productOutputByHours.barGroups = action.payload.listValueByHours
-    // state.productOutputByHours.unit = action.payload.unit
-    // setProductionData(data)
     setContractPowerValue(data.contractPowerValue)
     setCurrentPowerValue(data.currentPowerValue)
     setListValueByHours(data.listValueByHours)

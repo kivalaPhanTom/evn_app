@@ -4,26 +4,22 @@ import { useSelector, useDispatch } from 'react-redux'
 import styles from './PowerRecentDaysFactDetail.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
-import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
-import { RootState } from '@/core/redux/store'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
 import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
-import { setPowerOverviewFactDetail, setPowerByTimeFactDetail, setPowerByDaysFactDetail, setComparePowerFactDetail, setLoadingFactDetail } from '@/core/redux/slices/PowerFactDetailSlice'
-// import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 interface PowerByDays {
   value: number
   date: string
 }
-interface Props { 
-   currentPlantId: string
+interface Props {
+  currentPlantId: string
 }
 function PowerRecentDaysFacrDetail(props: Props) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  // const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'
   const getDataFromApi = (data: PowerByDays[]) => {
@@ -38,7 +34,7 @@ function PowerRecentDaysFacrDetail(props: Props) {
       getDataFromApi: getDataFromApi,
       setLoading: setLoading
     }))
-  }, [currentPlantId])
+  }, [currentPlantId, countRefesh])
 
   return (
     <AnimatedCardContainer>
@@ -60,7 +56,6 @@ function PowerRecentDaysFacrDetail(props: Props) {
                 ))}
               </>
             }
-
           </ScrollView>
 
           {/* Bottom Info */}

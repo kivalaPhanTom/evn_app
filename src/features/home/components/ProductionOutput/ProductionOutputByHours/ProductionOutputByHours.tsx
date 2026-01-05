@@ -41,7 +41,7 @@ function ProductionOutputByHours() {
   }, [countRefesh])
 
   const onPressCard = () => {
-    router.push({ pathname: '/product-output-detail' })
+    router.navigate({ pathname: '/product-output-detail' })
   }
   return (
     <AnimatedCardContainer>

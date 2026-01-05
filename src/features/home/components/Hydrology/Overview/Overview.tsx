@@ -536,7 +536,7 @@ const Overview: React.FC = () => {
     }
 
 
-  }, [hydroElectricId])
+  }, [hydroElectricId, countRefesh])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (

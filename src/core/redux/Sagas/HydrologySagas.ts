@@ -11,6 +11,7 @@ import {
   getTurbineflow,
   getPowerStoreInLake,
   getOperateWaterLevel,
+  getPowerStoreInLakeFactDetail,
 } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -25,7 +26,9 @@ import {
   setTurbineflow,
   setPowerStoreInLake,
   setOperateWaterLevel,
+  setPowerStoreInLakeFactDetail,
 } from '../slices/HydrologySlice'
+import { catchHandle } from '@/core/utils/utils'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -177,6 +180,7 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     console.log('getHydrologyPlantsInfo error:', error)
   }
 }
+
 function* getPowerStoreInLakeApiSaga(): Generator {
   try {
     const res = yield call(Service.getPowerStoreInLake)
@@ -184,7 +188,20 @@ function* getPowerStoreInLakeApiSaga(): Generator {
       yield put(setPowerStoreInLake(res.data))
     }
   } catch (error) {
-    console.log('PowerStoreInLake error:', error)
+    catchHandle(error, 'getPowerStoreInLakeApiSaga')
+  }
+}
+
+function* getPowerStoreInLakeFactDetailApiSaga(action: ReturnType<typeof getPowerStoreInLakeFactDetail>): Generator {
+  try {
+    const payload = action.payload
+    const currentPlantId = payload?.currentPlantId || '' 
+    const res = yield call(Service.getPowerStoreInLakeFactDetail, currentPlantId)
+    if (res.status === 200) {
+      yield put(setPowerStoreInLakeFactDetail(res.data))
+    }
+  } catch (error) {
+    catchHandle(error, 'getPowerStoreInLakeFactDetailApiSaga')
   }
 }
 
@@ -208,8 +225,13 @@ function* getHydrologyflowChartApi() {
 function* getInflowOutflowApi() {
   yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga)
 }
+
 function* getPowerStoreInLakeApi() {
   yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga)
+}
+
+function* getPowerStoreInLakeFactDetailApi() {
+  yield takeEvery(getPowerStoreInLakeFactDetail, getPowerStoreInLakeFactDetailApiSaga)
 }
 
 function* getHydrologyPlantsParamApi() {
@@ -252,5 +274,6 @@ export function* hydrologySagaList() {
     getOutflowApi(),
     getTurbineflowApi(),
     getPowerStoreInLakeApi(),
+    getPowerStoreInLakeFactDetailApi(),
     getOperateWaterLevelApi(),
   ])}

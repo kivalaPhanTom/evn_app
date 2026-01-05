@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native'
 import styles from './HydrologyFactDetail.styles'
 import WaterLevelByHours from './WaterLevelByHours/WaterLevelByHours'
 import { useDispatch, useSelector } from 'react-redux'
-import { getHydrographicChart, getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrographicChart, getInflowOutflow, getPowerStoreInLakeFactDetail } from '@/core/redux/Actions/HydrologyActions'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import PowerStoreInLakeV2 from './PowerStoreInLakeV2/PowerStoreInLake'
 import { px } from '@/core/utils/scale'
@@ -23,6 +23,7 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
     if (activeTabIndex === keyTab) {
       dispatch(getHydrographicChart({ companyId: currentPlantId }))
       dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
+      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
   }, [currentPlantId, activeTabIndex, keyTab, dispatch])
 
