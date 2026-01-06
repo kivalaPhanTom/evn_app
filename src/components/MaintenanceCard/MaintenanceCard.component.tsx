@@ -12,14 +12,14 @@ import { ScheduleIcon } from '../ui/schedule-icon'
 import { px } from '@/core/utils/scale'
 
 interface MaintenanceType {
-  minor: number
-  major: number
-  general: number
+  Minor: number
+  Major: number
+  Medium: number
 }
 
 interface MaintenanceDuration {
-  planned: number
-  actual: number
+  Plan: number
+  Actual: number
 }
 
 interface MaintenanceCardProps {
@@ -85,7 +85,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(20) }}>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
-                <Text style={{ color: '#34D399', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.minor}</Text>
+                <Text style={{ color: '#34D399', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Minor}</Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`TIỂU TU`}</Text>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
@@ -99,7 +99,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                   marginLeft: 5,
                 }}
               >
-                <Text style={{ color: '#FBBF24', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.major}</Text>
+                <Text style={{ color: '#FBBF24', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Medium}</Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`TRUNG TU`}</Text>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
@@ -113,9 +113,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                   marginLeft: 5,
                 }}
               >
-                <Text style={{ color: '#FB7185', fontSize: 16, fontWeight: 'bold' }}>
-                  {maintenanceTypeData.general}
-                </Text>
+                <Text style={{ color: '#FB7185', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Major}</Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`ĐẠI TU`}</Text>
               </View>
             </View>
@@ -127,9 +125,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(10) }}>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
-                <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>
-                  {mainternanceDurationData.planned}
-                </Text>
+                <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>{mainternanceDurationData.Plan}</Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`KẾ HOẠCH`}</Text>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
@@ -144,7 +140,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                 }}
               >
                 <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>
-                  {mainternanceDurationData.actual}
+                  {mainternanceDurationData.Actual}
                 </Text>
                 <Text style={{ color: '#64748B', fontSize: 12 }}>{`DỰ KIẾN`}</Text>
               </View>
