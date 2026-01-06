@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit, getDailyAndCumulativeData } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
@@ -18,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router'
 
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
-  const { profit, dailyAndCumulativeData } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { profit, dailyAndCumulativeData, profitByPeriod } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -43,6 +43,19 @@ function FactoryProfitDetail() {
     dispatch(getDailyAndCumulativeData({ currentPlantId: plantId, date: formattedDate }))
   }, [dispatch, selectedDate, plantId])
 
+  useEffect(() => {
+    // Fetch factory profit by period when range or plantId changes
+    const fromDate = dayjs(range?.from)?.format('DD/MM/YYYY')
+    const toDate = dayjs(range?.to)?.format('DD/MM/YYYY')
+    dispatch(
+      getProfitByPeriod({
+        startDate: fromDate,
+        endDate: toDate,
+        currentPlantId: selectedOption === 'Tổng' ? '' : selectedOption,
+      }),
+    )
+  }, [dispatch, range, selectedOption])
+
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
@@ -61,39 +74,10 @@ function FactoryProfitDetail() {
   // Plant colors mapping
   const plantColors = ['#A78BFA', '#4ADE80', '#22D3EE']
 
-  const profitData = [
-    {
-      Date: '2025-12-21',
-      value: 13.03,
-    },
-    {
-      Date: '2025-12-22',
-      value: 0.55,
-    },
-    {
-      Date: '2025-12-23',
-      value: -1,
-    },
-    {
-      Date: '2025-12-24',
-      value: 0.54,
-    },
-    {
-      Date: '2025-12-25',
-      value: 0.56,
-    },
-    {
-      Date: '2025-12-26',
-      value: 0.51,
-    },
-    {
-      Date: '2025-12-27',
-      value: 0.49,
-    },
-  ]
-  const values: { label: string; value: number }[] = profitData?.map((item: { value: number }) => ({
-    label: '',
-    value: Number(item.value),
+  const profitData = profitByPeriod?.Data || []
+  const values: { label: string; value: number }[] = profitData?.map((item: { Value: number; Date: string }) => ({
+    label: item.Date.substring(0, 5), // Lấy ngày từ chuỗi "DD/MM/YYYY"
+    value: Number(item.Value),
   }))
   const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
     label,
@@ -241,10 +225,10 @@ function FactoryProfitDetail() {
         <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
         <View>
           <View style={[styles.chartWrapper]}>
-            <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
+            <BarChart data={rawBarGroups} rounded noOfSection={3} />
           </View>
           <View style={styles.axisContainer}>
-            <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
+            {/* <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
               {xAxisLabels.map((label, idx) => {
                 const isToday = idx === xAxisLabels.length - 1
                 const isNegative = values[idx].value < 0
@@ -255,7 +239,7 @@ function FactoryProfitDetail() {
                   </View>
                 )
               })}
-            </View>
+            </View> */}
             <View style={styles.axisDivider} />
             {/* Legend */}
             <View style={styles.legendRow}>
