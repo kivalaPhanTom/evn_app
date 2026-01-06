@@ -3,7 +3,7 @@ import { Service } from '@/core/service/revenueProfitService'
 import {
   getProfit,
   getRevenue,
-  getRevebnuePowerPrices,
+  getRevenuePowerPrices,
   getRevenueTotalExpense,
   getRevenueByPeriod,
   getDailyAndCumulativeData,
@@ -133,7 +133,7 @@ function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDe
   }
 }
 
-function* getRevebnuePowerPricesSaga(action: ReturnType<typeof getRevebnuePowerPrices>): Generator {
+function* getRevenuePowerPricesSaga(action: ReturnType<typeof getRevenuePowerPrices>): Generator {
   try {
     yield put(
       setLoading({
@@ -278,7 +278,7 @@ function* getRevenueApi() {
 }
 
 function* getRevenuePowerPricesApi() {
-  yield takeEvery(getRevebnuePowerPrices, getRevebnuePowerPricesSaga)
+  yield takeEvery(getRevenuePowerPrices, getRevenuePowerPricesSaga)
 }
 
 function* getRevenueTotalExpenseApi() {
