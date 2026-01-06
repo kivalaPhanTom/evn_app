@@ -17,6 +17,7 @@ interface hydrologyFactDetailProps {
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -25,12 +26,12 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
       dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
       dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch])
+  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
 
   return (
     <ScrollView>
       <View style={{ marginHorizontal: px.h(24) }}>
-        <WaterLevelByHours currentPlantId={currentPlantId}/>
+        <WaterLevelByHours currentPlantId={currentPlantId} />
         <View style={{ marginTop: 20 }}>
           <InflowOutflow hydroElectricId={currentPlantId} />
         </View>
@@ -38,7 +39,7 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
           <PowerStoreInLakeV2 />
         </View>
       </View>
-    </ScrollView>   
+    </ScrollView>
   )
 }
 
