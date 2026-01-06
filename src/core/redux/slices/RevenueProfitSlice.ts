@@ -25,6 +25,7 @@ interface RevenueSeriesItem {
   Color: string
 }
 interface RevenueProfitState {
+  countRefesh: number
   isLoadingProfit: boolean
   isLoadingRevenue: boolean
   profit: {
@@ -196,9 +197,20 @@ interface RevenueProfitState {
     }
     ByPlantMonth: RevenueCostSummaryPlantItem[]
   }
+  profitByPeriod: {
+    PlantCode: string
+    PlantName: string
+    Unit: string
+    Data: {
+      Date: string
+      Value: number
+    }[]
+  }
+  isLoadingProfitByPeriod: boolean
 }
 
 const initialState: RevenueProfitState = {
+  countRefesh:0,
   isLoadingProfit: false,
   isLoadingRevenue: false,
   profit: {
@@ -424,16 +436,23 @@ const initialState: RevenueProfitState = {
   dailyAndCumulativeData: {
     Date: '',
     ProfitToday: {
-        Value: 0,
-        Unit: 'tỷ Đồng'
+      Value: 0,
+      Unit: 'tỷ Đồng',
     },
     ByPlantToday: [],
     ProfitMonth: {
-        Value: 0,
-        Unit: 'tỷ Đồng'
+      Value: 0,
+      Unit: 'tỷ Đồng',
     },
-    ByPlantMonth: []
+    ByPlantMonth: [],
   },
+  profitByPeriod: {
+    PlantCode: '',
+    PlantName: '',
+    Unit: '',
+    Data: [],
+  },
+  isLoadingProfitByPeriod: false,
 }
 
 const revenueProfitSlice = createSlice({
@@ -444,7 +463,7 @@ const revenueProfitSlice = createSlice({
       state.profit = action.payload
     },
     setProfitFactDetailData: (state, action) => {
-      state.profitFactDetail = action.payload     
+      state.profitFactDetail = action.payload
     },
     setRevenueData: (state, action) => {
       state.revenue = action.payload
@@ -456,10 +475,13 @@ const revenueProfitSlice = createSlice({
       state.revenueCostSummary = action.payload
     },
     setRevenueFactDetailData: (state, action) => {
-      state.revenueFactDetail = action.payload     
+      state.revenueFactDetail = action.payload
     },
     setRevenueByPeriod: (state, action) => {
       state.revenueByPeriod = action.payload
+    },
+    setProfitByPeriod: (state, action) => {
+      state.profitByPeriod = action.payload
     },
     setLoading: (state, action) => {
       return {
@@ -470,6 +492,9 @@ const revenueProfitSlice = createSlice({
     setDailyAndCumulativeData: (state, action) => {
       state.dailyAndCumulativeData = action.payload
     },
+     setCountRefesh: (state, action) => {
+        state.countRefesh = action.payload
+    }
   },
 })
 const { reducer } = revenueProfitSlice
@@ -481,7 +506,9 @@ export const {
   setRevenueCostSummary,
   setRevenueByPeriod,
   setDailyAndCumulativeData,
-  setProfitFactDetailData, 
-  setRevenueFactDetailData
+  setProfitFactDetailData,
+  setRevenueFactDetailData,
+  setProfitByPeriod,
+  setCountRefesh
 } = revenueProfitSlice.actions
 export default reducer

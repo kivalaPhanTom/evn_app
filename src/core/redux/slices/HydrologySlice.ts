@@ -22,6 +22,7 @@ interface waterLevelRangeItem {
   toLevel: number
 }
 interface hydrologyState {
+  countRefesh: number
   inboundTraffic: number
   dischargeFlow: number
   inflowOutflow: {
@@ -118,11 +119,21 @@ interface hydrologyState {
     }[]
     unit: string
   }
+  powerStoreInLakeFactDetail: {
+    capacity: number
+    currentCapacity: number
+    currentPercentCapacity: number
+    previousCapacity: number
+    previousPercentCapacity: number
+    unit: string
+    rateOfChange: number
+  }[]
   operateWaterLevel: {
     waterLevelRange: waterLevelRangeItem[]
   }
 }
 const initialState: hydrologyState = {
+  countRefesh: 0,
   inboundTraffic: 0,
   dischargeFlow: 0,
   inflowOutflow: {
@@ -232,6 +243,7 @@ const initialState: hydrologyState = {
     segments: [],
     unit: '',
   },
+  powerStoreInLakeFactDetail: [],
   operateWaterLevel: {
     waterLevelRange: [],
   }
@@ -273,9 +285,15 @@ const hydrologySlice = createSlice({
     setPowerStoreInLake: (state, action) => {
       state.powerStoreInLake = action.payload
     },
+    setPowerStoreInLakeFactDetail: (state, action) => {
+      state.powerStoreInLakeFactDetail = action.payload
+    },
     setOperateWaterLevel: (state, action) => {
       state.operateWaterLevel = action.payload
     },
+    setCountRefesh: (state, action) => {
+        state.countRefesh = action.payload
+    }
   },
 })
 
@@ -292,6 +310,8 @@ export const {
   setTurbineflow,
   setPowerStoreInLake,
   setOperateWaterLevel,
+  setPowerStoreInLakeFactDetail,
+  setCountRefesh
 } = hydrologySlice.actions
 
 export default reducer

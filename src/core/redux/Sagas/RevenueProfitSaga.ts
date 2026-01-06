@@ -3,12 +3,13 @@ import { Service } from '@/core/service/revenueProfitService'
 import {
   getProfit,
   getRevenue,
-  getRevebnuePowerPrices,
+  getRevenuePowerPrices,
   getRevenueTotalExpense,
   getRevenueByPeriod,
   getDailyAndCumulativeData,
   getProfitFactDetail,
   getRevenueFactDetail,
+  getProfitByPeriod,
 } from '../Actions/RevenueProfitActions'
 import {
   setProfitData,
@@ -20,94 +21,119 @@ import {
   setDailyAndCumulativeData,
   setProfitFactDetailData,
   setRevenueFactDetailData,
+  setProfitByPeriod,
 } from '../slices/RevenueProfitSlice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProfitApiSaga(): Generator {
   try {
-    yield put(setLoading({
-      isLoadingProfit: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: true,
+      }),
+    )
     const res = yield call(Service.getProfitApi, '')
     if (res.status === 200) {
       yield put(setProfitData(res.data))
     }
-    yield put(setLoading({
-      isLoadingProfit: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: false,
+      }),
+    )
   } catch (error) {
     catchHandle(error, 'getProfitApiSaga')
-    yield put(setLoading({
-      isLoadingProfit: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: false,
+      }),
+    )
   }
 }
 
 function* getProfitFactDetailApiSaga(action: ReturnType<typeof getProfitFactDetail>): Generator {
   try {
-    yield put(setLoading({
-      isLoadingProfit: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: true,
+      }),
+    )
     const payload = action.payload
     const { currentPlantId } = payload
     const res = yield call(Service.getProfitApi, currentPlantId)
     if (res.status === 200) {
       yield put(setProfitFactDetailData(res.data))
     }
-    yield put(setLoading({
-      isLoadingProfit: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: false,
+      }),
+    )
   } catch (error) {
     catchHandle(error, 'getProfitFactDetailApiSaga')
-    yield put(setLoading({
-      isLoadingProfit: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingProfit: false,
+      }),
+    )
   }
 }
 
 function* getRevenueApiSaga(): Generator {
   try {
-    yield put(setLoading({
-      isLoadingRevenue: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: true,
+      }),
+    )
     const res = yield call(Service.getRevenueApi, '')
     if (res.status === 200) {
       yield put(setRevenueData(res.data))
     }
-    yield put(setLoading({
-      isLoadingRevenue: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: false,
+      }),
+    )
   } catch (error) {
     catchHandle(error, 'getRevenueApiSaga')
-    yield put(setLoading({
-      isLoadingRevenue: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: false,
+      }),
+    )
   }
 }
 
 function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDetail>): Generator {
   try {
-    yield put(setLoading({
-      isLoadingRevenue: true
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: true,
+      }),
+    )
     const payload = action.payload
     const { currentPlantId } = payload
     const res = yield call(Service.getRevenueApi, currentPlantId)
     if (res.status === 200) {
       yield put(setRevenueFactDetailData(res.data))
     }
-    yield put(setLoading({
-      isLoadingRevenue: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: false,
+      }),
+    )
   } catch (error) {
     catchHandle(error, 'getRevenueFactDetailApiSaga')
-    yield put(setLoading({
-      isLoadingRevenue: false
-    }))
+    yield put(
+      setLoading({
+        isLoadingRevenue: false,
+      }),
+    )
   }
 }
 
-function* getRevebnuePowerPricesSaga(action: ReturnType<typeof getRevebnuePowerPrices>): Generator {
+function* getRevenuePowerPricesSaga(action: ReturnType<typeof getRevenuePowerPrices>): Generator {
   try {
     yield put(
       setLoading({
@@ -201,6 +227,37 @@ function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>):
   }
 }
 
+function* getProfitByPeriodSaga(action: ReturnType<typeof getProfitByPeriod>): Generator {
+  try {
+    yield put(
+      setLoading({
+        isLoadingProfitByPeriod: true,
+      }),
+    )
+    const payload = action.payload
+    const { startDate, endDate, currentPlantId } = payload
+    const res = yield call(Service.getProfitByPeriodApi, startDate, endDate, currentPlantId)
+    if (res.status === 200) {
+      yield put(setProfitByPeriod(res.data))
+      // yield put(setRevenueData(res.data))
+      // You can dispatch an action to store the data in the Redux store here
+      // yield put(setHydrologyFlowChart(res.data))
+    }
+    yield put(
+      setLoading({
+        isLoadingProfitByPeriod: false,
+      }),
+    )
+  } catch (error) {
+    yield put(
+      setLoading({
+        isLoadingProfitByPeriod: false,
+      }),
+    )
+    // console.log('getInflowOutflow error:', error)
+  }
+}
+
 function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCumulativeData>): Generator {
   try {
     const payload = action.payload
@@ -209,8 +266,7 @@ function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCum
     if (res.status === 200) {
       yield put(setDailyAndCumulativeData(res.data))
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 function* getProfitApi() {
@@ -222,7 +278,7 @@ function* getRevenueApi() {
 }
 
 function* getRevenuePowerPricesApi() {
-  yield takeEvery(getRevebnuePowerPrices, getRevebnuePowerPricesSaga)
+  yield takeEvery(getRevenuePowerPrices, getRevenuePowerPricesSaga)
 }
 
 function* getRevenueTotalExpenseApi() {
@@ -244,6 +300,10 @@ function* getDailyAndCumulativeDataApi() {
   yield takeEvery(getDailyAndCumulativeData, getDailyAndCumulativeDataSaga)
 }
 
+function* getProfitByPeriodApi() {
+  yield takeEvery(getProfitByPeriod, getProfitByPeriodSaga)
+}
+
 export function* revenueProfitSagaList() {
   yield all([
     getProfitApi(),
@@ -254,5 +314,6 @@ export function* revenueProfitSagaList() {
     getRevenueTotalExpenseApi(),
     getRevenueByPeriodApi(),
     getDailyAndCumulativeDataApi(),
+    getProfitByPeriodApi(),
   ])
 }

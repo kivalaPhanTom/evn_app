@@ -80,6 +80,7 @@ function getCurrentPlantId(activeTab: string): string {
 }
 function HydrologyDetail() {
   const dispatch = useDispatch()
+  const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>('BTS')
@@ -109,7 +110,7 @@ function HydrologyDetail() {
     dispatch(getInflow(payload));
     dispatch(getOutflow(payload));
     dispatch(getTurbineflow(payload));
-  }, [activeTab, selectedDate, dispatch])
+  }, [activeTab, selectedDate, countRefesh])
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
