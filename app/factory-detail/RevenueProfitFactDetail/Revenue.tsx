@@ -25,7 +25,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
   const router = useRouter()
-
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { revenueFactDetail, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
 
@@ -34,10 +34,10 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   }
 
   useEffect(() => {
-    if(activeTabIndex === keyTab) {
+    if (activeTabIndex === keyTab) {
       dispatch(getRevenueFactDetail({ currentPlantId }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab])
+  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
 
   const data: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({

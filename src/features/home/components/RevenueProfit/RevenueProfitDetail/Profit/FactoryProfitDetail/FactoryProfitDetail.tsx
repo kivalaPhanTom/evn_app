@@ -18,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router'
 
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
-  const { profit, dailyAndCumulativeData, profitByPeriod } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -36,12 +36,12 @@ function FactoryProfitDetail() {
 
   useEffect(() => {
     dispatch(getProfit())
-  }, [dispatch])
+  }, [dispatch, countRefesh])
 
   useEffect(() => {
     const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
     dispatch(getDailyAndCumulativeData({ currentPlantId: plantId, date: formattedDate }))
-  }, [dispatch, selectedDate, plantId])
+  }, [dispatch, selectedDate, plantId, countRefesh])
 
   useEffect(() => {
     // Fetch factory profit by period when range or plantId changes
@@ -54,7 +54,7 @@ function FactoryProfitDetail() {
         currentPlantId: selectedOption === 'Tổng' ? '' : selectedOption,
       }),
     )
-  }, [dispatch, range, selectedOption])
+  }, [dispatch, range, selectedOption, countRefesh])
 
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1

@@ -25,7 +25,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   const router = useRouter()
   const { profitFactDetail, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const fromParts = profitFactDetail.Chart.Period.From?.split('-') ?? []
   const toParts = profitFactDetail.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -152,10 +152,10 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }))
 
   useEffect(() => {
-    if(activeTabIndex === keyTab) {
+    if (activeTabIndex === keyTab) {
       dispatch(getProfitFactDetail({ currentPlantId }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab])
+  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
 
   // Build x-axis labels: last 6 days + "Nay" for today
   const today = new Date()
@@ -178,7 +178,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
       return { dateStr: formatDayWithMonth(d), value: v.value }
     })
     .filter((x) => x.value < 0)
-  const onPressCard = () => { 
+  const onPressCard = () => {
     router.navigate({ pathname: '/factory-profit-detail' as any })
   }
 
