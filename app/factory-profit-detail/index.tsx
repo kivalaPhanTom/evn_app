@@ -2,32 +2,51 @@ import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import FactoryProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/FactoryProfitDetail/FactoryProfitDetail'
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
+import { setCountRefesh } from '@/core/redux/slices/RevenueProfitSlice'
 
 const FactoryProfitDetailScreen: React.FC = () => {
   const { companyName } = useLocalSearchParams<{
     companyName?: string | string[]
   }>()
+  const dispatch = useDispatch()
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const { countRefesh } = useSelector((state: any) => state.revenueProfitSlice)
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      dispatch(setCountRefesh({
+        countRefesh: countRefesh + 1
+      }))
+    }, 80);
+  };
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-      <View style={styles.header}>
-        <GradientText
-          text={'Chi tiết Lợi nhuận'}
-          colors={'#FFF'}
-          fontSize={px.f(30)}
-          style={{ textAlign: 'center' }}
-        />
-        <View style={styles.locationRow}>
-          <Text style={styles.locationText}>{companyTitle ?? 'Công ty thủy điện Buôn Kuốp'}</Text>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+        <View style={styles.header}>
+          <GradientText
+            text={'Chi tiết Lợi nhuận'}
+            colors={'#FFF'}
+            fontSize={px.f(30)}
+            style={{ textAlign: 'center' }}
+          />
+          <View style={styles.locationRow}>
+            <Text style={styles.locationText}>{companyTitle ?? 'Công ty thủy điện Buôn Kuốp'}</Text>
+          </View>
         </View>
-      </View>
-      <FactoryProfitDetail />
-    </TwinkleStars>
+        <FactoryProfitDetail />
+      </TwinkleStars>
+    </ScrollView>
   )
 }
 
