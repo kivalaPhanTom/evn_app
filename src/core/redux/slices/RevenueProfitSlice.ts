@@ -25,6 +25,7 @@ interface RevenueSeriesItem {
   Color: string
 }
 interface RevenueProfitState {
+  countRefesh: number
   isLoadingProfit: boolean
   isLoadingRevenue: boolean
   profit: {
@@ -209,6 +210,7 @@ interface RevenueProfitState {
 }
 
 const initialState: RevenueProfitState = {
+  countRefesh:0,
   isLoadingProfit: false,
   isLoadingRevenue: false,
   profit: {
@@ -490,6 +492,9 @@ const revenueProfitSlice = createSlice({
     setDailyAndCumulativeData: (state, action) => {
       state.dailyAndCumulativeData = action.payload
     },
+     setCountRefesh: (state, action) => {
+        state.countRefesh = action.payload
+    }
   },
 })
 const { reducer } = revenueProfitSlice
@@ -504,5 +509,6 @@ export const {
   setProfitFactDetailData,
   setRevenueFactDetailData,
   setProfitByPeriod,
+  setCountRefesh
 } = revenueProfitSlice.actions
 export default reducer

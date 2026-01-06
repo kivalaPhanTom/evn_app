@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import PowerPrices from './PowerPrices';
 import TotalRevenueExpenses from './TotalRevenueExpenses';
 import ReveneCompareByTime from './ReveneCompareByTime';
@@ -7,8 +7,9 @@ import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getRevebnuePowerPrices, getRevenueTotalExpense } from '@/core/redux/Actions/RevenueProfitActions'
+import { getRevenuePowerPrices, getRevenueTotalExpense } from '@/core/redux/Actions/RevenueProfitActions'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
+import { setCountRefesh } from '@/core/redux/slices/RevenueProfitSlice'
 interface Props { }
 
 const data = {
@@ -63,6 +64,8 @@ function getCurrentPlantId(activeTab: string): string {
 export default function RevenueDetail(props: Props) {
     const dispatch = useDispatch()
     // const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+    const { countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
+    const [refreshing, setRefreshing] = useState<boolean>(false);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const [activeTab, setActiveTab] = useState<string>('BTS')
     const hydrologyPlants = {
@@ -103,14 +106,29 @@ export default function RevenueDetail(props: Props) {
         dispatch(getInflow(payload))
         dispatch(getOutflow(payload))
         dispatch(getTurbineflow(payload))
-        dispatch(getRevebnuePowerPrices(payload))
+        dispatch(getRevenuePowerPrices(payload))
         dispatch(getRevenueTotalExpense({
             date: formattedDate,
         }))
-    }, [activeTab, selectedDate])
+    }, [activeTab, selectedDate, countRefesh])
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+              dispatch(setCountRefesh({
+                countRefesh: countRefesh + 1
+              }))
+        }, 80);
+    };
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 24 }}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ paddingBottom: 24 }}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+        >
             <Text style={styles.title}>Chi tiết Doanh thu</Text>
             <Text style={styles.companyName} >Công ty thủy điện Buôn Kuốp</Text>
             <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />

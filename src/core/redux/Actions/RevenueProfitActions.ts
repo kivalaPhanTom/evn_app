@@ -5,7 +5,7 @@ export const getProfit = createAction(ACTION_TYPES.GET_PROFIT)
 export const getProfitFactDetail = createAction<{ currentPlantId: string }>(ACTION_TYPES.GET_PROFIT_FACT_DETAIL)
 export const getRevenue = createAction(ACTION_TYPES.GET_REVENUE)
 export const getRevenueFactDetail = createAction<{ currentPlantId: string }>(ACTION_TYPES.GET_REVENUE_FACT_DETAIL)
-export const getRevebnuePowerPrices = createAction<{ currentPlantId: string; date: string }>(
+export const getRevenuePowerPrices = createAction<{ currentPlantId: string; date: string }>(
   ACTION_TYPES.GET_REVENUE_POWER_PRICES,
 )
 export const getRevenueTotalExpense = createAction<{ date: string }>(ACTION_TYPES.GET_REVENUE_TOTAL_EXPENSES)
