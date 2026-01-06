@@ -32,7 +32,7 @@ export default function ReveneCompareByTime({
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState(OPTIONS[0])
   const revenueByPeriod = useSelector((state: any) => state.revenueProfitSlice.revenueByPeriod)
-
+  const { countRefesh } = useSelector((state: any) => state.revenueProfitSlice)
   const onSelect = (value: any) => {
     setSelected(value)
     setOpen(false)
@@ -62,7 +62,7 @@ export default function ReveneCompareByTime({
         type: selected.value,
       }),
     )
-  }, [dispatch, dayjs(range?.from).format('DD/MM/YYYY'), dayjs(range?.to).format('DD/MM/YYYY'), selected.value])
+  }, [dispatch, dayjs(range?.from).format('DD/MM/YYYY'), dayjs(range?.to).format('DD/MM/YYYY'), selected.value, countRefesh])
 
   const data = revenueByPeriod?.Series[0]
   const data2 = revenueByPeriod?.Series[1]
