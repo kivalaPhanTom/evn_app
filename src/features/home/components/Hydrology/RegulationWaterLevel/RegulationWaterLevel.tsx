@@ -21,7 +21,7 @@ interface TimeRangeData {
 
 const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
   const dispatch = useDispatch()
-  const { operateWaterLevel } = useSelector((state: RootState) => state.hydrologySlice)
+  const { operateWaterLevel, countRefesh } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedMonth, setSelectedMonth] = useState(dayjs())
 
   // Tạo dữ liệu mặc định khi không có dữ liệu từ API
@@ -71,7 +71,7 @@ const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
   useEffect(() => {
     const formattedDate = selectedMonth.format('MM/YYYY')
     dispatch(getOperateWaterLevel({ selectedMonth: formattedDate }))
-  }, [selectedMonth, dispatch])
+  }, [selectedMonth, dispatch, countRefesh])
 
   const handleConfirm = (date: dayjs.Dayjs) => {
     setSelectedMonth(date)

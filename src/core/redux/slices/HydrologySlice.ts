@@ -22,6 +22,7 @@ interface waterLevelRangeItem {
   toLevel: number
 }
 interface hydrologyState {
+  countRefesh: number
   inboundTraffic: number
   dischargeFlow: number
   inflowOutflow: {
@@ -132,6 +133,7 @@ interface hydrologyState {
   }
 }
 const initialState: hydrologyState = {
+  countRefesh: 0,
   inboundTraffic: 0,
   dischargeFlow: 0,
   inflowOutflow: {
@@ -289,6 +291,9 @@ const hydrologySlice = createSlice({
     setOperateWaterLevel: (state, action) => {
       state.operateWaterLevel = action.payload
     },
+    setCountRefesh: (state, action) => {
+        state.countRefesh = action.payload
+    }
   },
 })
 
@@ -306,6 +311,7 @@ export const {
   setPowerStoreInLake,
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
+  setCountRefesh
 } = hydrologySlice.actions
 
 export default reducer
