@@ -25,10 +25,10 @@ interface InfoCardData {
 const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInformationProps) => {
   const { date, currentPlantId } = props
   const dispatch = useDispatch()
-  const { hydrologyPlantsInfo } = useSelector((state: any) => state.hydrologySlice)
+  const { hydrologyPlantsInfo, countRefesh } = useSelector((state: any) => state.hydrologySlice)
   useEffect(() => {
     dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId, date: date }))
-  }, [date, currentPlantId, dispatch])
+  }, [date, currentPlantId, countRefesh])
 
   const plantsInfoData: { label: string; value: number; unit: string }[] =
     hydrologyPlantsInfo?.PlantsInfoData ?? []
