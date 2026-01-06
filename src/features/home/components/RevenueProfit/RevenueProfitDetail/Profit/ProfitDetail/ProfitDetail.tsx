@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit, getDailyAndCumulativeData } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
@@ -10,6 +10,10 @@ import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.compon
 import dayjs from 'dayjs'
 import { styles } from './ProfitDetail.styles'
 import { LinearGradient } from 'expo-linear-gradient'
+import { BarGroup } from '@/core/types'
+import { Colors } from '@/core/constants/colors'
+import BarChart from '@/components/BarChart/BarChart.component'
+import { px } from '@/core/utils/scale'
 
 interface ProfitDetailProps {
   plantName?: string
@@ -18,7 +22,7 @@ interface ProfitDetailProps {
 
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const dispatch = useDispatch()
-  const { dailyAndCumulativeData } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { dailyAndCumulativeData, profitByPeriod } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -33,13 +37,41 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
     const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
     dispatch(getDailyAndCumulativeData({ currentPlantId: plantId || '', date: formattedDate }))
   }, [dispatch, selectedDate, plantId])
-
+  useEffect(() => {
+    // Fetch factory profit by period when range or plantId changes
+    const fromDate = dayjs(range?.from)?.format('DD/MM/YYYY')
+    const toDate = dayjs(range?.to)?.format('DD/MM/YYYY')
+    dispatch(
+      getProfitByPeriod({
+        startDate: fromDate,
+        endDate: toDate,
+        currentPlantId: plantId || '',
+      }),
+    )
+  }, [dispatch, range])
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
   const heightLine = 1
   const colorLine = '#7a8596'
   const lineStyle = { marginVertical: 10 }
+
+  const profitData = profitByPeriod?.Data || []
+  const values: { label: string; value: number }[] = profitData?.map((item: { Value: number; Date: string }) => ({
+    label: item.Date.substring(0, 5), // Lấy ngày từ chuỗi "DD/MM/YYYY"
+    value: Number(item.Value),
+  }))
+  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
+    label,
+    items: [
+      {
+        value,
+        frontColor: value < 0 ? Colors.red : Colors.green,
+        showValuesOnTop: true,
+        showPrefix: value > 0,
+      },
+    ],
+  }))
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -104,6 +136,37 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
       <AnimatedCardContainer>
         <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
         <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
+        <View>
+          <View style={[styles.chartWrapper]}>
+            <BarChart data={rawBarGroups} rounded noOfSection={3} />
+          </View>
+          <View style={styles.axisContainer}>
+            {/* <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
+              {xAxisLabels.map((label, idx) => {
+                const isToday = idx === xAxisLabels.length - 1
+                const isNegative = values[idx].value < 0
+                const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
+                return (
+                  <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
+                    <Text style={[styles.axisLabel, { color }]}>{label}</Text>
+                  </View>
+                )
+              })}
+            </View> */}
+            <View style={styles.axisDivider} />
+            {/* Legend */}
+            <View style={styles.legendRow}>
+              <View style={[styles.legendItem]}>
+                <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
+                <Text style={styles.legendText}>Lãi</Text>
+              </View>
+              <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
+                <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
+                <Text style={styles.legendText}>Lỗ</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </AnimatedCardContainer>
     </ScrollView>
   )

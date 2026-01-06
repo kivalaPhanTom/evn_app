@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use, useEffect } from 'react'
 import { Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -11,58 +11,24 @@ import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.co
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import { t } from 'i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
 
 function UnitMaintenanceSchedule() {
   const router = useRouter()
+  const dispatch = useDispatch()
 
   const onPressCard = () => {
     router.push({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
+  const { TotalActualDay, TotalCategory, TotalMajorCategory, TotalMediumCategory, TotalMinorCategory, Details } =
+    useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
-  const data = [
-    {
-      title: 'Buôn Tua Sah',
-      status: 1,
-      typeCount: 2,
-      maintenanceTypeData: {
-        minor: 1,
-        major: 0,
-        general: 1,
-      },
-      mainternanceDurationData: {
-        planned: 40,
-        actual: 36,
-      },
-    },
-    {
-      title: 'Buôn Kuôp',
-      status: 0,
-      typeCount: 2,
-      maintenanceTypeData: {
-        minor: 1,
-        major: 0,
-        general: 1,
-      },
-      mainternanceDurationData: {
-        planned: 40,
-        actual: 36,
-      },
-    },
-    {
-      title: 'Srepok 3',
-      status: 1,
-      typeCount: 2,
-      maintenanceTypeData: {
-        minor: 1,
-        major: 0,
-        general: 1,
-      },
-      mainternanceDurationData: {
-        planned: 40,
-        actual: 36,
-      },
-    },
-  ]
+  useEffect(() => {
+    // Dispatch action to fetch repair schedule data
+    dispatch(getRepairSchedule())
+  }, [dispatch])
 
   return (
     <SectionContainer
@@ -91,13 +57,13 @@ function UnitMaintenanceSchedule() {
         </View>
       </View>
       <View>
-        {data?.map((item, idex) => (
+        {Details?.map((item, idex) => (
           <MaintenanceCard
-            title={item.title}
-            status={item.status}
-            typeCount={item.typeCount}
-            maintenanceTypeData={item.maintenanceTypeData}
-            mainternanceDurationData={item.mainternanceDurationData}
+            title={item.PlantName}
+            status={item.Status}
+            typeCount={item.Category.Total}
+            maintenanceTypeData={item.Category}
+            mainternanceDurationData={item.Day}
             key={idex}
           />
         ))}

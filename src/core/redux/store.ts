@@ -8,6 +8,7 @@ import hydrologySlice from './slices/HydrologySlice'
 import factoryDetailSlice from './slices/FactoryDetailSlice'
 import revenueProfitSlice from './slices/RevenueProfitSlice'
 import homeSlice from './slices/HomeSlice'
+import unitMaintenanceScheduleSlice from './slices/UnitMaintenanceScheduleSlice'
 
 let sagaMiddleware = createSagaMiddleware()
 
@@ -18,7 +19,8 @@ const allReducer = {
   hydrologySlice,
   factoryDetailSlice,
   revenueProfitSlice,
-  homeSlice
+  unitMaintenanceScheduleSlice,
+  homeSlice,
 }
 const store = configureStore({
   reducer: {
@@ -29,9 +31,9 @@ const store = configureStore({
       thunk: false,
       serializableCheck: false, // 🔥 cho phép function
     }).concat(sagaMiddleware),
-// })
+  // })
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 })
 sagaMiddleware.run(rootSaga)
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState>
 export default store

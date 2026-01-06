@@ -191,7 +191,8 @@ const BarChart: React.FC<Props> = ({
                           numberOfLines={1}
                           adjustsFontSizeToFit
                         >
-                          {item.showPrefix && '+'}{item.value}
+                          {item.showPrefix && '+'}
+                          {item.value}
                         </Text>
                       </View>
                     )
@@ -277,8 +278,8 @@ const BarChart: React.FC<Props> = ({
             styles.tooltip,
             {
               left: selectedMetrics.left + 10,
-                // position tooltip clearly above the overlay (no overlap)
-                top:
+              // position tooltip clearly above the overlay (no overlap)
+              top:
                 height -
                 ((selectedGroupItems && selectedGroupItems.length > 0
                   ? Math.max(...selectedGroupItems.map((i) => i.value))
@@ -286,9 +287,9 @@ const BarChart: React.FC<Props> = ({
                   paddedMax) *
                   height -
                 px.v(35),
-              },
-              ]}
-            >
+            },
+          ]}
+        >
           <View style={[styles.tooltipBubble, { backgroundColor: isDark ? '#1F2937' : '#111827' }]}>
             {selectedGroupItems.map((it, i) => (
               <View key={i} style={styles.tooltipRow}>
@@ -368,23 +369,23 @@ const BarChart: React.FC<Props> = ({
                     shiftY: lineDataPointsShift1,
                   }
               : customDataPoint
-              ? {
-                  isAnimated: true,
-                  thickness: 2,
-                  color: lineColor,
-                  dataPointsColor: lineColor,
-                  dataPointsRadius: 6,
-                  shiftY: lineDataPointsShift,
-                  customDataPoint: () => customDataPoint,
-                }
-              : {
-                  isAnimated: true,
-                  thickness: 2,
-                  color: lineColor,
-                  dataPointsColor: lineColor,
-                  dataPointsRadius: 6,
-                  shiftY: lineDataPointsShift,
-                }
+                ? {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor,
+                    dataPointsColor: lineColor,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift,
+                    customDataPoint: () => customDataPoint,
+                  }
+                : {
+                    isAnimated: true,
+                    thickness: 2,
+                    color: lineColor,
+                    dataPointsColor: lineColor,
+                    dataPointsRadius: 6,
+                    shiftY: lineDataPointsShift,
+                  }
           }
           lineData2={lineData2 && lineData2.length > 0 ? lineData2 : undefined}
           lineConfig2={
@@ -410,7 +411,9 @@ const BarChart: React.FC<Props> = ({
         />
       ) : (
         <View style={{ height, justifyContent: 'center' }}>
-          <LineBarChartSkeleton isShowLine={showLine || (lineData1 && lineData1.length > 0) || (lineData2 && lineData2.length > 0)} />
+          <LineBarChartSkeleton
+            isShowLine={showLine || (lineData1 && lineData1.length > 0) || (lineData2 && lineData2.length > 0)}
+          />
         </View>
       )}
     </View>

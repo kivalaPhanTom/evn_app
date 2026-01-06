@@ -8,6 +8,7 @@ export const Service = {
   getRevenueTotalExpensesApi,
   getRevenueByPeriodApi,
   getDailyAndCumulativeApi,
+  getProfitByPeriodApi,
 }
 export const servicePattern = {
   getProfit: `${prefix_api}/profit`,
@@ -18,13 +19,14 @@ export const servicePattern = {
   getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
   getRevenueByPeriod: `${prefix_api}/revenueByPeriod`,
   getDailyAndCumulative: `${prefix_api}/dailyAndCumulative`,
+  getProfitByPeriod: `${prefix_api}/byPeriod`,
 }
 
 function getProfitApi(currentPlantId: string = '') {
   return api.get(`${servicePattern.getProfit}`, {
     params: {
       currentPlantId: currentPlantId,
-    }
+    },
   })
 }
 
@@ -32,7 +34,7 @@ function getRevenueApi(currentPlantId: string = '') {
   return api.get(`${servicePattern.getRevenue}`, {
     params: {
       currentPlantId: currentPlantId,
-    }
+    },
   })
 }
 
@@ -68,6 +70,16 @@ function getDailyAndCumulativeApi(currentPlantId: string, date: string) {
     params: {
       currentPlantId: currentPlantId,
       date: date,
-    }
+    },
+  })
+}
+
+function getProfitByPeriodApi(startDate: string, endDate: string, currentPlantId: string) {
+  return api.get(`${servicePattern.getProfitByPeriod}`, {
+    params: {
+      startDate: startDate,
+      endDate: endDate,
+      currentPlantId: currentPlantId,
+    },
   })
 }
