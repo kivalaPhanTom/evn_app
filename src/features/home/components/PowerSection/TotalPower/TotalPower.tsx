@@ -1,5 +1,5 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { View, Text } from 'react-native'
 import styles from './TotalPower.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -11,11 +11,26 @@ import { RootState } from "@/core/redux/store";
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 import { Colors } from 'toastify-react-native/config/theme'
+import { getPowerOverivew } from '@/core/redux/Actions/PowerActions'
+import { setLoading } from '@/core/redux/slices/PowerSlice'
 
 
 function TotalPower() {
   const router = useRouter()
+  const dispatch = useDispatch()
   const { average, total, detail, isLoadingOverview } = useSelector((state: RootState) => state.powerSlice)
+  const [firstLoading, setFirstLoading] = useState(true)
+  useEffect(() => {
+    setFirstLoading(true)
+    dispatch(setLoading({ isLoadingOverview: true }))
+    dispatch(getPowerOverivew())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (!isLoadingOverview) {
+      setFirstLoading(false)
+    }
+  }, [isLoadingOverview])
 
   return (
     <AnimatedCardContainer>
@@ -23,12 +38,13 @@ function TotalPower() {
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
 
-          {isLoadingOverview ? <BarSkeleton /> :
+          {firstLoading || isLoadingOverview ? <BarSkeleton /> :
             <>
               <Text style={styles.title}>TỔNG CÔNG SUẤT</Text>
               <AnimatedNumber
                 value={total}
-                duration={900}
+                isInitZero = {true}
+                duration={1}
                 decimals={2}
                 formatter={(n) => Number(n.toFixed(2)).toString()}
                 render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={'#5b8def'} />}
@@ -36,7 +52,7 @@ function TotalPower() {
             </>
           }
 
-          {isLoadingOverview ?
+          {firstLoading || isLoadingOverview ?
             <BarSkeleton
               width={95}
               height={28}
@@ -50,7 +66,7 @@ function TotalPower() {
 
         {/* Right side - Power Sources */}
         <View style={styles.rightSection}>
-          {isLoadingOverview ?
+          {firstLoading || isLoadingOverview ?
             <>
               <DotBarSkeleton />
             </> : <>

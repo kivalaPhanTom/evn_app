@@ -5,6 +5,7 @@ interface AnimatedNumberProps {
   value: number
   duration?: number
   decimals?: number
+  isInitZero?: boolean
   formatter?: (n: number) => string
   render?: (text: string) => React.ReactNode
   // thêm tùy chọn để mượt hơn
@@ -17,14 +18,15 @@ export default function AnimatedNumber({
   value,
   duration = 1000,
   decimals = 2,
+  isInitZero = false,
   formatter,
   render,
   easing = Easing.out(Easing.cubic),
   debounceMs = 120, // giảm giật do API trả về liên tục
   pixelsPerSecond = 100, // tốc độ thay đổi giá trị/giây
 }: AnimatedNumberProps) {
-  const anim = useRef(new Animated.Value(0)).current
-  const [display, setDisplay] = useState<number>(0)
+  const anim = useRef(new Animated.Value(isInitZero ? value : 0)).current
+  const [display, setDisplay] = useState<number>(isInitZero ? value : 0)
   const listenerId = useRef<string | null>(null)
   const targetRef = useRef<number>(value)
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
