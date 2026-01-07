@@ -90,7 +90,8 @@ const DEFAULT_DATA: ReservoirMetricData = {
   },
 }
 
-function ReservoirMetric() {
+function ReservoirMetric(props: { currentPlantId: string }) {
+  const { currentPlantId } = props;
   const data = DEFAULT_DATA
 
   return (
