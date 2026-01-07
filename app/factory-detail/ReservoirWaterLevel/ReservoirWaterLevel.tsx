@@ -6,7 +6,8 @@ import ReservoirInfo from './ReservoirInfo/ReservoirInfo'
 import ReservoirMetric from './ReservoirMetric/ReservoirMetric'
 import { t } from 'i18next'
 
-function ReservoirWaterLevel() {
+function ReservoirWaterLevel(props: { currentPlantId: string }) {
+  const { currentPlantId } = props;
   const router = useRouter();
 
   const onPressCard = () => {
@@ -23,10 +24,10 @@ function ReservoirWaterLevel() {
       }}
     >
       <View style={{ marginBottom: 20 }}>
-        <ReservoirInfo />
+        <ReservoirInfo currentPlantId={currentPlantId} />
       </View>
       <View style={{ marginBottom: 20 }}>
-        <ReservoirMetric />
+        <ReservoirMetric currentPlantId={currentPlantId} />
       </View>
     </SectionContainer>
   )

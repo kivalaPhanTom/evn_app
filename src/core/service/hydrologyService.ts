@@ -41,8 +41,14 @@ function getInflowOutflowApi(hydroElectricId: string) {
     `${servicePattern.getInflowOutflow}?hydroElectricId=${encodeURIComponent(hydroElectricId)}`,
   )
 }
-function getHydrologyPlantsParamApi() {
-  return api.get(`${servicePattern.getHydrologyPlantsParam}`)
+function getHydrologyPlantsParamApi(currentPlantId?: string) {
+  const params: { currentPlantId?: string } = {}
+  if (currentPlantId) {
+    params.currentPlantId = currentPlantId
+  }
+  return api.get(`${servicePattern.getHydrologyPlantsParam}`, {
+    params: params
+  })
 }
 
 function getHydrologyPlantsInfoApi(plantId: string, date: string) {

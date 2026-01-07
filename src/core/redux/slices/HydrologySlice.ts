@@ -53,11 +53,27 @@ interface hydrologyState {
   hydrologyPlants: {
     plantsData: {
       id: number
+      symbol: string
       abbreviation: string
       name: string
       maxLevel: number
       currentLevel: number
       referenceLevel: number
+      previousLevel: number
+      percent: number
+    }[]
+  }
+  currentHydrologyPlant: {
+    plantsData: {
+      id: number
+      symbol: string
+      abbreviation: string
+      name: string
+      maxLevel: number
+      currentLevel: number
+      referenceLevel: number
+      previousLevel: number
+      percent: number
     }[]
   }
   flowChart: {
@@ -144,6 +160,9 @@ const initialState: hydrologyState = {
   },
   hydrologyCharData: [],
   hydrologyPlants: {
+    plantsData: [],
+  },
+  currentHydrologyPlant: {
     plantsData: [],
   },
   hydrologyPlantsInfo: {
@@ -262,6 +281,9 @@ const hydrologySlice = createSlice({
     setHydrologyPlantsParam: (state, action) => {
       state.hydrologyPlants = action.payload
     },
+    setCurrentHydrologyPlant: (state, action) => {
+      state.currentHydrologyPlant = action.payload
+    },
     setHydrologyPlantsInfo: (state, action) => {
       state.hydrologyPlantsInfo = action.payload
     },
@@ -302,6 +324,7 @@ export const {
   setInflowOutflow,
   setHydrologyChart,
   setHydrologyPlantsParam,
+  setCurrentHydrologyPlant,
   setFlowChartData,
   setHydrologyPlantsInfo,
   setUpStreamWaterLevel,

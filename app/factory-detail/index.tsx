@@ -66,7 +66,7 @@ function FactoryDetail(props: factoryDetailProps) {
               currentPlantId={currentPlantId}
               keyTab={keyTab}
             />
-            <ReservoirWaterLevel />
+            <ReservoirWaterLevel currentPlantId={currentPlantId} />
             <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
             <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
             <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} />
