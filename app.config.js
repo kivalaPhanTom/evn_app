@@ -4,7 +4,7 @@ export default ({ config }) => ({
   ...config,
    android: {
     ...config.android,
-    package: "com.evn.evnapp",
+    package: "com.genco3.hppgenco3",
   },
   extra: {
     ...config.extra, // giữ các giá trị từ app.json

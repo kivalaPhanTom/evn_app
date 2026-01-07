@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "EVNGENCO3",
-    "slug": "EVNGENCO3",
+    "name": "HPP GENCO3",
+    "slug": "HPPGENCO3",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "evnapp",
+    "scheme": "hppgenco3",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,6 +17,8 @@
       "backgroundColor": "#0F172A"
     },
     "android": {
+      "package": "com.genco3.hppgenco3",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/icon.png",

@@ -17,6 +17,7 @@ import { Service } from '@/core/service/hydrologyService'
 import {
   setInflowOutflow,
   setHydrologyPlantsParam,
+  setCurrentHydrologyPlant,
   setHydrologyChart,
   setFlowChartData,
   setHydrologyPlantsInfo,
@@ -157,11 +158,15 @@ function* getHydrologyChartApi() {
   yield takeEvery(getHydrographicChart, getHydrographicChartSaga)
 }
 
-function* getHydrologyPlantsParamApiSaga(): Generator {
+function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyPlantsParam>): Generator {
   try {
-    const res = yield call(Service.getHydrologyPlantsParamApi)
-    if (res.status === 200) {
+    const payload = action.payload as { currentPlantId?: string }
+    const currentPlantId = payload?.currentPlantId
+    const res = yield call(Service.getHydrologyPlantsParamApi, currentPlantId)
+    if (res.status === 200 && !currentPlantId) {
       yield put(setHydrologyPlantsParam(res.data))
+    } else if (res.status === 200 && currentPlantId) {
+      yield put(setCurrentHydrologyPlant(res.data))
     }
   } catch (error) {
     console.log('getHydrologyPlantsParam error:', error)
