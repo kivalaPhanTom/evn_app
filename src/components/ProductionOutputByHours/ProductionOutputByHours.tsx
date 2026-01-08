@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router'
 import { BarGroup } from '@/core/types'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 interface Props {
   isLoading: boolean
@@ -26,14 +27,14 @@ function ProductionOutputByHours(props: Props) {
   const subtitle = `Hôm nay, ${currentDate}`
   const THRESHOLD = contractPowerValue
   const getColorForValue = (value: number, threshold = THRESHOLD): string =>
-    value >= threshold ? '#00b300' : '#ee0033'
+    value >= threshold ? Colors.green : Colors.red
 
   const rawBarGroups: BarGroup[] = (barGroups || []).map(
     (group: { label: string; value: number }) => ({
       label: group.label,
       items: [
         { value: group.value, frontColor: getColorForValue(group.value) },
-        { value: THRESHOLD, frontColor: '#fcba03' },
+        { value: THRESHOLD, frontColor: Colors.orange },
       ],
     })
   )

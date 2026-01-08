@@ -7,6 +7,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 import { useRouter } from 'expo-router'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { Colors } from 'toastify-react-native/config/theme'
 
 interface HourlyPowerList {
     value: number
@@ -100,8 +101,8 @@ function PowerByHours(props: Props) {
                     {firstLoading || isLoading ? <LineChartSkeleton /> : <LineChart
                         data={avgData}
                         data2={hourlyData}
-                        color="#FBBF24"
-                        color2="#2563EB"
+                        color={Colors.orange}
+                        color2={Colors.blue}
                         hideDataPoints2={false}
                         hideYAxisText={true}
                         hideDataPoints1={true}

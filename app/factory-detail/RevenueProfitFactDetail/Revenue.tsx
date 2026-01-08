@@ -30,7 +30,9 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
 
   const onPressCard = () => {
-    router.navigate({ pathname: '/revenue-detail' })
+    router.navigate({ pathname: '/revenue-detail', params: {
+      currentPlantId: currentPlantId
+    } })
   }
 
   useEffect(() => {

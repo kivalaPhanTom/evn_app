@@ -3,7 +3,6 @@ import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/Prod
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByDaysFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
-
 interface Props {
   currentPlantId: string
   keyTab: number

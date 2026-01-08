@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 interface ProductionData {
   date: string
@@ -62,7 +63,7 @@ function ProductOutputRencentDays(props: Props) {
             <>
               {productionData.map((day, index) => {
                 const isAboveContract = day.actual >= day.contract
-                const actualColor = isAboveContract ? '#4ade80' : '#ef4444'
+                const actualColor = isAboveContract ? Colors.green : Colors.red
 
                 return (
                   <View key={index} style={styles.rowCard}>
