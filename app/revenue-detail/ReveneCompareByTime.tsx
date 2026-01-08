@@ -38,7 +38,7 @@ export default function ReveneCompareByTime({
     setOpen(false)
     // onChangeOption?.(value);
   }
-  const [range, setRange] = useState({ from: dayjs().subtract(1, 'day'), to: dayjs() })
+  const [range, setRange] = useState({ from: dayjs().subtract(7, 'day'), to: dayjs() })
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     setRange(newRange)
     const fromDate = dayjs(newRange.from)
@@ -90,8 +90,8 @@ export default function ReveneCompareByTime({
         {/* <View style={styles.wrapper}> */}
         <Text style={styles.title}>So sánh theo thời gian</Text>
         <DateRangePicker
-          labelFrom="Ngày mục tiêu"
-          labelTo="Ngày so sánh"
+          labelFrom="Từ ngày"
+          labelTo="Đến ngày"
           format={'DD/MM/YYYY'}
           value={range}
           onChange={onChangeDateRage}
@@ -116,7 +116,7 @@ export default function ReveneCompareByTime({
                     <Text style={styles.arrow}>▼</Text>
                 </TouchableOpacity> */}
         {/* DROPDOWN */}
-        <View>
+        <View style={{marginHorizontal: 10}}>
           <TouchableOpacity style={styles.dropdown} onPress={() => setOpen(!open)} activeOpacity={0.8}>
             <Text style={styles.dropdownText}>{selected?.label}</Text>
             <Text style={styles.arrow}>{open ? '▲' : '▼'}</Text>

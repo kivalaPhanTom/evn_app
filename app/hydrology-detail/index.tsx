@@ -36,7 +36,7 @@ const HydrologyDetailScreen: React.FC = () => {
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={styles.locationText}>{'Công ty thủy điện Buon Kuop'}</Text>
+            <Text style={styles.locationText}>{'Công ty thủy điện Buôn Kuốp'}</Text>
           </View>
         </View>
         <HydrologyDetail />

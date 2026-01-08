@@ -47,11 +47,12 @@ function FactoryProfitDetail() {
     // Fetch factory profit by period when range or plantId changes
     const fromDate = dayjs(range?.from)?.format('DD/MM/YYYY')
     const toDate = dayjs(range?.to)?.format('DD/MM/YYYY')
+
     dispatch(
       getProfitByPeriod({
         startDate: fromDate,
         endDate: toDate,
-        currentPlantId: selectedOption === 'Tổng' ? '' : selectedOption,
+        currentPlantId: selectedOption === 'Tổng' ? 'total' : selectedOption,
       }),
     )
   }, [dispatch, range, selectedOption, countRefesh])
