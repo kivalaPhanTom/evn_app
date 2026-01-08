@@ -26,7 +26,8 @@ function HomeContent(props: Props) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
-
+  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector((state: any) => state.powerSlice.powerByTime)
+  const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
   //   const swipeLeft = Gesture.Pan()
   //     .activeOffsetX([-30, 30])
   //     .onEnd(e => {
