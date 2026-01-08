@@ -48,6 +48,7 @@ function TotalPowerFactDetail(props: Props) {
       total={total}
       detail={detail}
       isLoading={isLoadingOverview}
+      unit="MW"
     />
   )
 }

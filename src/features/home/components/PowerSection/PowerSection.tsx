@@ -34,6 +34,7 @@ function PowerSection() {
             total={total}
             detail={detail}
             isLoading={isLoadingOverview}
+            unit ="MW"
           />
         </View>
         <View style={styles.section}>
