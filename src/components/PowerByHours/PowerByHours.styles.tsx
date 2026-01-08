@@ -1,3 +1,4 @@
+import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
@@ -60,13 +61,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   statValueCurrent: {
-    color: '#5b8def',
+    color: Colors.blue,
     fontSize: 24,
     fontWeight: '700',
     // marginBottom: 6,
   },
   statValueAverage: {
-    color: '#eab308',
+    color: Colors.orange,
     fontSize: 24,
     fontWeight: '700',
   },

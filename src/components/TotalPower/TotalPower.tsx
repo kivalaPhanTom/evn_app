@@ -7,6 +7,7 @@ import { px } from '@/core/utils/scale'
 import GradientText from '@/components/GradientText/GradientText.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 interface PowerDetail {
     code: string
@@ -49,7 +50,7 @@ function TotalPower(props: Props) {
                                 duration={1}
                                 decimals={2}
                                 formatter={(n) => Number(n.toFixed(2)).toString()}
-                                render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={'#5b8def'} />}
+                                render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={Colors.blue} />}
                             />
                         </>
                     }
