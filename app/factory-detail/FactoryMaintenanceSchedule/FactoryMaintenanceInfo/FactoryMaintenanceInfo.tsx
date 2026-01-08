@@ -1,20 +1,38 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import styles from './FactoryMaintenanceInfo.styles'
+import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { RootState } from '@/core/redux/store'
 
-function FactoryMaintenanceInfo() {
-  // Dữ liệu mẫu - có thể thay thế bằng dữ liệu từ API/Redux
+interface FactoryMaintenanceInfoProps {
+  currentPlantId?: string
+}
+
+function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
+  const { currentPlantId } = props
+  const dispatch = useDispatch()
+  const { currentPlantDetail } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+
+  useEffect(() => {
+    if (currentPlantId) {
+      dispatch(getDetailRepairSchedule({ currentPlantId }))
+    }
+  }, [currentPlantId, dispatch])
+
+  // Map dữ liệu từ Breakdown
   const maintenanceTypeData = {
-    minor: 1, // TIỂU TU
-    medium: 0, // TRUNG TU
-    major: 1, // ĐẠI TU
+    minor: currentPlantDetail?.Breakdown?.Minor ?? 0, // TIỂU TU
+    medium: currentPlantDetail?.Breakdown?.Medium ?? 0, // TRUNG TU
+    major: currentPlantDetail?.Breakdown?.Major ?? 0, // ĐẠI TU
   }
 
+  // Map dữ liệu từ RepairPlannedDays và RepairActualDays
   const maintenanceDurationData = {
-    planned: 10, // KẾ HOẠCH
-    actual: 12, // THỰC TẾ
+    planned: currentPlantDetail?.RepairPlannedDays ?? 0, // KẾ HOẠCH
+    actual: currentPlantDetail?.RepairActualDays ?? 0, // THỰC TẾ
   }
 
   return (

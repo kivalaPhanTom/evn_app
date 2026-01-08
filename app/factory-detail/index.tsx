@@ -112,7 +112,7 @@ function FactoryDetail(props: factoryDetailProps) {
             <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
           </LazySection>
           <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-            <FactoryMaintenanceSchedule />
+            <FactoryMaintenanceSchedule currentPlantId={currentPlantId} />
           </LazySection>
         </TwinkleStars>
       </View>
