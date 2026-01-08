@@ -34,12 +34,12 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
  const referenceLevel = getReferenceLevel(currentPlantId, hydrologyPlants.plantsData)
 
   return (
-    <AnimatedCardContainer>
+    <>
       <View style={styles.section}>
-        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Mực nước trong hồ</Text>
+        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Mực nước trong hồ theo giờ</Text>
         <HydrographicChart isLoading={false} data={hydrologyCharData} referenceLevel={referenceLevel} />
       </View>
-    </AnimatedCardContainer>
+    </>
   )
 }
 

@@ -10,6 +10,7 @@ import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.com
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
+import { formatDate } from '@/core/utils/date'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -78,6 +79,7 @@ function getCurrentPlantId(activeTab: string): string {
   }
   return result
 }
+
 function HydrologyDetail() {
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
@@ -102,15 +104,16 @@ function HydrologyDetail() {
   const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
 
   useEffect(() => {
+    console.log("getHydrologyPlantsInfo reload");
     const payload = {
       currentPlantId: activeTab,
-      date: selectedDate.toLocaleDateString('vi-VN'),
+      date: formatDate(selectedDate),
     }
     dispatch(getUpstreamWaterLevel(payload));
     dispatch(getInflow(payload));
     dispatch(getOutflow(payload));
     dispatch(getTurbineflow(payload));
-  }, [activeTab, selectedDate, countRefesh])
+  }, [activeTab, selectedDate, countRefesh, dispatch])
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -184,13 +187,13 @@ function HydrologyDetail() {
         {/* flow diagram here */}
         <View>
           <FlowDiagramCard
-            dateStr={selectedDate.toLocaleDateString('vi-VN')}
+            dateStr={formatDate(selectedDate)}
             oneYearAgo={formattedOneYearAgo}
             currentPlantId={activeTab}
           />
         </View>
         <View style={{ marginBottom: 20 }}>
-          <GeneralInformation date={selectedDate.toLocaleDateString('vi-VN')} currentPlantId={activeTab} />
+          <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
         </View>
         {/* {flowRateData.map((item, index) => (
           <View key={index} style={{ marginBottom: 20 }}>

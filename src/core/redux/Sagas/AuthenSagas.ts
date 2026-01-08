@@ -20,7 +20,7 @@ function* getTokenSaga(action: any): Generator {
             console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token, expires_in)
-            router.push('/companies')
+            router.navigate('/companies')
         } else {
             console.log('❌ Unexpected status:', res.status)
             Toast.error(`Lỗi đăng nhập: ${res.status}`)

@@ -69,7 +69,7 @@ function PowerByHoursFactDetail(props: Props) {
     .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
   const onPressCard = () => {
-    router.push({
+    router.navigate({
       pathname: '/product-power-detail', params: {
         currentPlantId: currentPlantId,
       },
