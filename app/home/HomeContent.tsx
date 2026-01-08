@@ -16,6 +16,7 @@ import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfi
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
+import { LazySection } from '@/components/LazySection/LazySection'
 
 interface Props { }
 
@@ -55,11 +56,27 @@ function HomeContent(props: Props) {
       setReady(true);
     });
   }, []);
+  const [scrollY, setScrollY] = useState(0);
+
+  const onScroll = (e: any) => {
+    setScrollY(e.nativeEvent.contentOffset.y);
+  };
+
+  const preloadOffset = 300; // px before entering viewport
+
+  const shouldLoadProduction = scrollY >= 200 - preloadOffset;
+  const shouldLoadHydrology = scrollY >= 600 - preloadOffset;
+  const shouldLoadRevenue = scrollY >= 1000 - preloadOffset;
+  const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
+  const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
+
   return (
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      onScroll={onScroll}
+      scrollEventThrottle={16}
     >
       <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
@@ -74,14 +91,29 @@ function HomeContent(props: Props) {
             <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
           </View>
         </View>
-        <ScrollView>
-          <PowerSection />
-          { ready && <ProductionOutput />}
-          { ready && <Hydrology />}
-          { ready && <RevenueDetail />}
-          { ready && <ProfitDetail />}
-          { ready && <UnitMaintenanceSchedule />}
-        </ScrollView>
+
+        <PowerSection />
+
+        <LazySection shouldLoad={shouldLoadProduction} minHeight={300}>
+          <ProductionOutput />
+        </LazySection>
+
+        <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+          <Hydrology />
+        </LazySection>
+
+        <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+          <RevenueDetail />
+        </LazySection>
+
+        <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
+          <ProfitDetail />
+        </LazySection>
+
+        <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
+          <UnitMaintenanceSchedule />
+        </LazySection>
+
       </TwinkleStars>
     </ScrollView>
 
