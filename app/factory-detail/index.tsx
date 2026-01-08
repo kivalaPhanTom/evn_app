@@ -43,7 +43,9 @@ function FactoryDetail(props: factoryDetailProps) {
   };
 
   const onPressCardHydro = () => {
-    router.navigate({ pathname: '/hydrology-detail' as any })
+    router.navigate({ pathname: '/hydrology-detail' as any, params: {
+      currentPlantId: currentPlantId
+    } })
   }
 
   const [scrollY, setScrollY] = useState(0);

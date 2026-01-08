@@ -62,6 +62,10 @@ const flowRateData = [
   },
 ] // Dữ liệu mẫu cho FlowRate
 
+interface HydrologyDetailProps {
+  currentPlantId?: string
+}
+
 function getCurrentPlantId(activeTab: string): string {
   let result: string = '';
   switch (activeTab) {
@@ -80,12 +84,13 @@ function getCurrentPlantId(activeTab: string): string {
   return result
 }
 
-function HydrologyDetail() {
+function HydrologyDetail(props: HydrologyDetailProps) {
+  const { currentPlantId } = props
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [activeTab, setActiveTab] = useState<string>('BTS')
+  const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
 
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
