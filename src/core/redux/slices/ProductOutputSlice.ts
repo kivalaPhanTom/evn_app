@@ -174,7 +174,7 @@ const productOutputSlice = createSlice({
     },
     setProductOutputOverview: (state, action) => {
       state.productOutputOverview.totalPower = action.payload.total
-      state.productOutputOverview.averagePower = action.payload.Contract
+      state.productOutputOverview.averagePower = action.payload.average
       state.productOutputOverview.powerSources = action.payload.detail
     },
     setProductOutputByDays: (state, action) => {
