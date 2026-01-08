@@ -64,6 +64,7 @@ function UnitMaintenanceSchedule() {
             typeCount={item.Category.Total}
             maintenanceTypeData={item.Category}
             mainternanceDurationData={item.Day}
+            plantCode={item.PlantCode}
             key={idex}
           />
         ))}
