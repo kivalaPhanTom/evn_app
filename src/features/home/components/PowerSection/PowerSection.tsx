@@ -2,24 +2,26 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from "@/core/redux/store";
-import PowerRecentDays from './PowerRecentDays/PowerRecentDays'
 import styles from './PowerSection.styles'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { getPowerOverivew, getPowerByTime } from '@/core/redux/Actions/PowerActions'
 import TotalPower from '@/components/TotalPower/TotalPower';
+import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
+import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays';
 
 function PowerSection() {
   const { average, total, detail, isLoadingOverview } = useSelector((state: RootState) => state.powerSlice)
-  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector(
-    (state: any) => state.powerSlice.powerByTime,
-  )
+  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector((state: any) => state.powerSlice.powerByTime)
   const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
+  const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
+
   useEffect(() => {
     dispatch(getPowerOverivew())
     dispatch(getPowerByTime())
+    dispatch(getPowerByDays(7))
   }, [countRefesh])
 
   return (
@@ -45,7 +47,10 @@ function PowerSection() {
           />
         </View>
         <View style={styles.section}>
-          <PowerRecentDays />
+          <PowerRecentDays
+            isLoading={isLoadingNearCurrentDays}
+            powerData={powerData}
+          />
         </View>
       </View>
     </SectionContainer>
