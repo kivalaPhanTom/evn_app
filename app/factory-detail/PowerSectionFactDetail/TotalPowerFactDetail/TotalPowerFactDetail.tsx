@@ -51,6 +51,7 @@ function TotalPowerFactDetail(props: Props) {
 
   return (
     <TotalPower
+      title="TỔNG CÔNG SUẤT"
       average={average}
       total={total}
       detail={detail}

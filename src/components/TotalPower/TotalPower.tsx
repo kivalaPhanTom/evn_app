@@ -19,10 +19,11 @@ interface Props {
     average: number
     isLoading: boolean
     detail: PowerDetail[]
+    title?: string
 }
 function TotalPower(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
-    const { total = 0, average = 0, isLoading = false, detail = [] } = props
+    const { total = 0, average = 0, isLoading = false, detail = [], title ="TỔNG CÔNG SUẤT" } = props
     useEffect(() => {
         setFirstLoading(true)
     }, [])
@@ -41,7 +42,7 @@ function TotalPower(props: Props) {
 
                     {firstLoading || isLoading ? <BarSkeleton /> :
                         <>
-                            <Text style={styles.title}>TỔNG CÔNG SUẤT</Text>
+                            <Text style={styles.title}>{title}</Text>
                             <AnimatedNumber
                                 value={total}
                                 isInitZero={true}
