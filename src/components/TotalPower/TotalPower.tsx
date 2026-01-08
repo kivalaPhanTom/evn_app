@@ -20,20 +20,21 @@ interface Props {
     isLoading: boolean
     detail: PowerDetail[]
     title?: string
+    unit:string
 }
 function TotalPower(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
-    const { total = 0, average = 0, isLoading = false, detail = [], title ="TỔNG CÔNG SUẤT" } = props
+    const { total = 0, average = 0, isLoading = false, detail = [], title ="TỔNG CÔNG SUẤT", unit } = props
     useEffect(() => {
         setFirstLoading(true)
     }, [])
 
-    // Khi redux báo đã xong loading thì tắt firstLoading
     useEffect(() => {
         if (!isLoading) {
             setFirstLoading(false)
         }
     }, [isLoading])
+    
     return (
         <AnimatedCardContainer>
             <View style={styles.content}>
@@ -60,8 +61,8 @@ function TotalPower(props: Props) {
                             height={28}
                         /> :
                         <>
-                            <Text style={styles.unit}>MW</Text>
-                            <Text style={styles.average}>TB: {average} MW</Text>
+                            <Text style={styles.unit}>{unit}</Text>
+                            <Text style={styles.average}>TB: {average} {unit}</Text>
                         </>
                     }
                 </View>
@@ -80,7 +81,7 @@ function TotalPower(props: Props) {
                                             {source.name} <Text style={styles.sourceCode}>({source.code})</Text>
                                         </Text>
                                     </View>
-                                    <Text style={[styles.sourcePower, { color: source.color }]}>{source.value} MW</Text>
+                                    <Text style={[styles.sourcePower, { color: source.color }]}>{source.value} {unit}</Text>
                                 </View>
                             ))}
                         </>}

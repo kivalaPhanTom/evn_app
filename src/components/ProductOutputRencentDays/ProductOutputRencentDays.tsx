@@ -1,23 +1,32 @@
-import React, { useEffect } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text } from 'react-native'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import { useRouter } from 'expo-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
-import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
-function ProductOutputRencentDays() {
-  const router = useRouter()
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
+interface ProductionData {
+  date: string
+  actual: number
+  contract: number
+}
+interface Props {
+  isLoading: boolean
+  productionData: ProductionData[]
+}
+function ProductOutputRencentDays(props: Props) {
+  const [firstLoading, setFirstLoading] = useState(true)
+  const { isLoading, productionData } = props
   const unit = 'tr.Wh'
 
   useEffect(() => {
-    dispatch(getProductOutputByDays(7))
-  }, [countRefesh])
+    setFirstLoading(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoading) {
+      setFirstLoading(false)
+    }
+  }, [isLoading])
 
   return (
     <AnimatedCardContainer>
@@ -39,7 +48,7 @@ function ProductOutputRencentDays() {
           style={styles.tableBody}
         // showsVerticalScrollIndicator={false}
         >
-          {isLoadingNearCurrentDays ?
+          {firstLoading || isLoading ?
             <>
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
