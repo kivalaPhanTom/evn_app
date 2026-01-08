@@ -1,40 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
-import styles from './PowerRecentDaysFactDetail.styles'
+import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import { useRouter } from 'expo-router'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
-import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
+
 interface PowerByDays {
   value: number
   date: string
 }
 interface Props {
-  currentPlantId: string
+  isLoading: boolean
+  powerData: PowerByDays[]
 }
-function PowerRecentDaysFacrDetail(props: Props) {
-  const { currentPlantId } = props
-  const router = useRouter()
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+function PowerRecentDays(props: Props) {
+  const { isLoading, powerData } = props
+  const [firstLoading, setFirstLoading] = useState(true)
 
   const unit = 'tr.Wh'
-  const getDataFromApi = (data: PowerByDays[]) => {
-    setPowerByDays(data)
-  }
-  const setLoading = (value: boolean) => {
-    setIsLoading(value)
-  }
   useEffect(() => {
-    dispatch(getPowerByDaysFactDetail({
-      factoryId: currentPlantId,
-      getDataFromApi: getDataFromApi,
-      setLoading: setLoading
-    }))
-  }, [currentPlantId, countRefesh])
+    setFirstLoading(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoading) {
+      setFirstLoading(false)
+    }
+  }, [isLoading])
 
   return (
     <AnimatedCardContainer>
@@ -44,7 +35,7 @@ function PowerRecentDaysFacrDetail(props: Props) {
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {isLoading ? <SquareSkelenton count={4} /> :
+            {firstLoading || isLoading ? <SquareSkelenton count={4} /> :
               <>
                 {powerData.map((day, index) => (
                   <View key={index} style={styles.valueCard}>
@@ -56,6 +47,7 @@ function PowerRecentDaysFacrDetail(props: Props) {
                 ))}
               </>
             }
+
           </ScrollView>
 
           {/* Bottom Info */}
@@ -72,4 +64,4 @@ function PowerRecentDaysFacrDetail(props: Props) {
   )
 }
 
-export default PowerRecentDaysFacrDetail
+export default PowerRecentDays
