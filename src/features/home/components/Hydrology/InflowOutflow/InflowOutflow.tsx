@@ -62,7 +62,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   return (
     <>
       {!isEmptyData && (
-        <AnimatedCardContainer>
+        <>
           <View style={styles.content}>
             <View style={styles.summaryCard}>
               <FlowMetricCard
@@ -105,13 +105,13 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                 //customDataPoint2={customDataPoint2()}
                 label1="Qvề: "
                 label2="Qxa: "
-                height={px.v(150)}
+                height={px.v(200)}
                 pointerConfig={true}
                 xAxisColor="#E5E5EF"
               />
             )}
           </View>
-        </AnimatedCardContainer>
+        </>
       )}
     </>
   )

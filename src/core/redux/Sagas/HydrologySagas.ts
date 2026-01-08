@@ -177,6 +177,7 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     const payload = action.payload as { plantId: string, date: string }
     const plantId = payload?.plantId || '';
     const date = payload?.date || '';
+    console.log('getHydrologyPlantsInfo error:', date)
     const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
       yield put(setHydrologyPlantsInfo(res.data))

@@ -40,7 +40,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   const router = useRouter()
 
   const onPressCard = () => {
-    router.push({ pathname: '/unit-maintenance-schedule-detail' as any })
+    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
 
   return (

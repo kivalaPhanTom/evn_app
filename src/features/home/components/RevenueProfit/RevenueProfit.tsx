@@ -40,7 +40,7 @@ function RevenueProfit() {
   const router = useRouter()
 
   const onPressCard = () => {
-    router.push({ pathname: '/revenue-profit-detail' as any })
+    router.navigate({ pathname: '/revenue-profit-detail' as any })
   }
   return (
     <SectionContainer
