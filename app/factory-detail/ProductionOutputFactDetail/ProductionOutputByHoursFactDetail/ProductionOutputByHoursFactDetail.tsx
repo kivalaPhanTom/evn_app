@@ -13,6 +13,7 @@ import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductO
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
+import { Colors } from '@/core/constants/colors'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -44,7 +45,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   // const THRESHOLD = productOutputByHours.contractPowerValue
   const THRESHOLD = 0
   const getColorForValue = (value: number, threshold = THRESHOLD): string =>
-    value >= threshold ? '#00b300' : '#ee0033'
+    value >= threshold ? Colors.green : Colors.red
   const setLoading = (value: boolean) => {
     setIsLoading(value)
   }
@@ -54,7 +55,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
       label: group.label,
       items: [
         { value: group.value, frontColor: getColorForValue(group.value) },
-        { value: THRESHOLD, frontColor: '#fcba03' },
+        { value: THRESHOLD, frontColor: Colors.orange },
       ],
     })
   )

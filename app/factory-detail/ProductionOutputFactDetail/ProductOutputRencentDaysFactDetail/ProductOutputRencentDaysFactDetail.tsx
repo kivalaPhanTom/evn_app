@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByDaysFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { Colors } from '@/core/constants/colors'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -75,7 +76,7 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
             <>
               {productionData.map((day, index) => {
                 const isAboveContract = day.actual >= day.contract
-                const actualColor = isAboveContract ? '#4ade80' : '#ef4444'
+                const actualColor = isAboveContract ? Colors.green : Colors.red
 
                 return (
                   <View key={index} style={styles.rowCard}>
