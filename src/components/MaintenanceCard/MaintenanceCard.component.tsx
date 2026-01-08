@@ -28,6 +28,7 @@ interface MaintenanceCardProps {
   typeCount: number
   maintenanceTypeData: MaintenanceType
   mainternanceDurationData: MaintenanceDuration
+  plantCode?: string
 }
 
 export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
@@ -36,11 +37,15 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   typeCount,
   maintenanceTypeData,
   mainternanceDurationData,
+  plantCode,
 }) => {
   const router = useRouter()
 
   const onPressCard = () => {
-    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
+    router.navigate({ 
+      pathname: '/unit-maintenance-schedule-detail' as any,
+      params: { currentPlantId: plantCode }
+    })
   }
 
   return (
