@@ -69,7 +69,7 @@ export default function ProfitDetail() {
     })
     .filter((x) => x.value < 0)
   const onPressCard = () => {
-    router.push({ pathname: '/factory-profit-detail' as any })
+    router.navigate({ pathname: '/factory-profit-detail' as any })
   }
 
   return (
@@ -198,7 +198,7 @@ export default function ProfitDetail() {
                 <TouchableOpacity
                   key={idx}
                   onPress={() => {
-                    router.push({
+                    router.navigate({
                       pathname: '/profit-detail' as any,
                       params: {
                         plantName: plant.PlantName,

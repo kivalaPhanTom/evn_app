@@ -14,6 +14,9 @@ import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMain
 import RevenueDetail from './RevenueProfitFactDetail/Revenue'
 import ProfitDetail from './RevenueProfitFactDetail/Profit'
 import { saveState } from '@/core/redux/slices/FactoryDetailSlice'
+import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
+import { t } from 'i18next'
+import { useRouter } from 'expo-router'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -26,6 +29,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const router = useRouter();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -37,6 +41,9 @@ function FactoryDetail(props: factoryDetailProps) {
     }, 80);
   };
 
+  const onPressCardHydro = () => {
+    router.navigate({ pathname: '/hydrology-detail' as any })
+  }
   return (
     <ScrollView
       refreshControl={
@@ -66,10 +73,18 @@ function FactoryDetail(props: factoryDetailProps) {
               currentPlantId={currentPlantId}
               keyTab={keyTab}
             />
-            <ReservoirWaterLevel currentPlantId={currentPlantId} />
-            <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            <SectionContainer
+              title={t('hydrology')}
+              actionButton={{
+                label: 'Thêm chi tiết',
+                onPress: onPressCardHydro,
+              }}
+            >
+              <ReservoirWaterLevel currentPlantId={currentPlantId} />
+              <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            </SectionContainer>
             <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-            <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
             <FactoryMaintenanceSchedule />
           </ScrollView>
         </TwinkleStars>

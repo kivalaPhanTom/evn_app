@@ -10,6 +10,9 @@ import { RootState } from '@/core/redux/store'
 import { getRevenuePowerPrices, getRevenueTotalExpense } from '@/core/redux/Actions/RevenueProfitActions'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 import { setCountRefesh } from '@/core/redux/slices/RevenueProfitSlice'
+import { typography } from '@/core/constants/typography';
+import TwinkleStars from '@/components/Background/TwinkleStarsCore';
+import { Colors } from '@/core/constants/colors';
 interface Props { }
 
 const data = {
@@ -87,11 +90,6 @@ export default function RevenueDetail(props: Props) {
         }
     })
 
-    const upstreamData = useSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
-    const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
-    const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
-    const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
-
     useEffect(() => {
         const formattedDate = selectedDate.toLocaleDateString('vi-VN', {
             day: '2-digit',
@@ -102,10 +100,6 @@ export default function RevenueDetail(props: Props) {
             currentPlantId: activeTab,
             date: formattedDate,
         }
-        dispatch(getUpstreamWaterLevel(payload))
-        dispatch(getInflow(payload))
-        dispatch(getOutflow(payload))
-        dispatch(getTurbineflow(payload))
         dispatch(getRevenuePowerPrices(payload))
         dispatch(getRevenueTotalExpense({
             date: formattedDate,
@@ -116,51 +110,53 @@ export default function RevenueDetail(props: Props) {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false);
-              dispatch(setCountRefesh({
+            dispatch(setCountRefesh({
                 countRefesh: countRefesh + 1
-              }))
+            }))
         }, 80);
     };
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={{ paddingBottom: 24 }}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-        >
-            <Text style={styles.title}>Chi tiết Doanh thu</Text>
-            <Text style={styles.companyName} >Công ty thủy điện Buôn Kuốp</Text>
-            <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+        <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={{ paddingBottom: 24 }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
+                <Text style={styles.title}>Chi tiết Doanh thu</Text>
+                <Text style={styles.companyName} >Công ty thủy điện Buôn Kuốp</Text>
+                <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Date Picker */}
-            <View style={{ marginBottom: 20, paddingHorizontal: 0 }}>
-                <DatePicker
-                    value={selectedDate}
-                    onChange={setSelectedDate}
-                    format="DD/MM/YYYY"
-                    textColor="#fff"
-                    borderColor="rgba(255,255,255,0.15)"
-                    backgroundColor="rgba(26, 35, 50, 0.6)"
+                {/* Date Picker */}
+                <View style={{ marginBottom: 20, paddingHorizontal: 0 }}>
+                    <DatePicker
+                        value={selectedDate}
+                        onChange={setSelectedDate}
+                        format="DD/MM/YYYY"
+                        textColor="#fff"
+                        borderColor="rgba(255,255,255,0.15)"
+                        backgroundColor="rgba(26, 35, 50, 0.6)"
+                    />
+                </View>
+                <PowerPrices />
+                <TotalRevenueExpenses />
+                <ReveneCompareByTime
+                    fromDate="01/11/2024"
+                    toDate="14/11/2024"
+                    metricLabel="Tổng doanh thu theo thị trường điện"
+                    onPressFrom={() => console.log('Pick from date')}
+                    onPressTo={() => console.log('Pick to date')}
+                    onPressMetric={() => console.log('Open dropdown')}
                 />
-            </View>
-            <PowerPrices />
-            <TotalRevenueExpenses />
-            <ReveneCompareByTime
-                fromDate="01/11/2024"
-                toDate="14/11/2024"
-                metricLabel="Tổng doanh thu theo thị trường điện"
-                onPressFrom={() => console.log('Pick from date')}
-                onPressTo={() => console.log('Pick to date')}
-                onPressMetric={() => console.log('Open dropdown')}
-            />
-        </ScrollView>
+            </ScrollView>
+        </TwinkleStars>
     );
 }
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 30,
+        fontSize: typography.header,
         fontWeight: "600",
         textAlign: "center",
         color: "white",

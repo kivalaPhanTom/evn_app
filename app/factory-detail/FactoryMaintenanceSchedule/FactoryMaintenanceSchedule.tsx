@@ -8,7 +8,7 @@ import { router } from 'expo-router'
 function FactoryMaintenanceSchedule() {
 
   const onPressCard = () => {
-    router.push({ pathname: '/unit-maintenance-schedule-detail' as any })
+    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
 
   return (

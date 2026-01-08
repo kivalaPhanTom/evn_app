@@ -20,7 +20,7 @@ function UnitMaintenanceSchedule() {
   const dispatch = useDispatch()
 
   const onPressCard = () => {
-    router.push({ pathname: '/unit-maintenance-schedule-detail' as any })
+    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
   const { TotalActualDay, TotalCategory, TotalMajorCategory, TotalMediumCategory, TotalMinorCategory, Details } =
     useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
@@ -42,7 +42,7 @@ function UnitMaintenanceSchedule() {
         <View style={[styles.infoCard]}>
           <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>TỔNG HẠNG MỤC SỬA CHỮA</Text>
           <View style={styles.infoRow}>
-            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>6</Text>
+            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalCategory}</Text>
             <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
           </View>
         </View>
@@ -51,7 +51,7 @@ function UnitMaintenanceSchedule() {
             TỔNG NGÀY SỬA CHỮA THỰC TẾ
           </Text>
           <View style={styles.infoRow}>
-            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>78</Text>
+            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalActualDay}</Text>
             <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
           </View>
         </View>

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 8,
-    elevation: 5, // For Android
+    // elevation: 5, // For Android
     width: '50%',
   },
   tabContentFirst: {
