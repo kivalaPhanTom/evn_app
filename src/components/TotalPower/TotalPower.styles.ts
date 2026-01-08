@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   totalPower: {
-    color: '#5b8def',
+    color: Colors.blue,
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 64,

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { Colors } from 'toastify-react-native/config/theme'
 
 const styles = StyleSheet.create({
   container: {
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   totalPower: {
-    color: '#ff4444',
+    color: Colors.blue,
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 64,

@@ -12,6 +12,7 @@ import { getProductOutputByHours } from '@/core/redux/Actions/ProductOutputActio
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 function ProductionOutputByHours() {
   const router = useRouter()
@@ -24,14 +25,14 @@ function ProductionOutputByHours() {
 
   const THRESHOLD = productOutputByHours.contractPowerValue
   const getColorForValue = (value: number, threshold = THRESHOLD): string =>
-    value >= threshold ? '#00b300' : '#ee0033'
+    value >= threshold ? Colors.green : Colors.red
 
   const rawBarGroups: BarGroup[] = (productOutputByHours.barGroups || []).map(
     (group: { label: string; value: number }) => ({
       label: group.label,
       items: [
         { value: group.value, frontColor: getColorForValue(group.value) },
-        { value: THRESHOLD, frontColor: '#fcba03' },
+        { value: THRESHOLD, frontColor: Colors.orange },
       ],
     })
   )

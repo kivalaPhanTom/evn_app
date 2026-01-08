@@ -1,3 +1,4 @@
+import { Colors } from '@/core/constants/colors'
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   totalPower: {
-    color: '#ff4444',
+    color: Colors.red,
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 64,

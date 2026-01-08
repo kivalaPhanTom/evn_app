@@ -11,6 +11,7 @@ import { getProductOutputOverview } from '@/core/redux/Actions/ProductOutputActi
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 interface Props { }
 
@@ -42,7 +43,7 @@ function TotalProductionOutput(props: Props) {
                 duration={900}
                 decimals={2}
                 formatter={(n) => Number(n.toFixed(2)).toString()}
-                render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={'#ff4444'} />}
+                render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={Colors.blue} />}
               />
             </>
           }
