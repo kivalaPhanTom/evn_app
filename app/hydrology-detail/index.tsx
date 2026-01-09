@@ -7,27 +7,35 @@ import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import HydrologyDetail from '@/features/home/components/Hydrology/HydrologyDetail/HydrologyDetail'
 import { setCountRefesh } from '@/core/redux/slices/HydrologySlice'
+import { useLocalSearchParams } from 'expo-router'
 
 const HydrologyDetailScreen: React.FC = () => {
   const dispatch = useDispatch()
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false)
   const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
+  const { currentPlantId } = useLocalSearchParams<{
+    currentPlantId?: string
+  }>()
   const onRefresh = async () => {
-    setRefreshing(true);
+    setRefreshing(true)
     setTimeout(() => {
-      setRefreshing(false);
-      dispatch(setCountRefesh({
-        countRefesh: countRefesh + 1
-      }))
-    }, 80);
-  };
+      setRefreshing(false)
+      dispatch(
+        setCountRefesh({
+          countRefesh: countRefesh + 1,
+        }),
+      )
+    }, 80)
+  }
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <TwinkleStars
+        background={Colors.background}
+        particleDensity={50}
+        particleColor={Colors.textColor}
+        minSize={0.5}
+        maxSize={2}
+      >
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Thủy văn'}
@@ -36,10 +44,10 @@ const HydrologyDetailScreen: React.FC = () => {
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={styles.locationText}>{'Công ty thủy điện Buon Kuop'}</Text>
+            <Text style={styles.locationText}>{'Công ty thủy điện Buôn Kuốp'}</Text>
           </View>
         </View>
-        <HydrologyDetail />
+        <HydrologyDetail currentPlantId={currentPlantId} />
       </TwinkleStars>
     </ScrollView>
   )
@@ -61,4 +69,3 @@ const styles = StyleSheet.create({
 })
 
 export default HydrologyDetailScreen
-

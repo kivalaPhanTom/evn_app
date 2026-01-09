@@ -5,10 +5,18 @@ import FactoryMaintenanceInfo from './FactoryMaintenanceInfo/FactoryMaintenanceI
 import { t } from 'i18next'
 import { router } from 'expo-router'
 
-function FactoryMaintenanceSchedule() {
+interface FactoryMaintenanceScheduleProps {
+  currentPlantId?: string
+}
+
+function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
+  const { currentPlantId } = props
 
   const onPressCard = () => {
-    router.push({ pathname: '/unit-maintenance-schedule-detail' as any })
+    router.navigate({ 
+      pathname: '/unit-maintenance-schedule-detail' as any,
+      params: currentPlantId ? { currentPlantId } : undefined
+    })
   }
 
   return (
@@ -20,7 +28,7 @@ function FactoryMaintenanceSchedule() {
       }}
     >
       <View style={{ marginBottom: 20 }}>
-        <FactoryMaintenanceInfo />
+        <FactoryMaintenanceInfo currentPlantId={currentPlantId} />
       </View>
     </SectionContainer>
   )

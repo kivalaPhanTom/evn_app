@@ -1,88 +1,112 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { ScrollView, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocalSearchParams } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
-import { MaintenanceLevelCard } from '@/components/MaintenanceLevelCard/MaintenanceLevelCard.component'
+import { MaintenanceLevelCard, MaintenanceLevel } from '@/components/MaintenanceLevelCard/MaintenanceLevelCard.component'
 import styles from './UnitMaintenanceDetails.styles'
+import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { RootState } from '@/core/redux/store'
 
 const TABS = [
-  { id: 'buon-tua-srah', label: 'Buôn Tua Srah' },
-  { id: 'buon-kuop', label: 'Buôn Kuôp' },
-  { id: 'srepok-3', label: 'Srepok 3' },
+  { id: 'BTS', label: 'Buôn Tua Srah' },
+  { id: 'BK', label: 'Buôn Kuôp' },
+  { id: 'SP3', label: 'Srepok 3' },
 ]
 
-const MOCK_MAINTENANCE_ITEMS = [
-  {
-    title: 'SCBD theo RCM - H1',
-    level: 'major' as const,
-    planned: {
-      days: 30,
-      startDate: '01/03/2024',
-      endDate: '30/03/2024',
-    },
-    actual: {
-      days: 36,
-      startDate: '05/03/2024',
-      endDate: '10/04/2024',
-    },
-    timeline: {
-      activeMonths: [2, 3],
-    },
-  },
-  {
-    title: 'SCBD theo RCM - H2',
-    level: 'medium' as const,
-    planned: {
-      days: 10,
-      startDate: '01/03/2025',
-      endDate: '10/03/2025',
-    },
-    actual: {
-      days: 9,
-      startDate: '02/03/2025',
-      endDate: '10/03/2025',
-    },
-    timeline: {
-      activeMonths: [0, 1, 2],
-    },
-  },
-  {
-    title: 'SCBD theo RCM - H3',
-    level: 'minor' as const,
-    planned: {
-      days: 2,
-      startDate: '10/08/2024',
-      endDate: '12/08/2024',
-    },
-    actual: {
-      days: null,
-      startDate: null,
-      endDate: null,
-    },
-    timeline: {
-      activeMonths: [7],
-    },
-  },
-]
+// Helper function to map Type string to MaintenanceLevel
+const mapTypeToLevel = (type: string): MaintenanceLevel => {
+  const lowerType = type.toLowerCase()
+  if (lowerType.includes('major') || lowerType.includes('đại')) {
+    return 'major'
+  }
+  if (lowerType.includes('medium') || lowerType.includes('trung')) {
+    return 'medium'
+  }
+  if (lowerType.includes('minor') || lowerType.includes('tiểu')) {
+    return 'minor'
+  }
+  // Default to minor if unknown
+  return 'minor'
+}
 
 function UnitMaintenanceDetails() {
-  const [activeTab, setActiveTab] = useState<string>(TABS[0].id)
+  const { currentPlantId: currentPlantIdFromParams } = useLocalSearchParams<{ currentPlantId?: string | string[] }>()
+  const dispatch = useDispatch()
+  const { currentPlantDetail } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+  
+  // Normalize currentPlantId from params (handle array case)
+  const currentPlantId = Array.isArray(currentPlantIdFromParams) 
+    ? currentPlantIdFromParams[0] 
+    : currentPlantIdFromParams
+  
+  // Use currentPlantId from params, or fallback to PlantCode from Redux, or first tab
+  const effectivePlantId = currentPlantId || currentPlantDetail?.PlantCode || TABS[0]?.id || ''
+  const [activeTab, setActiveTab] = useState<string>(effectivePlantId)
+
+  useEffect(() => {
+    // Update activeTab when effectivePlantId changes
+    if (effectivePlantId) {
+      setActiveTab(effectivePlantId)
+    }
+  }, [effectivePlantId])
+
+  useEffect(() => {
+    // Call API if we have a valid currentPlantId from params
+    if (activeTab) {
+      dispatch(getDetailRepairSchedule({ currentPlantId: activeTab }))
+    }
+    // Note: If no currentPlantId, component will use data from Redux state
+    // if it was already fetched by another component
+  }, [activeTab, dispatch])
+
+  // Map API data to component format
+  const maintenanceItems = useMemo(() => {
+    if (!currentPlantDetail?.Items || currentPlantDetail.Items.length === 0) {
+      return []
+    }
+
+    return currentPlantDetail.Items.map((item) => ({
+      title: item.Name || '',
+      level: mapTypeToLevel(item.Type || ''),
+      planned: {
+        days: item.PlannedDays || 0,
+        startDate: item.PlannedStartDate || '',
+        endDate: item.PlannedEndDate || '',
+      },
+      actual: {
+        days: item.ActualDays || null,
+        startDate: item.ActualStartDate,
+        endDate: item.ActualEndDate,
+      },
+      timeline: {
+        activeMonths: item.ActiveMonth || [],
+      },
+    }))
+  }, [currentPlantDetail])
 
   return (
     <ScrollView>
       <ScrollableTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       <SectionContainer title="Chi tiết hạng mục bảo dưỡng">
         <View style={styles.contentContainer}>
-          {MOCK_MAINTENANCE_ITEMS.map((item, index) => (
-            <MaintenanceLevelCard
-              key={`${item.title}-${index}`}
-              title={item.title}
-              level={item.level}
-              planned={item.planned}
-              actual={item.actual}
-              timeline={item.timeline}
-            />
-          ))}
+          {maintenanceItems.length > 0 ? (
+            maintenanceItems.map((item, index) => (
+              <MaintenanceLevelCard
+                key={`${item.title}-${index}`}
+                title={item.title}
+                level={item.level}
+                planned={item.planned}
+                actual={item.actual}
+                timeline={item.timeline}
+              />
+            ))
+          ) : (
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              {/* Optional: Add loading or empty state */}
+            </View>
+          )}
         </View>
       </SectionContainer>
     </ScrollView>

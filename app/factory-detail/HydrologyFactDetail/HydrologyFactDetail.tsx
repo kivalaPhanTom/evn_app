@@ -9,6 +9,7 @@ import PowerStoreInLakeV2 from './PowerStoreInLakeV2/PowerStoreInLake'
 import { px } from '@/core/utils/scale'
 import InflowOutflow from './InflowOutflow/InflowOutflow'
 import { RootState } from '@/core/redux/store'
+import ReservoirMetric from '../ReservoirWaterLevel/ReservoirMetric/ReservoirMetric'
 
 interface hydrologyFactDetailProps {
   currentPlantId: string
@@ -30,11 +31,15 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
 
   return (
     <ScrollView>
-      <View style={{ marginHorizontal: px.h(24) }}>
+      <View>
         <WaterLevelByHours currentPlantId={currentPlantId} />
+        <View>
+          <ReservoirMetric currentPlantId={currentPlantId} />
+        </View>
         <View style={{ marginTop: 20 }}>
           <InflowOutflow hydroElectricId={currentPlantId} />
         </View>
+
         <View style={{ marginTop: 20 }}>
           <PowerStoreInLakeV2 />
         </View>

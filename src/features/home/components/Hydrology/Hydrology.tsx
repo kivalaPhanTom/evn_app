@@ -12,7 +12,7 @@ function Hydrology() {
   const router = useRouter()
 
   const onPressCard = () => {
-    router.push({ pathname: '/hydrology-detail' as any })
+    router.navigate({ pathname: '/hydrology-detail' as any })
   }
 
 
@@ -30,18 +30,6 @@ function Hydrology() {
       <View style={{ marginBottom: 20 }}>
         <PowerStoreInLake />
       </View>
-      {/* <View style={{ marginBottom: 20 }}>
-        <FlowRate title="Mực nước thượng lưu (MNTL)" data={[]} currentColor="#0EA5E9" unit="m" />
-      </View>
-      <View style={{ marginBottom: 20 }}>
-        <FlowRate title="Lưu lượng về (Qve)" data={[]} currentColor="#3B82F6" unit="m³/s" />
-      </View>
-      <View style={{ marginBottom: 20 }}>
-        <FlowRate title="Lưu lượng chạy máy (Qcm)" data={[]} currentColor="#10B981" unit="m³/s" />
-      </View>
-      <View style={{ marginBottom: 20 }}>
-        <FlowRate title="Lưu lượng xả tràn (Qxt)" data={[]} currentColor="#F59E0B" unit="m³/s" />
-      </View> */}
     </SectionContainer>
   )
 }

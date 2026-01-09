@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { set } from 'react-hook-form'
 
 interface RepairScheduleDetailCategory {
-  Total: number
+  Total?: number
   Minor: number
   Medium: number
   Major: number
@@ -21,6 +21,32 @@ interface RepairScheduleDetailItem {
   Day: RepairScheduleDetailDay
 }
 
+interface CurrentPlantDetailItem {
+  Id: string
+  Name: string
+  Type: string
+  PlannedStartDate: string
+  PlannedEndDate: string
+  PlannedDays: number
+  ActualStartDate: string
+  ActualEndDate: string
+  ActualDays: number
+  ActiveMonth: number[]
+}
+
+interface CurrentPlantDetail {
+  PlantCode: string
+  PlantName: string
+  MaintenanceItems: number
+  Breakdown: RepairScheduleDetailCategory
+  RepairPlannedDays: number
+  RepairActualDays: number
+  Status: number
+  Progress: number
+  ImageUrl: string
+  Items: CurrentPlantDetailItem[]
+}
+
 interface RepairSchedule {
   TotalCategory: number
   TotalActualDay: number
@@ -29,6 +55,7 @@ interface RepairSchedule {
   TotalMajorCategory: number
   Details: RepairScheduleDetailItem[]
   isRepairerScheduleLoading: boolean
+  currentPlantDetail: CurrentPlantDetail
 }
 
 const initialState: RepairSchedule = {
@@ -39,6 +66,22 @@ const initialState: RepairSchedule = {
   TotalMajorCategory: 0,
   Details: [],
   isRepairerScheduleLoading: false,
+  currentPlantDetail: {
+    PlantCode: '',
+    PlantName: '',
+    MaintenanceItems: 0,
+    Breakdown: {
+      Minor: 0,
+      Medium: 0,
+      Major: 0,
+    },
+    RepairPlannedDays: 0,
+    RepairActualDays: 0,
+    Status: 0,
+    Progress: 0,
+    ImageUrl: '',
+    Items: [],
+  },
 }
 
 const unitMaintenanceScheduleSlice = createSlice({
@@ -56,8 +99,11 @@ const unitMaintenanceScheduleSlice = createSlice({
         ...action.payload,
       }
     },
+    setCurrentPlantDetail: (state, action) => {
+      state.currentPlantDetail = action.payload
+    },
   },
 })
 const { reducer } = unitMaintenanceScheduleSlice
-export const { setRepairSchedule, setLoading } = unitMaintenanceScheduleSlice.actions
+export const { setRepairSchedule, setLoading, setCurrentPlantDetail } = unitMaintenanceScheduleSlice.actions
 export default reducer

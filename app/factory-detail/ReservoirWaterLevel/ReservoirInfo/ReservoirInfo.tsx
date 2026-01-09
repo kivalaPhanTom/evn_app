@@ -1,10 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { View, Text, StyleSheet, Animated } from 'react-native'
 import { useRouter } from 'expo-router'
 import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg'
 import { styles } from './ReservoirInfo.styles'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/core/redux/store'
+import { getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
 
 interface ReservoirData {
   currentLevel: number
@@ -12,35 +15,59 @@ interface ReservoirData {
   deadLevel: number
   samePeriodLastYear: number
   referenceLevel: number
+  previousLevel: number
+  percent: number
+  symbol: string
   name: string
 }
 
-const DEFAULT_DATA: ReservoirData = {
-  currentLevel: 468,
-  maxLevel: 500,
-  deadLevel: 180,
-  samePeriodLastYear: 452,
-  referenceLevel: 180,
-  name: 'BUÔN KUỐP',
-}
-
-function ReservoirInfo() {
+function ReservoirInfo(props: { currentPlantId: string }) {
+  const { currentPlantId } = props;
   const router = useRouter()
+  const dispatch = useDispatch()
   const [containerWidth, setContainerWidth] = useState(0)
   const containerHeight = px.v(140)
+  
+  const { currentHydrologyPlant } = useSelector((state: RootState) => state.hydrologySlice)
 
-  const data = DEFAULT_DATA
+  // Call API when component mounts or currentPlantId changes
+  useEffect(() => {
+    if (currentPlantId) {
+      dispatch(getHydrologyPlantsParam({ currentPlantId }))
+    }
+  }, [currentPlantId, dispatch])
 
-  // Calculate water height percentage
-  const waterHeightPercent = (data.currentLevel / data.maxLevel) * 100
+  // Map API data to ReservoirData format
+  const data = useMemo(() => {
+    if (currentHydrologyPlant?.plantsData && currentHydrologyPlant.plantsData.length > 0) {
+      const plantData = currentHydrologyPlant.plantsData[0]
+      return {
+        currentLevel: plantData.currentLevel,
+        maxLevel: plantData.maxLevel,
+        deadLevel: 180, // Using referenceLevel as deadLevel
+        previousLevel: plantData.previousLevel,
+        referenceLevel: plantData.referenceLevel,
+        name: plantData.name,
+        percent: plantData.percent,
+        symbol: plantData.symbol,
+      }
+    }
+  }, [currentHydrologyPlant])
+
+  // Use percentage from API
+  const waterHeightPercent = data?.percent || 0
   const waterHeight = (waterHeightPercent / 100) * containerHeight
   // Reference line position: calculate from bottom based on maxLevel
-  const referenceY = containerHeight - (data.referenceLevel / data.maxLevel) * containerHeight
+  const referenceY = data?.maxLevel 
+    ? containerHeight - ((data.deadLevel / data.maxLevel) * containerHeight)
+    : 0
+  // MaxLevel line position: at the top (y = 0) since maxLevel is the maximum
+  const maxLevelY = 0
   const waveAreaHeight = waterHeight
   const gaugeWidth = containerWidth > 0 ? containerWidth : px.h(80)
 
   // Check if water level is low
-  const isLowWaterLevel = data.currentLevel < data.referenceLevel
+  const isLowWaterLevel = (data?.currentLevel || 0) < (data?.referenceLevel || 0)
 
   // Wave animation offsets
   const initialOffset = 0
@@ -141,7 +168,7 @@ function ReservoirInfo() {
     >
       <View style={styles.header}>
         <Text style={styles.title}>MỰC NƯỚC HỒ CHỨA</Text>
-        <Text style={styles.locationName}>{data.name}</Text>
+        <Text style={styles.locationName}>{data?.name}</Text>
       </View>
       <View style={styles.container}>
         <View style={styles.contentRow}>
@@ -219,9 +246,24 @@ function ReservoirInfo() {
                         zIndex: 5,
                       }}
                     >
-                      <Text style={styles.percentageText}>{Math.round(waterHeightPercent)}%</Text>
+                      <Text style={styles.percentageText}>{waterHeightPercent}%</Text>
                     </View>
                   )}
+
+                  {/* MaxLevel line */}
+                  <View
+                    style={[
+                      styles.referenceLine,
+                      {
+                        top: maxLevelY,
+                        width: gaugeWidth - px.h(16),
+                        zIndex: 10,
+                      },
+                    ]}
+                  >
+                    <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
+                    <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data?.maxLevel}m</Text>
+                  </View>
 
                   {/* Reference line */}
                   <View
@@ -235,7 +277,7 @@ function ReservoirInfo() {
                     ]}
                   >
                     <View style={styles.dashedLine} />
-                    <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
+                    <Text style={styles.referenceText}>{data?.deadLevel}m</Text>
                   </View>
                 </View>
               </View>
@@ -245,18 +287,18 @@ function ReservoirInfo() {
           {/* Right side - Information */}
           <View style={styles.infoContainer}>
             <View style={styles.currentLevelContainer}>
-              <Text style={styles.currentLevel}>{data.currentLevel} m</Text>
-              <Text style={styles.maxLevel}>/ {data.maxLevel}m (mực nước tối đa)</Text>
+              <Text style={styles.currentLevel}>{data?.currentLevel} m</Text>
+              <Text style={styles.maxLevel}>/ {data?.maxLevel}m (mực nước tối đa)</Text>
             </View>
 
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Mực nước chết</Text>
-              <Text style={styles.infoValue}>{data.deadLevel}m</Text>
+              <Text style={styles.infoValue}>{data?.deadLevel}m</Text>
             </View>
 
             <View style={[styles.infoRow, { marginBottom: 0 }]}>
               <Text style={styles.infoLabel}>Cùng kỳ năm ngoái</Text>
-              <Text style={styles.infoValue}>{data.samePeriodLastYear}m</Text>
+              <Text style={styles.infoValue}>{data?.previousLevel}m</Text>
             </View>
           </View>
         </View>
