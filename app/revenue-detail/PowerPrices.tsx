@@ -110,8 +110,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 16,
         marginBottom: 14,
-        width: '48%',
-        marginRight: '2%',
+        width: '49%',
         minHeight: 110,
 
         shadowColor: '#000',
