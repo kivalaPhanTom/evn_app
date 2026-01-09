@@ -61,7 +61,7 @@ function UnitMaintenanceSchedule() {
           <MaintenanceCard
             title={item.PlantName}
             status={item.Status}
-            typeCount={item.Category.Total}
+            typeCount={item?.Category?.Total || 0}
             maintenanceTypeData={item.Category}
             mainternanceDurationData={item.Day}
             plantCode={item.PlantCode}

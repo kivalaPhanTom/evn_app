@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import dayjs from 'dayjs'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
@@ -53,16 +53,18 @@ export default function ReveneCompareByTime({
     // )
   }
   const dispatch = useDispatch()
+  const startDate = dayjs(range?.from).format('DD/MM/YYYY')
+  const endDate = dayjs(range?.to).format('DD/MM/YYYY')
+
   useEffect(() => {
-    // Dispatch an action to fetch revenue by period data when the component mounts
     dispatch(
       getRevenueByPeriod({
-        startDate: dayjs(range?.from).format('DD/MM/YYYY'),
-        endDate: dayjs(range?.to).format('DD/MM/YYYY'),
+        startDate: startDate,
+        endDate: endDate,
         type: selected.value,
       }),
     )
-  }, [dispatch, dayjs(range?.from).format('DD/MM/YYYY'), dayjs(range?.to).format('DD/MM/YYYY'), selected.value, countRefesh])
+  }, [dispatch, startDate, endDate, selected.value, countRefesh])
 
   const data = revenueByPeriod?.Series[0]
   const data2 = revenueByPeriod?.Series[1]
@@ -116,7 +118,7 @@ export default function ReveneCompareByTime({
                     <Text style={styles.arrow}>▼</Text>
                 </TouchableOpacity> */}
         {/* DROPDOWN */}
-        <View style={{marginHorizontal: 10}}>
+        <View style={{ marginHorizontal: 10 }}>
           <TouchableOpacity style={styles.dropdown} onPress={() => setOpen(!open)} activeOpacity={0.8}>
             <Text style={styles.dropdownText}>{selected?.label}</Text>
             <Text style={styles.arrow}>{open ? '▲' : '▼'}</Text>
