@@ -27,8 +27,16 @@ const HydrologyDetailScreen: React.FC = () => {
       )
     }, 80)
   }
+  const [scrollY, setScrollY] = useState(0);
+  const onScroll = (e: any) => {
+    setScrollY(e.nativeEvent.contentOffset.y);
+  };
   return (
-    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      onScroll={onScroll}
+      scrollEventThrottle={16}
+    >
       <TwinkleStars
         background={Colors.background}
         particleDensity={50}
@@ -47,7 +55,7 @@ const HydrologyDetailScreen: React.FC = () => {
             <Text style={styles.locationText}>{'Công ty thủy điện Buôn Kuốp'}</Text>
           </View>
         </View>
-        <HydrologyDetail currentPlantId={currentPlantId} />
+        <HydrologyDetail scrollY={scrollY} currentPlantId={currentPlantId} />
       </TwinkleStars>
     </ScrollView>
   )
