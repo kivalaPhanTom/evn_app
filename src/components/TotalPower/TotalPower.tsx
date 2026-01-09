@@ -47,7 +47,7 @@ function TotalPower(props: Props) {
                             <Text style={styles.title}>{title}</Text>
                             <AnimatedNumber
                                 value={total}
-                                isInitZero={true}
+                                // isInitZero={true}
                                 duration={1}
                                 decimals={2}
                                 formatter={(n) => Number(n.toFixed(2)).toString()}

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { set } from 'react-hook-form'
+
 interface HydroChartItem {
   avgVolume: number
   percent: number
@@ -147,6 +147,9 @@ interface hydrologyState {
   operateWaterLevel: {
     waterLevelRange: waterLevelRangeItem[]
   }
+  isLoadingHydrologyChart:boolean
+  isLoadingPowerStoreInLake:boolean
+  isLoadingInflowOutflow:boolean
 }
 const initialState: hydrologyState = {
   countRefesh: 0,
@@ -265,7 +268,10 @@ const initialState: hydrologyState = {
   powerStoreInLakeFactDetail: [],
   operateWaterLevel: {
     waterLevelRange: [],
-  }
+  },
+  isLoadingHydrologyChart:false,
+  isLoadingPowerStoreInLake:false,
+  isLoadingInflowOutflow:false
 }
 
 const hydrologySlice = createSlice({
@@ -315,7 +321,13 @@ const hydrologySlice = createSlice({
     },
     setCountRefesh: (state, action) => {
         state.countRefesh = action.payload
-    }
+    },
+    setLoading: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      }
+    },
   },
 })
 
@@ -334,7 +346,8 @@ export const {
   setPowerStoreInLake,
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
-  setCountRefesh
+  setCountRefesh,
+  setLoading
 } = hydrologySlice.actions
 
 export default reducer

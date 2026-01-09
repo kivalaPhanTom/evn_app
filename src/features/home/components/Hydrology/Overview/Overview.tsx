@@ -496,8 +496,8 @@ const Overview: React.FC = () => {
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
-  const { hydrologyCharData } = useSelector((state: any) => state.hydrologySlice)
-
+  const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
+  console.log('isLoadingFlowChart:', isLoadingHydrologyChart)
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
   }, [countRefesh, dispatch])
@@ -598,7 +598,7 @@ const Overview: React.FC = () => {
                 {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
               </Text>
               <HydrographicChart
-                isLoading={false}
+                isLoading={isLoadingHydrologyChart}
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
