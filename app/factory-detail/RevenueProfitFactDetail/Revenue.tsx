@@ -25,19 +25,21 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
   const router = useRouter()
-
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { revenueFactDetail, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
 
   const onPressCard = () => {
-    router.navigate({ pathname: '/revenue-detail' })
+    router.navigate({ pathname: '/revenue-detail', params: {
+      currentPlantId: currentPlantId
+    } })
   }
 
   useEffect(() => {
-    if(activeTabIndex === keyTab) {
+    if (activeTabIndex === keyTab) {
       dispatch(getRevenueFactDetail({ currentPlantId }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab])
+  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
 
   const data: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({
@@ -208,39 +210,6 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 17 }}>
                 <View style={[styles.legendDashLine]} />
                 <Text style={styles.legendLabel}>{'Hợp đồng'}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
-            <View style={[styles.chartWrapper]}>
-              <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
-            </View>
-            <View style={styles.axisContainer}>
-              <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
-                {xAxisLabels.map((label, idx) => {
-                  const isToday = idx === xAxisLabels.length - 1
-                  const isNegative = values[idx].value < 0
-                  const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
-                  return (
-                    <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
-                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
-                    </View>
-                  )
-                })}
-              </View>
-              <View style={styles.axisDivider} />
-              {/* Legend */}
-              <View style={styles.legendRow}>
-                <View style={[styles.legendItem]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
-                  <Text style={styles.legendText}>Lãi</Text>
-                </View>
-                <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
-                  <Text style={styles.legendText}>Lỗ</Text>
-                </View>
               </View>
             </View>
           </View>

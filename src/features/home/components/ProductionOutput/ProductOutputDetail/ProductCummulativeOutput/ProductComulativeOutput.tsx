@@ -63,7 +63,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const rawBarGroups: BarGroup[] = (productCummulativeOutput.barGroups || []).map(
     (group: { label: string; value: number }) => ({
       label: group.label,
-      items: [{ value: group.value, showValuesOnTop: false }],
+      items: [{ value: group.value, showValuesOnTop: true }],
     }),
   )
 

@@ -9,6 +9,7 @@ import PowerStoreInLakeV2 from './PowerStoreInLakeV2/PowerStoreInLake'
 import { px } from '@/core/utils/scale'
 import InflowOutflow from './InflowOutflow/InflowOutflow'
 import { RootState } from '@/core/redux/store'
+import ReservoirMetric from '../ReservoirWaterLevel/ReservoirMetric/ReservoirMetric'
 
 interface hydrologyFactDetailProps {
   currentPlantId: string
@@ -17,6 +18,7 @@ interface hydrologyFactDetailProps {
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -25,20 +27,24 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
       dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
       dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch])
+  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
 
   return (
     <ScrollView>
-      <View style={{ marginHorizontal: px.h(24) }}>
-        <WaterLevelByHours currentPlantId={currentPlantId}/>
+      <View>
+        <WaterLevelByHours currentPlantId={currentPlantId} />
+        <View>
+          <ReservoirMetric currentPlantId={currentPlantId} />
+        </View>
         <View style={{ marginTop: 20 }}>
           <InflowOutflow hydroElectricId={currentPlantId} />
         </View>
+
         <View style={{ marginTop: 20 }}>
           <PowerStoreInLakeV2 />
         </View>
       </View>
-    </ScrollView>   
+    </ScrollView>
   )
 }
 

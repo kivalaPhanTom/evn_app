@@ -17,15 +17,16 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 interface ProfitFactDetailProps {
   currentPlantId: string
   keyTab: number
+  currentPlantName?: string
 }
 
 export default function ProfitDetail(props: ProfitFactDetailProps) {
-  const { currentPlantId, keyTab } = props
+  const { currentPlantId, keyTab, currentPlantName } = props
   const dispatch = useDispatch()
   const router = useRouter()
   const { profitFactDetail, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-
+  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const fromParts = profitFactDetail.Chart.Period.From?.split('-') ?? []
   const toParts = profitFactDetail.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -152,10 +153,10 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }))
 
   useEffect(() => {
-    if(activeTabIndex === keyTab) {
+    if (activeTabIndex === keyTab) {
       dispatch(getProfitFactDetail({ currentPlantId }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab])
+  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
 
   // Build x-axis labels: last 6 days + "Nay" for today
   const today = new Date()
@@ -178,8 +179,14 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
       return { dateStr: formatDayWithMonth(d), value: v.value }
     })
     .filter((x) => x.value < 0)
-  const onPressCard = () => { 
-    router.navigate({ pathname: '/factory-profit-detail' as any })
+  const onPressCard = () => {
+    router.navigate({
+      pathname: '/profit-detail' as any,
+      params: {
+        plantId: currentPlantId,
+        plantName: currentPlantName
+      },
+    })
   }
 
   return (
@@ -293,52 +300,6 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
                     </Text>
                   </View>
                 ))}
-              </View>
-            </View>
-          </View>
-        </View>
-        <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={styles.profitByDayTitle}>So sánh theo thời giannn</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>Đơn vị: Tr Đồng</Text>
-            </View>
-            <View style={[styles.chartWrapper]}></View>
-
-            {/* X-Axis below chart */}
-            <LineChart
-              data={data}
-              data2={data2}
-              data3={data3}
-              color="#4ADE80"
-              color2="#22D3EE"
-              color3="#A78BFA"
-              hideDataPoints2={false}
-              hideYAxisText={true}
-              hideDataPoints1={false}
-              spacing={9}
-              curved={false}
-              ruleTypes="solid"
-              areaChart2={true}
-              areaChart3={true}
-              showValuesAsDataPointsText={false}
-              pointerConfig
-            />
-            <View style={styles.line} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#A78BFA' }]} />
-                <Text style={styles.legendLabel}>{'Buôn Tua Srah'}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#4ADE80' }]} />
-                <Text style={styles.legendLabel}>{'Buôn Kuốp'}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                <View style={[styles.circle, { backgroundColor: '#22D3EE' }]} />
-                <Text style={styles.legendLabel}>{'Srepok 3'}</Text>
               </View>
             </View>
           </View>

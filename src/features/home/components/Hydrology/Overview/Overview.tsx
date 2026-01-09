@@ -4,13 +4,12 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
-import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart, getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
 import { Shadow } from 'react-native-shadow-2'
 import { useDispatch, useSelector } from 'react-redux'
-import { getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
@@ -500,8 +499,8 @@ const Overview: React.FC = () => {
   const { hydrologyCharData } = useSelector((state: any) => state.hydrologySlice)
 
   useEffect(() => {
-    dispatch(getHydrologyPlantsParam())
-  }, [countRefesh])
+    dispatch(getHydrologyPlantsParam({}))
+  }, [countRefesh, dispatch])
 
   // Set activeTab khi data được load
   useEffect(() => {
@@ -536,7 +535,7 @@ const Overview: React.FC = () => {
     }
 
 
-  }, [hydroElectricId, countRefesh])
+  }, [hydroElectricId, countRefesh, dispatch])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (

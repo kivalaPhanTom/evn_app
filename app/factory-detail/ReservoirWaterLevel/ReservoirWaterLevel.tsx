@@ -6,29 +6,21 @@ import ReservoirInfo from './ReservoirInfo/ReservoirInfo'
 import ReservoirMetric from './ReservoirMetric/ReservoirMetric'
 import { t } from 'i18next'
 
-function ReservoirWaterLevel() {
-  const router = useRouter();
-
-  const onPressCard = () => {
-    router.push({ pathname: '/hydrology-detail' as any })
-  }
-
+function ReservoirWaterLevel(props: { currentPlantId: string,}) {
+  const { currentPlantId } = props;
 
   return (
-    <SectionContainer 
-      title={t('hydrology')}
-      actionButton={{
-        label: 'Thêm chi tiết',
-        onPress: onPressCard,
-      }}
-    >
+    // <SectionContainer
+    //   title={t('hydrology')}
+    //   actionButton={{
+    //     label: 'Thêm chi tiết',
+    //     onPress: onPressCard,
+    //   }}
+    // >
       <View style={{ marginBottom: 20 }}>
-        <ReservoirInfo />
+        <ReservoirInfo currentPlantId={currentPlantId} />
       </View>
-      <View style={{ marginBottom: 20 }}>
-        <ReservoirMetric />
-      </View>
-    </SectionContainer>
+    // </SectionContainer>
   )
 }
 
