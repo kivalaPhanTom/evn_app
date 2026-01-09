@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { Animated, Easing, View as RNView, Text as RNText } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { runOnJS } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
@@ -33,71 +34,113 @@ function HomeNewScreen(props: Props) {
 
   const { detail } = useSelector((state: RootState) => state.powerSlice)
   const activeTab = useSelector((state: RootState) => state.powerSlice.activeTabIndex)
+  const [isLoading, setIsLoading] = useState(false)
+  const spinAnim = useRef(new Animated.Value(0)).current;
 
-  // const swipeLeft = Gesture.Pan()
-  //   .activeOffsetX([-30, 30])
-  //   .onEnd(e => {
-  //     if (e.translationX < -80) {
-  //       runOnJS(router.navigate)('/factory-detail')
-  //     }
-  //   })
-  // const { companyName, location } = useLocalSearchParams<{
-  //   companyName?: string | string[]
-  //   location?: string | string[]
-  // }>()
-  // const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
-  // const companyLocation = Array.isArray(location) ? location[0] : location
+  useEffect(() => {
+    let looping: Animated.CompositeAnimation | null = null;
+    if (isLoading) {
+      looping = Animated.loop(
+        Animated.timing(spinAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+          easing: Easing.linear,
+        })
+      );
+      looping.start();
+    } else {
+      spinAnim.stopAnimation();
+      spinAnim.setValue(0);
+    }
+    return () => {
+      if (looping) looping.stop();
+    };
+  }, [isLoading]);
+
   const onSetActiveTab = (index: number) => {
     dispatch(setActiveTab(index))
   }
-  return (
-    <PagerView
-      style={{ flex: 1 }}
-      initialPage={0}
-      onPageSelected={(e) => onSetActiveTab(e.nativeEvent.position)}
-      orientation="horizontal"
-    >
-      {/* PAGE 1: HOME */}
-      <View key="home" style={{ flex: 1 }}>
-        {activeTab === 0 ? <HomeContent /> : <BlankPageSkeleton />}
-      </View>
 
-      {/* PAGE 2: FACTORY DETAIL */}
-      {
-        detail.map((factory, index) => (
-          <View key={`factory${index}`} style={{ flex: 1 }}>
-            {activeTab === index + 1 ? <FactoryDetail
-              companyName={`Nhà máy ${factory.name}`}
-              location={'Đắk Lắk'}
-              currentPlantId={factory.code}
-              keyTab={index + 1}
-            /> : <BlankPageSkeleton />}
-          </View>
-        ))
-      }
-    </PagerView>
-    // <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-    //   <View style={styles.header}>
-    //     <GradientText
-    //       text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
-    //       colors={textGradients.water}
-    //       fontSize={px.f(30)}
-    //       style={{ textAlign: 'center' }}
-    //     />
-    //     <View style={styles.locationRow}>
-    //       <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-    //       <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
-    //     </View>
-    //   </View>
-    //   <ScrollView>
-    //     <PowerSection />
-    //     <ProductionOutput />
-    //     <Hydrology />
-    //     <UnitMaintenanceSchedule />
-    //     <RevenueDetail />
-    //     <ProfitDetail />
-    //   </ScrollView>
-    // </TwinkleStars>
+  const handlePageScrollStateChanged = (event: any) => {
+    const state = event?.nativeEvent?.pageScrollState;
+    if (state === 'dragging' || state === 'settling') {
+      setIsLoading(true)
+    } else if (state === 'idle') {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <PagerView
+        style={{ flex: 1 }}
+        initialPage={0}
+        onPageSelected={(e) => onSetActiveTab(e.nativeEvent.position)}
+        orientation="horizontal"
+        onPageScrollStateChanged={handlePageScrollStateChanged}
+      >
+        {/* PAGE 1: HOME */}
+        <View key="home" style={{ flex: 1 }}>
+          {activeTab === 0 ? <HomeContent /> : <BlankPageSkeleton />}
+        </View>
+
+        {/* PAGE 2: FACTORY DETAIL */}
+        {
+          detail.map((factory, index) => (
+            <View key={`factory${index}`} style={{ flex: 1 }}>
+              {activeTab === index + 1 ? <FactoryDetail
+                companyName={`Nhà máy ${factory.name}`}
+                location={'Đắk Lắk'}
+                currentPlantId={factory.code}
+                keyTab={index + 1}
+              /> : <BlankPageSkeleton />}
+            </View>
+          ))
+        }
+      </PagerView>
+      {isLoading && (
+        <RNView
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.18)',
+            zIndex: 10,
+          }}
+        >
+          <Animated.View
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              borderWidth: 6,
+              borderColor: '#4F8EF7',
+              borderTopColor: '#fff',
+              borderRightColor: '#fff',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 18,
+              transform: [{ rotate: spinAnim.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] }) }],
+              backgroundColor: 'rgba(30,41,59,0.7)',
+              shadowColor: '#000',
+              shadowOpacity: 0.18,
+              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 4 },
+            }}
+          >
+            <Ionicons name="flash" size={36} color="#FFD600" />
+          </Animated.View>
+          <RNText style={{ color: '#fff', fontSize: 17, fontWeight: '600', textShadowColor: '#000', textShadowRadius: 8, letterSpacing: 0.5 }}>
+            
+          </RNText>
+        </RNView>
+      )}
+    </View>
   )
 }
 
