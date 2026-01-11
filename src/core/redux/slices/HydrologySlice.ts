@@ -150,6 +150,7 @@ interface hydrologyState {
   isLoadingHydrologyChart:boolean
   isLoadingPowerStoreInLake:boolean
   isLoadingInflowOutflow:boolean
+  isLoadingFlowChart:boolean
 }
 const initialState: hydrologyState = {
   countRefesh: 0,
@@ -271,7 +272,8 @@ const initialState: hydrologyState = {
   },
   isLoadingHydrologyChart:false,
   isLoadingPowerStoreInLake:false,
-  isLoadingInflowOutflow:false
+  isLoadingInflowOutflow:false,
+  isLoadingFlowChart:false
 }
 
 const hydrologySlice = createSlice({
