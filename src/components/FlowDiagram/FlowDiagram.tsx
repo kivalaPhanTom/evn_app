@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native'
 import Svg, { Defs, LinearGradient, Stop, Rect, Text as SvgText, Circle, G, Path } from 'react-native-svg'
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle)
+// const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -50,21 +50,21 @@ interface flowDiagramProps {
 export default function FlowDiagram(props: flowDiagramProps) {
 	const { data } = props
 	// Animation values
-	const animValue = useRef(new Animated.Value(0)).current
+	// const animValue = useRef(new Animated.Value(0)).current
 
-	useEffect(() => {
-		const animate = () => {
-			Animated.loop(
-				Animated.timing(animValue, {
-					toValue: 1,
-					duration: 2200,
-					easing: Easing.linear,
-					useNativeDriver: true,
-				})
-			).start()
-		}
-		animate()
-	}, [])
+	// useEffect(() => {
+	// 	const animate = () => {
+	// 		Animated.loop(
+	// 			Animated.timing(animValue, {
+	// 				toValue: 1,
+	// 				duration: 2200,
+	// 				easing: Easing.linear,
+	// 				useNativeDriver: true,
+	// 			})
+	// 		).start()
+	// 	}
+	// 	animate()
+	// }, [])
 
 	const mainX = CENTER_X - MAIN_W / 2
 	const mainY = Math.round(140 * SCALE)
@@ -95,9 +95,9 @@ export default function FlowDiagram(props: flowDiagramProps) {
 	const rightBoxX = rightLineEndX - SIDE_W / 2
 	const rightBoxY = verticalLineEndY
 
-	const pipeDotGap = Math.max(6, Math.round(12 * SCALE))
-	const pipeDotR = Math.max(1, Math.round(4 * SCALE))
-	const smallDotR = Math.max(1, Math.round(3 * SCALE))
+	// const pipeDotGap = Math.max(6, Math.round(12 * SCALE))
+	// const pipeDotR = Math.max(1, Math.round(4 * SCALE))
+	// const smallDotR = Math.max(1, Math.round(3 * SCALE))
 
 	// Helpers to create a smooth elbow path (from (sx,sy) horizontal to (ex,ey) vertical)
 	const makeElbowPath = (sx: number, sy: number, ex: number, ey: number, direction: 'left' | 'right') => {
@@ -169,7 +169,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 					/>
 
 					{/* Chấm trắng chạy trên đường xanh dương - từ Qve xuống Hồ Thủy Điện */}
-					{(() => {
+					{/* {(() => {
 						const dotStartY = topY + TOP_H + Math.round(30 * SCALE) // Bắt đầu xa hơn nữa từ cạnh dưới Qve
 						const dotEndY = mainY + Math.round(3 * SCALE) // Kết thúc rất gần trong hộp Hồ Thủy Điện
 						const totalDistance = dotEndY - dotStartY
@@ -212,7 +212,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								/>
 							)
 						})
-					})()}
+					})()} */}
 
 					{/* Top node (Qve) */}
 					<G>
@@ -326,7 +326,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							fill="none"
 						/>
 						{/* Animation dots along computed path: approximate using same logic as before (moves horizontally then down) */}
-						{(() => {
+						{/* {(() => {
 							const horizontalDistance = mainX - leftLineEndX
 							const verticalDistance = leftBoxY - lineStartY // Kết thúc chạm cạnh trên Qtf
 							const totalDistance = horizontalDistance + verticalDistance
@@ -377,7 +377,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									/>
 								)
 							})
-						})()}
+						})()} */}
 					</G>
 
 					{/* Right smooth elbow (red) */}
@@ -391,7 +391,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							fill="none"
 						/>
 						{/* Dots */}
-						{(() => {
+						{/* {(() => {
 							const horizontalDistance = rightLineEndX - (mainX + MAIN_W)
 							const verticalDistance = rightBoxY - lineStartY
 							const totalDistance = horizontalDistance + verticalDistance
@@ -442,7 +442,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									/>
 								)
 							})
-						})()}
+						})()} */}
 					</G>
 
 					{/* Left side box (Qtf) - nằm dưới và căn giữa đường line */}
@@ -506,7 +506,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 					/>
 
 					{/* Chấm trắng chạy trên đường xanh lá - từ Hồ Thủy Điện xuống Qcem */}
-					{(() => {
+					{/* {(() => {
 						const dotStartY = mainY + MAIN_H // Bắt đầu sát cạnh dưới Hồ Thủy Điện
 						const dotEndY = bottomY // Kết thúc chạm cạnh trên Qcem
 						const totalDistance = dotEndY - dotStartY
@@ -549,7 +549,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								/>
 							)
 						})
-					})()}
+					})()} */}
 
 					{/* Bottom node (Qcem) */}
 					<G>
