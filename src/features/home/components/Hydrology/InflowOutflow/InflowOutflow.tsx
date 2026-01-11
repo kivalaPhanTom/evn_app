@@ -13,6 +13,8 @@ import { CircleLineIcon } from '@/components/ui/circle-line-icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
 import { isEmpty } from '@/core/utils/utils'
+import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 interface InflowOutflowProps {
   hydroElectricId: string
@@ -47,6 +49,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   )
 
   const dispatch = useDispatch()
+  const { isLoadingInflowOutflow } = useSelector((state: any) => state.hydrologySlice)
   const inflowOutflowData = useSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
@@ -58,58 +61,86 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
     // Dispatch action to fetch inflow/outflow data
     dispatch(getInflowOutflow({ hydroElectricId: hydroElectricId }))
   }, [dispatch, hydroElectricId])
-
+ 
   return (
     <>
       {!isEmptyData && (
         <>
           <View style={styles.content}>
             <View style={styles.summaryCard}>
-              <FlowMetricCard
-                label="Q"
-                label1="về"
-                value={inflow?.value}
-                unit={inflow?.unit}
-                color="#00DF73"
-                icon="↑"
-              />
-              <FlowMetricCard
-                label="Q"
-                label1="xa"
-                value={outflow?.value}
-                unit={outflow?.unit}
-                color="#FF0000"
-                icon="↓"
-              />
+              {
+                isLoadingInflowOutflow ?
+                  <>
+                    <SquareSkeleton
+                      count={1}
+                      size={100}
+                    />
+                    <SquareSkeleton
+                      count={1}
+                      size={100}
+                    />
+                  </> :
+                  <>
+                    <FlowMetricCard
+                      label="Q"
+                      label1="về"
+                      value={inflow?.value}
+                      unit={inflow?.unit}
+                      color="#00DF73"
+                      icon="↑"
+                    />
+                    <FlowMetricCard
+                      label="Q"
+                      label1="xa"
+                      value={outflow?.value}
+                      unit={outflow?.unit}
+                      color="#FF0000"
+                      icon="↓"
+                    />
+                  </>
+              }
             </View>
           </View>
-          <View style={styles.notePanel}>
-            <CircleLineIcon color="#00DF73" />
-            <Text style={styles.noteText}>Qvề</Text>
-            <CircleLineIcon color="#FB923C" />
-            <Text style={styles.noteText}>Qxa (Qcm + Qxt)</Text>
-          </View>
+          {
+            !isLoadingInflowOutflow && <View style={styles.notePanel}>
+              <CircleLineIcon color="#00DF73" />
+              <Text style={styles.noteText}>Qvề</Text>
+              <CircleLineIcon color="#FB923C" />
+              <Text style={styles.noteText}>Qxa (Qcm + Qxt)</Text>
+            </View>
+          }
+
           <View>
-            {qIn.length > 0 && qOut.length > 0 && (
-              <LineChart
-                data={qIn}
-                data2={qOut}
-                color="#00DF73"
-                color2="#FB923C"
-                ruleTypes="solid"
-                areaChart={false}
-                hideDataPoints1={true}
-                hideDataPoints2={true}
-                rulesColor="#E5E5EF"
-                //customDataPoint={customDataPoint()}
-                //customDataPoint2={customDataPoint2()}
-                label1="Qvề: "
-                label2="Qxa: "
-                height={px.v(200)}
-                pointerConfig={true}
-                xAxisColor="#E5E5EF"
-              />
-            )}
+            {
+              isLoadingInflowOutflow ?
+                <BarSkeleton
+                  width={'100%'}
+                  alignSelf="center"
+                  height={75}
+                /> :
+                <>
+                  {qIn.length > 0 && qOut.length > 0 && (
+                    <LineChart
+                      data={qIn}
+                      data2={qOut}
+                      color="#00DF73"
+                      color2="#FB923C"
+                      ruleTypes="solid"
+                      areaChart={false}
+                      hideDataPoints1={true}
+                      hideDataPoints2={true}
+                      rulesColor="#E5E5EF"
+                      //customDataPoint={customDataPoint()}
+                      //customDataPoint2={customDataPoint2()}
+                      label1="Qvề: "
+                      label2="Qxa: "
+                      height={px.v(200)}
+                      pointerConfig={true}
+                      xAxisColor="#E5E5EF"
+                    />
+                  )}
+                </>
+            }
           </View>
         </>
       )}

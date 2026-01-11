@@ -14,11 +14,9 @@ import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
 const PowerStoreInLake: React.FC = () => {
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { powerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
+  const { powerStoreInLake, isLoadingPowerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
-  const isLoading: boolean = false
-
   const segments = powerStoreInLake?.segments ?? []
   const data: StackedItem[] = segments
     .slice()
@@ -40,7 +38,7 @@ const PowerStoreInLake: React.FC = () => {
       </View>
 
       <View style={styles.mainRow}>
-        {isLoading ? (
+        {isLoadingPowerStoreInLake ? (
           <View style={styles.firstSkeleton}>
             <BarSkeleton width={'90%'} alignSelf="center" />
           </View>
@@ -65,7 +63,7 @@ const PowerStoreInLake: React.FC = () => {
 
       {/* Stacked bar */}
       <View style={{ marginTop: px.v(10) }}>
-        {isLoading ? (
+        {isLoadingPowerStoreInLake ? (
           <BarSkeleton width={'100%'} alignSelf="center" height={20} />
         ) : (
           <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />

@@ -123,6 +123,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   return (
     <View style={{ overflow: 'hidden', paddingTop: px.v(4) }}>
       <GiftedLineChart
+        key={`${data.length}-${data2?.length || 0}-${data3?.length || 0}`}
         {...commonProps}
         curved={curved}
         areaChart={areaChart}
@@ -192,7 +193,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                         width: px.h(200),
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginTop: px.v(-30),
+                        marginTop: px.v(-5),
                         marginLeft: px.h(-40),
                       }}
                     >

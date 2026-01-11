@@ -1,6 +1,7 @@
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
+import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
 import WaterDrop from '@/components/WaterDrop/WaterDrop.component'
 import { getProductCummulativeOutput } from '@/core/redux/Actions/ProductOutputActions'
@@ -118,13 +119,68 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
         />
       </View>
 
-      <DateRangePicker
-        format={tab === 'day' ? 'DD/MM/YYYY' : tab === 'month' ? 'MM/YYYY' : 'YYYY'}
-        value={range}
-        onChange={onChangeDateRage}
-        mode="modal"
-        chooseMode={tab}
-      />
+      {tab === 'day' ? (
+        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" chooseMode="day" />
+      ) : (
+        <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <MonthPickerCustom
+            selectedDate={dayjs(range.from)}
+            containerStyle={{ width: px(190) }}
+            label={tab === 'year' ? 'Từ năm:' : 'Từ tháng:'}
+            formatMonth={(date) => (tab === 'year' ? `${date.format('YYYY')}` : `${date.format('MM/YYYY')}`)}
+            onConfirm={(date) => {
+              const picked = dayjs(date)
+              const fromDate = tab === 'year' ? picked.startOf('year') : picked.startOf('month')
+              const newRange = { ...range, from: fromDate }
+              if (fromDate.isAfter(dayjs(newRange.to))) {
+                Toast.warn(
+                  tab === 'year'
+                    ? 'Năm bắt đầu không được sau năm kết thúc'
+                    : 'Tháng bắt đầu không được sau tháng kết thúc',
+                )
+                return
+              }
+              setRange(newRange)
+              dispatch(
+                getProductCummulativeOutput({
+                  type: tab,
+                  from: fromDate.format('DD/MM/YYYY'),
+                  to: dayjs(newRange.to).format('DD/MM/YYYY'),
+                  currentPlantId: props.currentPlantId || '',
+                }),
+              )
+            }}
+          />
+          <MonthPickerCustom
+            selectedDate={dayjs(range.to)}
+            label={tab === 'year' ? 'Đến năm:' : 'Đến tháng:'}
+            formatMonth={(date) => (tab === 'year' ? `${date.format('YYYY')}` : `${date.format('MM/YYYY')}`)}
+            containerStyle={{ width: px(190) }}
+            onConfirm={(date) => {
+              const picked = dayjs(date)
+              const toDate = tab === 'year' ? picked.endOf('year') : picked.endOf('month')
+              const newRange = { ...range, to: toDate }
+              if (dayjs(newRange.from).isAfter(toDate)) {
+                Toast.warn(
+                  tab === 'year'
+                    ? 'Năm bắt đầu không được sau năm kết thúc'
+                    : 'Tháng bắt đầu không được sau tháng kết thúc',
+                )
+                return
+              }
+              setRange(newRange)
+              dispatch(
+                getProductCummulativeOutput({
+                  type: tab,
+                  from: dayjs(newRange.from).format('DD/MM/YYYY'),
+                  to: toDate.format('DD/MM/YYYY'),
+                  currentPlantId: props.currentPlantId || '',
+                }),
+              )
+            }}
+          />
+        </View>
+      )}
 
       <View style={dashboardCommonStyles.chartWrapper}>
         <BarChart
