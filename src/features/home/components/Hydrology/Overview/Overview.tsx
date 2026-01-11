@@ -497,7 +497,7 @@ const Overview: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<string>('')
   const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
-  console.log('isLoadingFlowChart:', isLoadingHydrologyChart)
+  
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
   }, [countRefesh, dispatch])

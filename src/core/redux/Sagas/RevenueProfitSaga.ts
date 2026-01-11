@@ -152,6 +152,7 @@ function* getRevenuePowerPricesSaga(action: ReturnType<typeof getRevenuePowerPri
       }),
     )
   } catch (error) {
+    catchHandle(error, 'getRevenuePowerPricesSaga')
     yield put(
       setLoading({
         isLoadingPowerPrice: false,
@@ -187,6 +188,7 @@ function* getRevenueTotalExpenseSaga(action: ReturnType<typeof getRevenueTotalEx
       }),
     )
   } catch (error) {
+    catchHandle(error, 'getRevenueTotalExpenseSaga')
     yield put(
       setLoading({
         isLoadingRevenueCostSummary: false,
@@ -218,6 +220,7 @@ function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>):
       }),
     )
   } catch (error) {
+    catchHandle(error, 'getRevenueByPeriodSaga')
     yield put(
       setLoading({
         isLoadingRevenueByPeriod: false,
@@ -249,6 +252,7 @@ function* getProfitByPeriodSaga(action: ReturnType<typeof getProfitByPeriod>): G
       }),
     )
   } catch (error) {
+    catchHandle(error, 'getProfitByPeriodSaga')
     yield put(
       setLoading({
         isLoadingProfitByPeriod: false,
@@ -266,7 +270,9 @@ function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCum
     if (res.status === 200) {
       yield put(setDailyAndCumulativeData(res.data))
     }
-  } catch (error) {}
+  } catch (error) {
+    catchHandle(error, 'getDailyAndCumulativeDataSaga')
+  }
 }
 
 function* getProfitApi() {
