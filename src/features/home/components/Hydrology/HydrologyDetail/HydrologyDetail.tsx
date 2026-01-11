@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
+import { LazySection } from '@/components/LazySection/LazySection'
 const flowRateData = [
   {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -64,6 +65,7 @@ const flowRateData = [
 
 interface HydrologyDetailProps {
   currentPlantId?: string
+  scrollY?: number
 }
 
 function getCurrentPlantId(activeTab: string): string {
@@ -85,7 +87,7 @@ function getCurrentPlantId(activeTab: string): string {
 }
 
 function HydrologyDetail(props: HydrologyDetailProps) {
-  const { currentPlantId } = props
+  const { currentPlantId, scrollY = 0 } = props
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
@@ -119,6 +121,15 @@ function HydrologyDetail(props: HydrologyDetailProps) {
     dispatch(getOutflow(payload));
     dispatch(getTurbineflow(payload));
   }, [activeTab, selectedDate, countRefesh, dispatch])
+
+  const preloadOffset = 300; // px before entering viewport
+
+  const shouldLoadGeneralInfo = scrollY >= 200 - preloadOffset;
+  const shouldLoadUpstreamChart = scrollY >= 600 - preloadOffset;
+  const shouldLoadInflowChart = scrollY >= 1000 - preloadOffset;
+  const shouldLoadTurbineflowChart = scrollY >= 1400 - preloadOffset;
+  const shouldLoadOutflowChart = scrollY >= 1800 - preloadOffset;
+
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
@@ -198,7 +209,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           />
         </View>
         <View style={{ marginBottom: 20 }}>
-          <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
+          <LazySection shouldLoad={shouldLoadGeneralInfo} minHeight={300}>
+            <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
+          </LazySection>
         </View>
         {/* {flowRateData.map((item, index) => (
           <View key={index} style={{ marginBottom: 20 }}>
@@ -213,44 +226,55 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           </View>
         ))} */}
         <View style={{ marginBottom: 20 }}>
-          <FlowRate
-            title={convertedUpstreamData.title}
-            data={convertedUpstreamData.data}
-            data2={convertedUpstreamData.data2}
-            currentColor={convertedUpstreamData.currentColor}
-            unit={convertedUpstreamData.unit}
-            flowRateInfo={convertedUpstreamData.flowRateInfo}
-          />
+          <LazySection shouldLoad={shouldLoadUpstreamChart} minHeight={300}>
+            <FlowRate
+              title={convertedUpstreamData.title}
+              data={convertedUpstreamData.data}
+              data2={convertedUpstreamData.data2}
+              currentColor={convertedUpstreamData.currentColor}
+              unit={convertedUpstreamData.unit}
+              flowRateInfo={convertedUpstreamData.flowRateInfo}
+            />
+          </LazySection>
         </View>
         <View style={{ marginBottom: 20 }}>
-          <FlowRate
-            title={convertedInflowData.title}
-            data={convertedInflowData.data}
-            data2={convertedInflowData.data2}
-            currentColor={convertedInflowData.currentColor}
-            unit={convertedInflowData.unit}
-            flowRateInfo={convertedInflowData.flowRateInfo}
-          />
+          <LazySection shouldLoad={shouldLoadInflowChart} minHeight={300}>
+            <FlowRate
+              title={convertedInflowData.title}
+              data={convertedInflowData.data}
+              data2={convertedInflowData.data2}
+              currentColor={convertedInflowData.currentColor}
+              unit={convertedInflowData.unit}
+              flowRateInfo={convertedInflowData.flowRateInfo}
+            />
+          </LazySection>
+
         </View>
         <View style={{ marginBottom: 20 }}>
-          <FlowRate
-            title={convertedTurbineflowData.title}
-            data={convertedTurbineflowData.data}
-            data2={convertedTurbineflowData.data2}
-            currentColor={convertedTurbineflowData.currentColor}
-            unit={convertedTurbineflowData.unit}
-            flowRateInfo={convertedTurbineflowData.flowRateInfo}
-          />
+          <LazySection shouldLoad={shouldLoadTurbineflowChart} minHeight={300}>
+            <FlowRate
+              title={convertedTurbineflowData.title}
+              data={convertedTurbineflowData.data}
+              data2={convertedTurbineflowData.data2}
+              currentColor={convertedTurbineflowData.currentColor}
+              unit={convertedTurbineflowData.unit}
+              flowRateInfo={convertedTurbineflowData.flowRateInfo}
+            />
+          </LazySection>
+
         </View>
         <View style={{ marginBottom: 20 }}>
-          <FlowRate
-            title={convertedOutflowData.title}
-            data={convertedOutflowData.data}
-            data2={convertedOutflowData.data2}
-            currentColor={convertedOutflowData.currentColor}
-            unit={convertedOutflowData.unit}
-            flowRateInfo={convertedOutflowData.flowRateInfo}
-          />
+          <LazySection shouldLoad={shouldLoadOutflowChart} minHeight={300}>
+            <FlowRate
+              title={convertedOutflowData.title}
+              data={convertedOutflowData.data}
+              data2={convertedOutflowData.data2}
+              currentColor={convertedOutflowData.currentColor}
+              unit={convertedOutflowData.unit}
+              flowRateInfo={convertedOutflowData.flowRateInfo}
+            />
+          </LazySection>
+
         </View>
         <View style={{ marginBottom: 20 }}>
           {activeTab === 'BTS' && <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />}

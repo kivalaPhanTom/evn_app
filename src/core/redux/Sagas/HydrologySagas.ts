@@ -28,24 +28,31 @@ import {
   setPowerStoreInLake,
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
+  setLoading
 } from '../slices/HydrologySlice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
+    yield put(setLoading({ isLoadingHydrologyChart: true }))
     const payload = action.payload as { companyId: string }
     const companyId = payload?.companyId || ''
     const res = yield call(Service.getHydrologyGraphicChartApi, companyId)
     if (res.status === 200) {
       yield put(setHydrologyChart(res.data))
     }
-  } catch (error) {}
+    yield put(setLoading({ isLoadingHydrologyChart: false }))
+  } catch (error) {
+    yield put(setLoading({ isLoadingHydrologyChart: false }))
+    catchHandle(error, 'getHydrographicChartSaga')
+  }
 }
 
 function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflowChart>): Generator {
   const payload = action.payload
   const { currentPlantId, date } = payload
   try {
+    yield put(setLoading({ isLoadingFlowChart: true }))
     const res = yield call(Service.getHydrologyFlowApi, currentPlantId, date)
     if (res.status === 200) {
       yield put(
@@ -57,13 +64,16 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
     }
+    yield put(setLoading({ isLoadingFlowChart: false }))
   } catch (error) {
-    // console.log('getInflowOutflow error:', error)
+    yield put(setLoading({ isLoadingFlowChart: false }))
+    catchHandle(error, 'getHydrologyflowChartApiSaga') 
   }
 }
 
 function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): Generator {
   try {
+    yield put(setLoading({ isLoadingInflowOutflow: true }))
     const payload = action.payload as { hydroElectricId: string }
     // console.log('Fetching InflowOutflow with payload:', payload)
     const hydroElectricId = payload?.hydroElectricId || ''
@@ -74,7 +84,10 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
     }
+    yield put(setLoading({ isLoadingInflowOutflow: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingInflowOutflow: false }))
+    catchHandle(error, 'getInflowOutflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -93,6 +106,7 @@ function* getUpstreamWaterLevelApiSaga(action: ReturnType<typeof getUpstreamWate
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getUpstreamWaterLevelApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -112,6 +126,7 @@ function* getInflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getInflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -131,6 +146,7 @@ function* getOutflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getOutflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -150,6 +166,7 @@ function* getTurbineflowApiSaga(action: ReturnType<typeof getInflow>): Generator
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getTurbineflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -169,7 +186,7 @@ function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyP
       yield put(setCurrentHydrologyPlant(res.data))
     }
   } catch (error) {
-    console.log('getHydrologyPlantsParam error:', error)
+    catchHandle(error, 'getHydrologyPlantsParamApiSaga')
   }
 }
 function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
@@ -177,23 +194,26 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     const payload = action.payload as { plantId: string, date: string }
     const plantId = payload?.plantId || '';
     const date = payload?.date || '';
-    console.log('getHydrologyPlantsInfo error:', date)
     const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
       yield put(setHydrologyPlantsInfo(res.data))
     }
   } catch (error) {
-    console.log('getHydrologyPlantsInfo error:', error)
+    catchHandle(error, 'getHydrologyPlantsInfoApiSaga')
   }
 }
 
 function* getPowerStoreInLakeApiSaga(): Generator {
   try {
+    yield put(setLoading({ isLoadingPowerStoreInLake: true }))
+
     const res = yield call(Service.getPowerStoreInLake)
     if (res.status === 200) {
       yield put(setPowerStoreInLake(res.data))
     }
+    yield put(setLoading({ isLoadingPowerStoreInLake: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingPowerStoreInLake: false }))
     catchHandle(error, 'getPowerStoreInLakeApiSaga')
   }
 }
@@ -201,7 +221,7 @@ function* getPowerStoreInLakeApiSaga(): Generator {
 function* getPowerStoreInLakeFactDetailApiSaga(action: ReturnType<typeof getPowerStoreInLakeFactDetail>): Generator {
   try {
     const payload = action.payload
-    const currentPlantId = payload?.currentPlantId || '' 
+    const currentPlantId = payload?.currentPlantId || ''
     const res = yield call(Service.getPowerStoreInLakeFactDetail, currentPlantId)
     if (res.status === 200) {
       yield put(setPowerStoreInLakeFactDetail(res.data))
@@ -220,7 +240,7 @@ function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterL
       yield put(setOperateWaterLevel(res.data))
     }
   } catch (error) {
-    console.log('OperateWaterLevel error:', error)
+    catchHandle(error, 'getOperateWaterLevelApiSaga')
   }
 }
 
@@ -282,4 +302,5 @@ export function* hydrologySagaList() {
     getPowerStoreInLakeApi(),
     getPowerStoreInLakeFactDetailApi(),
     getOperateWaterLevelApi(),
-  ])}
+  ])
+}

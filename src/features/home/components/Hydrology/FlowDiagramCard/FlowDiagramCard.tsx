@@ -19,7 +19,7 @@ interface flowDiagramCardProps {
 function FlowDiagramCard(props: flowDiagramCardProps) {
     const { dateStr, currentPlantId, oneYearAgo} = props
     const dispatch = useDispatch();
-    const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
+    const { countRefesh, isLoadingFlowChart } = useSelector((state: any) => state.hydrologySlice)
     const { flowChart, flowChartSummary } = useSelector((state: any) => state.hydrologySlice)
     useEffect(() => {
         const payload = {
@@ -39,6 +39,7 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
                 <View style={styles.flowDiagramDetail}>
                     <FlowDiagram
                         data={flowChart}
+                        isLoading={isLoadingFlowChart}
                     />
                 </View>
                 <View style={styles.container}>
