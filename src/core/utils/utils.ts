@@ -66,7 +66,7 @@ export const catchHandle = (e: any, fnName?: string): void => {
   console.log(`API Error${location}:`, e);
 
   const notify = (fallback: string) => {
-    Toast.error(message || fallback);
+    Toast.error(fallback);
   };
 
   switch (status) {

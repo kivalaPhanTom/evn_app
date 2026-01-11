@@ -3,6 +3,7 @@ import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getP
 getPowerByTimeFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
 import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
 import { Service } from '@/core/service/powerService'
+import { catchHandle } from '@/core/utils/utils'
 
 function* getPowerOverviewSaga(): Generator {
   try {
@@ -14,6 +15,7 @@ function* getPowerOverviewSaga(): Generator {
     yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingOverview: false }))
+    catchHandle(error, 'getPowerOverviewSaga')
   }
 }
 
@@ -28,6 +30,7 @@ function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOveri
     }
     setLoading(false)
   } catch (error) {
+    catchHandle(error, 'getPowerOverviewFactDetailSaga')
     setLoading(false)
   }
 }
@@ -42,6 +45,7 @@ function* getPowerByTimeSaga(): Generator {
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingByHours: false }))
+    catchHandle(error, 'getPowerByTimeSaga')
   }
 }
 
@@ -56,7 +60,7 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
     }
     setLoading(false)
   } catch (error) {
-    console.log('error:', error)
+    catchHandle(error, 'getPowerByTimeFactDetailSaga')
     setLoading(false)
   }
 }
@@ -72,7 +76,7 @@ function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generat
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
-    console.log('getPowerByDays error:', error)
+    catchHandle(error, 'getPowerByDaysSaga')
   }
 }
 
@@ -92,7 +96,7 @@ function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Gener
     yield put(setLoading({ isLoadingComparePower: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingComparePower: false }))
-    console.log('getComparePower error:', error)
+    catchHandle(error, 'getComparePowerSaga')
   }
 }
 
@@ -108,6 +112,7 @@ function* getPowerByDaysFactDetailSaga(action: ReturnType<typeof getPowerByDaysF
     setLoading(false)
   } catch (error) {
     setLoading(false)
+    catchHandle(error, 'getPowerByDaysFactDetailSaga')
   }
 }
 

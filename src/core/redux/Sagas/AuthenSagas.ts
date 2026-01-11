@@ -5,6 +5,7 @@ import { Service } from '@/core/service/authenService'
 import { Toast } from 'toastify-react-native'
 import { setAuthToken, apiFormUrlEncoded } from '@/core/service/api.service'
 import { router } from 'expo-router'
+import { catchHandle } from '@/core/utils/utils'
 
 function* getTokenSaga(action: any): Generator {
     const { username, password } = action.payload
@@ -26,7 +27,7 @@ function* getTokenSaga(action: any): Generator {
             Toast.error(`Lỗi đăng nhập: ${res.status}`)
         }
     } catch (error) {
-        console.log('💥 Login error:', error)
+        catchHandle(error, 'getTokenSaga')
         Toast.error(`Lỗi đăng nhập: ${error}`)
     }
 }

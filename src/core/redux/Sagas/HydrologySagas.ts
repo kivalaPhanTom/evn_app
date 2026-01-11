@@ -44,6 +44,7 @@ function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChar
     yield put(setLoading({ isLoadingHydrologyChart: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingHydrologyChart: false }))
+    catchHandle(error, 'getHydrographicChartSaga')
   }
 }
 
@@ -63,7 +64,7 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
-    // console.log('getInflowOutflow error:', error)
+    catchHandle(error, 'getHydrologyflowChartApiSaga') 
   }
 }
 
@@ -83,6 +84,7 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
     yield put(setLoading({ isLoadingInflowOutflow: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingInflowOutflow: false }))
+    catchHandle(error, 'getInflowOutflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -101,6 +103,7 @@ function* getUpstreamWaterLevelApiSaga(action: ReturnType<typeof getUpstreamWate
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getUpstreamWaterLevelApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -120,6 +123,7 @@ function* getInflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getInflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -139,6 +143,7 @@ function* getOutflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getOutflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -158,6 +163,7 @@ function* getTurbineflowApiSaga(action: ReturnType<typeof getInflow>): Generator
       // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getTurbineflowApiSaga')
     // console.log('getInflowOutflow error:', error)
   }
 }
@@ -177,7 +183,7 @@ function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyP
       yield put(setCurrentHydrologyPlant(res.data))
     }
   } catch (error) {
-    console.log('getHydrologyPlantsParam error:', error)
+    catchHandle(error, 'getHydrologyPlantsParamApiSaga')
   }
 }
 function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
@@ -190,7 +196,7 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
       yield put(setHydrologyPlantsInfo(res.data))
     }
   } catch (error) {
-    console.log('getHydrologyPlantsInfo error:', error)
+    catchHandle(error, 'getHydrologyPlantsInfoApiSaga')
   }
 }
 
@@ -231,7 +237,7 @@ function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterL
       yield put(setOperateWaterLevel(res.data))
     }
   } catch (error) {
-    console.log('OperateWaterLevel error:', error)
+    catchHandle(error, 'getOperateWaterLevelApiSaga')
   }
 }
 
