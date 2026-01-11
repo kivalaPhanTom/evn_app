@@ -31,7 +31,7 @@ function* getProductOutputByHoursSaga(): Generator {
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingByHours: false }))
-    catchHandle(error)
+    catchHandle(error, 'getProductOutputByHoursSaga')
   }
 }
 
@@ -45,7 +45,7 @@ function* getProductOutputOverviewSaga(): Generator {
     yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingOverview: false }))
-    catchHandle(error)
+    catchHandle(error, 'getProductOutputOverviewSaga')
   }
 }
 
@@ -60,7 +60,7 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
-    catchHandle(error)
+    catchHandle(error, 'getProductOutputByDaysSaga')
   }
 }
 
@@ -72,7 +72,7 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
       yield put(setProductCummulativeOutput(res.data))
     }
   } catch (error) {
-    catchHandle(error)
+    catchHandle(error, 'getProductCummulativeOutputSaga')
   }
 }
 
@@ -88,7 +88,7 @@ function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProduc
       yield put(setCompareProductOutput(res.data))
     }
   } catch (error) {
-    catchHandle(error)
+    catchHandle(error, 'getCompareProductOutputSaga')
   }
 }
 
@@ -105,6 +105,7 @@ function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getPr
     setLoading(false)
   } catch (error) {
     setLoading(false)
+    catchHandle(error, 'getProductOutputOverviewFactDetailSaga')
   }
 }
 function* getProductOutputByHoursFactDetailSaga(action: ReturnType<typeof getProductOutputByHoursFactDetail>): Generator {
@@ -119,6 +120,7 @@ function* getProductOutputByHoursFactDetailSaga(action: ReturnType<typeof getPro
     setLoading(false)
   } catch (error) {
     setLoading(false)
+    catchHandle(error, 'getProductOutputByHoursFactDetailSaga')
   }
 }
 function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProductOutputByDaysFactDetail>): Generator {
@@ -133,6 +135,7 @@ function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProd
     setLoading(false)
   } catch (error) {
     setLoading(false)
+    catchHandle(error, 'getProductOutputByDaysFactDetailSaga')
   }
 }
 function* handleGetProductOutputByHoursApi() {
