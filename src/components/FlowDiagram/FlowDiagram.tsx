@@ -93,6 +93,10 @@ export default function FlowDiagram(props: flowDiagramProps) {
 	}, [isLoading])
 
 	useEffect(() => {
+		if (firstLoading) return
+
+		// Reset và restart animation khi data thay đổi
+		animValue.setValue(0)
 		const animate = () => {
 			Animated.loop(
 				Animated.timing(animValue, {
@@ -104,7 +108,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 			).start()
 		}
 		animate()
-	}, [])
+	}, [firstLoading, isLoading])
 
 	const mainX = CENTER_X - MAIN_W / 2
 	const mainY = Math.round(140 * SCALE)
@@ -452,7 +456,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									extrapolate: 'clamp',
 								})
 								const opacity = dotProgress.interpolate({
-									inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
+							inputRange: [0, 0.02, animDuration - 0.05, animDuration],
 									outputRange: [0, 1, 1, 0],
 									extrapolate: 'clamp',
 								})
@@ -497,7 +501,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									extrapolate: 'clamp',
 								})
 								const opacity = dotProgress.interpolate({
-									inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
+								inputRange: [0, 0.02, animDuration - 0.05, animDuration],
 									outputRange: [0, 1, 1, 0],
 									extrapolate: 'clamp',
 								})
@@ -542,7 +546,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									extrapolate: 'clamp',
 								})
 								const opacity = dotProgress.interpolate({
-									inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
+								inputRange: [0, 0.02, animDuration - 0.05, animDuration],
 									outputRange: [0, 1, 1, 0],
 									extrapolate: 'clamp',
 								})
@@ -581,7 +585,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									extrapolate: 'clamp',
 								})
 								const opacity = dotProgress.interpolate({
-									inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
+								inputRange: [0, 0.02, animDuration - 0.05, animDuration],
 									outputRange: [0, 1, 1, 0],
 									extrapolate: 'clamp',
 								})
