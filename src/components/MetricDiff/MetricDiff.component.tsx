@@ -35,7 +35,30 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
 }) => {
   const base = typeof compareTo === 'number' ? compareTo : 0
 
-  // Decide calculation based on unit
+  // If comparing to 0 and showing percent, use raw diff with % (no extra calc)
+  if (unit === '%' && compareTo === 0) {
+    const isUp = diff >= 0
+    const color = isUp ? Colors.green : Colors.red
+    const arrow = isUp ? '▲' : '▼'
+    const value = Math.abs(diff).toFixed(decimals)
+    const content = `${arrow} ${value}% ${label}`
+
+    if (withBackground) {
+      return (
+        <View
+          style={[
+            styles.badge,
+            { backgroundColor: hexToRgba(color, 0.15) },
+            containerStyle,
+          ]}
+        >
+          <Text style={[styles.text, { color }, style]}>{content}</Text>
+        </View>
+      )
+    }
+
+    return <Text style={[styles.text, { color }, style]}>{content}</Text>
+  }
   const isPercent = unit === '%'
   const rawDelta = typeof compareTo === 'number' ? diff - base : diff
   const percent = base === 0 ? diff * 100 : ((diff - base) / base) * 100
