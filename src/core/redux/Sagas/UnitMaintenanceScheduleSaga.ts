@@ -22,6 +22,7 @@ function* getRepairScheduleSaga(): Generator {
       }),
     )
   } catch (error) {
+    catchHandle(error, 'getRepairScheduleSaga')
     yield put(
       setLoading({
         isRepairerScheduleLoading: false,
@@ -38,6 +39,7 @@ function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairS
       yield put(setCurrentPlantDetail(res.data))
     }
   } catch (error) {
+    catchHandle(error, 'getDetailRepairScheduleSaga')
     yield put(
       setLoading({
         isRepairerScheduleLoading: false,
