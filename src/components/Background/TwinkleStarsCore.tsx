@@ -3,6 +3,7 @@ import { Dimensions, ImageBackground, ImageSourcePropType, StyleSheet, View } fr
 import Animated, {
   Easing,
   useAnimatedProps,
+  useAnimatedStyle,
   useSharedValue,
   withDelay,
   withRepeat,
@@ -13,15 +14,15 @@ import Svg, { Circle } from 'react-native-svg'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle)
+// const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
 interface Star {
   id: number
   x: number
   y: number
   radius: number
-  delay: number
-  duration: number
+  phase: number
+  speed: number
 }
 
 interface TwinkleProps {
@@ -29,39 +30,41 @@ interface TwinkleProps {
   color: string
 }
 
-const Twinkle: React.FC<TwinkleProps> = React.memo(({ star, color }) => {
-  const opacity = useSharedValue(0)
+const Twinkle = React.memo(({ star, color, clock }: {
+  star: Star
+  color: string
+  clock: Animated.SharedValue<number>
+}) => {
+  const animatedStyle = useAnimatedStyle(() => {
+    const opacity =
+      0.3 +
+      0.7 *
+      Math.abs(
+        Math.sin(clock.value * star.speed + star.phase),
+      )
 
-  useEffect(() => {
-    // Chỉ dùng opacity animation, bỏ scale để tối ưu performance
-    opacity.value = withDelay(
-      star.delay,
-      withRepeat(
-        withSequence(
-          withTiming(1, {
-            duration: star.duration,
-            easing: Easing.inOut(Easing.ease),
-          }),
-          withTiming(0.3, {
-            duration: star.duration,
-            easing: Easing.inOut(Easing.ease),
-          }),
-        ),
-        -1,
-        false,
-      ),
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [star.delay, star.duration])
-
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      opacity: opacity.value,
-    }
+    return { opacity }
   })
 
-  return <AnimatedCircle cx={star.x} cy={star.y} r={star.radius} fill={color} animatedProps={animatedProps} />
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        {
+          position: 'absolute',
+          width: star.radius * 2,
+          height: star.radius * 2,
+          borderRadius: star.radius,
+          backgroundColor: color,
+          left: star.x,
+          top: star.y,
+        },
+        animatedStyle,
+      ]}
+    />
+  )
 })
+
 
 Twinkle.displayName = 'Twinkle'
 
@@ -82,46 +85,57 @@ const TwinkleStars: React.FC<TwinkleStarsProps> = ({
   minSize = 2,
   maxSize = 4,
   particleDensity = 100,
-  particleColor = '#FFFFFF',
+  particleColor = '#FFF',
   children,
 }) => {
-  const stars = useMemo(() => {
-    const starArray: Star[] = []
-    for (let i = 0; i < particleDensity; i++) {
-      starArray.push({
-        id: i,
-        x: Math.random() * SCREEN_WIDTH,
-        y: Math.random() * SCREEN_HEIGHT,
-        radius: Math.random() * (maxSize - minSize) + minSize,
-        delay: Math.random() * 2000, // Delay ngẫu nhiên để không nhấp nháy cùng lúc
-        duration: 800 + Math.random() * 1200, // Thời gian nhấp nháy từ 800-2000ms
-      })
-    }
-    return starArray
+  const clock = useSharedValue(0)
+
+  useEffect(() => {
+    clock.value = withRepeat(
+      withTiming(Math.PI * 2, {
+        duration: 4000,
+        easing: Easing.linear,
+      }),
+      -1,
+      false,
+    )
+  }, [])
+
+  const stars = useMemo<Star[]>(() => {
+    return Array.from({ length: particleDensity }).map((_, i) => ({
+      id: i,
+      x: Math.random() * SCREEN_WIDTH,
+      y: Math.random() * SCREEN_HEIGHT,
+      radius: Math.random() * (maxSize - minSize) + minSize,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.5 + Math.random(),
+    }))
   }, [particleDensity, minSize, maxSize])
-  const Wrapper: React.ElementType = backgroundImage ? ImageBackground : View
+
+  const Wrapper = backgroundImage ? ImageBackground : View
 
   return (
     <Wrapper
       source={backgroundImage}
-      resizeMode={backgroundImage ? 'cover' : undefined}
-      style={[
-        styles.container,
-        !backgroundImage && { backgroundColor: background },
-      ]}
+      resizeMode="cover"
+      style={[styles.container, !backgroundImage && { backgroundColor: background }]}
     >
-
-      {/* <Svg style={styles.svg} width={SCREEN_WIDTH} height={SCREEN_HEIGHT} pointerEvents="none">
-        {stars.map((star) => (
-          <Twinkle key={star.id} star={star} color={particleColor} />
+      <View style={styles.starLayer} pointerEvents="none">
+        {stars.map(star => (
+          <Twinkle
+            key={star.id}
+            star={star}
+            color={particleColor}
+            clock={clock}
+          />
         ))}
-      </Svg> */}
+      </View>
+
       <View style={styles.content}>{children}</View>
-
     </Wrapper>
-
   )
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -131,9 +145,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
   },
   content: {
     flex: 1,
+  },
+  starLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
 })
 
