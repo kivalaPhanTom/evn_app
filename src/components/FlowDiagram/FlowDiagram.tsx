@@ -2,7 +2,45 @@ import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native'
 import Svg, { Defs, LinearGradient, Stop, Rect, Text as SvgText, Circle, G, Path } from 'react-native-svg'
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle)
+// This isn't safe when releasing, avoid using Circle 
+// const AnimatedCircle = Animated.createAnimatedComponent(Circle)
+const FlowDot = ({
+	cx,
+	cy,
+	r,
+	fill,
+	translateX,
+	translateY,
+	opacity,
+}: {
+	cx: number
+	cy: number
+	r: number
+	fill: string
+	translateX?: Animated.AnimatedInterpolation<number>
+	translateY?: Animated.AnimatedInterpolation<number>
+	opacity: Animated.AnimatedInterpolation<number>
+}) => {
+	return (
+		<Animated.View
+			pointerEvents="none"
+			style={{
+				position: 'absolute',
+				width: r * 2,
+				height: r * 2,
+				borderRadius: r,
+				backgroundColor: fill,
+				left: cx - r,
+				top: cy - r,
+				opacity,
+				transform: [
+					{ translateX: translateX ?? 0 },
+					{ translateY: translateY ?? 0 },
+				],
+			}}
+		/>
+	)
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -59,7 +97,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 					toValue: 1,
 					duration: 2200,
 					easing: Easing.linear,
-					useNativeDriver: true,
+					useNativeDriver: false,
 				})
 			).start()
 		}
@@ -199,16 +237,14 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							})
 
 							return (
-								<AnimatedCircle
+								<FlowDot
 									key={`blue-flow-${i}`}
 									cx={CENTER_X}
 									cy={dotStartY}
 									r={smallDotR}
-									fill="#ffffff"
 									opacity={opacity}
-									style={{
-										transform: [{ translateY }],
-									}}
+									fill='white'
+									translateY={translateY}
 								/>
 							)
 						})
@@ -364,16 +400,15 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								})
 
 								return (
-									<AnimatedCircle
+									<FlowDot
 										key={`left-flow-${i}`}
 										cx={mainX}
 										cy={lineStartY}
 										r={smallDotR}
-										fill="#ffffff"
 										opacity={opacity}
-										style={{
-											transform: [{ translateX: posX }, { translateY: posY }],
-										}}
+										translateX={posX}
+										translateY={posY}
+										fill='white'
 									/>
 								)
 							})
@@ -429,16 +464,15 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								})
 
 								return (
-									<AnimatedCircle
+									<FlowDot
 										key={`right-flow-${i}`}
 										cx={mainX + MAIN_W}
 										cy={lineStartY}
 										r={smallDotR}
-										fill="#ffffff"
+										fill='white'
 										opacity={opacity}
-										style={{
-											transform: [{ translateX: posX }, { translateY: posY }],
-										}}
+										translateX={posX}
+										translateY={posY}
 									/>
 								)
 							})
@@ -536,16 +570,14 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							})
 
 							return (
-								<AnimatedCircle
+								<FlowDot
 									key={`green-flow-${i}`}
 									cx={CENTER_X}
 									cy={dotStartY}
+									fill='white'
 									r={smallDotR}
-									fill="#ffffff"
 									opacity={opacity}
-									style={{
-										transform: [{ translateY }],
-									}}
+									translateY={translateY}
 								/>
 							)
 						})
