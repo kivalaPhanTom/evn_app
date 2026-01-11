@@ -52,6 +52,7 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
   const payload = action.payload
   const { currentPlantId, date } = payload
   try {
+    yield put(setLoading({ isLoadingFlowChart: true }))
     const res = yield call(Service.getHydrologyFlowApi, currentPlantId, date)
     if (res.status === 200) {
       yield put(
@@ -63,7 +64,9 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
       // You can dispatch an action to store the data in the Redux store here
       // yield put(setHydrologyFlowChart(res.data))
     }
+    yield put(setLoading({ isLoadingFlowChart: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingFlowChart: false }))
     catchHandle(error, 'getHydrologyflowChartApiSaga') 
   }
 }
