@@ -2,8 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native'
 import Svg, { Defs, LinearGradient, Stop, Rect, Text as SvgText, Circle, G, Path } from 'react-native-svg'
 
-// const AnimatedCircle = Animated.createAnimatedComponent(Circle)
-
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
 const SCALE = 0.58
@@ -50,21 +48,21 @@ interface flowDiagramProps {
 export default function FlowDiagram(props: flowDiagramProps) {
 	const { data } = props
 	// Animation values
-	// const animValue = useRef(new Animated.Value(0)).current
+	const animValue = useRef(new Animated.Value(0)).current
 
-	// useEffect(() => {
-	// 	const animate = () => {
-	// 		Animated.loop(
-	// 			Animated.timing(animValue, {
-	// 				toValue: 1,
-	// 				duration: 2200,
-	// 				easing: Easing.linear,
-	// 				useNativeDriver: true,
-	// 			})
-	// 		).start()
-	// 	}
-	// 	animate()
-	// }, [])
+	useEffect(() => {
+		const animate = () => {
+			Animated.loop(
+				Animated.timing(animValue, {
+					toValue: 1,
+					duration: 2200,
+					easing: Easing.linear,
+					useNativeDriver: true,
+				})
+			).start()
+		}
+		animate()
+	}, [])
 
 	const mainX = CENTER_X - MAIN_W / 2
 	const mainY = Math.round(140 * SCALE)
@@ -168,51 +166,51 @@ export default function FlowDiagram(props: flowDiagramProps) {
 						strokeLinejoin="round"
 					/>
 
-					{/* Chấm trắng chạy trên đường xanh dương - từ Qve xuống Hồ Thủy Điện */}
-					{/* {(() => {
-						const dotStartY = topY + TOP_H + Math.round(30 * SCALE) // Bắt đầu xa hơn nữa từ cạnh dưới Qve
-						const dotEndY = mainY + Math.round(3 * SCALE) // Kết thúc rất gần trong hộp Hồ Thủy Điện
-						const totalDistance = dotEndY - dotStartY
-						const numDots = 3
-						const dotSpacing = 0.12 // Khoảng cách giữa các chấm
-						const animDuration = 0.6 // Thời gian mỗi chấm di chuyển (60% của animation)
+{/* Chấm trắng chạy trên đường xanh dương - từ Qve xuống Hồ Thủy Điện - DISABLED */}
+				{/* {(() => {
+					const dotStartY = topY + TOP_H + Math.round(30 * SCALE)
+					const dotEndY = mainY + Math.round(3 * SCALE)
+					const totalDistance = dotEndY - dotStartY
+					const numDots = 3
+					const dotSpacing = 0.12
+					const animDuration = 0.6
 
-						return new Array(numDots).fill(0).map((_, i) => {
-							const delay = i * dotSpacing
+					return new Array(numDots).fill(0).map((_, i) => {
+						const delay = i * dotSpacing
 
-							const dotProgress = animValue.interpolate({
-								inputRange: [0, 1],
-								outputRange: [-delay, 1 - delay],
-								extrapolate: 'clamp',
-							})
-
-							const translateY = dotProgress.interpolate({
-								inputRange: [0, animDuration],
-								outputRange: [0, totalDistance],
-								extrapolate: 'clamp',
-							})
-
-							const opacity = dotProgress.interpolate({
-								inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
-								outputRange: [0, 1, 1, 0],
-								extrapolate: 'clamp',
-							})
-
-							return (
-								<AnimatedCircle
-									key={`blue-flow-${i}`}
-									cx={CENTER_X}
-									cy={dotStartY}
-									r={smallDotR}
-									fill="#ffffff"
-									opacity={opacity}
-									style={{
-										transform: [{ translateY }],
-									}}
-								/>
-							)
+						const dotProgress = animValue.interpolate({
+							inputRange: [0, 1],
+							outputRange: [-delay, 1 - delay],
+							extrapolate: 'clamp',
 						})
-					})()} */}
+
+						const translateY = dotProgress.interpolate({
+							inputRange: [0, animDuration],
+							outputRange: [0, totalDistance],
+							extrapolate: 'clamp',
+						})
+
+						const opacity = dotProgress.interpolate({
+							inputRange: [-0.05, 0, animDuration - 0.05, animDuration],
+							outputRange: [0, 1, 1, 0],
+							extrapolate: 'clamp',
+						})
+
+						return (
+							<AnimatedCircle
+								key={`blue-flow-${i}`}
+								cx={CENTER_X}
+								cy={dotStartY}
+								r={smallDotR}
+								fill="#ffffff"
+								opacity={opacity}
+								style={{
+									transform: [{ translateY }],
+								}}
+							/>
+						)
+					})
+				})()} */}
 
 					{/* Top node (Qve) */}
 					<G>
@@ -326,7 +324,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							fill="none"
 						/>
 						{/* Animation dots along computed path: approximate using same logic as before (moves horizontally then down) */}
-						{/* {(() => {
+						{(() => {
 							const horizontalDistance = mainX - leftLineEndX
 							const verticalDistance = leftBoxY - lineStartY // Kết thúc chạm cạnh trên Qtf
 							const totalDistance = horizontalDistance + verticalDistance
@@ -377,7 +375,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									/>
 								)
 							})
-						})()} */}
+						})()}
 					</G>
 
 					{/* Right smooth elbow (red) */}
@@ -391,7 +389,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 							fill="none"
 						/>
 						{/* Dots */}
-						{/* {(() => {
+						{(() => {
 							const horizontalDistance = rightLineEndX - (mainX + MAIN_W)
 							const verticalDistance = rightBoxY - lineStartY
 							const totalDistance = horizontalDistance + verticalDistance
@@ -442,7 +440,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									/>
 								)
 							})
-						})()} */}
+						})()}
 					</G>
 
 					{/* Left side box (Qtf) - nằm dưới và căn giữa đường line */}
@@ -506,7 +504,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 					/>
 
 					{/* Chấm trắng chạy trên đường xanh lá - từ Hồ Thủy Điện xuống Qcem */}
-					{/* {(() => {
+					{(() => {
 						const dotStartY = mainY + MAIN_H // Bắt đầu sát cạnh dưới Hồ Thủy Điện
 						const dotEndY = bottomY // Kết thúc chạm cạnh trên Qcem
 						const totalDistance = dotEndY - dotStartY
@@ -549,7 +547,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								/>
 							)
 						})
-					})()} */}
+					})()}
 
 					{/* Bottom node (Qcem) */}
 					<G>
