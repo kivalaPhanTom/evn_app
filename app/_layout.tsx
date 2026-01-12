@@ -13,6 +13,7 @@ import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import ToastManager from 'toastify-react-native'
+import VersionChecker from '@/components/VersionChecker/VersionChecker'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
@@ -55,7 +56,7 @@ export default function RootLayout() {
     setPreferenceState((prev) => {
       const next = prev === 'system' ? (systemScheme === 'dark' ? 'light' : 'dark') : prev === 'dark' ? 'light' : 'dark'
       // persist
-      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => { })
+      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => {})
       return next
     })
   }
@@ -74,8 +75,12 @@ export default function RootLayout() {
         <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <StoreProvider>
+              <VersionChecker />
               <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
-                <Stack initialRouteName="splash" screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200, }}>
+                <Stack
+                  initialRouteName="splash"
+                  screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
+                >
                   <Stack.Screen name="splash" />
                   <Stack.Screen name="login" />
                   <Stack.Screen name="companies" />
@@ -92,6 +97,7 @@ export default function RootLayout() {
                   {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
                 </Stack>
+
                 {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
                   <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
                     <TouchableOpacity
@@ -104,11 +110,7 @@ export default function RootLayout() {
                     </TouchableOpacity>
                   </View>
                 )}
-                <ToastManager
-                  theme={'dark'}
-                  position={'top'}
-                  animationStyle="fade"
-                />
+                <ToastManager theme={'dark'} position={'top'} animationStyle="fade" />
                 <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
               </SafeAreaView>
             </StoreProvider>
