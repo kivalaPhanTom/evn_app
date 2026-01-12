@@ -48,7 +48,7 @@ function TotalPower(props: Props) {
                             <AnimatedNumber
                                 value={total}
                                 // isInitZero={true}
-                                duration={1}
+                                // duration={1}
                                 decimals={2}
                                 formatter={(n) => Number(n.toFixed(2)).toString()}
                                 render={(text) => <GradientText text={text} fontSize={px.f(64)} colors={Colors.blue} />}
