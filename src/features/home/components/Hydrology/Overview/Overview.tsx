@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
+import { Colors } from '@/core/constants/colors'
 
 interface WaterLevelData {
   id: string
@@ -304,14 +305,14 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                               {isLowWaterLevel ? (
                                 <>
                                   <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
                                   </LinearGradient>
                                   <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
                                   </LinearGradient>
                                 </>
                               ) : (
@@ -406,14 +407,14 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                             {isLowWaterLevel ? (
                               <>
                                 <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                  <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
                                 </LinearGradient>
                                 <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
+                                  <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                  <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                  <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
                                 </LinearGradient>
                               </>
                             ) : (

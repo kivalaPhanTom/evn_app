@@ -1,3 +1,4 @@
+import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
@@ -69,11 +70,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     borderTopWidth: 1,
-    borderTopColor: '#FF0000',
+    borderTopColor: Colors.warningFull,
     borderStyle: 'dashed' as const,
   },
   referenceText: {
-    color: '#FF0000',
+    color: Colors.warningFull,
     fontSize: px.m(10),
     fontWeight: '600',
     marginLeft: px.h(6),

@@ -1,3 +1,4 @@
+import { Colors } from '@/core/constants/colors'
 import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native'
 import Svg, { Path, Defs, ClipPath, LinearGradient, Stop, G } from 'react-native-svg'
@@ -119,9 +120,9 @@ export default function WaterDrop({
   }
   wavePath += ` L${vbWidth} ${vbHeight} Z`
 
-  const fillColor1 = isHigh ? '#1fb7ff' : '#ff7070'
-  const fillColor2 = isHigh ? '#0099ff' : '#ff2b2b'
-  const borderColor = isHigh ? '#0099ff' : '#ff2b2b'
+  const fillColor1 = isHigh ? '#1fb7ff' : Colors.warningZero
+  const fillColor2 = isHigh ? '#0099ff' : Colors.warningHalf
+  const borderColor = isHigh ? '#0099ff' : Colors.warningFull
   const dropPath = 'M12.58,2.19a1,1,0,0,0-1.16,0C11.12,2.4,4,7.56,4,14a8,8,0,0,0,16,0C20,7.56,12.88,2.4,12.58,2.19Z'
 
   return (
@@ -156,7 +157,7 @@ export default function WaterDrop({
         style={[
           styles.percentText,
           {
-            color: isHigh ? '#0369A1' : '#ff0000',
+            color: isHigh ? '#0369A1' : Colors.red,
             top: Math.max(12, height * (fontSize < 10 ? 0.45 : 0.4)),
             fontSize: fontSize,
           },
