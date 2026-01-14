@@ -23,7 +23,7 @@ const ProfitDetailScreen: React.FC = () => {
           style={{ textAlign: 'center' }}
         />
         <View style={styles.locationRow}>
-          <Text style={styles.locationText}>{`Nhà máy ${plantName}`}</Text>
+          <Text style={styles.locationText}>{`${plantName}`}</Text>
         </View>
       </View>
       <ProfitDetail plantName={plantName} plantId={plantId} />
