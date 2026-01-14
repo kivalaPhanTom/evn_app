@@ -12,56 +12,6 @@ import { RootState } from '@/core/redux/store'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
-const flowRateData = [
-  {
-    title: 'Mực nước thượng lưu (MNTL)',
-    data: [],
-    data2: [],
-    currentColor: '#0EA5E9',
-    unit: 'm',
-    flowRateInfo: [
-      { label: 'Hiện tại', value: 184.6, color: '#0EA5E9' },
-      { label: 'Cao nhất', value: 210.4, color: '#fff' },
-      { label: 'Thấp nhất', value: 26.3, color: '#fff' },
-    ],
-  },
-  {
-    title: 'Lưu lượng về (Qve)',
-    data: [],
-    data2: [],
-    currentColor: '#3B82F6',
-    unit: 'm³/s',
-    flowRateInfo: [
-      { label: 'Hiện tại', value: 184.6, color: '#3B82F6' },
-      { label: 'Cao nhất', value: 210.4, color: '#fff' },
-      { label: 'TB ngày', value: 26.3, color: '#fff' },
-    ],
-  },
-  {
-    title: 'Lưu lượng chạy máy (Qcm)',
-    data: [],
-    data2: [],
-    currentColor: '#10B981',
-    unit: 'm³/s',
-    flowRateInfo: [
-      { label: 'Hiện tại', value: 184.6, color: '#10B981' },
-      { label: 'Cao nhất', value: 210.4, color: '#fff' },
-      { label: 'TB ngày', value: 26.3, color: '#fff' },
-    ],
-  },
-  {
-    title: 'Lưu lượng xả tràn (Qxt)',
-    data: [],
-    data2: [],
-    currentColor: '#F59E0B',
-    unit: 'm³/s',
-    flowRateInfo: [
-      { label: 'Hiện tại', value: 184.6, color: '#F59E0B' },
-      { label: 'Cao nhất', value: 210.4, color: '#fff' },
-      { label: 'TB ngày', value: 26.3, color: '#fff' },
-    ],
-  },
-] // Dữ liệu mẫu cho FlowRate
 
 interface HydrologyDetailProps {
   currentPlantId?: string
