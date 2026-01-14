@@ -21,7 +21,7 @@ function ProductOutputRencentDays(props: { currentPlantId?: string }) {
         {/* Title */}
         <View style={styles.titleWrapper}>
           <Text style={styles.title}>So sánh sản lượng 24h</Text>
-          <Text style={styles.live}>LIVE</Text>
+          {/* <Text style={styles.live}>LIVE</Text> */}
         </View>
 
         {/* Legend */}

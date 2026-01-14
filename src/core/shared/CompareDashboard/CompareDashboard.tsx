@@ -80,8 +80,8 @@ const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareD
     <View>
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
       <DateRangePicker
-        labelFrom="Ngày mục tiêu"
-        labelTo="Ngày so sánh"
+        labelFrom="Ngày so sánh"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}

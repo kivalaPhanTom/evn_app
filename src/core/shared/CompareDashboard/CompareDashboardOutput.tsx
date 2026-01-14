@@ -134,8 +134,8 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: Compare
 
   useEffect(() => {
     dispatch(getCompareProductOutput({ 
-      tagetDate: range.from.format('DD/MM/YYYY'),
-      compareDate: range.to.format('DD/MM/YYYY'),
+      tagetDate: range.to.format('DD/MM/YYYY'),
+      compareDate:  range.from.format('DD/MM/YYYY'),
       currentPlantId: currentPlantId || '',
     }))
   }, [dispatch])
@@ -158,8 +158,8 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: Compare
     <View style={styles.container}>
       <Text style={styles.headerDashboard}>So sánh sản lượng theo ngày</Text>
       <DateRangePicker
-        labelFrom="Ngày mục tiêu"
-        labelTo="Ngày so sánh"
+        labelFrom="Ngày so sánh"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}

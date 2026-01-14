@@ -4,13 +4,15 @@ import { BarChart } from 'react-native-gifted-charts';
 import Svg, { Line } from 'react-native-svg';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
 import LineBarChartSkeleton from '../Skeletons/LineBarChartSkeleton';
+import { Colors } from '@/core/constants/colors';
+
 
 interface Props { }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const getBarColor = (value: number, referenceLevel:number): string => {
-  return value >= referenceLevel ? '#5B9FED' : '#E74C5C';
+  return value >= referenceLevel ? '#5B9FED' : Colors.warningFull;
 };
 interface HydroChartItem {
   avgVolume: number;
@@ -141,7 +143,7 @@ function HydrographicChart(props: HydrographicChartProps) {
         <View style={styles.container}>
           <View style={styles.legendContainer}>
             <Svg height="2" width="30" style={styles.legendLine}>
-              <Line x1="0" y1="1" x2="24" y2="1" stroke="#E74C5C" strokeWidth="2" strokeDasharray="4, 3" />
+              <Line x1="0" y1="1" x2="24" y2="1" stroke={Colors.warningFull} strokeWidth="2" strokeDasharray="4, 3" />
             </Svg>
             <Text style={styles.legendText}>Mực nước chết</Text>
           </View>
@@ -275,7 +277,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                           y1={thresholdTop}
                           x2={chartContentWidth}
                           y2={thresholdTop}
-                          stroke="#E74C5C"
+                          stroke={Colors.warningFull}
                           strokeWidth="2"
                           strokeDasharray={[6, 4]}
                         />
@@ -497,7 +499,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   thresholdLabelText: {
-    color: '#E74C5C',
+    color: Colors.warningFull,
     fontWeight: 'bold',
     fontSize: SCREEN_WIDTH * 0.024,
   },
