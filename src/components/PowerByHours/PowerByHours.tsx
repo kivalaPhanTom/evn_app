@@ -4,7 +4,6 @@ import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { LineChart } from '@/components/ChartView/LineChart.component'
-import { useRouter } from 'expo-router'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from 'toastify-react-native/config/theme'
@@ -20,12 +19,12 @@ interface Props {
     currentTime: string
     avgPower: number
     HourlyPowerList: HourlyPowerList[]
+    onPressCard:any
 }
 
 function PowerByHours(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
-    const { isLoading, currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = props
-    const router = useRouter()
+    const { isLoading, currentDate, currentPower, currentTime, avgPower, HourlyPowerList, onPressCard } = props
     const title = 'Công suất theo giờ'
     const subtitle = 'Hôm nay, ' + currentDate
     const hourlyData = HourlyPowerList ? HourlyPowerList.map((d: any) => ({ ...d })) : []
@@ -43,9 +42,6 @@ function PowerByHours(props: Props) {
         .fill(0)
         .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
-    const onPressCard = () => {
-        router.navigate({ pathname: '/product-power-detail' })
-    }
     return (
         <AnimatedCardContainer>
             <View style={styles.content}>
