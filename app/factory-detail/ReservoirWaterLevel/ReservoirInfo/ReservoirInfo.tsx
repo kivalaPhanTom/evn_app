@@ -27,7 +27,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const dispatch = useDispatch()
   const [containerWidth, setContainerWidth] = useState(0)
   const containerHeight = px.v(140)
-  
+
   const { currentHydrologyPlant } = useSelector((state: RootState) => state.hydrologySlice)
 
   // Call API when component mounts or currentPlantId changes
@@ -44,7 +44,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
       return {
         currentLevel: plantData.currentLevel,
         maxLevel: plantData.maxLevel,
-        deadLevel: 180, // Using referenceLevel as deadLevel
+        deadLevel: plantData.referenceLevel, // Using referenceLevel as deadLevel
         previousLevel: plantData.previousLevel,
         referenceLevel: plantData.referenceLevel,
         name: plantData.name,
@@ -58,7 +58,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const waterHeightPercent = data?.percent || 0
   const waterHeight = (waterHeightPercent / 100) * containerHeight
   // Reference line position: calculate from bottom based on maxLevel
-  const referenceY = data?.maxLevel 
+  const referenceY = data?.maxLevel
     ? containerHeight - ((data.deadLevel / data.maxLevel) * containerHeight)
     : 0
   // MaxLevel line position: at the top (y = 0) since maxLevel is the maximum
@@ -276,8 +276,8 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                       },
                     ]}
                   >
+                    <Text style={[styles.referenceText, { marginLeft: 0}]}>{data?.deadLevel}m</Text>
                     <View style={styles.dashedLine} />
-                    <Text style={styles.referenceText}>{data?.deadLevel}m</Text>
                   </View>
                 </View>
               </View>

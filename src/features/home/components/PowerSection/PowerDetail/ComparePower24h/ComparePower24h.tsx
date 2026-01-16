@@ -24,8 +24,8 @@ function ComparePower24h(props: { currentPlantId?: string }) {
   useEffect(() => {
     dispatch(
       getComparePower({
-        tagetDate: range.from.format('DD/MM/YYYY'),
-        compareDate: range.to.format('DD/MM/YYYY'),
+        tagetDate: range.to.format('DD/MM/YYYY'),
+        compareDate: range.from.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
       }),
     )
@@ -42,8 +42,8 @@ function ComparePower24h(props: { currentPlantId?: string }) {
 
     dispatch(
       getComparePower({
-        tagetDate: fromDate.format('DD/MM/YYYY'),
-        compareDate: toDate.format('DD/MM/YYYY'),
+        tagetDate: toDate.format('DD/MM/YYYY'),
+        compareDate: fromDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
       }),
     )
@@ -55,7 +55,7 @@ function ComparePower24h(props: { currentPlantId?: string }) {
         {/* Title */}
         <View style={styles.titleWrapper}>
           <Text style={styles.title}>So sánh công suất 24h</Text>
-          <Text style={styles.live}>LIVE</Text>
+          {/* <Text style={styles.live}>LIVE</Text> */}
         </View>
 
         {/* Legend */}

@@ -19,5 +19,9 @@ export const Colors = {
   dividerLight: 'rgba(255, 255, 255, 0.1)',
   dividerDark: 'rgba(0, 0, 0, 0.1)',
   background: '#000033',
-  textColor: '#FFF'
+  textColor: '#FFF',
+  warning: '#efef8d',
+  warningZero: '#FFF3BF',
+  warningHalf: '#FFD43B',
+  warningFull: '#FCC419',
 }

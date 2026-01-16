@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
+import { useRouter } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from "@/core/redux/store";
 import styles from './PowerSection.styles'
@@ -11,6 +12,7 @@ import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays';
 
 function PowerSection() {
+  const router = useRouter()
   const { average, total, detail, isLoadingOverview } = useSelector((state: RootState) => state.powerSlice)
   const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector((state: any) => state.powerSlice.powerByTime)
   const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
@@ -23,7 +25,9 @@ function PowerSection() {
     dispatch(getPowerByTime())
     dispatch(getPowerByDays(7))
   }, [countRefesh])
-
+  const onPressCard = () => {
+    router.navigate({ pathname: '/product-power-detail' })
+  }
   return (
     <SectionContainer title="Công Suất">
       <View>
@@ -34,7 +38,7 @@ function PowerSection() {
             total={total}
             detail={detail}
             isLoading={isLoadingOverview}
-            unit ="MW"
+            unit="MW"
           />
         </View>
         <View style={styles.section}>
@@ -45,6 +49,7 @@ function PowerSection() {
             currentTime={currentTime}
             avgPower={avgPower}
             HourlyPowerList={HourlyPowerList}
+            onPressCard = {onPressCard}
           />
         </View>
         <View style={styles.section}>
