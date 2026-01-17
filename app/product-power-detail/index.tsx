@@ -2,32 +2,61 @@ import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
+import { saveState } from '@/core/redux/slices/HomeSlice'
 
 const ProductOutputDetailScreen: React.FC = () => {
+  const dispatch = useDispatch()
   const { t } = useTranslation()
+  const [scrollY, setScrollY] = useState(0);
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;
   }>();
+
+  const onScroll = (e: any) => {
+    setScrollY(e.nativeEvent.contentOffset.y);
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      dispatch(saveState({
+        countRefesh: countRefesh + 1
+      }))
+    }, 80);
+  };
+
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-      <View style={styles.header}>
-        <GradientText
-          text={'Chi tiết Công suất'}
-          colors={'#FFF'}
-          fontSize={px.f(30)}
-          style={{ textAlign: 'center' }}
-        />
-        <View style={styles.locationRow}>
-          <Text style={styles.locationText}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      onScroll={onScroll}
+      scrollEventThrottle={16}
+    >
+      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+        <View style={styles.header}>
+          <GradientText
+            text={'Chi tiết Công suất'}
+            colors={'#FFF'}
+            fontSize={px.f(30)}
+            style={{ textAlign: 'center' }}
+          />
+          <View style={styles.locationRow}>
+            <Text style={styles.locationText}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
+          </View>
         </View>
-      </View>
-      <PowerDetail currentPlantId={currentPlantId} />
-    </TwinkleStars>
+        <PowerDetail currentPlantId={currentPlantId} isCheckDisableDate = {false}/>
+      </TwinkleStars>
+    </ScrollView>
   )
 }
 
