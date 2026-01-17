@@ -147,7 +147,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                 <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>
                   {mainternanceDurationData.Actual}
                 </Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`DỰ KIẾN`}</Text>
+                <Text style={{ color: '#64748B', fontSize: 12 }}>{`THỰC TẾ`}</Text>
               </View>
             </View>
           </View>
