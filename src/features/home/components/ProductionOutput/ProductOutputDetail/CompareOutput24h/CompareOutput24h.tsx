@@ -9,12 +9,13 @@ import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashbo
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from "@/core/redux/store";
 
-function ProductOutputRencentDays(props: { currentPlantId?: string }) {
-  const { currentPlantId } = props;
+function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
+  const { currentPlantId, isCheckDisableDate } = props;
   const dispatch = useDispatch()
+  const {isLoadingCompareProductOutput} = useSelector((state: RootState) => state.productOutputSlice)
   const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
   const { Unit = '', BarChartData, compareLineChartData, Summary, Contractvalue } = compareProductOutput
-
+ 
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -28,9 +29,15 @@ function ProductOutputRencentDays(props: { currentPlantId?: string }) {
         <CompareLegend displayType="output" />
 
         {/* Dashboard */}
-        <CompareDashboardOutput currentPlantId={currentPlantId} data={BarChartData} lineData={Contractvalue} lineData2={compareLineChartData} />
+        <CompareDashboardOutput
+          currentPlantId={currentPlantId}
+          data={BarChartData}
+          lineData={Contractvalue}
+          lineData2={compareLineChartData}
+          isCheckDisableDate={isCheckDisableDate}
+        />
         {/* Compare Detail Stats */}
-        <CompareDetailStats summary={Summary} />
+        <CompareDetailStats summary={Summary} isLoading={isLoadingCompareProductOutput}/>
       </View>
     </AnimatedCardContainer>
   )

@@ -1,13 +1,13 @@
+import React, { useState } from 'react'
+import { ScrollView, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
-import React, { useState } from 'react'
-import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { Colors } from '@/core/constants/colors'
-import { useLocalSearchParams } from 'expo-router'
-import { useTranslation } from 'react-i18next'
 import { saveState } from '@/core/redux/slices/HomeSlice'
 
 const ProductOutputDetailScreen: React.FC = () => {
@@ -45,7 +45,7 @@ const ProductOutputDetailScreen: React.FC = () => {
       <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
-            text={'Chi tiết Công suất'}
+            text={'Chi tiết công suất'}
             colors={'#FFF'}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
