@@ -32,6 +32,32 @@ const StatItem: React.FC<StatItemProps> = ({
       <Text style={styles.statTitle}>{title}</Text>
 
       <View style={styles.statsRow}>
+        {/* Compare Date Stats */}
+        <View style={styles.statColumn}>
+          {
+            isLoading ?
+              <>
+                <BarSkeleton
+                  marginBottom={3}
+                />
+                <BarSkeleton
+                  width={70}
+                  height={20}
+                  marginBottom={0}
+                  marginTop={2}
+                />
+              </> :
+              <>
+                <View style={[styles.dateBadge, styles.compareDateBadge]}>
+                  <Text style={styles.dateText}>{compareDate}</Text>
+                </View>
+                <Text style={[styles.valueText, styles.compareDateColor]}>
+                  {compareValue}
+                  <Text style={styles.unitText}>{unit}</Text>
+                </Text>
+              </>
+          }
+        </View>
         {/* Current Date Stats */}
 
         <View style={styles.statColumn}>
@@ -62,32 +88,7 @@ const StatItem: React.FC<StatItemProps> = ({
 
         </View>
 
-        {/* Compare Date Stats */}
-        <View style={styles.statColumn}>
-          {
-            isLoading ?
-              <>
-                <BarSkeleton
-                  marginBottom={3}
-                />
-                <BarSkeleton
-                  width={70}
-                  height={20}
-                  marginBottom={0}
-                  marginTop={2}
-                />
-              </> :
-              <>
-                <View style={[styles.dateBadge, styles.compareDateBadge]}>
-                  <Text style={styles.dateText}>{compareDate}</Text>
-                </View>
-                <Text style={[styles.valueText, styles.compareDateColor]}>
-                  {compareValue}
-                  <Text style={styles.unitText}>{unit}</Text>
-                </Text>
-              </>
-          }
-        </View>
+
       </View>
 
       {/* Difference Badge */}
