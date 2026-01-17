@@ -41,6 +41,7 @@ export interface LineCharProps {
   areaChart2?: boolean
   areaChart3?: boolean
   showValuesAsDataPointsText?: boolean
+  animateOnDataChange?: boolean
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
@@ -77,6 +78,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   areaChart2 = false,
   areaChart3 = false,
   showValuesAsDataPointsText = true,
+  animateOnDataChange = true,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -98,7 +100,7 @@ export const LineChart: React.FC<LineCharProps> = ({
     data,
     data2,
     data3,
-    animateOnDataChange: true,
+    animateOnDataChange: animateOnDataChange,
     animationDuration,
     yAxisTextStyle: {
       color: isDark ? '#d1d5db' : '#6b7280',
