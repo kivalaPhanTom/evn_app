@@ -26,6 +26,7 @@ interface Props {
   inputStyle?: ViewStyle
   labelStyle?: TextStyle
   allowToBeforeFrom?: boolean
+  isCheckDisableDate?: boolean
 }
 
 export default function DateRangePicker({
@@ -45,12 +46,18 @@ export default function DateRangePicker({
   inputStyle,
   labelStyle,
   allowToBeforeFrom = false,
+  isCheckDisableDate = true
+
 }: Props) {
   const [focused, setFocused] = useState<'from' | 'to' | null>(null)
   const defaultStyles = useDefaultStyles()
 
-  const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
-
+  // const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
+  const formatDate = useCallback((d: any) => {
+    if (!d) return '';
+    const day = dayjs(d);
+    return day.isValid() ? day.format(format) : '';
+  }, [format]);
   const components: CalendarComponents = useMemo(
     () => ({
       IconNext: chooseMode === 'year' ? null : <Ionicons name="chevron-forward" size={20} color="#fff" />,
@@ -161,12 +168,16 @@ export default function DateRangePicker({
       styles={pickerStyles}
       locale="vi"
       disabledDates={(date) => {
-        const today = dayjs()
-        if (chooseMode !== 'day') return true
-        // Không cho chọn ngày sau hôm nay
-        if (dayjs(date).isAfter(today, 'day')) return true
-        if (focused === 'to' && !allowToBeforeFrom && value.from) {
-          return dayjs(date).isBefore(dayjs(value.from), 'day')
+        if (isCheckDisableDate) {
+          const today = dayjs()
+          if (chooseMode !== 'day') return true
+          // Không cho chọn ngày sau hôm nay
+          if (dayjs(date).isAfter(today, 'day')) return true
+          if (focused === 'to' && !allowToBeforeFrom && value.from) {
+            return dayjs(date).isBefore(dayjs(value.from), 'day')
+          }
+        } else {
+          return false
         }
         return false
       }}

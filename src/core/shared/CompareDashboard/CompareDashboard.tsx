@@ -21,8 +21,9 @@ interface CompareDashboardProps {
   range: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   onChangeDateRage: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
   isLoading: boolean
+  isCheckDisableDate?: boolean
 }
-const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareDashboardProps, isLoading = false) => {
+const CompareDashboard = ({ data, lineData2, range, onChangeDateRage, isCheckDisableDate }: CompareDashboardProps, isLoading = false) => {
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -87,6 +88,7 @@ const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareD
         onChange={onChangeDateRage}
         mode="modal"
         chooseMode={'day'}
+        isCheckDisableDate = {isCheckDisableDate}
       />
       <View style={styles.chartWrapper}>
         {isLoading ?
