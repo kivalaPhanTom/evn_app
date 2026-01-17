@@ -33,7 +33,7 @@ Sử dụng keystore đã tạo sẵn cho những lần build sau: https://drive
 4. Cấu hình android/gradle.properties
 - Vào chỉnh file android/gradle.properties
 MYAPP_UPLOAD_STORE_FILE=hppgenco3-release.keystore
-MYAPP_UPLOAD_STORE_PASSWORD=Hpp@2025 
+MYAPP_UPLOAD_STORE_PASSWORD=Hpp@2025
 MYAPP_UPLOAD_KEY_ALIAS=hppgenco3
 MYAPP_UPLOAD_KEY_PASSWORD=Hpp@2025
 
