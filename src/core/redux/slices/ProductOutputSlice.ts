@@ -4,6 +4,8 @@ interface productOutputState {
   isLoadingOverview: boolean,
   isLoadingByHours: boolean,
   isLoadingNearCurrentDays: boolean,
+  isLoadingCompareProductOutput:boolean,
+  isLoadingProductCummulativeOutput:boolean,
   productOutputByHours: {
     currentDate: string
     contractPowerValue: number
@@ -92,6 +94,8 @@ const initialState: productOutputState = {
   isLoadingOverview: false,
   isLoadingByHours: false,
   isLoadingNearCurrentDays: false,
+  isLoadingCompareProductOutput:false,
+  isLoadingProductCummulativeOutput:false,
   productOutputByHours: {
     currentDate: '',
     unit: '',

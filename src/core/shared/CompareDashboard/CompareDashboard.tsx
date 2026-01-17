@@ -23,7 +23,7 @@ interface CompareDashboardProps {
   isLoading: boolean
   isCheckDisableDate?: boolean
 }
-const CompareDashboard = ({ data, lineData2, range, onChangeDateRage, isCheckDisableDate }: CompareDashboardProps, isLoading = false) => {
+const CompareDashboard = ({ data, lineData2, range, onChangeDateRage, isCheckDisableDate,  isLoading = false }: CompareDashboardProps) => {
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -92,7 +92,7 @@ const CompareDashboard = ({ data, lineData2, range, onChangeDateRage, isCheckDis
       />
       <View style={styles.chartWrapper}>
         {isLoading ?
-          <LineBarChartSkeleton /> :
+          <LineBarChartSkeleton height={150}/> :
           <BarChart
             data={barData}
             rounded
