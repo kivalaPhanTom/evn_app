@@ -46,6 +46,7 @@ interface AnimatedCardContainerProps {
   backgroundImageContentFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
   backgroundImageStyle?: ImageStyle
   onPress?: () => void
+  noneBackground?: boolean
 }
 
 const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
@@ -67,6 +68,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
     backgroundImageContentFit = 'cover',
     backgroundImageStyle,
     onPress = () => { },
+    noneBackground = false,
   } = props
 
   const hasOnPressProp = typeof props.onPress === 'function'
@@ -146,7 +148,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
               pointerEvents="none"
             />
           )}
-          {!backgroundImage && (<BlurView
+          {!backgroundImage && !noneBackground && (<BlurView
             intensity={isDark ? 40 : 30}
             tint={isDark ? 'dark' : 'light'}
             style={[

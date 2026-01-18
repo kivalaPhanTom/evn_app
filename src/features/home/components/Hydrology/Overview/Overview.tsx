@@ -540,7 +540,7 @@ const Overview: React.FC = () => {
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (
-      <AnimatedCardContainer backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
+      <AnimatedCardContainer noneBackground={true} backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
         <View style={[styles.container, { margin: -24 }]}>
           {/* Skeleton cho tabs */}
           <View style={styles.tabsContainer}>
@@ -573,7 +573,7 @@ const Overview: React.FC = () => {
   }
 
   return (
-    <AnimatedCardContainer backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
+    <AnimatedCardContainer noneBackground={true} backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
       <View style={[styles.container, { margin: -24 }]}>
         <View style={styles.tabsContainer}>
           {waterData.map((data, index) => (
