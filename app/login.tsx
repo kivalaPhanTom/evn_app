@@ -16,8 +16,9 @@ import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { useForm, Controller } from 'react-hook-form'
 import { useText } from '@/core/hooks/use-text'
 import { useTranslation } from 'react-i18next'
-import { appName } from '@/core/utils/deviceInfo'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
+import Constants from 'expo-constants'
+
 type FormValues = {
   username: string
   password: string
@@ -39,6 +40,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false)
   const insets = useSafeAreaInsets()
   const keyboardOffset = insets.top + px.v(50)
+  const appVersion = Constants.expoConfig?.version ?? ''
 
   const onLogin = (data: FormValues) => {
     setLoading(true)
@@ -47,7 +49,7 @@ export default function LoginScreen() {
       setLoading(false)
     }, 900)
   }
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <TwinkleStars
@@ -75,7 +77,6 @@ export default function LoginScreen() {
             {/* Form */}
 
             <View style={styles.formWrap}>
-
               <AnimatedCardContainer>
                 {/* <View pointerEvents="none" style={styles.formGlowRim} /> */}
                 {/* <LinearGradient
@@ -102,7 +103,7 @@ export default function LoginScreen() {
                         textContentType="username"
                         importantForAutofill="yes"
                         borderColor={errors.username ? '#EF4444' : undefined}
-                        height= {px.h(72)}
+                        height={px.h(72)}
                         leftIcon={
                           <Ionicons name="person-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
                         }
@@ -126,7 +127,7 @@ export default function LoginScreen() {
                         textContentType="password"
                         importantForAutofill="yes"
                         borderColor={errors.password ? '#EF4444' : undefined}
-                        height= {px.h(72)}
+                        height={px.h(72)}
                         leftIcon={
                           <Ionicons name="lock-closed-outline" size={px.f(22)} color={isDark ? '#0EA5E9' : '#6B7280'} />
                         }
@@ -150,11 +151,13 @@ export default function LoginScreen() {
                   loading={loading}
                   gradientColors={['#0EA5E9', '#06B6D4']}
                   borderColor={{ light: '#06B6D4', dark: '#06B6D4' }}
-                  height= {px.h(72)}
+                  height={px.h(72)}
                   style={styles.loginBtn}
                 />
               </AnimatedCardContainer>
-
+            </View>
+            <View style={{ alignItems: 'center', marginVertical: px.v(16) }}>
+              <Text style={{ color: '#fff', fontSize: px.f(13) }}>v{appVersion}</Text>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>

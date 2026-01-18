@@ -11,6 +11,7 @@ import { useFocusEffect, useRouter } from 'expo-router'
 import React, { useMemo, useRef } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Constants from 'expo-constants'
 
 const COMPANIES = [{ name: 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP', location: 'Đắk Lắk, Việt Nam' }]
 
@@ -20,18 +21,22 @@ export default function CompaniesScreen() {
   const router = useRouter()
   const onPress = (c: any) => {
     router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
-  };
+  }
+  const appVersion = Constants.expoConfig?.version ?? ''
+
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <TwinkleStars
+      background={Colors.background}
+      particleDensity={50}
+      particleColor={Colors.textColor}
+      minSize={0.5}
+      maxSize={2}
+    >
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
-          <SectionContainer title='Danh sách công ty'>
+          <SectionContainer title="Danh sách công ty">
             {COMPANIES.map((c) => (
-              <Pressable
-                key={c.name}
-                onPress={() => onPress(c)}
-                style={{ marginBottom: px.v(12) }}
-              >
+              <Pressable key={c.name} onPress={() => onPress(c)} style={{ marginBottom: px.v(12) }}>
                 <AnimatedCardContainer
                   borderRadius={px.h(14)}
                   backgroundColor={{ dark: '#0F1830', light: '#FFFFFF' }}
@@ -48,7 +53,12 @@ export default function CompaniesScreen() {
                       </Text>
                       <View style={styles.locationRow}>
                         <Text style={[styles.location, { color: isDark ? '#E6ECF2' : '#111827' }]}>{c.location}</Text>
-                        <Ionicons name="location-outline" size={px.f(16)} color="#FFF" style={{ marginLeft: px.h(6) }} />
+                        <Ionicons
+                          name="location-outline"
+                          size={px.f(16)}
+                          color="#FFF"
+                          style={{ marginLeft: px.h(6) }}
+                        />
                       </View>
                     </View>
                     <Ionicons name="chevron-forward" size={px.f(25)} color={isDark ? '#FFF' : '#6B7280'} />
@@ -58,6 +68,9 @@ export default function CompaniesScreen() {
             ))}
           </SectionContainer>
         </ScrollView>
+        <View style={{ alignItems: 'center', marginVertical: px.v(16) }}>
+          <Text style={{ color: '#fff', fontSize: px.f(13) }}>v{appVersion}</Text>
+        </View>
       </SafeAreaView>
     </TwinkleStars>
   )
