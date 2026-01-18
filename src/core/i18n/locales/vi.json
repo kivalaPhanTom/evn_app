@@ -36,9 +36,9 @@
     "email": "Email",
     "password": "Mật khẩu"
   },
-  "appName": "Ứng dụng Quản lý Nhà máy Thủy Điện EVNGENCO3",
-  "power": "Công suất",
-  "productionOutput": "Sản lượng",
+  "appName": "Quản lý NMTĐ EVNGENCO3",
+  "power": "Công suất (P)",
+  "productionOutput": "Sản lượng (Q)",
   "hydrology": "Thủy văn",
   "repairMaintenance": "Các tổ máy có lịch sửa chữa bảo dưỡng"
 }

@@ -18,5 +18,5 @@ export const vi = {
         requiredField: 'Trường này là bắt buộc',
     },
 
-    appName: 'Ứng dụng Quản lý Nhà máy Thủy Điện EVNGENCO3',
+    appName: 'Quản lý NMTĐ EVNGENCO3',
 };

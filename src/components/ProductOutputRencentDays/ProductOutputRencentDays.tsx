@@ -33,7 +33,7 @@ function ProductOutputRencentDays(props: Props) {
     <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>SẢN LƯỢNG 7 NGÀY GẦN NHẤT</Text>
+        <Text style={styles.title}>Q 7 NGÀY GẦN NHẤT</Text>
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
@@ -88,9 +88,9 @@ function ProductOutputRencentDays(props: Props) {
         </View>
 
         {/* Legend */}
-        <View style={styles.legend}>
+        {/* <View style={styles.legend}>
           <Text style={styles.legendText}>Màu xanh: Đạt/vượt hợp đồng • Màu đỏ: Dưới hợp đồng</Text>
-        </View>
+        </View> */}
       </View>
     </AnimatedCardContainer>
   )

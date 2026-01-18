@@ -52,7 +52,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
       style={[styles.container, style]}
     >
       <View style={styles.gradientBackground}>
-        <View style={styles.headerRow}>
+        {title && <View style={styles.headerRow}>
           <GradientText
             text={title.toUpperCase()}
             colors={['#fff', '#fff']}
@@ -60,8 +60,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
             fontWeight="600"
             style={styles.title}
           />
-
-        </View>
+        </View>}
         {actionButton && (
           <TouchableOpacity onPress={actionButton.onPress} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
             <Text style={styles.actionButtonText}>{actionButton.label}</Text>
