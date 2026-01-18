@@ -75,6 +75,24 @@ export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
     return undefined
   }
 
+  // Normalize activeMonths to array of indices (0-11)
+  // Handles: number, number[], or already normalized array
+  const normalizeActiveMonths = (activeMonths: number | number[]): number[] => {
+    if (activeMonths == null) return []
+    
+    // Convert to array if it's a single number
+    const monthsArray = Array.isArray(activeMonths) ? activeMonths : [activeMonths]
+    
+    // Convert month numbers (1-12) to indices (0-11)
+    return monthsArray.map(month => {
+      // If month is 1-12 (actual month number), convert to 0-11 (array index)
+      // If month is already 0-11 (array index), use as is
+      return month >= 1 && month <= 12 ? month - 1 : month
+    })
+  }
+
+  const normalizedActiveMonths = normalizeActiveMonths(timeline.activeMonths)
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -121,7 +139,7 @@ export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
       <View style={styles.timelineContainer}>
         <View style={styles.timelineBar}>
           {MONTHS.map((month, index) => {
-            const isActive = timeline.activeMonths.includes(index)
+            const isActive = normalizedActiveMonths.includes(index)
 
             return (
               <View key={index} style={styles.timelineItem}>
