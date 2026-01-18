@@ -22,7 +22,6 @@ const SHIMMER_BASE_COLOR = '#3A3F47';
 const SHIMMER_HIGHLIGHT_COLOR = '#6F8196';
 
 const DURATION = 2500;
-const CHART_HEIGHT = 200;
 const BAR_WIDTH = 35;
 
 /* ================= SHIMMER BAR ================= */
@@ -30,11 +29,11 @@ const BAR_WIDTH = 35;
 interface ShimmerBlockProps {
   style: StyleProp<ViewStyle>;
   barWidth: number;
+  barHeight?: number;
 }
 
-const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth }) => {
+const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth}) => {
   const translateX = useSharedValue(-barWidth);
-
   useEffect(() => {
     translateX.value = withRepeat(
       withTiming(barWidth, {
@@ -87,9 +86,10 @@ const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth }) => {
 
 interface ShimmerLineChartProps {
   width: number;
+  height: number;
 }
 
-const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width }) => {
+const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width, height = 200}) => {
   const points = [
     { x: 0, y: 160 },
     { x: width * 0.2, y: 150 },
@@ -108,8 +108,8 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width }) => {
   }, [width]);
 
   return (
-    <View style={styles.lineChartContainer}>
-      <Svg width={width} height={CHART_HEIGHT}>
+    <View style={{...styles.lineChartContainer, height:height}}>
+      <Svg width={width} height={height}>
         <Mask id="lineMask">
           <Path d={pathData} fill="none" stroke="#fff" strokeWidth={3} />
         </Mask>
@@ -123,7 +123,7 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width }) => {
           x="0"
           y="0"
           width={width}
-          height={CHART_HEIGHT}
+          height={height}
           fill="url(#lineBase)"
           mask="url(#lineMask)"
         />
@@ -135,19 +135,20 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width }) => {
 /* ================= MAIN ================= */
 interface LineBarChartSkeletonProps{
   isShowLine?:boolean
+  height?: number
 }
 const LineBarChartSkeleton: React.FC<LineBarChartSkeletonProps>  = (props) => {
-  const {isShowLine = true} = props
+  const {isShowLine = true, height = 200} = props
   const [chartWidth, setChartWidth] = useState(0);
   const barHeights = ['25%', '35%', '60%', '45%', '75%', '90%'];
 
   return (
     <View style={styles.container}>
       <View
-        style={styles.chartFrame}
+        style={{...styles.chartFrame, height}}
         onLayout={(e) => setChartWidth(e.nativeEvent.layout.width)}
       >
-        {chartWidth > 0 && isShowLine && <ShimmerLineChart width={chartWidth} />}
+        {chartWidth > 0 && isShowLine && <ShimmerLineChart width={chartWidth} height = {height}/>}
 
         <View style={styles.barContainer}>
           {barHeights.map((height, index) => (
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   chartFrame: {
-    height: CHART_HEIGHT,
+    // height: CHART_HEIGHT,
     width: '100%',
     position: 'relative',
   },
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: CHART_HEIGHT,
+    // height: CHART_HEIGHT,
     zIndex: 1,
   },
   barContainer: {

@@ -10,8 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getComparePower } from '@/core/redux/Actions/PowerActions'
 import dayjs from 'dayjs'
 
-function ComparePower24h(props: { currentPlantId?: string }) {
-  const { currentPlantId } = props;
+function ComparePower24h(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
+  const { currentPlantId, isCheckDisableDate } = props;
   const dispatch = useDispatch()
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
   const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
@@ -32,21 +32,39 @@ function ComparePower24h(props: { currentPlantId?: string }) {
   }, [countRefesh])
 
   const onChangeDateRage = (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => {
-    setRange(newRange)
-    const fromDate = dayjs(newRange.from)
-    const toDate = dayjs(newRange.to)
+    // Đảm bảo kiểu dayjs
+    const fromDate = dayjs(newRange.from);
+    const toDate = dayjs(newRange.to);
+
+    // Nếu giá trị invalid, return luôn hoặc gán về mặc định (optional)
+    if (!fromDate.isValid() || !toDate.isValid()) return;
+    setRange({ from: fromDate, to: toDate });
 
     if (fromDate.isAfter(toDate)) {
-      return
+      return;
     }
-
     dispatch(
       getComparePower({
         tagetDate: toDate.format('DD/MM/YYYY'),
         compareDate: fromDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
-      }),
-    )
+      })
+    );
+    // setRange(newRange)
+    // const fromDate = dayjs(newRange.from)
+    // const toDate = dayjs(newRange.to)
+
+    // if (fromDate.isAfter(toDate)) {
+    //   return
+    // }
+
+    // dispatch(
+    //   getComparePower({
+    //     tagetDate: toDate.format('DD/MM/YYYY'),
+    //     compareDate: fromDate.format('DD/MM/YYYY'),
+    //     currentPlantId: currentPlantId || '',
+    //   }),
+    // )
   }
 
   return (
@@ -68,6 +86,7 @@ function ComparePower24h(props: { currentPlantId?: string }) {
           range={range}
           onChangeDateRage={onChangeDateRage}
           isLoading={isLoadingComparePower}
+          isCheckDisableDate={isCheckDisableDate}
         />
         {/* Compare Detail Stats */}
         <CompareDetailStats
