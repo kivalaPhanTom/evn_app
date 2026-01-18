@@ -27,28 +27,48 @@ const VersionChecker: React.FC = () => {
     try {
       const platform = Platform.OS === 'ios' ? 'ios' : 'android'
       const res = await checkAppVersion(platform, appVersion)
-      if (res && res.Result.forceUpdate) {
-        setPayload(res)
+      if (res && res?.Result?.forceUpdate) {
+        setPayload(res?.Result)
         setVisible(true)
       }
     } catch (e) {
-      // ignore errors
+      console.error('checkAppVersion failed:', e)
     }
   }
   useEffect(() => {
-    doCheck()
-    const sub = AppState.addEventListener('change', (nextState: AppStateStatus) => {
-      if (appState.current.match(/inactive|background/) && nextState === 'active') {
-        void doCheck()
+    // initial check
+    void doCheck()
+
+    const subscription = AppState.addEventListener(
+      'change',
+      (nextState: AppStateStatus) => {
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextState === 'active'
+        ) {
+          void doCheck()
+        }
+        appState.current = nextState
       }
-      appState.current = nextState
-    })
-    return () => sub.remove()
+    )
+
+    return () => subscription.remove()
   }, [])
 
-  const openStore = () => {
-    const link = payload?.storeUrl?.[Platform.OS === 'ios' ? 'ios' : 'android']
-    if (link) Linking.openURL(link)
+  const openStore = async () => {
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android'
+
+    const link = payload?.storeUrl?.find(
+      item => item.platform === platform
+    )?.url
+
+    if (!link) return
+
+    try {
+      await Linking.openURL(link)
+    } catch (error) {
+      console.warn('Failed to open store URL:', error)
+    }
   }
 
   return (

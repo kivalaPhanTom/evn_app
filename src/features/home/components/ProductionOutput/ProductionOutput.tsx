@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'expo-router'
 import { View } from 'react-native'
 import styles from './ProductionOutput.styles'
 import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/ProductOutputRencentDays'
@@ -11,6 +12,7 @@ import ProductionOutputByHours from '@/components/ProductionOutputByHours/Produc
 
 function ProductionOutput() {
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const router = useRouter()
   const dispatch = useDispatch()
   const {
     productOutputOverview: { totalPower, averagePower, powerSources },
@@ -25,6 +27,10 @@ function ProductionOutput() {
     dispatch(getProductOutputByDays(7))
   }, [countRefesh])
 
+  const onPressCard = () => {
+    router.navigate({ pathname: '/product-output-detail' })
+  }
+  
   return (
     <SectionContainer title="Sản lượng">
       <View style={styles.section}>
@@ -46,6 +52,7 @@ function ProductionOutput() {
           currentTime={productOutputByHours.currentTime}
           unit={productOutputByHours.unit}
           barGroups={productOutputByHours.barGroups}
+          onPressCard={onPressCard}
         />
       </View>
       <View style={styles.section}>

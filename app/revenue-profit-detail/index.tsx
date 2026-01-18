@@ -10,7 +10,7 @@ const RevenueProfitDetailScreen: React.FC = () => {
     <View>
       <View style={styles.header}>
         <GradientText
-          text={'Chi tiết Sản lượng'}
+          text={'Chi tiết sản lượng'}
           colors={'#FFF'}
           fontSize={px.f(30)}
           style={{ textAlign: 'center' }}

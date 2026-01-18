@@ -21,8 +21,9 @@ interface CompareDashboardProps {
   range: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   onChangeDateRage: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
   isLoading: boolean
+  isCheckDisableDate?: boolean
 }
-const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareDashboardProps, isLoading = false) => {
+const CompareDashboard = ({ data, lineData2, range, onChangeDateRage, isCheckDisableDate,  isLoading = false }: CompareDashboardProps) => {
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -80,17 +81,18 @@ const CompareDashboard = ({ data, lineData2, range, onChangeDateRage }: CompareD
     <View>
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
       <DateRangePicker
-        labelFrom="Ngày mục tiêu"
-        labelTo="Ngày so sánh"
+        labelFrom="Ngày so sánh"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}
         mode="modal"
         chooseMode={'day'}
+        isCheckDisableDate = {isCheckDisableDate}
       />
       <View style={styles.chartWrapper}>
         {isLoading ?
-          <LineBarChartSkeleton /> :
+          <LineBarChartSkeleton height={150}/> :
           <BarChart
             data={barData}
             rounded

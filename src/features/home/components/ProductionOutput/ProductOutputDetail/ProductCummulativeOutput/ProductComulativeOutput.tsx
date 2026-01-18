@@ -2,6 +2,8 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
+import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
 import WaterDrop from '@/components/WaterDrop/WaterDrop.component'
 import { getProductCummulativeOutput } from '@/core/redux/Actions/ProductOutputActions'
@@ -24,7 +26,8 @@ interface CumulativeSummaryItem {
 
 export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const dispatch = useDispatch()
-  const { productCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
+  const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const { t } = useTranslation()
   const [range, setRange] = useState({
@@ -44,7 +47,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       }),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [countRefesh])
 
   const summary = productCummulativeOutput?.summary ?? {}
   const orderedKeys = ['Max', 'Min', 'Average', 'Total'] as const
@@ -183,24 +186,36 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       )}
 
       <View style={dashboardCommonStyles.chartWrapper}>
-        <BarChart
-          data={rawBarGroups}
-          frontColor="#60a5fa"
-          rounded
-          barWidth={25}
-          spacing={20}
-          showHorizontalGrid={false}
-        />
+        {
+          isLoadingProductCummulativeOutput ? <LineBarChartSkeleton isShowLine={false} /> :
+            <BarChart
+              data={rawBarGroups}
+              frontColor="#60a5fa"
+              rounded
+              barWidth={25}
+              spacing={20}
+              showHorizontalGrid={false}
+            />
+        }
       </View>
 
       <View style={[dashboardCommonStyles.summaryRow]}>
         {cumulativeSummaryData.map((item, idx) => (
           <View key={idx} style={styles.cumulativeCard}>
             <Text style={styles.cardTitle}>{item.label}</Text>
-            <Text style={styles.cardValue}>
-              {item.value} <Text style={styles.cardUnit}>{item.unit}</Text>
-            </Text>
-            <Text style={styles.cardTitle}>{item.periodLabel}</Text>
+            {
+              isLoadingProductCummulativeOutput ?
+                <>
+                  <BarSkeleton height={20} />
+                  <BarSkeleton width={80} height={15} />
+                </> :
+                <>
+                  <Text style={styles.cardValue}>
+                    {item.value} <Text style={styles.cardUnit}>{item.unit}</Text>
+                  </Text>
+                  <Text style={styles.cardTitle}>{item.periodLabel}</Text>
+                </>
+            }
           </View>
         ))}
       </View>

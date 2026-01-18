@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Dimensions, Text } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from './CompareDashboard.styles'
 import { BarGroup, LineDataPoint } from '@/components/BarChartWithLines'
 import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import dayjs from 'dayjs'
-import { useDispatch } from 'react-redux'
 import { getCompareProductOutput } from '@/core/redux/Actions/ProductOutputActions'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
+import { RootState } from "@/core/redux/store";
 
 const localStyles = StyleSheet.create({
   chartContainer: {
@@ -44,15 +46,17 @@ interface CompareDashboardProps {
   lineData?: number
   lineData2?: { value: number }[]
   currentPlantId?: string
+  isCheckDisableDate: boolean
 }
 
-const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: CompareDashboardProps) => {
+const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDisableDate }: CompareDashboardProps) => {
   const dispatch = useDispatch()
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
   })
-
+  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { isLoadingCompareProductOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -133,12 +137,12 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: Compare
   }))
 
   useEffect(() => {
-    dispatch(getCompareProductOutput({ 
-      tagetDate: range.from.format('DD/MM/YYYY'),
-      compareDate: range.to.format('DD/MM/YYYY'),
+    dispatch(getCompareProductOutput({
+      tagetDate: range.to.format('DD/MM/YYYY'),
+      compareDate: range.from.format('DD/MM/YYYY'),
       currentPlantId: currentPlantId || '',
     }))
-  }, [dispatch])
+  }, [dispatch, countRefesh])
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     setRange(newRange)
@@ -158,39 +162,44 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId }: Compare
     <View style={styles.container}>
       <Text style={styles.headerDashboard}>So sánh sản lượng theo ngày</Text>
       <DateRangePicker
-        labelFrom="Ngày mục tiêu"
-        labelTo="Ngày so sánh"
+        labelFrom="Ngày so sánh"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}
         mode="modal"
         chooseMode={'day'}
         allowToBeforeFrom={true}
+        isCheckDisableDate={isCheckDisableDate}
       />
       <View style={localStyles.chartContainer}>
-        <View style={styles.chartWrapper}>
-          <BarChart
-            data={barData}
-            rounded
-            barWidth={barWidth}
-            spacing={barSpacing}
-            showLine={true}
-            lineDataPointsShift={-15}
-            noOfSection={4}
-            rulesType="dash"
-            // lineColor="#A78BFA"
-            lineColor="transparent"
-            lineData1={lineData1Converted}
-            lineColor1="#FBBF24"
-            lineDataPointsShift1={0}
-            customDataPoint1={customDataPointContract}
-            customDataPoint2={customDataPoint}
-            // lineData={lineData}
-            lineData2={lineData2Converted}
-            lineColor2="#A78BFA"
-            lineDataPointsShift2={0}
-          />
-        </View>
+        {isLoadingCompareProductOutput ?
+          <LineBarChartSkeleton height={150} /> :
+          <View style={styles.chartWrapper}>
+            <BarChart
+              data={barData}
+              rounded
+              barWidth={barWidth}
+              spacing={barSpacing}
+              showLine={true}
+              lineDataPointsShift={-15}
+              noOfSection={4}
+              rulesType="dash"
+              // lineColor="#A78BFA"
+              lineColor="transparent"
+              lineData1={lineData1Converted}
+              lineColor1="#FBBF24"
+              lineDataPointsShift1={0}
+              customDataPoint1={customDataPointContract}
+              customDataPoint2={customDataPoint}
+              // lineData={lineData}
+              lineData2={lineData2Converted}
+              lineColor2="#A78BFA"
+              lineDataPointsShift2={0}
+            />
+          </View>
+        }
+
       </View>
     </View>
   )

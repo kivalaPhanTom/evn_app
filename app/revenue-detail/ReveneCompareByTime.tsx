@@ -165,6 +165,7 @@ export default function ReveneCompareByTime({
             label1={`${data?.PlantName}: `}
             label2={`${data2?.PlantName}: `}
             label3={`${data3?.PlantName}: `}
+            animateOnDataChange={false}
           />
           <View style={styles.line} />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>

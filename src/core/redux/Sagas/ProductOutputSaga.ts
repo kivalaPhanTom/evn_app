@@ -66,18 +66,22 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
 
 function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCummulativeOutput>): Generator {
   try {
+    yield put(setLoading({ isLoadingProductCummulativeOutput: true }))
     const params = action.payload
     const res = yield call(Service.getProductCummulativeOutputApi, params)
     if (res.status === 200) {
       yield put(setProductCummulativeOutput(res.data))
     }
+    yield put(setLoading({ isLoadingProductCummulativeOutput: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingProductCummulativeOutput: false }))
     catchHandle(error, 'getProductCummulativeOutputSaga')
   }
 }
 
 function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProductOutput>): Generator {
   try {
+    yield put(setLoading({ isLoadingCompareProductOutput: true }))
     const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
@@ -87,7 +91,9 @@ function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProduc
     if (res.status === 200) {
       yield put(setCompareProductOutput(res.data))
     }
+    yield put(setLoading({ isLoadingCompareProductOutput: false }))
   } catch (error) {
+    yield put(setLoading({ isLoadingCompareProductOutput: false }))
     catchHandle(error, 'getCompareProductOutputSaga')
   }
 }

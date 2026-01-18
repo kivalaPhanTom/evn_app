@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'expo-router'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductOutputActions'
@@ -19,6 +20,7 @@ interface productOutputByHours {
 function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
+  const router = useRouter()
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -45,7 +47,9 @@ function ProductionOutputByHoursFactDetail(props: Props) {
     setCurrentPowerValue(data.currentPowerValue)
     setListValueByHours(data.listValueByHours)
   }
- 
+  const onPressCard = () => {
+    router.push({ pathname: '/product-output-detail', params: { currentPlantId: currentPlantId } })
+  }
   return (
     <ProductionOutputByHours
       isLoading={isLoading}
@@ -55,6 +59,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
       currentTime={productOutputByHours.currentTime}
       unit={productOutputByHours.unit}
       barGroups={listValueByHours}
+      onPressCard={onPressCard}
     />
   )
 }

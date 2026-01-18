@@ -4,7 +4,6 @@ import styles from './ProductionOutputByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarChart from '@/components/BarChart/BarChart.component'
-import { useRouter } from 'expo-router'
 import { BarGroup } from '@/core/types'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import BarChartSkeleton from '@/components/Skeletons/BarChartSkeleton'
@@ -18,11 +17,11 @@ interface Props {
   currentTime: string
   unit: string
   barGroups: { label: string; value: number }[]
+  onPressCard: any
 }
 function ProductionOutputByHours(props: Props) {
-  const { isLoading, currentDate, contractPowerValue, currentPowerValue, currentTime, unit, barGroups } = props
+  const { isLoading, currentDate, contractPowerValue, currentPowerValue, currentTime, unit, barGroups, onPressCard } = props
   const [firstLoading, setFirstLoading] = useState(true)
-  const router = useRouter()
   const title = 'Sản lượng theo giờ'
   const subtitle = `Hôm nay, ${currentDate}`
   const THRESHOLD = contractPowerValue
@@ -48,10 +47,6 @@ function ProductionOutputByHours(props: Props) {
       setFirstLoading(false)
     }
   }, [isLoading])
-
-  const onPressCard = () => {
-    router.navigate({ pathname: '/product-output-detail' })
-  }
 
   return (
     <AnimatedCardContainer>
