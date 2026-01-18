@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
   },
   currentLevel: {
     color: '#00C853', // Màu xanh lá
-    fontSize: px.m(22),
+    fontSize: px.m(18),
     fontWeight: '700',
   },
   maxLevel: {
