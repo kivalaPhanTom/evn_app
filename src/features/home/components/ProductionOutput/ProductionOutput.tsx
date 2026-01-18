@@ -32,10 +32,10 @@ function ProductionOutput() {
   }
   
   return (
-    <SectionContainer title="Sản lượng">
+    <SectionContainer title="Sản lượng (Q)">
       <View style={styles.section}>
         <TotalPower
-          title="TỔNG SẢN LƯỢNG"
+          title={"Q \u2211 lũy kế ngày"}
           average={averagePower}
           total={totalPower}
           detail={powerSources}
