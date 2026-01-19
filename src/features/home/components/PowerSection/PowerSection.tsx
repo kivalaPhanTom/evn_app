@@ -29,11 +29,11 @@ function PowerSection() {
     router.navigate({ pathname: '/product-power-detail' })
   }
   return (
-    <SectionContainer title="Công Suất">
+    <SectionContainer title="Công Suất (P)">
       <View>
         <View style={styles.section}>
           <TotalPower
-            title="TỔNG CÔNG SUẤT"
+            title="P \u2211 phát"
             average={average}
             total={total}
             detail={detail}

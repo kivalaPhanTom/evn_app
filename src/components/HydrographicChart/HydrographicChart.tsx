@@ -396,7 +396,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                 </View>
 
                 {/* Water drops */}
-                <View style={styles.waterDropContainer}>
+                {/* <View style={styles.waterDropContainer}>
                   <View style={styles.waterDropRow}>
                     {waterDrops.map((drop, index) => (
                       <View
@@ -417,7 +417,7 @@ function HydrographicChart(props: HydrographicChartProps) {
                       </View>
                     ))}
                   </View>
-                </View>
+                </View> */}
                 {/* <View style={styles.waterDropContainer}>
                   <View style={[styles.waterDropRow, { paddingLeft: initialSpacing - 40 }]}>
                     {waterDrops.map((drop, index) => (

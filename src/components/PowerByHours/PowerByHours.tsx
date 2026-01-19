@@ -25,7 +25,7 @@ interface Props {
 function PowerByHours(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
     const { isLoading, currentDate, currentPower, currentTime, avgPower, HourlyPowerList, onPressCard } = props
-    const title = 'Công suất theo giờ'
+    const title = 'P theo giờ'
     const subtitle = 'Hôm nay, ' + currentDate
     const hourlyData = HourlyPowerList ? HourlyPowerList.map((d: any) => ({ ...d })) : []
     const unit = 'MW'

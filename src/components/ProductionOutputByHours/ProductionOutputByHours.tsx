@@ -22,7 +22,7 @@ interface Props {
 function ProductionOutputByHours(props: Props) {
   const { isLoading, currentDate, contractPowerValue, currentPowerValue, currentTime, unit, barGroups, onPressCard } = props
   const [firstLoading, setFirstLoading] = useState(true)
-  const title = 'Sản lượng theo giờ'
+  const title = 'Q theo giờ'
   const subtitle = `Hôm nay, ${currentDate}`
   const THRESHOLD = contractPowerValue
   const getColorForValue = (value: number, threshold = THRESHOLD): string =>
