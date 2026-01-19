@@ -19,7 +19,7 @@ function PowerSectionFactDetail(props: Props) {
     const { currentPlantId, keyTab } = props
     
     return (
-        <SectionContainer title="Công Suất">
+        <SectionContainer title="Công Suất (P)">
             <View>
                 <View style={styles.section}>
                     <TotalPowerFactDetail

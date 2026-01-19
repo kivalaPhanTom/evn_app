@@ -34,7 +34,7 @@ export default function CompaniesScreen() {
     >
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
-          <SectionContainer title="Danh sách công ty">
+          <SectionContainer title="">
             {COMPANIES.map((c) => (
               <Pressable key={c.name} onPress={() => onPress(c)} style={{ marginBottom: px.v(12) }}>
                 <AnimatedCardContainer

@@ -16,7 +16,7 @@ function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
 
-  const unit = 'tr.Wh'
+  const unit = 'MW'
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -31,7 +31,7 @@ function PowerRecentDays(props: Props) {
     <AnimatedCardContainer>
       <View>
         <View style={styles.content}>
-          <Text style={styles.title}>CÔNG SUẤT 7 NGÀY GẦN NHẤT</Text>
+          <Text style={styles.title}>P 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -52,10 +52,10 @@ function PowerRecentDays(props: Props) {
 
           {/* Bottom Info */}
           <View style={styles.bottomInfo}>
-            <View style={styles.hintRow}>
+            {/* <View style={styles.hintRow}>
               <View style={styles.legendDot} />
               <Text style={styles.hintText}>Lướt ngang để xem thêm →</Text>
-            </View>
+            </View> */}
             <Text style={styles.unitText}>Đơn vị: {unit}</Text>
           </View>
         </View>

@@ -596,7 +596,7 @@ const Overview: React.FC = () => {
           {activeData && (
             <>
               <Text style={styles.detailText}>
-                {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m
+                {/* {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m */}
               </Text>
               <HydrographicChart
                 isLoading={isLoadingHydrologyChart}
