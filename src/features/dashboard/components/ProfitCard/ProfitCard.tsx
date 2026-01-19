@@ -1,5 +1,4 @@
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import BarChart, { BarGroup } from '@/components/BarChart/BarChart.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
@@ -60,12 +59,10 @@ export default function ProfitCard({ tab, setTab, contentAnim, lineData }: Props
               <Text style={styles.metricLabel}>{t('profitYesterday')}</Text>
 
               <View style={dashboardCommonStyles.metricValueRow}>
-                <AnimatedNumber
-                  value={tab === 'day' ? 6.98 : tab === 'month' ? 45.32 : 215}
-                  duration={900}
-                  decimals={2}
-                  formatter={(n) => Number(n.toFixed(2)).toString()}
-                  render={(text) => <GradientText text={text} fontSize={px.f(60)} colors={textGradients.primary} />}
+                <GradientText
+                  text={tab === 'day' ? 6.98 : tab === 'month' ? 45.32 : 215}
+                  fontSize={px.f(60)}
+                  colors={textGradients.primary}
                 />
                 <Text style={styles.metricSuffixInline}>{t('unitVND')}</Text>
               </View>
