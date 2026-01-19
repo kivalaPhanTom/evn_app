@@ -56,7 +56,7 @@ export default function RootLayout() {
     setPreferenceState((prev) => {
       const next = prev === 'system' ? (systemScheme === 'dark' ? 'light' : 'dark') : prev === 'dark' ? 'light' : 'dark'
       // persist
-      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => {})
+      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => { })
       return next
     })
   }
@@ -97,9 +97,8 @@ export default function RootLayout() {
                   {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
                 </Stack>
-
                 {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
-                  <View style={[styles.backContainer, { top: insets.top + 10 }]} pointerEvents="box-none">
+                 <View style={[styles.backContainer, { bottom: insets.bottom + 80 }]} pointerEvents="box-none">
                     <TouchableOpacity
                       onPress={() => router.back()}
                       style={styles.backButton}
@@ -148,12 +147,23 @@ const styles = StyleSheet.create({
   },
   backContainer: {
     position: 'absolute',
-    left: 12,
+    // left: 12,
+    // zIndex: 50,
+    right: 16,
     zIndex: 50,
   },
   backButton: {
-    backgroundColor: 'transparent',
-    // padding: 8,
-    borderRadius: 20,
+    // backgroundColor: 'transparent',
+    // // padding: 8,
+    // borderRadius: 20,
+
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: '#2E3148',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
