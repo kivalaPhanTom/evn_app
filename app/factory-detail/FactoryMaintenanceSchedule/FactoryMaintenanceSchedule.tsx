@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Pressable } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import FactoryMaintenanceInfo from './FactoryMaintenanceInfo/FactoryMaintenanceInfo'
 import { t } from 'i18next'
@@ -22,14 +22,12 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
   return (
     <SectionContainer 
       title={t('repairMaintenance')}
-      actionButton={{
-        label: 'Thêm chi tiết',
-        onPress: onPressCard,
-      }}
     >
-      <View style={{ marginBottom: 20 }}>
-        <FactoryMaintenanceInfo currentPlantId={currentPlantId} />
-      </View>
+      <Pressable onPress={onPressCard}>
+        <View style={{ marginBottom: 20 }}>
+          <FactoryMaintenanceInfo currentPlantId={currentPlantId} />
+        </View>
+      </Pressable>
     </SectionContainer>
   )
 }

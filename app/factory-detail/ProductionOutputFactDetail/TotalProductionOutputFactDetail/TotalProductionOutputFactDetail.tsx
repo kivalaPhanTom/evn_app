@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import TotalPower from '@/components/TotalPower/TotalPower'
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -30,13 +31,27 @@ function TotalProductionOutputFactDetail(props: Props) {
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
 
+  useAlignedHourlyTimer(() => {
+    if (activeTabIndex === keyTab) {
+      dispatch(
+        getProductOutputOverviewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
+    }
+  })
+
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getProductOutputOverviewFactDetail({
-        factoryId: currentPlantId,
-        getDataFromApi: getDataFromApi,
-        setLoading: setLoading
-      }))
+      dispatch(
+        getProductOutputOverviewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
     }
   }, [activeTabIndex, countRefesh])
 
@@ -51,7 +66,7 @@ function TotalProductionOutputFactDetail(props: Props) {
 
   return (
     <TotalPower
-      title={"Q \u2211 lũy kế ngày"}
+      title={'Q \u2211 lũy kế ngày'}
       average={averagePower}
       total={totalPower}
       detail={powerSources}

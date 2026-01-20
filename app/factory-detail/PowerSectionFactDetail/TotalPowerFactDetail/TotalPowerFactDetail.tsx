@@ -3,6 +3,7 @@ import { RootState } from '@/core/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPowerOverivewFactDetail } from '@/core/redux/Actions/PowerActions'
 import TotalPower from '@/components/TotalPower/TotalPower'
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 interface PowerDetail {
   code: string
   color: string
@@ -31,19 +32,34 @@ function TotalPowerFactDetail(props: Props) {
   const setLoading = (value: boolean) => {
     setIsLoadingOverview(value)
   }
+
+  useAlignedHourlyTimer(() => {
+    if (activeTabIndex === keyTab) {
+      dispatch(
+        getPowerOverivewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
+    }
+  })
+  
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getPowerOverivewFactDetail({
-        factoryId: currentPlantId,
-        getDataFromApi: getDataFromApi,
-        setLoading: setLoading
-      }))
+      dispatch(
+        getPowerOverivewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
     }
   }, [currentPlantId, activeTabIndex, countRefesh])
 
   return (
     <TotalPower
-      title={" P \u2211 phát"}
+      title={' P \u2211 phát'}
       average={average}
       total={total}
       detail={detail}
