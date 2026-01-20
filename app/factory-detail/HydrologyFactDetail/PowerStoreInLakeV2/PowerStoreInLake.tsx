@@ -35,11 +35,10 @@ const PowerStoreInLakeV2: React.FC = () => {
           </View>
         ) : (
           <>
-            <AnimatedNumber
-              value={Number(powerStoreInLakeData?.currentCapacity ?? 0)}
-              decimals={1}
-              duration={800}
-              render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
+            <GradientText
+              text={Number(powerStoreInLakeData?.currentCapacity ?? 0)}
+              fontSize={px.f(52)}
+              colors={'#00C853'}
             />
             <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}>
               {powerStoreInLakeData?.unit ?? ''}
@@ -57,7 +56,10 @@ const PowerStoreInLakeV2: React.FC = () => {
         {isLoading ? (
           <BarSkeleton width={'100%'} alignSelf="center" height={20} />
         ) : (
-          <GradientProgress colors={['#EC4899', '#F97316']} progress={powerStoreInLakeData?.currentCapacity / powerStoreInLakeData?.capacity}/>
+          <GradientProgress
+            colors={['#EC4899', '#F97316']}
+            progress={powerStoreInLakeData?.currentCapacity / powerStoreInLakeData?.capacity}
+          />
         )}
       </View>
 

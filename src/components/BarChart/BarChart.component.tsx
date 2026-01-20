@@ -48,6 +48,7 @@ interface Props {
   lineColor2?: string
   lineDataPointsShift2?: number
   customDataPoint2?: React.ReactElement
+  scrollToEnd?: boolean
 }
 
 const BarChart: React.FC<Props> = ({
@@ -77,6 +78,7 @@ const BarChart: React.FC<Props> = ({
   customDataPoint2,
   showCustomTooltip = false,
   disableScroll = false,
+  scrollToEnd = false,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -343,6 +345,7 @@ const BarChart: React.FC<Props> = ({
           barBorderBottomRightRadius={0}
           activeOpacity={1}
           autoShiftLabels
+          scrollToEnd={scrollToEnd}
           initialSpacing={spacing}
           endSpacing={10}
           xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}

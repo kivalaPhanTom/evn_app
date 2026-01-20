@@ -9,6 +9,7 @@ import { RootState } from '@/core/redux/store'
 import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 
 function ProductionOutput() {
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
@@ -20,6 +21,10 @@ function ProductionOutput() {
   } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
+
+  useAlignedHourlyTimer(() => {
+    dispatch(getProductOutputOverview())
+  })
 
   useEffect(() => {
     dispatch(getProductOutputOverview())
