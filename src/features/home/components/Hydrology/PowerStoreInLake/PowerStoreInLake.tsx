@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import GradientText from '@/components/GradientText/GradientText.component'
-import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import { px } from '@/core/utils/scale'
 import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
@@ -44,11 +43,10 @@ const PowerStoreInLake: React.FC = () => {
           </View>
         ) : (
           <>
-            <AnimatedNumber
-              value={Number(powerStoreInLake?.currentCapacity ?? 0)}
-              decimals={1}
-              duration={800}
-              render={(txt) => <GradientText text={txt} fontSize={px.f(52)} colors={'#00C853'} />}
+            <GradientText
+              text={Number(powerStoreInLake?.currentCapacity ?? 0)}
+              fontSize={px.f(52)}
+              colors={'#00C853'}
             />
             <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}>
               {powerStoreInLake?.unit ?? ''}

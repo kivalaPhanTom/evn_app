@@ -101,7 +101,7 @@ function ProductionOutputByHours(props: Props) {
         </View>
 
         <View style={styles.chartWrapper}>
-          {firstLoading || isLoading ? <BarChartSkeleton /> : <BarChart data={rawBarGroups} rounded />}
+          {firstLoading || isLoading ? <BarChartSkeleton /> : <BarChart data={rawBarGroups} rounded scrollToEnd/>}
         </View>
 
         {/* Unit Label */}

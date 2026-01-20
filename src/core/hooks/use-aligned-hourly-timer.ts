@@ -4,8 +4,8 @@ import { AppState } from 'react-native'
 
 type Callback = () => Promise<void> | void
 
-export function useAlignedHourlyTimer(callback: Callback, options?: { intervalMinutes?: number }) {
-  const INTERVAL_MINUTES = options?.intervalMinutes ?? 60
+export function useAlignedHourlyTimer(callback: Callback, options?: { intervalSeconds?: number }) {
+  const INTERVAL_SECONDS = options?.intervalSeconds ?? 60
   const TIMER_KEY = 'hourly_logic_last_run_at'
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const alignTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -31,13 +31,6 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalMi
     return nextHour.getTime() - now.getTime()
   }, [])
 
-  const formatMs = useCallback((ms: number) => {
-    const s = Math.max(0, Math.floor(ms / 1000))
-    const mm = Math.floor(s / 60)
-    const ss = s % 60
-    return `${mm} phút ${ss} giây (${ms} ms)`
-  }, [])
-
   const runAndStamp = useCallback(async () => {
     await Promise.resolve(callback())
     await AsyncStorage.setItem(TIMER_KEY, String(Date.now()))
@@ -51,21 +44,22 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalMi
     isStartingRef.current = true
     try {
       clearTimers()
-      console.log('[useAlignedHourlyTimer] Chạy ngay và lưu dấu thời gian...')
       await runAndStamp()
 
       const waitMs = msUntilNextHour()
-      console.log(`[useAlignedHourlyTimer] Thời gian còn lại đến lần chạy căn giờ tiếp theo: ${formatMs(waitMs)}`)
+    
+      // Thiết lập lặp ngay (mỗi INTERVAL_SECONDS)
+      intervalRef.current = setInterval(runAndStamp, INTERVAL_SECONDS * 1000)
+
+      // Đồng thời giữ timeout để chạy chính xác vào mốc giờ (resync), nhưng không tái tạo interval
       alignTimeoutRef.current = setTimeout(async () => {
-        console.log('[useAlignedHourlyTimer] Đã đến mốc căn giờ, chạy và lưu dấu thời gian...')
         await runAndStamp()
-        console.log(`[useAlignedHourlyTimer] Thiết lập lặp lại mỗi ${INTERVAL_MINUTES} phút`)
-        intervalRef.current = setInterval(runAndStamp, INTERVAL_MINUTES * 60 * 1000)
+        // không cần tạo lại interval nếu đã tồn tại
       }, waitMs)
     } finally {
       isStartingRef.current = false
     }
-  }, [clearTimers, runAndStamp, msUntilNextHour, INTERVAL_MINUTES, formatMs])
+  }, [clearTimers, runAndStamp, msUntilNextHour, INTERVAL_SECONDS])
 
   useEffect(() => {
     let mounted = true

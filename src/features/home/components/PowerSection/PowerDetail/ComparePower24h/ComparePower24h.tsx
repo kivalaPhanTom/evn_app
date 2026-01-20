@@ -87,6 +87,7 @@ function ComparePower24h(props: { currentPlantId?: string, isCheckDisableDate: b
           onChangeDateRage={onChangeDateRage}
           isLoading={isLoadingComparePower}
           isCheckDisableDate={isCheckDisableDate}
+          scrollToEnd
         />
         {/* Compare Detail Stats */}
         <CompareDetailStats

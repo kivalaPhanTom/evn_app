@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, LayoutChangeEvent, ScrollView } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import Svg, { Line } from 'react-native-svg';
@@ -11,7 +11,7 @@ interface Props { }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const getBarColor = (value: number, referenceLevel:number): string => {
+const getBarColor = (value: number, referenceLevel: number): string => {
   return value >= referenceLevel ? '#5B9FED' : Colors.warningFull;
 };
 interface HydroChartItem {
@@ -26,9 +26,9 @@ interface HydrographicChartProps {
   maxLevel?: number
 }
 function HydrographicChart(props: HydrographicChartProps) {
-  const { isLoading = false, data = [], referenceLevel = 0, maxLevel= 0} = props
+  const { isLoading = false, data = [], referenceLevel = 0, maxLevel = 0 } = props
   const [chartHeight, setChartHeight] = useState(0);
-
+  const scrollRef = React.useRef<ScrollView>(null);
   // Compute maxValue from the largest avgVolume so grid scales to data.
   const maxAvgVolume = maxLevel ? maxLevel : data.length ? Math.max(...data.map(h => h.avgVolume)) : 500;
   // Round up to nearest 50 for a cleaner axis
@@ -48,6 +48,13 @@ function HydrographicChart(props: HydrographicChartProps) {
   //   });
   //   return data;
   // }, [hourlyData]);
+  useEffect(() => {
+    if (data.length > 0) {
+      requestAnimationFrame(() => {
+        scrollRef.current?.scrollToEnd({ animated: false });
+      });
+    }
+  }, [JSON.stringify(data), isLoading]);
 
   const barData = useMemo(() => {
     return data.map(item => ({
@@ -78,7 +85,7 @@ function HydrographicChart(props: HydrographicChartProps) {
   const totalBars = data.length;
   const barTotalWidth = barWidth + spacing;
   // const initialSpacing = spacing / 2
-  const initialSpacing =  barTotalWidth / 2-10;
+  const initialSpacing = barTotalWidth / 2 - 10;
   const verticalLinesShift = initialSpacing;
   // const chartContentWidth = Math.max((totalBars * barTotalWidth) + 40, SCREEN_WIDTH);
   const chartContentWidth = Math.max(totalBars * barTotalWidth, SCREEN_WIDTH);
@@ -192,6 +199,7 @@ function HydrographicChart(props: HydrographicChartProps) {
 
             {/* Scrollable content: Chart + Water drops */}
             <ScrollView
+              ref={scrollRef}
               horizontal
               showsHorizontalScrollIndicator={false}
               scrollEventThrottle={16}
@@ -573,9 +581,9 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   // },
   waterDropContainer: {
-  position: 'relative',
-  left:2
-},
+    position: 'relative',
+    left: 2
+  },
   waterDropRow: {
     flexDirection: 'row', // 👈 BẮT BUỘC
   },
