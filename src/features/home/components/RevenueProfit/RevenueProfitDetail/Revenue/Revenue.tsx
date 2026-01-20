@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -53,14 +53,7 @@ export default function RevenueDetail() {
 
   return (
     <SectionContainer title="Doanh thu">
-      <View style={styles.gotoDetail}>
-        <TouchableOpacity onPress={onPressCard} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
-          <Text style={styles.actionButtonIcon}>{'>'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <AnimatedCardContainer>
+      <AnimatedCardContainer onPress={onPressCard}>
         <View>
           <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
@@ -102,7 +95,11 @@ export default function RevenueDetail() {
           </View>
         </View>
         <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+          <View
+            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
+            onStartShouldSetResponder={() => true}
+            onResponderTerminationRequest={() => false}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
               <View
@@ -149,7 +146,11 @@ export default function RevenueDetail() {
             </View>
           </View>
         </View>
-        <View style={{ marginTop: px.v(15) }}>
+        <View
+          style={{ marginTop: px.v(15) }}
+          onStartShouldSetResponder={() => true}
+          onResponderTerminationRequest={() => false}
+        >
           <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
           <View>
             {revenue.Breakdown.map((plant, idx) => {

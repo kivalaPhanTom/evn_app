@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -43,17 +43,13 @@ function PowerByHours(props: Props) {
         .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
     return (
-        <AnimatedCardContainer>
+        <AnimatedCardContainer onPress={onPressCard}>
             <View style={styles.content}>
                 {/* Header */}
                 <View style={styles.header}>
                     <Text style={styles.title}>{title}</Text>
                     <View style={styles.headerTop}>
                         <Text style={styles.subtitle}>{subtitle}</Text>
-                        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-                            <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
-                            <Text style={styles.actionButtonIcon}>{'>'}</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -93,7 +89,10 @@ function PowerByHours(props: Props) {
                             </>}
                     </View>
                 </View>
-                <View>
+                <View
+                    onStartShouldSetResponder={() => true}
+                    onResponderTerminationRequest={() => false}
+                >
                     {firstLoading || isLoading ? <LineChartSkeleton /> : <LineChart
                         data={avgData}
                         data2={hourlyData}

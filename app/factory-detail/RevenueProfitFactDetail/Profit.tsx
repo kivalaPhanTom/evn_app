@@ -190,11 +190,8 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }
 
   return (
-    <SectionContainer title="Lợi nhuận" actionButton={{
-      label: 'Thêm chi tiết',
-      onPress: onPressCard,
-    }}>
-      <AnimatedCardContainer>
+    <SectionContainer title="Lợi nhuận">
+      <AnimatedCardContainer onPress={onPressCard}>
         <View>
           <Text style={styles.revenueTitle}>{`Lợi nhuận hôm nay`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
@@ -236,7 +233,11 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
           </View>
         </View>
         <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+          <View
+            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
+            onStartShouldSetResponder={() => true}
+            onResponderTerminationRequest={() => false}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Lãi/Lỗ theo ngày</Text>
               <View
