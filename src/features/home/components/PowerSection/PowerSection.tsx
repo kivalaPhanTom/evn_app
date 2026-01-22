@@ -37,7 +37,7 @@ function PowerSection() {
       <View>
         <View style={styles.section}>
           <TotalPower
-            title="P \u2211 phát"
+            title={"P \u2211 phát"}
             average={average}
             total={total}
             detail={detail}
