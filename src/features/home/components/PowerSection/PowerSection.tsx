@@ -56,12 +56,12 @@ function PowerSection() {
             onPressCard = {onPressCard}
           />
         </View>
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <PowerRecentDays
             isLoading={isLoadingNearCurrentDays}
             powerData={powerData}
           />
-        </View>
+        </View> */}
       </View>
     </SectionContainer>
   )

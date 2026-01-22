@@ -9,15 +9,21 @@ interface ProductionData {
   date: string
   actual: number
   contract: number
+  samePeriod?: number
 }
 interface Props {
   isLoading: boolean
   productionData: ProductionData[]
+  onPressCard: any
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { isLoading, productionData } = props
-  const unit = 'tr.Wh'
+  const { isLoading, productionData, onPressCard } = props
+  const currentYear = new Date().getFullYear()
+  const [selectedYear, setSelectedYear] = useState(currentYear - 1)
+  const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
+  console.log(years);
+  const unit = 'tr.KWh'
 
   useEffect(() => {
     setFirstLoading(true)
@@ -30,16 +36,21 @@ function ProductOutputRencentDays(props: Props) {
   }, [isLoading])
 
   return (
-    <AnimatedCardContainer>
-      <View style={styles.content}>
+    <AnimatedCardContainer onPress={onPressCard}>
+      <View style={styles.content} >
         {/* Title */}
         <Text style={styles.title}>Q 7 NGÀY GẦN NHẤT</Text>
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
           <Text style={[styles.headerText, styles.col1]}>NGÀY</Text>
-          <Text style={[styles.headerText, styles.col2]}>THỰC TẾ</Text>
-          <Text style={[styles.headerText, styles.col3]}>HỢP ĐỒNG</Text>
+          <Text style={[styles.headerText, styles.col2]}>THỰC TẾ ({unit})</Text>
+          <Text style={[styles.headerText, styles.col3]}>HỢP ĐỒNG ({unit})</Text>
+          <View style={styles.col4}>
+            <View style={styles.samePeriodHeader}>
+              <Text style={styles.headerText}>CÙNG KỲ</Text>
+            </View>
+          </View>
         </View>
 
         <View style={styles.separator} />
@@ -58,6 +69,7 @@ function ProductOutputRencentDays(props: Props) {
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
+              <BarSkeleton width="100%" />
             </>
             :
             <>
@@ -71,12 +83,17 @@ function ProductOutputRencentDays(props: Props) {
                       <Text style={[styles.cellText, styles.col1, styles.dateText]}>{day.date}</Text>
                       <View style={styles.col2}>
                         <Text style={[styles.cellText, styles.valueText, { color: actualColor }]}>
-                          {day.actual.toFixed(1)} <Text style={styles.unitText}>{unit}</Text>
+                          {day.actual.toFixed(1)} <Text style={styles.unitText}></Text>
                         </Text>
                       </View>
                       <View style={styles.col3}>
                         <Text style={[styles.cellText, styles.valueText, styles.contractText]}>
-                          {day.contract.toFixed(1)} <Text style={styles.unitText}>{unit}</Text>
+                          {day.contract.toFixed(1)} <Text style={styles.unitText}></Text>
+                        </Text>
+                      </View>
+                      <View style={styles.col3}>
+                        <Text style={[styles.cellText, styles.valueText, styles.samePeriodText]}>
+                          {day.samePeriod != null ? day.samePeriod.toFixed(1) : '--'}
                         </Text>
                       </View>
                     </View>

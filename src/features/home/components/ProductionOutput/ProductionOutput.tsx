@@ -45,10 +45,10 @@ function ProductionOutput() {
           total={totalPower}
           detail={powerSources}
           isLoading={isLoadingOverview}
-          unit="tr.Wh"
+          unit="tr.KWh"
         />
       </View>
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <ProductionOutputByHours
           isLoading={isLoadingByHours}
           currentDate={productOutputByHours.currentDate}
@@ -59,11 +59,12 @@ function ProductionOutput() {
           barGroups={productOutputByHours.barGroups}
           onPressCard={onPressCard}
         />
-      </View>
+      </View> */}
       <View style={styles.section}>
         <ProductOutputRencentDays
           isLoading={isLoadingNearCurrentDays}
           productionData={productionData}
+          onPressCard={onPressCard}
         />
       </View>
     </SectionContainer>
