@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
@@ -30,8 +30,7 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-
-  useAlignedHourlyTimer(() => {
+  const timerCallback = useCallback(() => {
     if (activeTabIndex === keyTab) {
       dispatch(
         getProductOutputOverviewFactDetail({
@@ -41,7 +40,8 @@ function TotalProductionOutputFactDetail(props: Props) {
         }),
       )
     }
-  })
+  }, [activeTabIndex, keyTab, dispatch])
+  useAlignedHourlyTimer(timerCallback)
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
@@ -66,12 +66,12 @@ function TotalProductionOutputFactDetail(props: Props) {
 
   return (
     <TotalPower
-      title={'Q \u2211 lũy kế ngày'}
+      title={'A \u2211 lũy kế ngày'}
       average={averagePower}
       total={totalPower}
       detail={powerSources}
       isLoading={isLoading}
-      unit="tr.Wh"
+      unit="tr.KWh"
     />
   )
 }

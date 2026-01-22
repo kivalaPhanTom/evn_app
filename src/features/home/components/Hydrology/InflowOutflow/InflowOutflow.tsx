@@ -59,6 +59,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
 
   useEffect(() => {
     // Dispatch action to fetch inflow/outflow data
+    console.log(hydroElectricId);
     dispatch(getInflowOutflow({ hydroElectricId: hydroElectricId }))
   }, [dispatch, hydroElectricId])
  
@@ -91,7 +92,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     />
                     <FlowMetricCard
                       label="Q"
-                      label1="xa"
+                      label1="xả"
                       value={outflow?.value}
                       unit={outflow?.unit}
                       color="#FF0000"
@@ -106,7 +107,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
               <CircleLineIcon color="#00DF73" />
               <Text style={styles.noteText}>Qvề</Text>
               <CircleLineIcon color="#FB923C" />
-              <Text style={styles.noteText}>Qxa (Qcm + Qxt)</Text>
+              <Text style={styles.noteText}>Qxả (Qcm + Qxt)</Text>
             </View>
           }
 
@@ -133,7 +134,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                       //customDataPoint={customDataPoint()}
                       //customDataPoint2={customDataPoint2()}
                       label1="Qvề: "
-                      label2="Qxa: "
+                      label2="Qxả: "
                       height={px.v(200)}
                       pointerConfig={true}
                       xAxisColor="#E5E5EF"

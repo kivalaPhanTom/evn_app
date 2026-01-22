@@ -54,9 +54,9 @@ function TotalPower(props: Props) {
           ) : (
             <>
               <Text style={styles.unit}>{unit}</Text>
-              <Text style={styles.average}>
+              {/* <Text style={styles.average}>
                 TB: {average} {unit}
-              </Text>
+              </Text> */}
             </>
           )}
         </View>
@@ -73,13 +73,19 @@ function TotalPower(props: Props) {
                 <View key={index} style={styles.sourceItem}>
                   <View style={styles.sourceInfo}>
                     <View style={[styles.dot, { backgroundColor: source.color }]} />
-                    <Text style={styles.sourceName}>
-                      {source.name} <Text style={styles.sourceCode}>({source.code})</Text>
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                      <Text style={styles.sourceName}>
+                        {source.name}
+                        {/* {source.name} <Text style={styles.sourceCode}>({source.code})</Text> */}
+                      </Text>
+                      <Text style={[styles.sourcePower, { color: source.color }]}>
+                        {source.value}
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={[styles.sourcePower, { color: source.color }]}>
+                  {/* <Text style={[styles.sourcePower, { color: source.color }]}>
                     {source.value} {unit}
-                  </Text>
+                  </Text> */}
                 </View>
               ))}
             </>
