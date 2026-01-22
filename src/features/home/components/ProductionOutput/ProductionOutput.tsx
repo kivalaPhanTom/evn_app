@@ -37,7 +37,7 @@ function ProductionOutput() {
   }
   
   return (
-    <SectionContainer title="Sản lượng (Q)">
+    <SectionContainer title="Sản lượng (A)">
       <View style={styles.section}>
         <TotalPower
           title={"Q \u2211 lũy kế ngày"}

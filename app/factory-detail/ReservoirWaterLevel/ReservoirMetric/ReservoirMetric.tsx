@@ -107,7 +107,7 @@ function ReservoirMetric(props: { currentPlantId: string }) {
         gradientColors={['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)']}
       />
       <ReservoirFlowCard
-        label="Qxa"
+        label="Qxả"
         value={data.outflow.value}
         unit={data.outflow.unit}
         color="#FB923C"

@@ -66,12 +66,12 @@ function TotalProductionOutputFactDetail(props: Props) {
 
   return (
     <TotalPower
-      title={'Q \u2211 lũy kế ngày'}
+      title={'A \u2211 lũy kế ngày'}
       average={averagePower}
       total={totalPower}
       detail={powerSources}
       isLoading={isLoading}
-      unit="tr.Wh"
+      unit="tr.KWh"
     />
   )
 }
