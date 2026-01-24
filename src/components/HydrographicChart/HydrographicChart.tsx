@@ -1,12 +1,15 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useRef, useEffect, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import Svg, {
   Path,
   Circle,
   Line,
   Text as SvgText,
 } from 'react-native-svg';
+import { Text } from 'react-native';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
+import LineBarChartSkeleton from '../Skeletons/LineBarChartSkeleton';
+import { Colors } from '@/core/constants/colors';
 interface ChartPoint {
   label: string;
   value: unknown;
@@ -19,7 +22,7 @@ const Y_AXIS_WIDTH = 28;
 const PADDING_TOP = 20;
 const PADDING_BOTTOM = 36;
 const PADDING_RIGHT = 16;
-
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 /* ===== HELPERS ===== */
 const sanitizeNumber = (v: unknown): number | null => {
   const n = Number(v);
@@ -29,90 +32,110 @@ const sanitizeNumber = (v: unknown): number | null => {
 interface Props {
   data: ChartPoint[];
 }
-
-const HydrographicChart: React.FC<Props> = ({ }) => {
-  const threshold = 450;
-
-  let convertedData = [
-    {
-      "values": 487.4,
-      "avgVolume": 480,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 12:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 1:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 490,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 2:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 3:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 460,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 4:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 5:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 6:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 450,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 7:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.0,
-      "NgayGio": "1/24/2026 8:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 430,
-      "percent": 99.0,
-      "NgayGio": "1/24/2026 9:00:00 AM"
-    },
-    {
-      "values": 487.4,
-      "avgVolume": 487.4,
-      "percent": 99.1,
-      "NgayGio": "1/24/2026 10:00:00 AM"
-    }
-  ]
-  const data: { label: string; value: number }[] = convertedData.map((item, index) => ({
+interface HydroChartItem {
+  avgVolume: number;
+  percent: number;
+  values: number;
+}
+interface HydrographicChartProps {
+  isLoading: boolean
+  data: HydroChartItem[]
+  referenceLevel: number
+  maxLevel?: number
+}
+const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
+  const { isLoading = false, data = [], referenceLevel = 0 } = props
+  const scrollRef = useRef<ScrollView>(null);
+  // let convertedData = [
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 480,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 12:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 1:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 490,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 2:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 3:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 460,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 4:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 5:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 6:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 450,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 7:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.0,
+  //     "NgayGio": "1/24/2026 8:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 430,
+  //     "percent": 99.0,
+  //     "NgayGio": "1/24/2026 9:00:00 AM"
+  //   },
+  //   {
+  //     "values": 487.4,
+  //     "avgVolume": 487.4,
+  //     "percent": 99.1,
+  //     "NgayGio": "1/24/2026 10:00:00 AM"
+  //   }
+  // ]
+  const convertedData: { label: string; value: number }[] = data.map((item, index) => ({
     label: `${index}`,
     value: item.avgVolume,
-    // labelComponent: () => (
-    //   <Text style={{ color: 'red', fontSize: 12, textAlign: 'center' }}>{index}</Text>
-    // ),
   }))
+  const waterDrops = useMemo(() => {
+    return data.map((item, index) => ({
+      hour: index,
+      percent: item.percent,
+      volume: `${item.avgVolume}m`
+    }));
+  }, [JSON.stringify(data)]);
 
+  useEffect(() => {
+    if (scrollRef.current && safeData.length > 0) {
+      requestAnimationFrame(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+      });
+    }
+  }, [JSON.stringify(data), isLoading]);
   if (!data || data.length < 2) return null;
 
-  // ✅ sanitize
-  const safeData = data
+  const safeData = convertedData
     .map(d => ({ ...d, value: sanitizeNumber(d.value) }))
     .filter(d => d.value !== null) as {
       label: string;
@@ -124,6 +147,9 @@ const HydrographicChart: React.FC<Props> = ({ }) => {
   const values = safeData.map(d => d.value);
 
   let min = Math.min(...values);
+  if (referenceLevel < min) {
+    min = referenceLevel;
+  }
   let max = Math.max(...values);
 
   if (min === max) {
@@ -135,7 +161,6 @@ const HydrographicChart: React.FC<Props> = ({ }) => {
   const minY = min - padding;
   const maxY = max + padding;
   const rangeY = maxY - minY;
-
   const scaleY = CHART_HEIGHT / rangeY;
 
   const chartWidth =
@@ -158,158 +183,236 @@ const HydrographicChart: React.FC<Props> = ({ }) => {
       return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
     })
     .join(' ');
-  const thresholdY =
-    threshold !== undefined
-      ? PADDING_TOP +
-      ((maxY - threshold) / (maxY - minY)) * CHART_HEIGHT
-      : null;
+  const thresholdY = getY(referenceLevel);
+  // referenceLevel !== undefined
+  //   ? PADDING_TOP +
+  //   ((maxY - referenceLevel) / (maxY - minY)) * CHART_HEIGHT
+  //   : null;
 
   return (
-    <View style={styles.wrapper}>
-      {/* ===== STICKY Y AXIS ===== */}
-      <Svg
-        width={Y_AXIS_WIDTH}
-        height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM}
-        style={styles.yAxis}
-      >
-        {Array.from({ length: sections + 1 }).map((_, i) => {
-          const y =
-            PADDING_TOP +
-            (CHART_HEIGHT / sections) * i;
-          const value =
-            maxY - (rangeY / sections) * i;
+    <View style={styles.mainContainer}>
+      {isLoading ? <LineBarChartSkeleton
+        isShowLine={false}
+      /> :
+        <View style={styles.container}>
+          <View style={styles.legendContainer}>
+            <Svg height="2" width="30" style={styles.legendLine}>
+              <Line x1="0" y1="1" x2="24" y2="1" stroke={Colors.warningFull} strokeWidth="2" strokeDasharray="4, 3" />
+            </Svg>
+            <Text style={styles.legendText}>Mực nước chết</Text>
+          </View>
 
-          return (
-            <SvgText
-              key={i}
-              x={Y_AXIS_WIDTH - 4}
-              y={y + 4}
-              fontSize={10}
-              fill="#9fa8da"
-              textAnchor="end"
-            >
-              {Math.round(value)}
-            </SvgText>
-          );
-        })}
-      </Svg>
+          <View style={styles.chartContainer}>
 
-      {/* ===== SCROLLABLE CHART ===== */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingLeft: Y_AXIS_WIDTH - 10 }}
-      >
-        <Svg
-          width={chartWidth}
-          height={
-            CHART_HEIGHT +
-            PADDING_TOP +
-            PADDING_BOTTOM
-          }
-        >
-          {/* grid */}
-          {Array.from({ length: sections + 1 }).map((_, i) => {
-            const y =
-              PADDING_TOP +
-              (CHART_HEIGHT / sections) * i;
+            <View style={[styles.wrapper, { position: 'relative' }]}>
+              {/* ===== STICKY Y AXIS ===== */}
+              <Svg
+                width={Y_AXIS_WIDTH}
+                height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM + 100}
+                style={styles.yAxis}
+              >
+                {Array.from({ length: sections + 1 }).map((_, i) => {
+                  const y =
+                    PADDING_TOP +
+                    (CHART_HEIGHT / sections) * i;
+                  const value =
+                    maxY - (rangeY / sections) * i;
 
-            return (
-              <Line
-                key={i}
-                x1={Y_AXIS_WIDTH}
-                y1={y}
-                x2={chartWidth}
-                y2={y}
-                stroke="rgba(255,255,255,0.15)"
-              />
-            );
-          })}
+                  return (
+                    <SvgText
+                      key={i}
+                      x={Y_AXIS_WIDTH - 4}
+                      y={y + 4}
+                      fontSize={10}
+                      fill="#9fa8da"
+                      textAnchor="end"
+                    >
+                      {Math.round(value)}
+                    </SvgText>
+                  );
+                })}
+              </Svg>
 
-          {/* line */}
-          <Path
-            d={path}
-            stroke="#4da6ff"
-            strokeWidth={3}
-            fill="none"
-          />
-
-          {/* points + labels */}
-          {safeData.map((p, i) => {
-            const x = getX(i);
-            const y = getY(p.value);
-
-            return (
-              <React.Fragment key={i}>
-                <Circle cx={x} cy={y} r={4} fill="#fff" />
-
-                {/* value */}
-                <SvgText
-                  x={x}
-                  y={y - 8}
-                  fontSize={10}
-                  fill="#fff"
-                  textAnchor="middle"
+              {/* ===== SCROLLABLE CHART ===== */}
+              <ScrollView
+                ref={scrollRef}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingLeft: Y_AXIS_WIDTH - 10 }}
+              >
+                <View
+                  style={{
+                    position: 'relative',
+                    width: chartWidth,
+                    height: CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM + 80,
+                  }}
                 >
-                  {p.value}
-                </SvgText>
+                  <Svg
+                    width={chartWidth}
+                    height={
+                      CHART_HEIGHT +
+                      PADDING_TOP +
+                      PADDING_BOTTOM
+                    }
+                  >
+                    {/* grid */}
+                    {Array.from({ length: sections + 1 }).map((_, i) => {
+                      const y =
+                        PADDING_TOP +
+                        (CHART_HEIGHT / sections) * i;
 
-                {/* x label */}
-                <SvgText
-                  x={x}
-                  y={PADDING_TOP + CHART_HEIGHT + 20}
-                  fontSize={10}
-                  fill="#9fa8da"
-                  textAnchor="middle"
+                      return (
+                        <Line
+                          key={i}
+                          x1={Y_AXIS_WIDTH}
+                          y1={y}
+                          x2={chartWidth}
+                          y2={y}
+                          stroke="rgba(255,255,255,0.15)"
+                        />
+                      );
+                    })}
+
+                    {/* line */}
+                    <Path
+                      d={path}
+                      stroke="#4da6ff"
+                      strokeWidth={3}
+                      fill="none"
+                    />
+
+                    {/* points + labels */}
+                    {safeData.map((p, i) => {
+                      const x = getX(i);
+                      const y = getY(p.value);
+
+                      return (
+                        <React.Fragment key={i}>
+                          <Circle cx={x} cy={y} r={4} fill="#fff" />
+
+                          {/* value */}
+                          <SvgText
+                            x={x}
+                            y={y - 8}
+                            fontSize={10}
+                            fill="#fff"
+                            textAnchor="middle"
+                          >
+                            {p.value}
+                          </SvgText>
+
+                          {/* x label */}
+                          <SvgText
+                            x={x}
+                            y={PADDING_TOP + CHART_HEIGHT + 20}
+                            fontSize={10}
+                            fill="#9fa8da"
+                            textAnchor="middle"
+                          >
+                            {p.label}
+                          </SvgText>
+                        </React.Fragment>
+                      );
+                    })}
+                    {thresholdY !== null && (
+                      <Line
+                        x1={Y_AXIS_WIDTH}
+                        x2={chartWidth}
+                        y1={thresholdY}
+                        y2={thresholdY}
+                        stroke={Colors.warningFull}
+                        strokeWidth={2}
+                        strokeDasharray="6 4"
+                      />
+                    )}
+                  </Svg>
+
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: PADDING_TOP + CHART_HEIGHT + 12,
+                      left: 0,
+                      width: chartWidth,
+                      height: 80,
+                    }}
+                  >
+                    {waterDrops.map((drop, index) => {
+                      const x = getX(index);
+
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            position: 'absolute',
+                            left: x,
+                            width: POINT_WIDTH,      
+                            alignItems: 'center', 
+                            transform: [{ translateX: -POINT_WIDTH / 2 }],
+                          }}
+                        >
+                          <View style={styles.dropScale}>
+                            <WaterDrop percent={drop.percent} />
+                          </View>
+
+                          <Text style={styles.volumeText}>
+                            {drop.volume}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+
+              </ScrollView>
+
+              {thresholdY !== null && (
+                <View
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    left: Y_AXIS_WIDTH - 20,
+                    right: 8,
+                    top: 8,
+                  }}
                 >
-                  {p.label}
-                </SvgText>
-              </React.Fragment>
-            );
-          })}
-          {thresholdY !== null && (
-            <Line
-              x1={Y_AXIS_WIDTH}
-              x2={chartWidth}
-              y1={thresholdY}
-              y2={thresholdY}
-              stroke="#FF3B30"
-              strokeWidth={2}
-              strokeDasharray="6 4"
-            />
-          )}
-        </Svg>
+                  <Svg
+                    width="100%"
+                    height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM}
+                  >
+                    {/* number */}
+                    <SvgText
+                      x="100%"
+                      dx={-16}
+                      y={thresholdY - 6}
+                      fill={Colors.warningFull}
+                      fontSize={12}
+                      fontWeight="600"
+                      textAnchor="end"
+                    >
+                      {referenceLevel}
+                    </SvgText>
 
-      </ScrollView>
-      {thresholdY !== null && (
-        <View
-          pointerEvents="none"
-          style={{
-            position: 'absolute',
-            left: Y_AXIS_WIDTH,
-            right: 8,
-            top: 8,
-          }}
-        >
-          <Svg
-            width="100%"
-            height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM}
-          >
-            <SvgText
-              x="100%"
-              dx={-8}
-              y={thresholdY - 6}
-              fill="#FF3B30"
-              fontSize={12}
-              fontWeight="600"
-              textAnchor="end"
-            >
-              {threshold}m
-            </SvgText>
-          </Svg>
+                    {/* unit */}
+                    <SvgText
+                      x="100%"
+                      dx={-4}
+                      y={thresholdY - 6}
+                      fill={Colors.warningFull}
+                      fontSize={12}
+                      textAnchor="end"
+                    >
+                      m
+                    </SvgText>
+                  </Svg>
+                </View>
+              )}
+            </View>
+          </View>
         </View>
-      )}
+      }
     </View>
+
   );
 };
 
@@ -317,7 +420,6 @@ export default HydrographicChart;
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#1b1b4f',
     paddingVertical: 8,
   },
   yAxis: {
@@ -325,6 +427,46 @@ const styles = StyleSheet.create({
     left: 0,
     top: 8,
     zIndex: 10,
-    backgroundColor: '#1b1b4f',
+    backgroundColor: '#1c056eff',
+  },
+
+  mainContainer: {
+    flex: 1,
+    marginBottom: 20
+  },
+  container: {
+    backgroundColor: 'transparent',
+    padding: 0,
+    paddingTop: 10,
+    borderRadius: 12,
+  },
+  chartContainer: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginBottom: 8,
+    paddingRight: 4,
+  },
+  legendLine: {
+    marginRight: 8,
+  },
+  legendText: {
+    color: 'white',
+    fontSize: SCREEN_WIDTH * 0.025,
+    fontWeight: '400',
+  },
+  volumeText: {
+    color: '#8A94A8',
+    fontSize: SCREEN_WIDTH * 0.022,
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  dropScale: {
+    transform: [{ scale: 0.8 }],
+    marginBottom: -16,
   },
 });
