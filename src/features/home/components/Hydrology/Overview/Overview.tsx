@@ -500,7 +500,7 @@ const Overview: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<string>('')
   const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
-  
+
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
   }, [countRefesh, dispatch])
@@ -607,6 +607,7 @@ const Overview: React.FC = () => {
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
+                bgColor={'#1c056eff'}
               />
               <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
             </>

@@ -8,8 +8,9 @@ import Svg, {
 } from 'react-native-svg';
 import { Text } from 'react-native';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
-import LineBarChartSkeleton from '../Skeletons/LineBarChartSkeleton';
 import { Colors } from '@/core/constants/colors';
+import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton';
+
 interface ChartPoint {
   label: string;
   value: unknown;
@@ -42,78 +43,11 @@ interface HydrographicChartProps {
   data: HydroChartItem[]
   referenceLevel: number
   maxLevel?: number
+  bgColor?:string
 }
 const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
-  const { isLoading = false, data = [], referenceLevel = 0 } = props
+  const { isLoading = false, data = [], referenceLevel = 0, bgColor } = props
   const scrollRef = useRef<ScrollView>(null);
-  // let convertedData = [
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 480,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 12:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 1:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 490,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 2:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 3:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 460,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 4:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 5:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 6:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 450,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 7:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.0,
-  //     "NgayGio": "1/24/2026 8:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 430,
-  //     "percent": 99.0,
-  //     "NgayGio": "1/24/2026 9:00:00 AM"
-  //   },
-  //   {
-  //     "values": 487.4,
-  //     "avgVolume": 487.4,
-  //     "percent": 99.1,
-  //     "NgayGio": "1/24/2026 10:00:00 AM"
-  //   }
-  // ]
   const convertedData: { label: string; value: number }[] = data.map((item, index) => ({
     label: `${index}`,
     value: item.avgVolume,
@@ -184,16 +118,10 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
     })
     .join(' ');
   const thresholdY = getY(referenceLevel);
-  // referenceLevel !== undefined
-  //   ? PADDING_TOP +
-  //   ((maxY - referenceLevel) / (maxY - minY)) * CHART_HEIGHT
-  //   : null;
 
   return (
     <View style={styles.mainContainer}>
-      {isLoading ? <LineBarChartSkeleton
-        isShowLine={false}
-      /> :
+      {isLoading ? <LineChartSkeleton /> :
         <View style={styles.container}>
           <View style={styles.legendContainer}>
             <Svg height="2" width="30" style={styles.legendLine}>
@@ -209,7 +137,10 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
               <Svg
                 width={Y_AXIS_WIDTH}
                 height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM + 100}
-                style={styles.yAxis}
+                style={{
+                  backgroundColor: bgColor || '#1c056eff',
+                  ...styles.yAxis
+                }}
               >
                 {Array.from({ length: sections + 1 }).map((_, i) => {
                   const y =
@@ -427,7 +358,6 @@ const styles = StyleSheet.create({
     left: 0,
     top: 8,
     zIndex: 10,
-    backgroundColor: '#1c056eff',
   },
 
   mainContainer: {
