@@ -283,7 +283,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                           }}
                         >
                           <View style={styles.dropScale}>
-                            <WaterDrop percent={drop.percent} />
+                            <WaterDrop percent={drop.percent} fontSize={12}/>
                           </View>
 
                           <Text style={styles.volumeText}>
