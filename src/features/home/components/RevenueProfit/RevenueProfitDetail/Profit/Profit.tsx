@@ -182,7 +182,7 @@ export default function ProfitDetail() {
                       style={{ marginRight: px.h(8) }}
                     />
                     <Text style={styles.warningText}>
-                      {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value.toFixed(0)} tỷ`}
+                      {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
                     </Text>
                   </View>
                 ))}
