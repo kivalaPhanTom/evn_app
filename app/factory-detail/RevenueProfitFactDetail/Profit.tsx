@@ -174,8 +174,8 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   // Collect negative days for warning cards
   const negativeDays = values
     .map((v, idx) => {
-      const d = new Date(today)
-      d.setDate(today.getDate() - (values.length - 1 - idx))
+      const d = new Date(endDate)
+      d.setDate(endDate.getDate() - (values.length - 1 - idx))
       return { dateStr: formatDayWithMonth(d), value: v.value }
     })
     .filter((x) => x.value < 0)
@@ -190,13 +190,10 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }
 
   return (
-    <SectionContainer title="Lợi nhuận" actionButton={{
-      label: 'Thêm chi tiết',
-      onPress: onPressCard,
-    }}>
-      <AnimatedCardContainer>
+    <SectionContainer title="Lợi nhuận">
+      <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Lợi nhuận hôm nay`}</Text>
+          <Text style={styles.revenueTitle}>{`Lợi nhuận ngày ${formatDayWithMonth(endDate)}`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
             {profitFactDetail.Today.Value} <Text style={styles.cardUnit}>{profitFactDetail.Today.Unit}</Text>
           </Text>
@@ -236,7 +233,11 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
           </View>
         </View>
         <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+          <View
+            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
+            onStartShouldSetResponder={() => true}
+            onResponderTerminationRequest={() => false}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Lãi/Lỗ theo ngày</Text>
               <View
@@ -255,7 +256,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
               </View>
             </View>
             <View style={[styles.chartWrapper]}>
-              <BarChart data={rawBarGroups} rounded noOfSection={3} disableScroll />
+              <BarChart topLabelOffset={0} data={rawBarGroups} rounded noOfSection={3} disableScroll />
             </View>
 
             {/* X-Axis below chart */}
@@ -296,7 +297,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
                       style={{ marginRight: px.h(8) }}
                     />
                     <Text style={styles.warningText}>
-                      {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value.toFixed(0)} tỷ`}
+                      {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
                     </Text>
                   </View>
                 ))}

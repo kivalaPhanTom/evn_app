@@ -1,5 +1,5 @@
 import React, { act, useEffect } from 'react'
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -118,16 +118,9 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   })
   return (
     <SectionContainer title="Doanh thu">
-      <View style={styles.gotoDetail}>
-        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
-          <Text style={styles.actionButtonIcon}>{'>'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <AnimatedCardContainer>
+      <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
+          <Text style={styles.revenueTitle}>{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
             {revenueFactDetail.Today.Value} <Text style={styles.cardUnit}>{revenueFactDetail.Today.Unit}</Text>
           </Text>
@@ -167,7 +160,11 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
           </View>
         </View>
         <View>
-          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
+          <View
+            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
+            onStartShouldSetResponder={() => true}
+            onResponderTerminationRequest={() => false}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
               <View
@@ -200,6 +197,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
               spacing={9}
               startFillColor2="#4ADE80"
               endFillColor2="#4ADE80"
+              animateOnDataChange={false}
             />
             <View style={styles.line} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>

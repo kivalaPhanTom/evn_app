@@ -37,7 +37,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
               <CircleLineIcon color="#00DF73" />
               <Text style={styles.noteText}>Qvề</Text>
               <CircleLineIcon color="#FB923C" />
-              <Text style={styles.noteText}>Qxa</Text>
+              <Text style={styles.noteText}>Qxả</Text>
             </View>
           </View>
           <View>
@@ -55,7 +55,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                 //customDataPoint={customDataPoint()}
                 //customDataPoint2={customDataPoint2()}
                 label1="Qvề: "
-                label2="Qxa: "
+                label2="Qxả: "
                 height={px.v(150)}
                 pointerConfig={true}
                 xAxisColor="#E5E5EF"

@@ -9,6 +9,7 @@ import { RootState } from '@/core/redux/store'
 import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 
 function ProductionOutput() {
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
@@ -21,6 +22,10 @@ function ProductionOutput() {
   const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
 
+  useAlignedHourlyTimer(() => {
+    dispatch(getProductOutputOverview())
+  })
+
   useEffect(() => {
     dispatch(getProductOutputOverview())
     dispatch(getProductOutputByHours())
@@ -32,7 +37,7 @@ function ProductionOutput() {
   }
   
   return (
-    <SectionContainer title="Sản lượng (Q)">
+    <SectionContainer title="Sản lượng (A)">
       <View style={styles.section}>
         <TotalPower
           title={"Q \u2211 lũy kế ngày"}
@@ -40,10 +45,10 @@ function ProductionOutput() {
           total={totalPower}
           detail={powerSources}
           isLoading={isLoadingOverview}
-          unit="tr.Wh"
+          unit="tr.KWh"
         />
       </View>
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <ProductionOutputByHours
           isLoading={isLoadingByHours}
           currentDate={productOutputByHours.currentDate}
@@ -54,11 +59,12 @@ function ProductionOutput() {
           barGroups={productOutputByHours.barGroups}
           onPressCard={onPressCard}
         />
-      </View>
+      </View> */}
       <View style={styles.section}>
         <ProductOutputRencentDays
           isLoading={isLoadingNearCurrentDays}
           productionData={productionData}
+          onPressCard={onPressCard}
         />
       </View>
     </SectionContainer>

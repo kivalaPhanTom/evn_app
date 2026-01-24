@@ -2,7 +2,6 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
-import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import { lightGradients, textGradients } from '@/core/constants/gradients'
@@ -46,7 +45,7 @@ function RevenueProfit() {
     <SectionContainer
       title="Doanh thu/ Lợi nhuận"
       actionButton={{
-        label: 'Thêm chi tiết',
+        label: 'Chi tiết',
         onPress: onPressCard,
       }}
     >
@@ -86,13 +85,7 @@ function RevenueProfit() {
               </View>
             </View>
             <View style={dashboardCommonStyles.metricValueRow}>
-              <AnimatedNumber
-                value={1.54}
-                duration={300}
-                decimals={2}
-                formatter={(n) => Number(n.toFixed(2)).toString()}
-                render={(text) => <GradientText text={text} fontSize={px.f(30)} colors={colors} />}
-              />
+              <GradientText text={1.54} fontSize={px.f(30)} colors={colors} />
               <Text style={styles.metricSuffixInline}>{'tỷ VNĐ'}</Text>
             </View>
             <Text style={styles.metricLabel}>{label}</Text>

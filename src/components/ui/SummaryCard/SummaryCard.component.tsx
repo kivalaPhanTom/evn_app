@@ -7,7 +7,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
 import AnimatedCardContainer from '../../AnimatedCardContainer/AnimatedCardContainer.component'
-import AnimatedNumber from '../../AnimatedNumber/AnimatedNumber.component'
 import GradientText from '../../GradientText/GradientText.component'
 
 interface SummaryCardProps {
@@ -83,13 +82,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
             marginTop: px.v(6),
           }}
         >
-          <AnimatedNumber
-            value={value}
-            duration={900}
-            decimals={decimals}
-            formatter={(n) => (decimals > 0 ? Number(n.toFixed(decimals)).toString() : Number(n.toFixed(0)).toString())}
-            render={(text) => <GradientText text={text} fontSize={numberFontSize} colors={valueColors} />}
-          />
+          <GradientText text={value} fontSize={numberFontSize} colors={valueColors} />
           <Text style={[styles.summaryUnit, { marginLeft: px.h(8), alignSelf: 'baseline', fontSize: unitFontSize }]}>
             {unit ?? t('unit')}
           </Text>

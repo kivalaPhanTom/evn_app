@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
 import TotalPower from '@/components/TotalPower/TotalPower'
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -29,14 +30,28 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const timerCallback = useCallback(() => {
+    if (activeTabIndex === keyTab) {
+      dispatch(
+        getProductOutputOverviewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
+    }
+  }, [activeTabIndex, keyTab, dispatch])
+  useAlignedHourlyTimer(timerCallback)
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getProductOutputOverviewFactDetail({
-        factoryId: currentPlantId,
-        getDataFromApi: getDataFromApi,
-        setLoading: setLoading
-      }))
+      dispatch(
+        getProductOutputOverviewFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
     }
   }, [activeTabIndex, countRefesh])
 
@@ -51,12 +66,12 @@ function TotalProductionOutputFactDetail(props: Props) {
 
   return (
     <TotalPower
-      title={"Q \u2211 lũy kế ngày"}
+      title={'A \u2211 lũy kế ngày'}
       average={averagePower}
       total={totalPower}
       detail={powerSources}
       isLoading={isLoading}
-      unit="tr.Wh"
+      unit="tr.KWh"
     />
   )
 }

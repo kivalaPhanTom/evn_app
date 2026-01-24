@@ -6,10 +6,10 @@ import { RootState } from "@/core/redux/store";
 import styles from './PowerSection.styles'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-import { getPowerOverivew, getPowerByTime } from '@/core/redux/Actions/PowerActions'
+import { getPowerOverivew, getPowerByTime, getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import TotalPower from '@/components/TotalPower/TotalPower';
-import { getPowerByDays } from '@/core/redux/Actions/PowerActions'
 import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays';
+import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer';
 
 function PowerSection() {
   const router = useRouter()
@@ -19,6 +19,10 @@ function PowerSection() {
   const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
+
+  useAlignedHourlyTimer(() => {
+    dispatch(getPowerOverivew())
+  })
 
   useEffect(() => {
     dispatch(getPowerOverivew())
@@ -33,7 +37,7 @@ function PowerSection() {
       <View>
         <View style={styles.section}>
           <TotalPower
-            title="P \u2211 phát"
+            title={"P \u2211 phát"}
             average={average}
             total={total}
             detail={detail}

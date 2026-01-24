@@ -12,7 +12,7 @@ interface Props {
 function ProductionOutputFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   return (
-    <SectionContainer title="Sản lượng (Q)">
+    <SectionContainer title="Sản lượng (A)">
       <View style={styles.section}>
         <TotalProductionOutputFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
       </View>

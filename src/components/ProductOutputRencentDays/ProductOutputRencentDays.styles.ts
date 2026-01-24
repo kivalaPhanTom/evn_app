@@ -1,3 +1,4 @@
+import { Colors } from '@/core/constants/colors'
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#7a8596',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
@@ -94,5 +95,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
+  samePeriodText: {
+    color: '#7a8596',
+  },
+  col4: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+
+  samePeriodHeader: {
+    alignItems: 'flex-end',
+  },
+
+  yearPicker: {
+    width: 90,
+    minWidth: 90,
+    color: '#7a8596',
+    // marginTop: -4,
+  },
+  pickerItemIOS: {
+    fontSize: 5,
+    color: 'red',
+  },
+  pickerItemAndroid: {
+    fontSize: 10,
+    paddingRight: 0
+  }
 })
 export default styles

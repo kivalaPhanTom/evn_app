@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import styles from './PowerByHours.styles'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -7,6 +7,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from 'toastify-react-native/config/theme'
+import { px } from '@/core/utils/scale'
 
 interface HourlyPowerList {
     value: number
@@ -19,7 +20,7 @@ interface Props {
     currentTime: string
     avgPower: number
     HourlyPowerList: HourlyPowerList[]
-    onPressCard:any
+    onPressCard: any
 }
 
 function PowerByHours(props: Props) {
@@ -43,57 +44,55 @@ function PowerByHours(props: Props) {
         .map((item, idx) => ({ value: avgPower, label: idx + 'h', hideDataPoint: true }))
 
     return (
-        <AnimatedCardContainer>
+        <AnimatedCardContainer >
             <View style={styles.content}>
-                {/* Header */}
-                <View style={styles.header}>
-                    <Text style={styles.title}>{title}</Text>
-                    <View style={styles.headerTop}>
-                        <Text style={styles.subtitle}>{subtitle}</Text>
-                        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-                            <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
-                            <Text style={styles.actionButtonIcon}>{'>'}</Text>
-                        </TouchableOpacity>
+                <Pressable onPress={onPressCard}>
+                    {/* Header */}
+                    <View style={styles.header}>
+                        <Text style={styles.title}>{title}</Text>
+                        <View style={styles.headerTop}>
+                            <Text style={styles.subtitle}>{subtitle}</Text>
+                        </View>
                     </View>
-                </View>
 
-                {/* Stats Row */}
-                <View style={styles.statsRow}>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statLabel}>HIỆN TẠI ({currentTime})</Text>
-                        {firstLoading || isLoading ?
-                            <>
-                                <BarSkeleton />
+                    {/* Stats Row */}
+                    <View style={styles.statsRow}>
+                        <View style={styles.statItem}>
+                            <Text style={styles.statLabel}>HIỆN TẠI ({currentTime})</Text>
+                            {firstLoading || isLoading ?
+                                <>
+                                    <BarSkeleton />
+                                    <BarSkeleton
+                                        width={70}
+                                        height={20}
+                                        marginBottom={0}
+                                    />
+                                </> :
+                                <>
+                                    <Text style={styles.statValueCurrent}>
+                                        {currentPower} {unit}
+                                    </Text>
+                                    <View style={styles.changeRow}>
+                                        <MetricDiff diff={currentPower} compareTo={avgPower} />
+                                    </View>
+                                </>}
+                        </View>
+                        {/* <View style={styles.statItem}>
+                            <Text style={styles.statLabel}>TRUNG BÌNH</Text>
+                            {firstLoading || isLoading ?
                                 <BarSkeleton
-                                    width={70}
-                                    height={20}
-                                    marginBottom={0}
-                                />
-                            </> :
-                            <>
-                                <Text style={styles.statValueCurrent}>
-                                    {currentPower} {unit}
-                                </Text>
-                                <View style={styles.changeRow}>
-                                    <MetricDiff diff={currentPower} compareTo={avgPower} />
-                                </View>
-                            </>}
+                                    width={95}
+                                    height={28}
+                                /> :
+                                <>
+                                    <Text style={styles.statValueAverage}>
+                                        {avgPower} {unit}
+                                    </Text>
+                                </>}
+                        </View> */}
                     </View>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statLabel}>TRUNG BÌNH</Text>
-                        {firstLoading || isLoading ?
-                            <BarSkeleton
-                                width={95}
-                                height={28}
-                            /> :
-                            <>
-                                <Text style={styles.statValueAverage}>
-                                    {avgPower} {unit}
-                                </Text>
-                            </>}
-                    </View>
-                </View>
-                <View>
+                </Pressable>
+                <View >
                     {firstLoading || isLoading ? <LineChartSkeleton /> : <LineChart
                         data={avgData}
                         data2={hourlyData}
