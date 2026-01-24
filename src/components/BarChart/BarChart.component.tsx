@@ -1,4 +1,4 @@
-import { lightGradients } from '@/core/constants/gradients'
+
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import React, { Component, useMemo, useState } from 'react'
@@ -49,6 +49,7 @@ interface Props {
   lineDataPointsShift2?: number
   customDataPoint2?: React.ReactElement
   scrollToEnd?: boolean
+  topLabelOffset?: number
 }
 
 const BarChart: React.FC<Props> = ({
@@ -79,6 +80,7 @@ const BarChart: React.FC<Props> = ({
   showCustomTooltip = false,
   disableScroll = false,
   scrollToEnd = false,
+  topLabelOffset = 10,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -145,7 +147,7 @@ const BarChart: React.FC<Props> = ({
             // topLabelComponent được render ở trên cùng của bar (đầu bar)
             // Nếu line cao hơn bar, cần đẩy label lên trên để nằm trên cả line
             // Luôn có một offset nhỏ mặc định để label không quá gần đầu bar
-            const defaultOffset = px.v(10) // Offset mặc định để label có khoảng cách với đầu bar
+            const defaultOffset = px.v(topLabelOffset) // Offset mặc định để label có khoảng cách với đầu bar
             let labelOffset = defaultOffset
             if (paddedMax > 0) {
               const barValue = item.value
@@ -210,7 +212,7 @@ const BarChart: React.FC<Props> = ({
         console.error('Error in BarChart processed useMemo:', error)
         return []
       }
-    }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height]) || []
+    }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height, topLabelOffset]) || []
 
   // Tính toán vị trí overlay theo index nhóm
   const getGroupMetrics = (gIdx: number | null) => {

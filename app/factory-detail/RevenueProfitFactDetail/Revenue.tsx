@@ -120,7 +120,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
     <SectionContainer title="Doanh thu">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
+          <Text style={styles.revenueTitle}>{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
             {revenueFactDetail.Today.Value} <Text style={styles.cardUnit}>{revenueFactDetail.Today.Unit}</Text>
           </Text>

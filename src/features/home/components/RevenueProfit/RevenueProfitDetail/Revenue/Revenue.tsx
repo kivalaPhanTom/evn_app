@@ -45,6 +45,12 @@ export default function RevenueDetail() {
     }),
   )
 
+  const today = new Date()
+  const formatDayWithMonth = (d: Date) =>
+    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
+  const endDate = new Date(today)
+  endDate.setDate(today.getDate() - 1) //
+
   const fromParts = revenue.Chart.Period.From?.split('-') ?? []
   const toParts = revenue.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -55,7 +61,7 @@ export default function RevenueDetail() {
     <SectionContainer title="Doanh thu">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
+          <Text style={styles.revenueTitle}>{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
             {revenue.Today.Value} <Text style={styles.cardUnit}>{revenue.Today.Unit}</Text>
           </Text>
