@@ -138,6 +138,7 @@ export default function RevenueDetail() {
               spacing={9}
               startFillColor2="#4ADE80"
               endFillColor2="#4ADE80"
+              animateOnDataChange={false}
             />
             <View style={styles.line} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>

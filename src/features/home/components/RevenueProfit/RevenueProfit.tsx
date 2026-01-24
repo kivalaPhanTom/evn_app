@@ -45,7 +45,7 @@ function RevenueProfit() {
     <SectionContainer
       title="Doanh thu/ Lợi nhuận"
       actionButton={{
-        label: 'Thêm chi tiết',
+        label: 'Chi tiết',
         onPress: onPressCard,
       }}
     >

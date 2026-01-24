@@ -12,10 +12,11 @@ import React, { useMemo, useRef } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Constants from 'expo-constants'
-
-const COMPANIES = [{ name: 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP', location: 'Đắk Lắk, Việt Nam' }]
+import { useTranslation } from 'react-i18next'
 
 export default function CompaniesScreen() {
+  const { t } = useTranslation();
+  const COMPANIES = [{ name: t('companyName'), location: 'Đắk Lắk, Việt Nam' }]
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const router = useRouter()
