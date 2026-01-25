@@ -34,7 +34,7 @@ function ProductOutputRencentDays(props: Props) {
   }, [isLoading])
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={onPressCard}>
       <View style={styles.content}>
         {/* Title */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
