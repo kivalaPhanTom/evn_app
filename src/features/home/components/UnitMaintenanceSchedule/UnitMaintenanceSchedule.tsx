@@ -32,7 +32,7 @@ function UnitMaintenanceSchedule() {
 
   return (
     <SectionContainer
-      title={t('repairMaintenance')}
+      title={t('repairMaintenance') + " " + new Date().getFullYear()}
     >
       <Pressable onPress={onPressCard}>
         <View style={styles.infoContainer}>
