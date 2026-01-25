@@ -19,7 +19,7 @@ interface HydrologyDetailProps {
 }
 
 function getCurrentPlantId(activeTab: string): string {
-  let result: string = '';
+  let result: string = ''
   switch (activeTab) {
     case 'buon-tua-srah':
       result = 'BTS'
@@ -59,32 +59,37 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
   const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
   const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
+  const currentDate = new Date()
+
+  const getFromPastToCurrentData = (data: any[]) => {
+    const newData = JSON.parse(JSON.stringify(data))
+    return newData.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours())
+  }
 
   useEffect(() => {
-    console.log("getHydrologyPlantsInfo reload");
+    console.log('getHydrologyPlantsInfo reload')
     const payload = {
       currentPlantId: activeTab,
       date: formatDate(selectedDate),
     }
-    dispatch(getUpstreamWaterLevel(payload));
-    dispatch(getInflow(payload));
-    dispatch(getOutflow(payload));
-    dispatch(getTurbineflow(payload));
+    dispatch(getUpstreamWaterLevel(payload))
+    dispatch(getInflow(payload))
+    dispatch(getOutflow(payload))
+    dispatch(getTurbineflow(payload))
   }, [activeTab, selectedDate, countRefesh, dispatch])
 
-  const preloadOffset = 300; // px before entering viewport
+  const preloadOffset = 300 // px before entering viewport
 
-  const shouldLoadGeneralInfo = scrollY >= 200 - preloadOffset;
-  const shouldLoadUpstreamChart = scrollY >= 600 - preloadOffset;
-  const shouldLoadInflowChart = scrollY >= 1000 - preloadOffset;
-  const shouldLoadTurbineflowChart = scrollY >= 1400 - preloadOffset;
-  const shouldLoadOutflowChart = scrollY >= 1800 - preloadOffset;
-
+  const shouldLoadGeneralInfo = scrollY >= 200 - preloadOffset
+  const shouldLoadUpstreamChart = scrollY >= 600 - preloadOffset
+  const shouldLoadInflowChart = scrollY >= 1000 - preloadOffset
+  const shouldLoadTurbineflowChart = scrollY >= 1400 - preloadOffset
+  const shouldLoadOutflowChart = scrollY >= 1800 - preloadOffset
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
-    data: upstreamData?.todayUpstream ? JSON.parse(JSON.stringify(upstreamData?.todayUpstream)) : [],
-    data2: upstreamData?.samePeriodUpstream ? JSON.parse(JSON.stringify(upstreamData?.samePeriodUpstream)) : [],
+    data: upstreamData?.todayUpstream ? getFromPastToCurrentData(upstreamData?.todayUpstream) : [],
+    data2: upstreamData?.samePeriodUpstream ? getFromPastToCurrentData(upstreamData?.samePeriodUpstream) : [],
     currentColor: '#0EA5E9',
     unit: upstreamData?.unit,
     flowRateInfo: [
@@ -96,8 +101,8 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedInflowData = {
     title: 'Lưu lượng về (Qve)',
-    data: inflow?.todayInflow ? JSON.parse(JSON.stringify(inflow?.todayInflow)) : [],
-    data2: inflow?.samePeriodInflow ? JSON.parse(JSON.stringify(inflow?.samePeriodInflow)) : [],
+    data: inflow?.todayInflow ? getFromPastToCurrentData(inflow?.todayInflow) : [],
+    data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [],
     currentColor: '#3B82F6',
     unit: inflow?.unit,
     flowRateInfo: [
@@ -109,8 +114,8 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedOutflowData = {
     title: 'Lưu lượng xả tràn (Qxt)',
-    data: outflow?.turbinflowData ? JSON.parse(JSON.stringify(outflow?.turbinflowData)) : [],
-    data2: outflow?.samePeriodTurbinflowData ? JSON.parse(JSON.stringify(outflow?.samePeriodTurbinflowData)) : [],
+    data: outflow?.turbinflowData ? getFromPastToCurrentData(outflow?.turbinflowData) : [],
+    data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],
     currentColor: '#F59E0B',
     unit: outflow?.unit,
     flowRateInfo: [
@@ -122,8 +127,8 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedTurbineflowData = {
     title: 'Lưu lượng chạy máy (Qcm)',
-    data: turbineflow?.turbinflowData ? JSON.parse(JSON.stringify(turbineflow?.turbinflowData)) : [],
-    data2: turbineflow?.samePeriodTurbinflowData ? JSON.parse(JSON.stringify(turbineflow?.samePeriodTurbinflowData)) : [],
+    data: turbineflow?.turbinflowData ? getFromPastToCurrentData(turbineflow?.turbinflowData) : [],
+    data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],
     currentColor: '#10B981',
     unit: turbineflow?.unit,
     flowRateInfo: [
@@ -163,18 +168,6 @@ function HydrologyDetail(props: HydrologyDetailProps) {
             <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
           </LazySection>
         </View>
-        {/* {flowRateData.map((item, index) => (
-          <View key={index} style={{ marginBottom: 20 }}>
-            <FlowRate
-              title={item.title}
-              data={item.data}
-              data2={item.data2}
-              currentColor={item.currentColor}
-              unit={item.unit}
-              flowRateInfo={item.flowRateInfo}
-            />
-          </View>
-        ))} */}
         <View style={{ marginBottom: 20 }}>
           <LazySection shouldLoad={shouldLoadUpstreamChart} minHeight={300}>
             <FlowRate
@@ -198,7 +191,6 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               flowRateInfo={convertedInflowData.flowRateInfo}
             />
           </LazySection>
-
         </View>
         <View style={{ marginBottom: 20 }}>
           <LazySection shouldLoad={shouldLoadTurbineflowChart} minHeight={300}>
@@ -211,7 +203,6 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               flowRateInfo={convertedTurbineflowData.flowRateInfo}
             />
           </LazySection>
-
         </View>
         <View style={{ marginBottom: 20 }}>
           <LazySection shouldLoad={shouldLoadOutflowChart} minHeight={300}>
@@ -224,7 +215,6 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               flowRateInfo={convertedOutflowData.flowRateInfo}
             />
           </LazySection>
-
         </View>
         <View style={{ marginBottom: 20 }}>
           {activeTab === 'BTS' && <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />}
