@@ -263,7 +263,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
             <View style={styles.axisContainer}>
               <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
                 {xAxisLabels.map((label, idx) => {
-                  const isToday = idx === xAxisLabels.length - 1
+                  const isToday = idx === xAxisLabels.length
                   const isNegative = values[idx].value < 0
                   const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
                   return (
