@@ -13,14 +13,14 @@ interface ProductionData {
 interface Props {
   isLoading: boolean
   productionData: ProductionData[]
+  onPressCard?: any
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { isLoading, productionData } = props
+  const { isLoading, productionData, onPressCard } = props
   const currentYear = new Date().getFullYear()
   const [selectedYear, setSelectedYear] = useState(currentYear - 1)
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
-  console.log(years)
   const unit = 'tr.KWh'
 
   useEffect(() => {
@@ -37,7 +37,13 @@ function ProductOutputRencentDays(props: Props) {
     <AnimatedCardContainer>
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>Q 7 NGÀY GẦN NHẤT</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Text style={styles.title}>Q 7 NGÀY GẦN NHẤT</Text>
+          <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+            <Text style={styles.actionButtonIcon}>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
@@ -136,6 +142,9 @@ function ProductOutputRencentDays(props: Props) {
                         <Text style={[styles.cellText, styles.valueText, styles.contractText]}>
                           {day.contract.toFixed(1)} <Text style={styles.unitText}>{unit}</Text>
                         </Text>
+                      </View>
+                      <View style={styles.col4}>
+                        <Text style={[styles.cellText, styles.valueText, styles.contractText]}>--</Text>
                       </View>
                     </View>
                   </View>

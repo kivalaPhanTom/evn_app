@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 16,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   col1: {
     flex: 1,
@@ -166,6 +167,20 @@ const styles = StyleSheet.create({
   selectOptionTextActive: {
     color: Colors.blue,
     fontWeight: '700',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
   },
 })
 export default styles
