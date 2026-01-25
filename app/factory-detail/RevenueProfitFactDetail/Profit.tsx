@@ -190,8 +190,11 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }
 
   return (
-    <SectionContainer title="Lợi nhuận">
-      <AnimatedCardContainer onPress={onPressCard}>
+    <SectionContainer title="Lợi nhuận" actionButton={{
+      label: 'Thêm chi tiết',
+      onPress: onPressCard,
+    }}>
+      <AnimatedCardContainer>
         <View>
           <Text style={styles.revenueTitle}>{`Lợi nhuận hôm nay`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
@@ -233,11 +236,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
           </View>
         </View>
         <View>
-          <View
-            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
-            onStartShouldSetResponder={() => true}
-            onResponderTerminationRequest={() => false}
-          >
+          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Lãi/Lỗ theo ngày</Text>
               <View
@@ -263,7 +262,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
             <View style={styles.axisContainer}>
               <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
                 {xAxisLabels.map((label, idx) => {
-                  const isToday = idx === xAxisLabels.length - 1
+                  const isToday = idx === xAxisLabels.length
                   const isNegative = values[idx].value < 0
                   const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
                   return (

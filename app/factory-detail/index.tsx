@@ -24,12 +24,19 @@ interface factoryDetailProps {
   currentPlantId: string;
   keyTab: number;
 }
+interface moduleItem {
+  code: string;
+  name: string;
+  canAccess: boolean;
+}
 
 function FactoryDetail(props: factoryDetailProps) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { modules } = useSelector((state: any) => state.moduleSlice)
+
   const router = useRouter();
 
   const onRefresh = async () => {
@@ -43,9 +50,11 @@ function FactoryDetail(props: factoryDetailProps) {
   };
 
   const onPressCardHydro = () => {
-    router.navigate({ pathname: '/hydrology-detail' as any, params: {
-      currentPlantId: currentPlantId
-    } })
+    router.navigate({
+      pathname: '/hydrology-detail' as any, params: {
+        currentPlantId: currentPlantId
+      }
+    })
   }
 
   const [scrollY, setScrollY] = useState(0);
@@ -53,6 +62,14 @@ function FactoryDetail(props: factoryDetailProps) {
   const onScroll = (e: any) => {
     setScrollY(e.nativeEvent.contentOffset.y);
   };
+
+  const checkModulePermission = (moduleCode: string): boolean => {
+    let result = false;
+    const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode);
+    if (moduleFound && moduleFound.canAccess) result = true;
+    return result
+  };
+
   const preloadOffset = 300; // px before entering viewport
 
   const shouldLoadProductionOutputFactDetail = scrollY >= 200 - preloadOffset;
@@ -83,37 +100,55 @@ function FactoryDetail(props: factoryDetailProps) {
               <Text style={styles.locationText}>{location}</Text>
             </View>
           </View>
-          <PowerSectionFactDetail
-            currentPlantId={currentPlantId}
-            keyTab={keyTab}
-          />
-          <LazySection shouldLoad={shouldLoadProductionOutputFactDetail} minHeight={300}>
-            <ProductionOutputFactDetail
+          {
+            checkModulePermission('CONG_SUAT') &&
+            <PowerSectionFactDetail
               currentPlantId={currentPlantId}
               keyTab={keyTab}
             />
-          </LazySection>
-          <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
-            <SectionContainer
-              title={t('hydrology')}
-              actionButton={{
-                label: 'Thêm chi tiết',
-                onPress: onPressCardHydro,
-              }}
-            >
-              <ReservoirWaterLevel currentPlantId={currentPlantId} />
-              <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-            </SectionContainer>
-          </LazySection>
-          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-            <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
-          </LazySection>
-          <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-            <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
-          </LazySection>
-          <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-            <FactoryMaintenanceSchedule currentPlantId={currentPlantId} />
-          </LazySection>
+          }
+          {
+            checkModulePermission('SAN_LUONG') &&
+            <LazySection shouldLoad={shouldLoadProductionOutputFactDetail} minHeight={300}>
+              <ProductionOutputFactDetail
+                currentPlantId={currentPlantId}
+                keyTab={keyTab}
+              />
+            </LazySection>
+          }
+          {
+            checkModulePermission('THUY_VAN') &&
+            <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+              <SectionContainer
+                title={t('hydrology')}
+                actionButton={{
+                  label: 'Chi tiết',
+                  onPress: onPressCardHydro,
+                }}
+              >
+                <ReservoirWaterLevel currentPlantId={currentPlantId} />
+                <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+              </SectionContainer>
+            </LazySection>
+          }
+          {
+            checkModulePermission('DOANH_THU') &&
+            <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+              <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+            </LazySection>
+          }
+          {
+            checkModulePermission('LOI_NHUAN') &&
+            <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
+              <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
+            </LazySection>
+          }
+          {
+            checkModulePermission('LICH_SUA_CHUA') &&
+            <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
+              <FactoryMaintenanceSchedule currentPlantId={currentPlantId} />
+            </LazySection>
+          }
         </TwinkleStars>
       </View>
     </ScrollView>

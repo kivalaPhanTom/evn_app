@@ -6,6 +6,7 @@ import { productOutputSagaList } from './ProductOutputSaga'
 import { hydrologySagaList } from './HydrologySagas'
 import { revenueProfitSagaList } from './RevenueProfitSaga'
 import { repairScheduleSagaList } from './UnitMaintenanceScheduleSaga'
+import { modulesSagaList } from './ModulesSaga'
 const sagasList = [
   exampleSagaList(),
   powerSagaList(),
@@ -14,6 +15,7 @@ const sagasList = [
   hydrologySagaList(),
   revenueProfitSagaList(),
   repairScheduleSagaList(),
+  modulesSagaList()
 ]
 
 export default function* () {

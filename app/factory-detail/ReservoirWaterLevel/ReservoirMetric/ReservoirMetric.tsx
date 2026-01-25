@@ -26,12 +26,7 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
   gradientColors,
 }) => {
   return (
-    <GradientCard
-      colors={gradientColors}
-      locations={[0, 1]}
-      angle={132.12}
-      style={styles.card}
-    >
+    <GradientCard colors={gradientColors} locations={[0, 1]} angle={132.12} style={styles.card}>
       {/* Header với icon tròn và label */}
       <View style={styles.header}>
         <View style={[styles.iconContainer, { backgroundColor: color }]}>
@@ -91,7 +86,7 @@ const DEFAULT_DATA: ReservoirMetricData = {
 }
 
 function ReservoirMetric(props: { currentPlantId: string }) {
-  const { currentPlantId } = props;
+  const { currentPlantId } = props
   const data = DEFAULT_DATA
 
   return (
@@ -107,7 +102,7 @@ function ReservoirMetric(props: { currentPlantId: string }) {
         gradientColors={['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)']}
       />
       <ReservoirFlowCard
-        label="Qxa"
+        label="Qxả"
         value={data.outflow.value}
         unit={data.outflow.unit}
         color="#FB923C"
