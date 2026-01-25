@@ -23,7 +23,6 @@ interface WaterLevelData {
   referenceLevel: number
   color?: string
   abbreviation?: string
-  symbol?: string
 }
 interface PlantsData {
   id: number
@@ -494,7 +493,6 @@ const Overview: React.FC = () => {
       referenceLevel: plant.referenceLevel,
       color: getColorByIndex(index),
       abbreviation: plant.abbreviation,
-      symbol: plant.symbol,
     }))
   }, [hydrologyPlants?.plantsData])
 
@@ -514,8 +512,6 @@ const Overview: React.FC = () => {
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const hydroElectricId = activeData?.abbreviation || ''
-  const currentPlantId = activeData ? activeData.symbol : ''
-  console.log(currentPlantId);
   const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
   const maxLevel = getMaxLevel(hydrologyPlants.plantsData)
   useEffect(() => {
@@ -608,7 +604,7 @@ const Overview: React.FC = () => {
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
               />
-              <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
+              <InflowOutflow hydroElectricId={hydroElectricId} />
             </>
           )}
         </View>

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#7a8596',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
