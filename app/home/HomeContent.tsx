@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager, FlatList } from 'react-native'
-import { useRouter } from 'expo-router'
+import { ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { textGradients } from '@/core/constants/gradients'
@@ -17,32 +17,25 @@ import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
-import { useTranslation } from 'react-i18next'
 
-interface Props { }
-
-function HomeContent(props: Props) {
-  const { } = props
-  const router = useRouter()
+interface moduleItem {
+  code: string;
+  name: string;
+  canAccess: boolean;
+}
+function HomeContent() {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { modules } = useSelector((state: any) => state.moduleSlice)
   const { t } = useTranslation();
-  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector((state: any) => state.powerSlice.powerByTime)
-  const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
-  //   const swipeLeft = Gesture.Pan()
-  //     .activeOffsetX([-30, 30])
-  //     .onEnd(e => {
-  //       if (e.translationX < -80) {
-  //         runOnJS(router.navigate)('/factory-detail')
-  //       }
-  //     })
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]
     location?: string | string[]
   }>()
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
+
   const onRefresh = async () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -73,6 +66,13 @@ function HomeContent(props: Props) {
   const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
 
+  const checkModulePermission = (moduleCode: string): boolean => {
+    let result = false;
+    const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode);
+    if (moduleFound && moduleFound.canAccess) result = true;
+    return result
+  };
+
   return (
     <ScrollView
       refreshControl={
@@ -84,7 +84,7 @@ function HomeContent(props: Props) {
       <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
-            text={companyTitle ?? t('companyName')}
+            text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
             colors={textGradients.water}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
@@ -94,29 +94,37 @@ function HomeContent(props: Props) {
             <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
           </View>
         </View>
+        {checkModulePermission('CONG_SUAT') && <PowerSection />}
 
-        <PowerSection />
+        {checkModulePermission('SAN_LUONG') &&
+          <LazySection shouldLoad={shouldLoadProduction} minHeight={300}>
+            <ProductionOutput />
+          </LazySection>
+        }
 
-        <LazySection shouldLoad={shouldLoadProduction} minHeight={300}>
-          <ProductionOutput />
-        </LazySection>
+        {checkModulePermission('THUY_VAN') &&
+          <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+            <Hydrology />
+          </LazySection>
+        }
+        {checkModulePermission('DOANH_THU') &&
+          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+            <RevenueDetail />
+          </LazySection>
+        }
 
-        <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
-          <Hydrology />
-        </LazySection>
+        {checkModulePermission('LOI_NHUAN') &&
+          <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
+            <ProfitDetail />
+          </LazySection>
+        }
 
-        <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-          <RevenueDetail />
-        </LazySection>
 
-        <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-          <ProfitDetail />
-        </LazySection>
-
-        <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-          <UnitMaintenanceSchedule />
-        </LazySection>
-
+        {checkModulePermission('LICH_SUA_CHUA') &&
+          <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
+            <UnitMaintenanceSchedule />
+          </LazySection>
+        }
       </TwinkleStars>
     </ScrollView>
 

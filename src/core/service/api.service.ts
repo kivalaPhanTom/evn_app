@@ -30,22 +30,29 @@ export const apiFormUrlEncoded: AxiosInstance = axios.create({
 export async function loadAuthTokenFromStorage(): Promise<void> {
   try {
     authToken = await AsyncStorage.getItem('auth_token')
-  } catch {}
+  } catch { }
 }
 
 // Set auth token
 export function setAuthToken(token: string | null, expiresIn?: number) {
   authToken = token
   if (token) {
-    AsyncStorage.setItem('auth_token', token).catch(() => {})
+    AsyncStorage.setItem('auth_token', token).catch(() => { })
     if (expiresIn) {
       const expiresAt = Date.now() + expiresIn * 1000
-      AsyncStorage.setItem('auth_expires_at', expiresAt.toString()).catch(() => {})
+      AsyncStorage.setItem('auth_expires_at', expiresAt.toString()).catch(() => { })
     }
   } else {
-    AsyncStorage.removeItem('auth_token').catch(() => {})
-    AsyncStorage.removeItem('auth_expires_at').catch(() => {})
+    AsyncStorage.removeItem('auth_token').catch(() => { })
+    AsyncStorage.removeItem('auth_expires_at').catch(() => { })
+    AsyncStorage.removeItem('USERNAME').catch(() => { })
   }
+}
+export function setUsernameToAsyncStorage(username: string) {
+  AsyncStorage.setItem('USERNAME', username)
+}
+export function removeUsernameToAsyncStorage(username: string) {
+  AsyncStorage.removeItem('USERNAME')
 }
 export function clearAuthToken() {
   setAuthToken(null)

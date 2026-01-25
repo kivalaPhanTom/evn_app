@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -45,12 +45,6 @@ export default function RevenueDetail() {
     }),
   )
 
-  const today = new Date()
-  const formatDayWithMonth = (d: Date) =>
-    `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
-  const endDate = new Date(today)
-  endDate.setDate(today.getDate() - 1) //
-
   const fromParts = revenue.Chart.Period.From?.split('-') ?? []
   const toParts = revenue.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -59,9 +53,16 @@ export default function RevenueDetail() {
 
   return (
     <SectionContainer title="Doanh thu">
-      <AnimatedCardContainer onPress={onPressCard}>
+      <View style={styles.gotoDetail}>
+        <TouchableOpacity onPress={onPressCard} delayPressIn={0} activeOpacity={0.7} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+          <Text style={styles.actionButtonIcon}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <AnimatedCardContainer>
         <View>
-          <Text style={styles.revenueTitle}>{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
+          <Text style={styles.revenueTitle}>{`Doanh thu hôm nay`}</Text>
           <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
             {revenue.Today.Value} <Text style={styles.cardUnit}>{revenue.Today.Unit}</Text>
           </Text>
@@ -101,11 +102,7 @@ export default function RevenueDetail() {
           </View>
         </View>
         <View>
-          <View
-            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
-            onStartShouldSetResponder={() => true}
-            onResponderTerminationRequest={() => false}
-          >
+          <View style={[styles.profitCard, { backgroundColor: '#1e2838' }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
               <View
@@ -138,7 +135,6 @@ export default function RevenueDetail() {
               spacing={9}
               startFillColor2="#4ADE80"
               endFillColor2="#4ADE80"
-              animateOnDataChange={false}
             />
             <View style={styles.line} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
@@ -153,11 +149,7 @@ export default function RevenueDetail() {
             </View>
           </View>
         </View>
-        <View
-          style={{ marginTop: px.v(15) }}
-          onStartShouldSetResponder={() => true}
-          onResponderTerminationRequest={() => false}
-        >
+        <View style={{ marginTop: px.v(15) }}>
           <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
           <View>
             {revenue.Breakdown.map((plant, idx) => {

@@ -19,7 +19,7 @@
   "unit": "tỷ",
   "increase": "↑",
   "decrease": "↓",
-  "companyName": "CTTĐ Buôn Kuốp",
+  "companyName": "Công ty thủy điện Buôn Kuốp",
   "BTS": "Nhà máy thủy điện Buôn Tua Srah",
   "BK": "Nhà máy thủy điện Buôn Kuốp",
   "SP3": "Nhà máy thủy điện Srepok 3",
@@ -38,7 +38,7 @@
   },
   "appName": "Quản lý NMTĐ EVNGENCO3",
   "power": "Công suất (P)",
-  "productionOutput": "Sản lượng (A)",
+  "productionOutput": "Sản lượng (Q)",
   "hydrology": "Thủy văn",
   "repairMaintenance": "Sửa chữa bảo dưỡng năm"
 }

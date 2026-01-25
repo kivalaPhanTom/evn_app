@@ -1,5 +1,5 @@
 import React, { use, useEffect } from 'react'
-import { Text, View, Pressable } from 'react-native'
+import { Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 
@@ -34,26 +34,24 @@ function UnitMaintenanceSchedule() {
     <SectionContainer
       title={t('repairMaintenance') + " " + new Date().getFullYear()}
     >
-      <Pressable onPress={onPressCard}>
-        <View style={styles.infoContainer}>
-          <View style={[styles.infoCard]}>
-            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>TỔNG HẠNG MỤC SỬA CHỮA</Text>
-            <View style={styles.infoRow}>
-              <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalCategory}</Text>
-              <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
-            </View>
-          </View>
-          <View style={styles.infoCard}>
-            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>
-              TỔNG NGÀY SỬA CHỮA THỰC TẾ
-            </Text>
-            <View style={styles.infoRow}>
-              <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalActualDay}</Text>
-              <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
-            </View>
+      <View style={styles.infoContainer}>
+        <View style={[styles.infoCard]}>
+          <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>TỔNG HẠNG MỤC SỬA CHỮA</Text>
+          <View style={styles.infoRow}>
+            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalCategory}</Text>
+            <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
           </View>
         </View>
-      </Pressable>
+        <View style={styles.infoCard}>
+          <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>
+            TỔNG NGÀY SỬA CHỮA THỰC TẾ
+          </Text>
+          <View style={styles.infoRow}>
+            <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalActualDay}</Text>
+            <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
+          </View>
+        </View>
+      </View>
       <View>
         {Details?.map((item, idex) => (
           <MaintenanceCard
