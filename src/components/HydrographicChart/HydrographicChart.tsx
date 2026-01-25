@@ -91,7 +91,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
     max += 1;
   }
 
-  const padding = 10;
+  const padding = 0.5;
   const minY = min - padding;
   const maxY = max + padding;
   const rangeY = maxY - minY;
