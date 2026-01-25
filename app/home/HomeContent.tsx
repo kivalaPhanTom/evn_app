@@ -17,18 +17,19 @@ import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
+import UriWebView from '@/components/UriWebView'
 
 interface moduleItem {
-  code: string;
-  name: string;
-  canAccess: boolean;
+  code: string
+  name: string
+  canAccess: boolean
 }
 function HomeContent() {
   const dispatch = useDispatch()
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false)
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]
     location?: string | string[]
@@ -37,51 +38,58 @@ function HomeContent() {
   const companyLocation = Array.isArray(location) ? location[0] : location
 
   const onRefresh = async () => {
-    setRefreshing(true);
+    setRefreshing(true)
     setTimeout(() => {
-      setRefreshing(false);
-      dispatch(saveState({
-        countRefesh: countRefesh + 1
-      }))
-    }, 80);
-  };
-  const [ready, setReady] = useState(false);
+      setRefreshing(false)
+      dispatch(
+        saveState({
+          countRefesh: countRefesh + 1,
+        }),
+      )
+    }, 80)
+  }
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      setReady(true);
-    });
-  }, []);
-  const [scrollY, setScrollY] = useState(0);
+      setReady(true)
+    })
+  }, [])
+  const [scrollY, setScrollY] = useState(0)
 
   const onScroll = (e: any) => {
-    setScrollY(e.nativeEvent.contentOffset.y);
-  };
+    setScrollY(e.nativeEvent.contentOffset.y)
+  }
 
-  const preloadOffset = 300; // px before entering viewport
+  const preloadOffset = 300 // px before entering viewport
 
-  const shouldLoadProduction = scrollY >= 200 - preloadOffset;
-  const shouldLoadHydrology = scrollY >= 600 - preloadOffset;
-  const shouldLoadRevenue = scrollY >= 1000 - preloadOffset;
-  const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
-  const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
+  const shouldLoadProduction = scrollY >= 200 - preloadOffset
+  const shouldLoadHydrology = scrollY >= 600 - preloadOffset
+  const shouldLoadRevenue = scrollY >= 1000 - preloadOffset
+  const shouldLoadProfit = scrollY >= 1400 - preloadOffset
+  const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset
+  const shouldLoadMap = scrollY >= 2200 - preloadOffset
 
   const checkModulePermission = (moduleCode: string): boolean => {
-    let result = false;
-    const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode);
-    if (moduleFound && moduleFound.canAccess) result = true;
+    let result = false
+    const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode)
+    if (moduleFound && moduleFound.canAccess) result = true
     return result
-  };
+  }
 
   return (
     <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       onScroll={onScroll}
       scrollEventThrottle={16}
     >
-      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+      <TwinkleStars
+        background={Colors.background}
+        particleDensity={50}
+        particleColor={Colors.textColor}
+        minSize={0.5}
+        maxSize={2}
+      >
         <View style={styles.header}>
           <GradientText
             text={companyTitle ?? t('companyName')}
@@ -96,38 +104,45 @@ function HomeContent() {
         </View>
         {checkModulePermission('CONG_SUAT') && <PowerSection />}
 
-        {checkModulePermission('SAN_LUONG') &&
+        {checkModulePermission('SAN_LUONG') && (
           <LazySection shouldLoad={shouldLoadProduction} minHeight={300}>
             <ProductionOutput />
           </LazySection>
-        }
+        )}
 
-        {checkModulePermission('THUY_VAN') &&
+        {checkModulePermission('THUY_VAN') && (
           <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
             <Hydrology />
           </LazySection>
-        }
-        {checkModulePermission('DOANH_THU') &&
+        )}
+        {checkModulePermission('DOANH_THU') && (
           <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
             <RevenueDetail />
           </LazySection>
-        }
+        )}
 
-        {checkModulePermission('LOI_NHUAN') &&
+        {checkModulePermission('LOI_NHUAN') && (
           <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
             <ProfitDetail />
           </LazySection>
-        }
+        )}
 
-
-        {checkModulePermission('LICH_SUA_CHUA') &&
+        {checkModulePermission('LICH_SUA_CHUA') && (
           <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
             <UnitMaintenanceSchedule />
           </LazySection>
-        }
+        )}
+
+        <LazySection shouldLoad={shouldLoadMap} minHeight={200}>
+          <UriWebView
+            uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
+            headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
+            style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
+          />
+        </LazySection>
+
       </TwinkleStars>
     </ScrollView>
-
   )
 }
 export default HomeContent
