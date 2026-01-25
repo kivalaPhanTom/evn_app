@@ -46,6 +46,7 @@ function ProductionOutput() {
           detail={powerSources}
           isLoading={isLoadingOverview}
           unit="tr.KWh"
+          type='production'
         />
       </View>
       {/* <View style={styles.section}>

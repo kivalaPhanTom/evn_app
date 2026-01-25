@@ -7,6 +7,7 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { Image } from 'expo-image'
 
 interface PowerDetail {
   code: string
@@ -21,10 +22,11 @@ interface Props {
   detail: PowerDetail[]
   title?: string
   unit: string
+  type: 'power' | 'production'
 }
 function TotalPower(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit } = props
+  const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit, type } = props
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -38,13 +40,26 @@ function TotalPower(props: Props) {
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
+        {/* Column 1 - Icon */}
+        <View style={styles.iconSection}>
+          {firstLoading || isLoading ? (
+            <BarSkeleton width={40} height={40} />
+          ) : (
+            <View style={styles.iconPlaceholder}>
+              <Image
+                source={type === 'power' ? require('@/assets/images/cogwheel.png') : require('@/assets/images/hydroelectric.png')}
+                style={{ width: 80, height: 80 }}
+              />
+            </View>
+          )}
+        </View>
         {/* Left side - Total Power */}
         <View style={styles.leftSection}>
           {firstLoading || isLoading ? (
             <BarSkeleton />
           ) : (
             <>
-              <Text style={styles.title}>{title}</Text>
+              {/* <Text style={styles.title}>{title}</Text> */}
               <GradientText text={total} fontSize={px.f(64)} colors={Colors.blue} />
             </>
           )}
@@ -75,7 +90,7 @@ function TotalPower(props: Props) {
                     <View style={[styles.dot, { backgroundColor: source.color }]} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                       <Text style={styles.sourceName}>
-                        {source.name}
+                        {source.code}
                         {/* {source.name} <Text style={styles.sourceCode}>({source.code})</Text> */}
                       </Text>
                       <Text style={[styles.sourcePower, { color: source.color }]}>
