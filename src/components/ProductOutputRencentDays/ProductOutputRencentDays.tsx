@@ -21,6 +21,7 @@ function ProductOutputRencentDays(props: Props) {
   const currentYear = new Date().getFullYear()
   const [selectedYear, setSelectedYear] = useState(currentYear - 1)
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
+  console.log(years)
   const unit = 'tr.KWh'
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function ProductOutputRencentDays(props: Props) {
   }, [isLoading])
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer onPress={onPressCard}>
       <View style={styles.content}>
         {/* Title */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

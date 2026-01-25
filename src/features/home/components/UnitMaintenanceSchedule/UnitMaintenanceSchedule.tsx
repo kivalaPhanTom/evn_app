@@ -32,11 +32,7 @@ function UnitMaintenanceSchedule() {
 
   return (
     <SectionContainer
-      title={t('repairMaintenance')}
-      actionButton={{
-        label: 'Thêm chi tiết',
-        onPress: onPressCard,
-      }}
+      title={t('repairMaintenance') + " " + new Date().getFullYear()}
     >
       <View style={styles.infoContainer}>
         <View style={[styles.infoCard]}>
