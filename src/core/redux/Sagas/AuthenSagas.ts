@@ -1,9 +1,8 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getToken } from '../Actions/AuthenActions'
-import { setPowerOverview } from '../slices/PowerSlice'
 import { Service } from '@/core/service/authenService'
 import { Toast } from 'toastify-react-native'
-import { setAuthToken, apiFormUrlEncoded } from '@/core/service/api.service'
+import { setAuthToken, setUsernameToAsyncStorage } from '@/core/service/api.service'
 import { router } from 'expo-router'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -21,15 +20,11 @@ function* getTokenSaga(action: any): Generator {
             console.log('✅ Login successful, token:', access_token ? 'received' : 'missing')
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token, expires_in)
+            yield call(setUsernameToAsyncStorage, username)
             router.replace('/companies')
-            // router.navigate('/companies')
-        } else {
-            console.log('❌ Unexpected status:', res.status)
-            Toast.error(`Lỗi đăng nhập: ${res.status}`)
         }
     } catch (error) {
         catchHandle(error, 'getTokenSaga')
-        Toast.error(`Lỗi đăng nhập: ${error}`)
     }
 }
 

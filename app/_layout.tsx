@@ -14,7 +14,6 @@ import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import ToastManager from 'toastify-react-native'
 import VersionChecker from '@/components/VersionChecker/VersionChecker'
-import { GestureHandlerRootView, Pressable } from 'react-native-gesture-handler'
 import { BlurView } from 'expo-blur'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
@@ -51,7 +50,7 @@ export default function RootLayout() {
     }
     setPreferenceState(p)
   }
-
+  
   const toggle = () => {
     // simple toggle between dark and light (if currently system => switch to opposite of system)
     setPreferenceState((prev) => {
@@ -71,11 +70,11 @@ export default function RootLayout() {
   if (!loaded) return null
 
   return (
-    <AuthProvider>
+    <StoreProvider> 
       <TranslationProvider>
         <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <StoreProvider>
+            <AuthProvider>
               <VersionChecker />
               <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
                 <Stack
@@ -118,11 +117,11 @@ export default function RootLayout() {
                 <ToastManager theme={'dark'} position={'top'} animationStyle="fade" />
                 <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
               </SafeAreaView>
-            </StoreProvider>
+            </AuthProvider>
           </ThemeProvider>
         </ThemeToggleContext.Provider>
       </TranslationProvider>
-    </AuthProvider>
+    </StoreProvider>
   )
 }
 
