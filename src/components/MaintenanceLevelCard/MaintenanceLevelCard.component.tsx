@@ -5,7 +5,7 @@ import { Shadow } from 'react-native-shadow-2'
 import { px } from '@/core/utils/scale'
 import styles from './MaintenanceLevelCard.styles'
 
-export type MaintenanceLevel = 'major' | 'medium' | 'minor'
+export type MaintenanceLevel = 'major' | 'rcm'
 
 interface MaintenanceLevelCardProps {
   title: string
@@ -34,19 +34,16 @@ const getLevelConfig = (level: MaintenanceLevel) => {
         backgroundColor: 'rgba(251, 113, 133, 0.1)',
         borderColor: 'rgba(251, 113, 133, 0.3)',
       }
-    case 'medium':
+    case 'rcm':
       return {
-        label: 'TRUNG TU',
-        color: '#34D399',
-        backgroundColor: 'rgba(52, 211, 153, 0.1)',
-        borderColor: 'rgba(52, 211, 153, 0.3)',
-      }
-    case 'minor':
-      return {
-        label: 'TIỂU TU',
+        label: 'RCM',
+        // color: '#34D399',
+        // backgroundColor: 'rgba(52, 211, 153, 0.1)',
+        // borderColor: 'rgba(52, 211, 153, 0.3)',
         color: '#60A5FA',
         backgroundColor: 'rgba(96, 165, 250, 0.1)',
         borderColor: 'rgba(96, 165, 250, 0.3)',
+        
       }
   }
 }
