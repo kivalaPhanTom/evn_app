@@ -67,7 +67,7 @@ function HomeNewScreen(props: Props) {
         detail.map((factory, index) => (
           <View key={`factory${index}`} style={{ flex: 1 }}>
             {activeTab === index + 1 ? <FactoryDetail
-              companyName={`NMTĐ ${factory.name}`}
+              companyName={`Nhà máy ${factory.name}`}
               location={'Đắk Lắk'}
               currentPlantId={factory.code}
               keyTab={index + 1}

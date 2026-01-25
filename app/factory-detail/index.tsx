@@ -97,7 +97,7 @@ function FactoryDetail(props: factoryDetailProps) {
             <SectionContainer
               title={t('hydrology')}
               actionButton={{
-                label: 'Chi tiết',
+                label: 'Thêm chi tiết',
                 onPress: onPressCardHydro,
               }}
             >

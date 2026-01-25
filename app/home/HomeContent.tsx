@@ -17,7 +17,6 @@ import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
-import { useTranslation } from 'react-i18next'
 
 interface Props { }
 
@@ -27,7 +26,6 @@ function HomeContent(props: Props) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { t } = useTranslation();
   const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList } = useSelector((state: any) => state.powerSlice.powerByTime)
   const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
   //   const swipeLeft = Gesture.Pan()
@@ -84,7 +82,7 @@ function HomeContent(props: Props) {
       <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
-            text={companyTitle ?? t('companyName')}
+            text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
             colors={textGradients.water}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}

@@ -24,25 +24,20 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const dispatch = useDispatch()
   const { hydrologyCharData } = useSelector((state: RootState) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
+  const getReferenceLevel =(hydroElectricId:string, hydrologyPlants:PlantsData[]):number=>{
     let result = 0
     const findHydrologyItem = hydrologyPlants.find(e => e.symbol === hydroElectricId)
-    if (findHydrologyItem) result = findHydrologyItem.referenceLevel
+    if(findHydrologyItem) result = findHydrologyItem.referenceLevel
     return result
-  }
+ }
 
-  const referenceLevel = getReferenceLevel(currentPlantId, hydrologyPlants.plantsData)
+ const referenceLevel = getReferenceLevel(currentPlantId, hydrologyPlants.plantsData)
 
   return (
     <>
       <View style={styles.section}>
         <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Mực nước trong hồ theo giờ</Text>
-        <HydrographicChart
-          isLoading={false}
-          data={hydrologyCharData}
-          referenceLevel={referenceLevel}
-          bgColor={'#000033'}
-        />
+        <HydrographicChart isLoading={false} data={hydrologyCharData} referenceLevel={referenceLevel} />
       </View>
     </>
   )
