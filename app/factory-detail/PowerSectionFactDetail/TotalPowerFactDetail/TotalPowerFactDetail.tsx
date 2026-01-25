@@ -60,6 +60,7 @@ function TotalPowerFactDetail(props: Props) {
   return (
     <TotalPower
       title={' P \u2211 phát'}
+      type="power"
       average={average}
       total={total}
       detail={detail}

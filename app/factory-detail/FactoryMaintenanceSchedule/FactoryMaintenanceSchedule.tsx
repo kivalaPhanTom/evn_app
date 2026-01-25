@@ -21,7 +21,7 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
 
   return (
     <SectionContainer 
-      title={t('repairMaintenance')}
+      title={t('repairMaintenance') + " " + new Date().getFullYear()}
     >
       <Pressable onPress={onPressCard}>
         <View style={{ marginBottom: 20 }}>
