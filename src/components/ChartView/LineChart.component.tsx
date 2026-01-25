@@ -42,6 +42,7 @@ export interface LineCharProps {
   areaChart3?: boolean
   showValuesAsDataPointsText?: boolean
   animateOnDataChange?: boolean
+  marginLeftXLabel?: number
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
@@ -79,6 +80,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   areaChart3 = false,
   showValuesAsDataPointsText = true,
   animateOnDataChange = true,
+  marginLeftXLabel = 0,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -109,6 +111,7 @@ export const LineChart: React.FC<LineCharProps> = ({
     xAxisLabelTextStyle: {
       color: isDark ? '#d1d5db' : '#6b7280',
       fontSize: px.m(12),
+      marginLeft: px.h(marginLeftXLabel),
     },
     rulesColor: isDark ? '#374151' : '#e5e7eb',
     yAxisColor: isDark ? '#4b5563' : '#e5e7eb',
@@ -118,7 +121,8 @@ export const LineChart: React.FC<LineCharProps> = ({
   const screenWidth = Dimensions.get('window').width
   const maxValue1 = data && data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0
   const maxValue2 = data2 && data2.length > 0 ? Math.max(...data2.map((item) => item.value)) : 0
-  const overallMax = Math.max(maxValue1, maxValue2)
+  const maxValue3 = data3 && data3.length > 0 ? Math.max(...data3.map((item) => item.value)) : 0
+  const overallMax = Math.max(maxValue1, maxValue2, maxValue3)
   const yAxisMaxValue = overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
 
   // ===== Render Chart =====

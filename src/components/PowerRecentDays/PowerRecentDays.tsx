@@ -3,6 +3,9 @@ import { View, Text, ScrollView } from 'react-native'
 import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
+import { LineChart } from '@/components/ChartView/LineChart.component'
+import { Colors } from 'toastify-react-native/config/theme'
+import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
 
 interface PowerByDays {
   value: number
@@ -17,6 +20,11 @@ function PowerRecentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
 
   const unit = 'MW'
+  const lineChartData = powerData.map((item, idx) => ({
+    value: item.value,
+    label: item.date,
+  }))
+
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -47,8 +55,26 @@ function PowerRecentDays(props: Props) {
                 ))}
               </>
             }
-
           </ScrollView>
+          {firstLoading || isLoading ?
+           <View style={{ marginTop: 20 }}> 
+            <LineChartSkeleton /> 
+           </View>:
+            <View>
+              <LineChart
+                data={lineChartData}
+                data2={[{
+                  value: 0,
+                  label: ""
+                }]}
+                color={Colors.orange}
+                color2={'transparent'}
+                areaChart={false}
+                hideYAxisText={true}
+                marginLeftXLabel={20}
+              />
+            </View>
+          }
 
           {/* Bottom Info */}
           <View style={styles.bottomInfo}>

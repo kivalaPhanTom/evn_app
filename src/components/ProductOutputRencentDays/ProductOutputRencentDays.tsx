@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, Modal } from 'react-native'
+import { px } from '@/core/utils/scale'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { LineChart } from '@/components/ChartView/LineChart.component'
+import CompareLegend from '@/core/shared/CompareLegend'
+import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
 
 interface ProductionData {
   date: string
@@ -16,14 +20,31 @@ interface Props {
   productionData: ProductionData[]
   onPressCard: any
 }
+interface LegendItemData {
+  type: 'box' | 'line'
+  color?: string
+  label: string
+}
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
   const { isLoading, productionData, onPressCard } = props
   const currentYear = new Date().getFullYear()
   const [selectedYear, setSelectedYear] = useState(currentYear - 1)
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
-  console.log(years)
   const unit = 'tr.KWh'
+  const dataActual = productionData.map((item) => ({
+    value: item.actual,
+    label: item.date,
+  }))
+  const contractData = productionData.map((item) => ({
+    value: item.contract,
+    label: item.date,
+  }))
+  const samePeriodData = productionData.map((item) => ({
+    value: item.samePeriod ?? 0,
+    label: item.date,
+  }))
+  const lineChartData = dataActual
 
   useEffect(() => {
     setFirstLoading(true)
@@ -34,7 +55,11 @@ function ProductOutputRencentDays(props: Props) {
       setFirstLoading(false)
     }
   }, [isLoading])
-
+  const legendItems: LegendItemData[] = [
+    { type: 'line', label: 'Thực tế', color: Colors.orange },
+    { type: 'line', label: 'Hợp đồng', color: '#2563EB' },
+    { type: 'line', label: 'Cùng kỳ', color: '#22D3EE' },
+  ]
   return (
     <AnimatedCardContainer onPress={onPressCard}>
       <View style={styles.content}>
@@ -107,7 +132,7 @@ function ProductOutputRencentDays(props: Props) {
         {/* Table Rows */}
         <View
           style={styles.tableBody}
-          // showsVerticalScrollIndicator={false}
+        // showsVerticalScrollIndicator={false}
         >
           {firstLoading || isLoading ? (
             <>
@@ -153,6 +178,26 @@ function ProductOutputRencentDays(props: Props) {
           )}
         </View>
 
+        {firstLoading || isLoading ?
+          <View style={{ marginTop: 20 }}>
+            <LineChartSkeleton />
+          </View>
+          :
+          <View>
+            <CompareLegend items={legendItems} />
+            <LineChart
+              data={dataActual}
+              data2={contractData}
+              data3={samePeriodData}
+              color={Colors.orange}
+              color2={'#2563EB'}
+              color3={'#22D3EE'}
+              areaChart={false}
+              hideYAxisText={true}
+              marginLeftXLabel={20}
+            />
+          </View>
+        }
         {/* Legend */}
         {/* <View style={styles.legend}>
           <Text style={styles.legendText}>Màu xanh: Đạt/vượt hợp đồng • Màu đỏ: Dưới hợp đồng</Text>
