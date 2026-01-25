@@ -74,7 +74,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   strokeDashArray2,
   strokedashArray1,
   spacing = 5,
-  curved = true,
+  curved = false,
   areaChart2 = false,
   areaChart3 = false,
   showValuesAsDataPointsText = true,
