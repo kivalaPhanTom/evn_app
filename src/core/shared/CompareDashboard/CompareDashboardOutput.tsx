@@ -196,6 +196,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
               lineData2={lineData2Converted}
               lineColor2="#A78BFA"
               lineDataPointsShift2={0}
+              scrollToEnd
             />
           </View>
         }

@@ -7,7 +7,7 @@ export const Service = {
 
 export const servicePattern = {
   getRepairSchedule: `${prefix_api}/repairSchedule`,
-  getDetailRepairSchedule: `${prefix_api}/detailRepairSchedule`,
+  getDetailRepairSchedule: `${prefix_api}/detailRepairSchedule_v2`,
 }
 
 function getRepairScheduleApi() {

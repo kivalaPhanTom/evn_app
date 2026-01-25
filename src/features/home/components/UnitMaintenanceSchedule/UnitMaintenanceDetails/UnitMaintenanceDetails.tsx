@@ -21,14 +21,12 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
   if (lowerType.includes('major') || lowerType.includes('đại')) {
     return 'major'
   }
-  if (lowerType.includes('medium') || lowerType.includes('trung')) {
-    return 'medium'
+  // Map 'RCM' or any other value (medium, minor, etc.) to 'rcm'
+  if (lowerType.includes('rcm') || lowerType.includes('medium') || lowerType.includes('minor') || lowerType.includes('trung') || lowerType.includes('tiểu')) {
+    return 'rcm'
   }
-  if (lowerType.includes('minor') || lowerType.includes('tiểu')) {
-    return 'minor'
-  }
-  // Default to minor if unknown
-  return 'minor'
+  // Default to rcm if unknown
+  return 'rcm'
 }
 
 function UnitMaintenanceDetails() {

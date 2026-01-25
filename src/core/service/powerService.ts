@@ -27,7 +27,7 @@ function getPowerByTimeApi() {
 
 function getPowerByDaysApi(dayNumber: number = 7) {
   return api.get(`${servicePattern.getPowerByDays}`, {
-    params: { N: dayNumber },
+    params: { nString: dayNumber },
   })
 }
 
