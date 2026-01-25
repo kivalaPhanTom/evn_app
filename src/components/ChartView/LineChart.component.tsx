@@ -169,6 +169,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         endSpacing={15}
         strokeDashArray1={strokedashArray1}
         strokeDashArray2={strokeDashArray2}
+        showXAxisIndices = {true}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
           pointerConfig

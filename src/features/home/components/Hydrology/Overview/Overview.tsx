@@ -12,8 +12,8 @@ import { Shadow } from 'react-native-shadow-2'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 
 interface WaterLevelData {
   id: string
@@ -500,7 +500,7 @@ const Overview: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<string>('')
   const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
-  
+
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
   }, [countRefesh, dispatch])
@@ -565,7 +565,7 @@ const Overview: React.FC = () => {
           <View style={styles.detailContainer}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
-              <LineBarChartSkeleton isShowLine={false} />
+              <LineChartSkeleton/>
             </View>
             <View style={{ marginTop: px.v(16) }}>
               <BarSkeleton width={'100%'} height={100} marginTop={0} />
@@ -607,6 +607,7 @@ const Overview: React.FC = () => {
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
+                bgColor={'#1c056eff'}
               />
               <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
             </>
