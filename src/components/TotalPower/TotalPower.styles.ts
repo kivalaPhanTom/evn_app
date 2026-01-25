@@ -1,4 +1,5 @@
 import { Colors } from '@/core/constants/colors'
+import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
   },
   leftSection: {
     flex: 1,
-    justifyContent: 'center',
+    paddingHorizontal: px.f(12),
   },
   title: {
     color: '#8b92a0',
@@ -74,5 +75,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginLeft: 12,
   },
+  iconSection: {
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconPlaceholder: {
+
+  }
 })
 export default styles
