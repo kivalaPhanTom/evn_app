@@ -52,9 +52,11 @@ function* getProductOutputOverviewSaga(): Generator {
 function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputByDays>): Generator {
   try {
     yield put(setLoading({ isLoadingNearCurrentDays: true }))
-    const n = action.payload || 7 // default is 7 days
-    const res = yield call(Service.getProductOutputByDaysApi, n)
+    const n = action.payload?.n || 7 // default is 7 days
+    const samePeriodYear = action.payload?.samePeriodYear || new Date().getFullYear() - 1
+    const res = yield call(Service.getProductOutputByDaysApi, n, samePeriodYear)
     if (res.status === 200) {
+      
       yield put(setProductOutputByDays(res.data))
     }
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
