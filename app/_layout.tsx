@@ -98,19 +98,14 @@ export default function RootLayout() {
                   <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
                 </Stack>
                 {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
-                  <View style={[styles.backContainer, { bottom: insets.bottom + 10 }]} pointerEvents="box-none">
-                    {/* <TouchableOpacity
+                 <View style={[styles.backContainer, { bottom: insets.bottom + 80 }]} pointerEvents="box-none">
+                    <TouchableOpacity
                       onPress={() => router.back()}
                       style={styles.backButton}
                       delayPressIn={0}
                       hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     >
                       <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
-                    </TouchableOpacity> */}
-                    <TouchableOpacity style={styles.container} onPress={() => router.back()} delayPressIn={0} >
-                      <BlurView intensity={20} tint="light" style={styles.backButton}>
-                        <Ionicons name="chevron-back" size={24} color="white" />
-                      </BlurView>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -157,36 +152,18 @@ const styles = StyleSheet.create({
     right: 16,
     zIndex: 50,
   },
-  // backButton: {
-  //   // backgroundColor: 'transparent',
-  //   // // padding: 8,
-  //   // borderRadius: 20,
-
-  //   width: 56,
-  //   height: 56,
-  //   borderRadius: 12,
-  //   backgroundColor: '#2E3148',
-  //   borderWidth: 2,
-  //   borderColor: 'rgba(255,255,255,0.25)',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  container: {
-    // Drop shadow adds the "lifted" effect
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-  },
   backButton: {
+    // backgroundColor: 'transparent',
+    // // padding: 8,
+    // borderRadius: 20,
+
     width: 56,
     height: 56,
-    borderRadius: 16, // iOS uses slightly larger radius for "squircle" looks
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.4)', // The "Glass Edge"
+    borderRadius: 12,
+    backgroundColor: '#2E3148',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.25)',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden', // Essential for BlurView to respect borderRadius
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Subtle base tint
   },
 })

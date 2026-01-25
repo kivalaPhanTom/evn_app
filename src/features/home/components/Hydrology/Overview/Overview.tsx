@@ -12,8 +12,8 @@ import { Shadow } from 'react-native-shadow-2'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { Colors } from '@/core/constants/colors'
-import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 
 interface WaterLevelData {
   id: string
@@ -23,7 +23,6 @@ interface WaterLevelData {
   referenceLevel: number
   color?: string
   abbreviation?: string
-  symbol?: string
 }
 interface PlantsData {
   id: number
@@ -494,13 +493,12 @@ const Overview: React.FC = () => {
       referenceLevel: plant.referenceLevel,
       color: getColorByIndex(index),
       abbreviation: plant.abbreviation,
-      symbol: plant.symbol,
     }))
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
   const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
-
+  
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
   }, [countRefesh, dispatch])
@@ -514,8 +512,6 @@ const Overview: React.FC = () => {
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const hydroElectricId = activeData?.abbreviation || ''
-  const currentPlantId = activeData ? activeData.symbol : ''
-  console.log(currentPlantId);
   const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
   const maxLevel = getMaxLevel(hydrologyPlants.plantsData)
   useEffect(() => {
@@ -565,7 +561,7 @@ const Overview: React.FC = () => {
           <View style={styles.detailContainer}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
-              <LineChartSkeleton/>
+              <LineBarChartSkeleton isShowLine={false} />
             </View>
             <View style={{ marginTop: px.v(16) }}>
               <BarSkeleton width={'100%'} height={100} marginTop={0} />
@@ -607,9 +603,8 @@ const Overview: React.FC = () => {
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
-                bgColor={'#1c056eff'}
               />
-              <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
+              <InflowOutflow hydroElectricId={hydroElectricId} />
             </>
           )}
         </View>

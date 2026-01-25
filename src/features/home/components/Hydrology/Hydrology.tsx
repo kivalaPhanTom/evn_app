@@ -20,7 +20,7 @@ function Hydrology() {
     <SectionContainer 
       title="Thủy văn"
       actionButton={{
-        label: 'Chi tiết',
+        label: 'Thêm chi tiết',
         onPress: onPressCard,
       }}
     >

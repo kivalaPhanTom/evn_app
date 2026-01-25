@@ -84,7 +84,7 @@ function HomeContent() {
       <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
-            text={companyTitle ?? t('companyName')}
+            text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
             colors={textGradients.water}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}

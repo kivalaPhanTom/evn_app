@@ -37,7 +37,7 @@ function ProductionOutput() {
   }
   
   return (
-    <SectionContainer title="Sản lượng (A)">
+    <SectionContainer title="Sản lượng (Q)">
       <View style={styles.section}>
         <TotalPower
           title={"Q \u2211 lũy kế ngày"}
@@ -45,10 +45,10 @@ function ProductionOutput() {
           total={totalPower}
           detail={powerSources}
           isLoading={isLoadingOverview}
-          unit="tr.KWh"
+          unit="tr.Wh"
         />
       </View>
-      {/* <View style={styles.section}>
+      <View style={styles.section}>
         <ProductionOutputByHours
           isLoading={isLoadingByHours}
           currentDate={productOutputByHours.currentDate}
@@ -59,7 +59,7 @@ function ProductionOutput() {
           barGroups={productOutputByHours.barGroups}
           onPressCard={onPressCard}
         />
-      </View> */}
+      </View>
       <View style={styles.section}>
         <ProductOutputRencentDays
           isLoading={isLoadingNearCurrentDays}

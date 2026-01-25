@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity, Modal } from 'react-native'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
@@ -9,12 +9,11 @@ interface ProductionData {
   date: string
   actual: number
   contract: number
-  samePeriod?: number
 }
 interface Props {
   isLoading: boolean
   productionData: ProductionData[]
-  onPressCard: any
+  onPressCard?: any
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
@@ -22,7 +21,6 @@ function ProductOutputRencentDays(props: Props) {
   const currentYear = new Date().getFullYear()
   const [selectedYear, setSelectedYear] = useState(currentYear - 1)
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
-  console.log(years);
   const unit = 'tr.KWh'
 
   useEffect(() => {
@@ -36,10 +34,16 @@ function ProductOutputRencentDays(props: Props) {
   }, [isLoading])
 
   return (
-    <AnimatedCardContainer onPress={onPressCard}>
-      <View style={styles.content} >
+    <AnimatedCardContainer>
+      <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>A 7 NGÀY GẦN NHẤT</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Text style={styles.title}>Q 7 NGÀY GẦN NHẤT</Text>
+          <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+            <Text style={styles.actionButtonIcon}>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
@@ -48,7 +52,56 @@ function ProductOutputRencentDays(props: Props) {
           <Text style={[styles.headerText, styles.col3]}>HỢP ĐỒNG ({unit})</Text>
           <View style={styles.col4}>
             <View style={styles.samePeriodHeader}>
-              <Text style={styles.headerText}>CÙNG KỲ</Text>
+              {(() => {
+                const YearPicker: React.FC = () => {
+                  const [showSelectModal, setShowSelectModal] = useState(false)
+
+                  return (
+                    <>
+                      <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
+                        <Text style={styles.selectText}>{selectedYear}</Text>
+                      </TouchableOpacity>
+
+                      <Modal
+                        visible={showSelectModal}
+                        transparent
+                        animationType="fade"
+                        onRequestClose={() => setShowSelectModal(false)}
+                      >
+                        <TouchableOpacity
+                          style={styles.modalOverlay}
+                          activeOpacity={1}
+                          onPress={() => setShowSelectModal(false)}
+                        >
+                          <View style={styles.modalContent}>
+                            {years.map((year) => (
+                              <TouchableOpacity
+                                key={year}
+                                style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
+                                onPress={() => {
+                                  setSelectedYear(year)
+                                  setShowSelectModal(false)
+                                }}
+                              >
+                                <Text
+                                  style={[
+                                    styles.selectOptionText,
+                                    selectedYear === year && styles.selectOptionTextActive,
+                                  ]}
+                                >
+                                  {year}
+                                </Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        </TouchableOpacity>
+                      </Modal>
+                    </>
+                  )
+                }
+
+                return <YearPicker />
+              })()}
             </View>
           </View>
         </View>
@@ -58,9 +111,9 @@ function ProductOutputRencentDays(props: Props) {
         {/* Table Rows */}
         <View
           style={styles.tableBody}
-        // showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
         >
-          {firstLoading || isLoading ?
+          {firstLoading || isLoading ? (
             <>
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
@@ -69,9 +122,8 @@ function ProductOutputRencentDays(props: Props) {
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
               <BarSkeleton width={'100%'} />
-              <BarSkeleton width="100%" />
             </>
-            :
+          ) : (
             <>
               {productionData.map((day, index) => {
                 const isAboveContract = day.actual >= day.contract
@@ -83,25 +135,23 @@ function ProductOutputRencentDays(props: Props) {
                       <Text style={[styles.cellText, styles.col1, styles.dateText]}>{day.date}</Text>
                       <View style={styles.col2}>
                         <Text style={[styles.cellText, styles.valueText, { color: actualColor }]}>
-                          {day.actual.toFixed(1)} <Text style={styles.unitText}></Text>
+                          {day.actual.toFixed(1)} <Text style={styles.unitText}>{unit}</Text>
                         </Text>
                       </View>
                       <View style={styles.col3}>
                         <Text style={[styles.cellText, styles.valueText, styles.contractText]}>
-                          {day.contract.toFixed(1)} <Text style={styles.unitText}></Text>
+                          {day.contract.toFixed(1)} <Text style={styles.unitText}>{unit}</Text>
                         </Text>
                       </View>
-                      <View style={styles.col3}>
-                        <Text style={[styles.cellText, styles.valueText, styles.samePeriodText]}>
-                          {day.samePeriod != null ? day.samePeriod.toFixed(1) : '--'}
-                        </Text>
+                      <View style={styles.col4}>
+                        <Text style={[styles.cellText, styles.valueText, styles.contractText]}>--</Text>
                       </View>
                     </View>
                   </View>
                 )
               })}
             </>
-          }
+          )}
         </View>
 
         {/* Legend */}

@@ -38,7 +38,7 @@ function getHydrologyFlowApi(currentPlantId: string, date: string) {
 
 function getInflowOutflowApi(hydroElectricId: string) {
   return apiFormUrlEncoded.get(
-    `${servicePattern.getInflowOutflow}?currentPlantId=${encodeURIComponent(hydroElectricId)}`,
+    `${servicePattern.getInflowOutflow}?hydroElectricId=${encodeURIComponent(hydroElectricId)}`,
   )
 }
 function getHydrologyPlantsParamApi(currentPlantId?: string) {
