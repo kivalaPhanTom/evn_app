@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setAuthToken, clearAuthToken, loadAuthTokenFromStorage } from '../service/api.service';
-
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'expo-router'
+import { setAuthToken, clearAuthToken } from '../service/api.service';
+import { getModules } from '@/core/redux/Actions/ModuleActions'
 interface AuthContextProps {
   isAuthenticated: boolean;
   loading: boolean;
@@ -13,7 +15,18 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter()
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) return
+    if (isAuthenticated) getModulesData()
+  }, [isAuthenticated, loading, router])
+
+  const getModulesData = async () => {
+    dispatch(getModules())
+  }
 
   useEffect(() => {
     const checkToken = async () => {
