@@ -167,5 +167,12 @@ const styles = StyleSheet.create({
     color: Colors.blue,
     fontWeight: '700',
   },
+  dayOfWeek: {
+    fontSize: 10,
+    opacity: 0.3,
+  },
+  weekendText: {
+    color: Colors.yellow
+  }
 })
 export default styles
