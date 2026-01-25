@@ -64,6 +64,7 @@ function ProductionOutput() {
         <ProductOutputRencentDays
           isLoading={isLoadingNearCurrentDays}
           productionData={productionData}
+          onPressCard={onPressCard}
         />
       </View>
     </SectionContainer>
