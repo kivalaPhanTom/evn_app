@@ -62,7 +62,7 @@ function PowerSection() {
             unit={unit}
             offeredPower={offeredPower}
             offeredPowerList={offeredPowerList}
-            scrollToEnd={false}
+            scrollToEnd={true}
           />
         </View>
         <View style={styles.section}>
