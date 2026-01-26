@@ -51,21 +51,30 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 }) => {
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
-  const MAX_TANK_HEIGHT = data.maxLevel
+  const MAX_TANK_HEIGHT = 700
 
   // waterHeight tính theo currentLevel, referenceLevel cố định để vẽ đường reference line
   const waterHeightPercent = (data.currentLevel / MAX_TANK_HEIGHT) * 100
   const waterHeight = (waterHeightPercent / 100) * containerHeight
+  // MaxLevel line position: tính toán giống như reference line
+  const maxLevelYRaw = containerHeight - (data.maxLevel / MAX_TANK_HEIGHT) * containerHeight
   const referenceYRaw = containerHeight - (data.referenceLevel / MAX_TANK_HEIGHT) * containerHeight
-  // MaxLevel line position: at the top (y = 0) since maxLevel is the maximum
-  const maxLevelY = 0
   // Khoảng cách tối thiểu giữa MaxLevel line và Reference line (px)
   const MIN_DISTANCE = px.v(10)
-  // Điều chỉnh referenceY nếu quá gần maxLevelY
-  const distance = referenceYRaw - maxLevelY
-  const referenceY = distance < MIN_DISTANCE 
-    ? Math.min(maxLevelY + MIN_DISTANCE, containerHeight) 
-    : referenceYRaw
+  // Điều chỉnh vị trí nếu 2 line quá gần nhau
+  const distance = Math.abs(referenceYRaw - maxLevelYRaw)
+  let maxLevelY = maxLevelYRaw
+  let referenceY = referenceYRaw
+  
+  if (distance < MIN_DISTANCE) {
+    // Nếu referenceY ở dưới maxLevelY, đẩy referenceY xuống
+    if (referenceYRaw > maxLevelYRaw) {
+      referenceY = Math.min(maxLevelYRaw + MIN_DISTANCE, containerHeight)
+    } else {
+      // Nếu referenceY ở trên maxLevelY, đẩy maxLevelY lên
+      maxLevelY = Math.max(0, referenceYRaw - MIN_DISTANCE)
+    }
+  }
   // waveAreaHeight tính từ bottom đến referenceY (thay vì waterHeight)
   const waveAreaHeight = containerHeight - referenceY
   const containerWidth = cardWidth > 0 ? cardWidth - px.h(24) : 0
