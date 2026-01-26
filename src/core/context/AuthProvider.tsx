@@ -19,11 +19,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (loading) return
-    if (isAuthenticated) getModulesData()
-  }, [isAuthenticated, loading, router])
-
   const getModulesData = async () => {
     dispatch(getModules())
   }
@@ -38,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (Date.now() < expiresAt) {
           setAuthToken(token);
           setIsAuthenticated(true);
+           getModulesData()
         } else {
           await logout();
         }
