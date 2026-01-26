@@ -59,9 +59,9 @@ function ProductOutputRencentDays(props: Props) {
     }
   }, [isLoading])
   const legendItems: LegendItemData[] = [
-    { type: 'line', label: 'Thực tế', color: Colors.orange },
-    { type: 'line', label: 'Hợp đồng', color: '#2563EB' },
-    { type: 'line', label: 'Cùng kỳ', color: '#22D3EE' },
+    { type: 'line', label: 'Thực tế', color: Colors.green },
+    { type: 'line', label: 'Hợp đồng', color: '#eab308' },
+    { type: 'line', label: 'Cùng kỳ', color: '#7a8596' },
   ]
   return (
     <AnimatedCardContainer onPress={onPressCard}>
@@ -199,9 +199,9 @@ function ProductOutputRencentDays(props: Props) {
               data={dataActual}
               data2={contractData}
               data3={samePeriodData}
-              color={Colors.orange}
-              color2={'#2563EB'}
-              color3={'#22D3EE'}
+              color={Colors.green}
+              color2={'#eab308'}
+              color3={'#7a8596'}
               areaChart={false}
               hideYAxisText={true}
               marginLeftXLabel={20}

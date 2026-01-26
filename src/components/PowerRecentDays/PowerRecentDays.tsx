@@ -4,9 +4,8 @@ import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
 import { LineChart } from '@/components/ChartView/LineChart.component'
-import { Colors } from 'toastify-react-native/config/theme'
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
-
+import { Colors } from '@/core/constants/colors'
 interface PowerByDays {
   value: number
   date: string
@@ -67,7 +66,7 @@ function PowerRecentDays(props: Props) {
                   value: 0,
                   label: ""
                 }]}
-                color={Colors.orange}
+                color={Colors.blue}
                 color2={'transparent'}
                 areaChart={false}
                 hideYAxisText={true}
