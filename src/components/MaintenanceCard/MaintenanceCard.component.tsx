@@ -12,9 +12,11 @@ import { ScheduleIcon } from '../ui/schedule-icon'
 import { px } from '@/core/utils/scale'
 
 interface MaintenanceType {
-  Minor: number
+  RCM: number
   Major: number
-  Medium: number
+  // Keep Minor and Medium for backward compatibility with old API
+  Minor?: number
+  Medium?: number
 }
 
 interface MaintenanceDuration {
@@ -82,72 +84,46 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
         </View>
         <View style={styles.maintenanceInfoContainer}>
           <View style={styles.maintenanceInfoRow}>
-            <View style={{ flexDirection: 'row' }}>
-              <MaintenanceIcon opacity="1" width="16" height="16" />
-              <Text
-                style={{ color: 'rgb(255,255,255)', fontSize: 14, marginLeft: 5 }}
-              >{`Hạng mục sửa chữa (${typeCount})`}</Text>
+            <View style={styles.maintenanceInfoHeader}>
+              <MaintenanceIcon opacity="1" width={px(16).toString()} height={px(16).toString()} />
+              <Text style={styles.maintenanceInfoHeaderText}>
+                {`Hạng mục sửa chữa (${typeCount})`}
+              </Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(20) }}>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
-                <Text style={{ color: '#34D399', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Minor}</Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`TIỂU TU`}</Text>
+            <View style={styles.maintenanceInfoContent}>
+              <View style={styles.maintenanceInfoItem}>
+                <Text style={[styles.maintenanceInfoValue, { color: '#34D399' }]}>
+                  {maintenanceTypeData.RCM ?? ((maintenanceTypeData.Minor ?? 0) + (maintenanceTypeData.Medium ?? 0))}
+                </Text>
+                <Text style={styles.maintenanceInfoLabel}>RCM</Text>
               </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
-                <Text style={{ color: '#63728A', fontSize: 30 }}>|</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  marginLeft: 5,
-                }}
-              >
-                <Text style={{ color: '#FBBF24', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Medium}</Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`TRUNG TU`}</Text>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
-                <Text style={{ color: '#63728A', fontSize: 30 }}>|</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  marginLeft: 5,
-                }}
-              >
-                <Text style={{ color: '#FB7185', fontSize: 16, fontWeight: 'bold' }}>{maintenanceTypeData.Major}</Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`ĐẠI TU`}</Text>
+              <Text style={styles.maintenanceInfoDivider}>|</Text>
+              <View style={styles.maintenanceInfoItem}>
+                <Text style={[styles.maintenanceInfoValue, { color: '#FB7185' }]}>
+                  {maintenanceTypeData.Major}
+                </Text>
+                <Text style={styles.maintenanceInfoLabel}>ĐẠI TU</Text>
               </View>
             </View>
           </View>
           <View style={styles.maintenanceInfoRow}>
-            <View style={{ flexDirection: 'row' }}>
-              <ScheduleIcon opacity="1" width="16" height="16" />
-              <Text style={{ color: 'rgb(255,255,255)', fontSize: 14, marginLeft: 5 }}>{`Số ngày sửa chữa`}</Text>
+            <View style={styles.maintenanceInfoHeader}>
+              <ScheduleIcon opacity="1" width={px(16).toString()} height={px(16).toString()} />
+              <Text style={styles.maintenanceInfoHeaderText}>Số ngày sửa chữa</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(10) }}>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 5 }}>
-                <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>{mainternanceDurationData.Plan}</Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`KẾ HOẠCH`}</Text>
+            <View style={styles.maintenanceInfoContent}>
+              <View style={styles.maintenanceInfoItem}>
+                <Text style={[styles.maintenanceInfoValue, { color: '#FFF' }]}>
+                  {mainternanceDurationData.Plan}
+                </Text>
+                <Text style={styles.maintenanceInfoLabel}>KẾ HOẠCH</Text>
               </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
-                <Text style={{ color: '#63728A', fontSize: 30 }}>|</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  marginLeft: 5,
-                }}
-              >
-                <Text style={{ color: '#FFF', fontSize: 16, fontWeight: 'bold' }}>
+              <Text style={styles.maintenanceInfoDivider}>|</Text>
+              <View style={styles.maintenanceInfoItem}>
+                <Text style={[styles.maintenanceInfoValue, { color: '#FFF' }]}>
                   {mainternanceDurationData.Actual}
                 </Text>
-                <Text style={{ color: '#64748B', fontSize: 12 }}>{`THỰC TẾ`}</Text>
+                <Text style={styles.maintenanceInfoLabel}>THỰC TẾ</Text>
               </View>
             </View>
           </View>

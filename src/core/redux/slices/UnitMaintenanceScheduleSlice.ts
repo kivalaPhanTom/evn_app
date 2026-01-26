@@ -3,8 +3,7 @@ import { set } from 'react-hook-form'
 
 interface RepairScheduleDetailCategory {
   Total?: number
-  Minor: number
-  Medium: number
+  RCM: number
   Major: number
 }
 
@@ -50,8 +49,7 @@ interface CurrentPlantDetail {
 interface RepairSchedule {
   TotalCategory: number
   TotalActualDay: number
-  TotalMinorCategory: number
-  TotalMediumCategory: number
+  TotalRCMCategory: number
   TotalMajorCategory: number
   Details: RepairScheduleDetailItem[]
   isRepairerScheduleLoading: boolean
@@ -61,8 +59,7 @@ interface RepairSchedule {
 const initialState: RepairSchedule = {
   TotalCategory: 0,
   TotalActualDay: 0,
-  TotalMinorCategory: 0,
-  TotalMediumCategory: 0,
+  TotalRCMCategory: 0,
   TotalMajorCategory: 0,
   Details: [],
   isRepairerScheduleLoading: false,
@@ -71,8 +68,7 @@ const initialState: RepairSchedule = {
     PlantName: '',
     MaintenanceItems: 0,
     Breakdown: {
-      Minor: 0,
-      Medium: 0,
+      RCM: 0,
       Major: 0,
     },
     RepairPlannedDays: 0,
