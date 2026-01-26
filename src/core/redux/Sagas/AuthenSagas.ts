@@ -23,7 +23,9 @@ function* getTokenSaga(action: any): Generator {
             yield call(setAuthToken, access_token, expires_in)
             yield call(setUsernameToAsyncStorage, username)
             yield put(getModules())
-            router.replace('/companies')
+            setTimeout(() => {
+                router.replace('/companies')
+            }, 500)
         }
     } catch (error) {
         catchHandle(error, 'getTokenSaga')
