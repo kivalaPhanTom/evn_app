@@ -3,6 +3,7 @@ import { getToken } from '../Actions/AuthenActions'
 import { Service } from '@/core/service/authenService'
 import { Toast } from 'toastify-react-native'
 import { setAuthToken, setUsernameToAsyncStorage } from '@/core/service/api.service'
+import { getModules } from '@/core/redux/Actions/ModuleActions'
 import { router } from 'expo-router'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -21,6 +22,7 @@ function* getTokenSaga(action: any): Generator {
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token, expires_in)
             yield call(setUsernameToAsyncStorage, username)
+            yield put(getModules())
             router.replace('/companies')
         }
     } catch (error) {
