@@ -56,7 +56,6 @@ function PowerSection() {
             currentDate={currentDate}
             currentPower={currentPower}
             currentTime={currentTime}
-            avgPower={avgPower}
             HourlyPowerList={HourlyPowerList}
             onPressCard={onPressCard}
             unit={unit}

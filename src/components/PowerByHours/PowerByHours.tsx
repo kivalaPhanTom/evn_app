@@ -18,7 +18,6 @@ interface Props {
   currentDate: string
   currentPower: number
   currentTime: string
-  avgPower: number
   HourlyPowerList: HourlyPowerList[]
   onPressCard: any
   unit: string
@@ -34,7 +33,6 @@ function PowerByHours(props: Props) {
     currentDate,
     currentPower,
     currentTime,
-    avgPower,
     HourlyPowerList,
     onPressCard,
     offeredPower,
@@ -66,7 +64,6 @@ function PowerByHours(props: Props) {
         }))
         ?.filter((item) => Number(item.label?.slice(0, -1)) <= Number(currentTime?.slice(0, -1)))
     : []
-  console.log('currentOfferedPowerList:', currentOfferedPowerList)
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -97,7 +94,7 @@ function PowerByHours(props: Props) {
                   {currentPower} {unit}
                 </Text>
                 <View style={styles.changeRow}>
-                  <MetricDiff diff={currentPower} compareTo={avgPower} />
+                  <MetricDiff diff={currentPower} compareTo={offeredPower} />
                 </View>
               </>
             )}
