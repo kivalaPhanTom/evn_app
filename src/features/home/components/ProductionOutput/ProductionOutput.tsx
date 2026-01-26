@@ -22,6 +22,7 @@ function ProductionOutput() {
   const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
+
   useAlignedHourlyTimer(() => {
     dispatch(getProductOutputOverview())
   })
