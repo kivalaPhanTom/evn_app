@@ -1,4 +1,3 @@
-
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import React, { Component, useMemo, useState } from 'react'
@@ -119,7 +118,6 @@ const BarChart: React.FC<Props> = ({
     const overallMax = Math.max(barMax, line1Max, line2Max)
     return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
   }, [allValues, lineData1, lineData2])
-
   const processed =
     useMemo(() => {
       try {
@@ -317,10 +315,6 @@ const BarChart: React.FC<Props> = ({
           data={processed}
           height={height}
           barWidth={barWidth}
-          // focusBarOnPress
-          // focusedBarIndex={3}
-          // highlightedBarIndex={3}
-          // highlightEnabled
           frontColor={frontColor}
           spacing={spacing}
           maxValue={paddedMax}

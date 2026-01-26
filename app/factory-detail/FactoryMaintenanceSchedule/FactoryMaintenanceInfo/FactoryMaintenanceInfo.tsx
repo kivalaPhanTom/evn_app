@@ -22,10 +22,9 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
     }
   }, [currentPlantId, dispatch])
 
-  // Map dữ liệu từ Breakdown
+  // Map dữ liệu từ Breakdown - API v2 trả về RCM thay vì Minor và Medium
   const maintenanceTypeData = {
-    minor: currentPlantDetail?.Breakdown?.Minor ?? 0, // TIỂU TU
-    medium: currentPlantDetail?.Breakdown?.Medium ?? 0, // TRUNG TU
+    rcm: currentPlantDetail?.Breakdown?.RCM ?? 0, // RCM
     major: currentPlantDetail?.Breakdown?.Major ?? 0, // ĐẠI TU
   }
 
@@ -43,17 +42,10 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
         
         <View style={{ marginTop: 8 }}>
           <View style={styles.maintenanceTypeRow}>
-            <Text style={[styles.maintenanceTypeValue, { color: '#34D399', marginRight: 10 }]}>
-              {maintenanceTypeData.minor}
+            <Text style={[styles.maintenanceTypeValue, { color: '#60A5FA', marginRight: 10 }]}>
+              {maintenanceTypeData.rcm}
             </Text>
-            <Text style={styles.maintenanceTypeLabel}>TIỂU TU</Text>
-          </View>
-          
-          <View style={styles.maintenanceTypeRow}>
-            <Text style={[styles.maintenanceTypeValue, { color: '#FBBF24' }]}>
-              {maintenanceTypeData.medium}
-            </Text>
-            <Text style={styles.maintenanceTypeLabel}>TRUNG TU</Text>
+            <Text style={styles.maintenanceTypeLabel}>RCM</Text>
           </View>
           
           <View style={styles.maintenanceTypeRow}>

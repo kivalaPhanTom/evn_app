@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'expo-router'
 import { View } from 'react-native'
@@ -21,6 +21,7 @@ function ProductionOutput() {
   } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
   const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
 
   useAlignedHourlyTimer(() => {
     dispatch(getProductOutputOverview())
@@ -29,12 +30,15 @@ function ProductionOutput() {
   useEffect(() => {
     dispatch(getProductOutputOverview())
     dispatch(getProductOutputByHours())
-    dispatch(getProductOutputByDays(7))
+    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear}))
   }, [countRefesh])
 
   const onPressCard = () => {
     router.navigate({ pathname: '/product-output-detail' })
   }
+  useEffect(() => {
+    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear}))
+  }, [countRefesh, selectedYear])
   
   return (
     <SectionContainer title="Sản lượng (A)">
@@ -46,6 +50,7 @@ function ProductionOutput() {
           detail={powerSources}
           isLoading={isLoadingOverview}
           unit="tr.KWh"
+          type='production'
         />
       </View>
       {/* <View style={styles.section}>
@@ -62,6 +67,8 @@ function ProductionOutput() {
       </View> */}
       <View style={styles.section}>
         <ProductOutputRencentDays
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
           isLoading={isLoadingNearCurrentDays}
           productionData={productionData}
           onPressCard={onPressCard}

@@ -34,9 +34,9 @@ function getProductOutputOverviewApi() {
   return api.get(`${servicePattern.getProductOutputOverview}`, { params: { currentPlantId: '' } })
 }
 
-function getProductOutputByDaysApi(dayNumber: number = 7) {
+function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1) {
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { N: dayNumber }
+    params: { nString: dayNumber, samePeriod: samePeriod }
   })
 }
 

@@ -19,6 +19,8 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
+  
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
@@ -41,6 +43,8 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
     <ProductOutputRencentDays
       isLoading={isLoading}
       productionData={productionData}
+      selectedYear={selectedYear}
+      setSelectedYear={setSelectedYear}
     />
   )
 }

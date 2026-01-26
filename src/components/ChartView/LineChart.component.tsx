@@ -43,6 +43,7 @@ export interface LineCharProps {
   showValuesAsDataPointsText?: boolean
   animateOnDataChange?: boolean
   marginLeftXLabel?: number
+  scrollToEnd?: boolean
 }
 
 export const LineChart: React.FC<LineCharProps> = ({
@@ -81,6 +82,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   showValuesAsDataPointsText = true,
   animateOnDataChange = true,
   marginLeftXLabel = 0,
+  scrollToEnd = false,
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -173,7 +175,8 @@ export const LineChart: React.FC<LineCharProps> = ({
         endSpacing={15}
         strokeDashArray1={strokedashArray1}
         strokeDashArray2={strokeDashArray2}
-        showXAxisIndices = {true}
+        showXAxisIndices={true}
+        scrollToEnd={scrollToEnd}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
           pointerConfig

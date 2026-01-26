@@ -94,10 +94,10 @@ export const styles = StyleSheet.create({
     color: '#F6FF00', // Màu vàng
     fontSize: px.m(10),
     fontWeight: '600',
-    marginLeft: px.h(6),
+    marginRight: px.h(6),
     // backgroundColor: 'rgba(0, 0, 0, 0.4)',
     backgroundColor: 'transparent',
-    paddingHorizontal: px.h(6),
+    paddingHorizontal: px.h(0),
     paddingVertical: px.v(2),
     borderRadius: px.h(4),
   },

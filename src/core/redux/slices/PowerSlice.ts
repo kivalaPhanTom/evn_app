@@ -26,8 +26,10 @@ interface powerOverviewState {
     currentDate: string
     currentPower: number
     currentTime: string
-    avgPower: number
+    offeredPower: number
+    unit: string
     HourlyPowerList: HourlyPowerList[]
+    offeredPowerList: number[]
   }
   powerByDays: {
     powerData: PowerByDays[]
@@ -89,7 +91,9 @@ const initialState: powerOverviewState = {
     currentDate: '',
     currentPower: 0,
     currentTime: '0h',
-    avgPower: 0,
+    offeredPower: 0,
+    unit: '',
+    offeredPowerList: [],
     HourlyPowerList: [],
   },
   powerByDays: {
@@ -177,5 +181,6 @@ const powerSlice = createSlice({
   },
 })
 const { reducer } = powerSlice
-export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading, setActiveTab } = powerSlice.actions
+export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading, setActiveTab } =
+  powerSlice.actions
 export default reducer

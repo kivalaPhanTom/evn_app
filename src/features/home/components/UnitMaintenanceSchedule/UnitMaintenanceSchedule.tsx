@@ -22,7 +22,7 @@ function UnitMaintenanceSchedule() {
   const onPressCard = () => {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
-  const { TotalActualDay, TotalCategory, TotalMajorCategory, TotalMediumCategory, TotalMinorCategory, Details } =
+  const { TotalActualDay, TotalCategory, TotalMajorCategory, TotalRCMCategory, Details } =
     useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
   useEffect(() => {

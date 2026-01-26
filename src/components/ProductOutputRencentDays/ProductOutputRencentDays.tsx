@@ -11,6 +11,7 @@ import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
 
 interface ProductionData {
   date: string
+  dayOfWeek: string
   actual: number
   contract: number
   samePeriod?: number
@@ -19,6 +20,8 @@ interface Props {
   isLoading: boolean
   productionData: ProductionData[]
   onPressCard: any
+  selectedYear: number
+  setSelectedYear: (year: number) => void
 }
 interface LegendItemData {
   type: 'box' | 'line'
@@ -27,9 +30,9 @@ interface LegendItemData {
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { isLoading, productionData, onPressCard } = props
+  const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
-  const [selectedYear, setSelectedYear] = useState(currentYear - 1)
+  // 
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
   const unit = 'tr.KWh'
   const dataActual = productionData.map((item) => ({
@@ -150,24 +153,31 @@ function ProductOutputRencentDays(props: Props) {
               {productionData.map((day, index) => {
                 const isAboveContract = day.actual >= day.contract
                 const actualColor = isAboveContract ? Colors.green : Colors.red
-
+                const isWeekend =
+                  day.dayOfWeek.toLowerCase() === 'thứ bảy' || day.dayOfWeek.toLowerCase() === 'chủ nhật'
                 return (
                   <View key={index} style={styles.rowCard}>
                     <View style={styles.tableRow}>
-                      <Text style={[styles.cellText, styles.col1, styles.dateText]}>{day.date}</Text>
+                      <Text style={[styles.cellText, styles.col1, styles.dateText, isWeekend && styles.weekendText,]}>
+                        {day.date}
+                        {'\n'}
+                        <Text style={styles.dayOfWeek}>
+                          {day.dayOfWeek}
+                        </Text>
+                      </Text>
                       <View style={styles.col2}>
                         <Text style={[styles.cellText, styles.valueText, { color: actualColor }]}>
-                          {day.actual.toFixed(1)} <Text style={styles.unitText}></Text>
+                          {day.actual.toFixed(2)} <Text style={styles.unitText}></Text>
                         </Text>
                       </View>
                       <View style={styles.col3}>
                         <Text style={[styles.cellText, styles.valueText, styles.contractText]}>
-                          {day.contract.toFixed(1)} <Text style={styles.unitText}></Text>
+                          {day.contract.toFixed(2)} <Text style={styles.unitText}></Text>
                         </Text>
                       </View>
                       <View style={styles.col3}>
                         <Text style={[styles.cellText, styles.valueText, styles.samePeriodText]}>
-                          {day.samePeriod != null ? day.samePeriod.toFixed(1) : '--'}
+                          {day.samePeriod != null ? day.samePeriod.toFixed(2) : '--'}
                         </Text>
                       </View>
                     </View>
