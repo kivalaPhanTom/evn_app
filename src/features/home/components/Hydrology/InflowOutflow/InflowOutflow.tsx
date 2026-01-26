@@ -128,6 +128,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     height={px.v(200)}
                     pointerConfig={true}
                     xAxisColor="#E5E5EF"
+                    scrollToEnd={true}
                   />
                 )}
               </>
