@@ -4,6 +4,7 @@ import ProductionOutputByHours from '@/components/ProductionOutputByHours/Produc
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductOutputActions'
 import { RootState } from '@/core/redux/store'
+import { View } from 'react-native'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -34,11 +35,13 @@ function ProductionOutputByHoursFactDetail(props: Props) {
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getProductOutputByHoursFactDetail({
-        factoryId: currentPlantId,
-        getDataFromApi: getDataFromApi,
-        setLoading: setLoading
-      }))
+      dispatch(
+        getProductOutputByHoursFactDetail({
+          factoryId: currentPlantId,
+          getDataFromApi: getDataFromApi,
+          setLoading: setLoading,
+        }),
+      )
     }
   }, [activeTabIndex, countRefesh])
 
@@ -51,16 +54,17 @@ function ProductionOutputByHoursFactDetail(props: Props) {
     router.push({ pathname: '/product-output-detail', params: { currentPlantId: currentPlantId } })
   }
   return (
-    <ProductionOutputByHours
-      isLoading={isLoading}
-      currentDate={productOutputByHours.currentDate}
-      contractPowerValue={contractPowerValue}
-      currentPowerValue={currentPowerValue}
-      currentTime={productOutputByHours.currentTime}
-      unit={productOutputByHours.unit}
-      barGroups={listValueByHours}
-      onPressCard={onPressCard}
-    />
+    // <ProductionOutputByHours
+    //   isLoading={isLoading}
+    //   currentDate={productOutputByHours.currentDate}
+    //   contractPowerValue={contractPowerValue}
+    //   currentPowerValue={currentPowerValue}
+    //   currentTime={productOutputByHours.currentTime}
+    //   unit={productOutputByHours.unit}
+    //   barGroups={listValueByHours}
+    //   onPressCard={onPressCard}
+    // />
+    <View></View>
   )
 }
 
