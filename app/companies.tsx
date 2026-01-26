@@ -13,6 +13,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Constants from 'expo-constants'
 import { useTranslation } from 'react-i18next'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function CompaniesScreen() {
   const { t } = useTranslation();
@@ -24,6 +25,10 @@ export default function CompaniesScreen() {
     router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
   }
   const appVersion = Constants.expoConfig?.version ?? ''
+  const onLogout = async () => {
+    await AsyncStorage.clear()
+    router.replace('/login')
+  }
 
   return (
     <TwinkleStars
@@ -34,6 +39,15 @@ export default function CompaniesScreen() {
       maxSize={2}
     >
       <SafeAreaView style={styles.flex} edges={['top']}>
+        <View style={styles.header}>
+          <Pressable onPress={onLogout} hitSlop={10}>
+            <Ionicons
+              name="log-out-outline"
+              size={px.f(22)}
+              color={isDark ? '#FFFFFF' : '#111827'}
+            />
+          </Pressable>
+        </View>
         <ScrollView contentContainerStyle={styles.container}>
           <SectionContainer title="">
             {COMPANIES.map((c) => (
@@ -117,4 +131,10 @@ const styles = StyleSheet.create({
     color: '#C7D6E1',
     fontSize: px.m(12),
   },
+  header: {
+    position: 'absolute',
+    top: px.v(8),
+    right: px.h(16),
+    zIndex: 10,
+  }
 })

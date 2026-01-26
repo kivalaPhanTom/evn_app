@@ -21,7 +21,9 @@ function* getTokenSaga(action: any): Generator {
             Toast.success('Đăng nhập thành công!')
             yield call(setAuthToken, access_token, expires_in)
             yield call(setUsernameToAsyncStorage, username)
-            router.replace('/companies')
+            setTimeout(() => {
+                router.replace('/companies')
+            }, 500)
         }
     } catch (error) {
         catchHandle(error, 'getTokenSaga')
