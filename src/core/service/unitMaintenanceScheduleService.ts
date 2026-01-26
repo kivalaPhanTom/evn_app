@@ -6,7 +6,7 @@ export const Service = {
 }
 
 export const servicePattern = {
-  getRepairSchedule: `${prefix_api}/repairSchedule`,
+  getRepairSchedule: `${prefix_api}/repairSchedule_v2`,
   getDetailRepairSchedule: `${prefix_api}/detailRepairSchedule_v2`,
 }
 
