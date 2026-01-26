@@ -66,7 +66,21 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
     //   }),
     // )
   }
-
+  const currentDate = new Date()
+  const currentBarchartData =
+    BarChartData?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
+  // const currentCompareLineChartData =
+  //   compareLineChartData?.slice(0, currentBarchartData.length)?.map((item: any) => ({
+  //     value: typeof item === 'number' ? item : item?.value,
+  //   })) || []
+  const currentCompareLineChartData =
+    compareLineChartData
+      ?.map((item: any, idx: number) => ({
+        id: String(idx),
+        label: idx + 'h',
+        value: typeof item === 'number' ? item : item?.value,
+      }))
+      ?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -81,8 +95,8 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
 
         {/* Dashboard */}
         <CompareDashboard
-          data={BarChartData}
-          lineData2={compareLineChartData}
+          data={currentBarchartData}
+          lineData2={currentCompareLineChartData}
           range={range}
           onChangeDateRage={onChangeDateRage}
           isLoading={isLoadingComparePower}

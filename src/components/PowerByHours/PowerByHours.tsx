@@ -21,20 +21,34 @@ interface Props {
   avgPower: number
   HourlyPowerList: HourlyPowerList[]
   onPressCard: any
+  unit: string
+  offeredPower: number
+  offeredPowerList: number[]
+  scrollToEnd?: boolean
 }
 
 function PowerByHours(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { isLoading, currentDate, currentPower, currentTime, avgPower, HourlyPowerList, onPressCard } = props
+  const {
+    isLoading,
+    currentDate,
+    currentPower,
+    currentTime,
+    avgPower,
+    HourlyPowerList,
+    onPressCard,
+    offeredPower,
+    offeredPowerList,
+    unit,
+    scrollToEnd = false,
+  } = props
   const title = 'P theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate
-  console.log(currentTime.substring(0, currentTime.length - 1))
   const hourlyData = HourlyPowerList
     ? HourlyPowerList.map((d: any) => ({ ...d }))?.filter(
         (item) => Number(item.label?.slice(0, -1)) <= Number(currentTime?.slice(0, -1)),
       )
     : []
-  const unit = 'MW'
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -44,10 +58,15 @@ function PowerByHours(props: Props) {
       setFirstLoading(false)
     }
   }, [isLoading])
-  const avgData = Array(hourlyData.length)
-    .fill(0)
-    .map((item, idx) => ({ value: avgPower, label: idx + 1 + 'h', hideDataPoint: true }))
-
+  const currentOfferedPowerList = offeredPowerList
+    ? offeredPowerList
+        .map((value: number, index: number) => ({
+          value,
+          label: `${index + 1}h`,
+        }))
+        ?.filter((item) => Number(item.label?.slice(0, -1)) <= Number(currentTime?.slice(0, -1)))
+    : []
+  console.log('currentOfferedPowerList:', currentOfferedPowerList)
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -57,7 +76,7 @@ function PowerByHours(props: Props) {
           <View style={styles.headerTop}>
             <Text style={styles.subtitle}>{subtitle}</Text>
             <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-              <Text style={styles.actionButtonText}>Thêm chi tiết</Text>
+              <Text style={styles.actionButtonText}>Chi tiết</Text>
               <Text style={styles.actionButtonIcon}>{'>'}</Text>
             </TouchableOpacity>
           </View>
@@ -84,13 +103,13 @@ function PowerByHours(props: Props) {
             )}
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>TRUNG BÌNH</Text>
+            <Text style={styles.statLabel}>P bản chào</Text>
             {firstLoading || isLoading ? (
               <BarSkeleton width={95} height={28} />
             ) : (
               <>
                 <Text style={styles.statValueAverage}>
-                  {avgPower} {unit}
+                  {offeredPower} {unit}
                 </Text>
               </>
             )}
@@ -101,13 +120,14 @@ function PowerByHours(props: Props) {
             <LineChartSkeleton />
           ) : (
             <LineChart
-              data={avgData}
+              data={currentOfferedPowerList}
               data2={hourlyData}
               color={Colors.orange}
               color2={Colors.blue}
               hideDataPoints2={false}
               hideYAxisText={true}
               hideDataPoints1={true}
+              scrollToEnd={scrollToEnd}
             />
           )}
         </View>

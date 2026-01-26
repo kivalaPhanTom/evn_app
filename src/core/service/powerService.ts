@@ -8,11 +8,11 @@ export const Service = {
   getComparePowerApi,
   getPowerOverviewFactDetailApi,
   getPowerByTimeFactDetailApi,
-  getPowerByDaysFactDetailApi
+  getPowerByDaysFactDetailApi,
 }
 export const servicePattern = {
   getPowerOverview: `${prefix_api}/overview`,
-  getPowerByTime: `${prefix_api}/power_by_time`,
+  getPowerByTime: `${prefix_api}/power_by_time_v2`,
   getPowerByDays: `${prefix_api}/Recent_days`,
   getComparePower: `${prefix_api}/ComparePower`,
 }

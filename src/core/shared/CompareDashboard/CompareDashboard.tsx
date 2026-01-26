@@ -17,7 +17,7 @@ interface BarGroup {
 
 interface CompareDashboardProps {
   data: { value: number; label: string }[]
-  lineData2?: { value: number }[]
+  lineData2?: { value: number; id: number; label: string }[]
   range: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   onChangeDateRage: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
   isLoading: boolean
@@ -40,6 +40,22 @@ const CompareDashboard = ({
   const availableWidth = screenWidth - totalPadding
   const barSpacing = px.h(8)
   const barWidth = (availableWidth - barSpacing * (barsToShow - 1)) / barsToShow
+  const chartHeight = px.v(150)
+
+  // Tính offset cho line data2 dựa trên giá trị lớn nhất của bar vs line
+  const barMaxValue = data.length > 0 ? Math.max(...data.map((item) => item.value || 0)) : 0
+  const lineMaxValue = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
+
+  // Nếu line cao hơn bar, tính offset âm để push line xuống
+  // shift dựa trên tỷ lệ value difference
+  let lineDataPointsShift2 = 0
+  if (lineMaxValue > barMaxValue) {
+    const valueDiff = lineMaxValue - barMaxValue
+    const ratio = valueDiff / lineMaxValue // tỷ lệ chênh lệch
+    lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% của chiều cao tương ứng với tỷ lệ
+  }
+  console.log('lineMaxValue:', lineMaxValue, 'barMaxValue:', barMaxValue, 'lineDataPointsShift2:', lineDataPointsShift2)
+
   const customDataPoint = (
     <View
       style={{
@@ -79,13 +95,6 @@ const CompareDashboard = ({
       },
     ],
   }))
-
-  const lineData2Converted = lineData2?.map((item: any, idx: number) => ({
-    id: String(idx),
-    label: String(idx),
-    value: typeof item === 'number' ? item : item?.value,
-  }))
-
   return (
     <View>
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
@@ -112,8 +121,9 @@ const CompareDashboard = ({
             noOfSection={4}
             rulesType="dash"
             lineColor="transparent"
-            lineData2={lineData2Converted}
+            lineData2={lineData2}
             lineColor2="#A78BFA"
+            lineDataPointsShift2={lineDataPointsShift2}
             customDataPoint2={customDataPoint}
             scrollToEnd={scrollToEnd}
           />

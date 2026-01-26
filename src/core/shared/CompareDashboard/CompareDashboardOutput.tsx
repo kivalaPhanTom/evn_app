@@ -9,7 +9,7 @@ import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.compon
 import dayjs from 'dayjs'
 import { getCompareProductOutput } from '@/core/redux/Actions/ProductOutputActions'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
-import { RootState } from "@/core/redux/store";
+import { RootState } from '@/core/redux/store'
 
 const localStyles = StyleSheet.create({
   chartContainer: {
@@ -137,11 +137,13 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
   }))
 
   useEffect(() => {
-    dispatch(getCompareProductOutput({
-      tagetDate: range.to.format('DD/MM/YYYY'),
-      compareDate: range.from.format('DD/MM/YYYY'),
-      currentPlantId: currentPlantId || '',
-    }))
+    dispatch(
+      getCompareProductOutput({
+        tagetDate: range.to.format('DD/MM/YYYY'),
+        compareDate: range.from.format('DD/MM/YYYY'),
+        currentPlantId: currentPlantId || '',
+      }),
+    )
   }, [dispatch, countRefesh])
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
@@ -173,8 +175,9 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
         isCheckDisableDate={isCheckDisableDate}
       />
       <View style={localStyles.chartContainer}>
-        {isLoadingCompareProductOutput ?
-          <LineBarChartSkeleton height={150} /> :
+        {isLoadingCompareProductOutput ? (
+          <LineBarChartSkeleton height={150} />
+        ) : (
           <View style={styles.chartWrapper}>
             <BarChart
               data={barData}
@@ -199,8 +202,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
               scrollToEnd
             />
           </View>
-        }
-
+        )}
       </View>
     </View>
   )
