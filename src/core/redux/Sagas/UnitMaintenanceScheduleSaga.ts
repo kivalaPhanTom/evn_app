@@ -33,16 +33,27 @@ function* getRepairScheduleSaga(): Generator {
 
 function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairSchedule>): Generator {
   try {
+    yield put(
+      setLoading({
+        isDetailRepairScheduleLoading: true,
+      }),
+    )
     const { currentPlantId } = action.payload
     const res = yield call(Service.getDetailRepairScheduleApi, currentPlantId)
     if (res.status === 200) {
       yield put(setCurrentPlantDetail(res.data))
     }
+    yield put(
+      setLoading({
+        isDetailRepairScheduleLoading: false,
+      }),
+    )
   } catch (error) {
     catchHandle(error, 'getDetailRepairScheduleSaga')
     yield put(
       setLoading({
         isRepairerScheduleLoading: false,
+        isDetailRepairScheduleLoading: false,
       }),
     )
   }
