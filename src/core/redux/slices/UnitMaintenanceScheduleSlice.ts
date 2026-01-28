@@ -53,6 +53,7 @@ interface RepairSchedule {
   TotalMajorCategory: number
   Details: RepairScheduleDetailItem[]
   isRepairerScheduleLoading: boolean
+  isDetailRepairScheduleLoading: boolean
   currentPlantDetail: CurrentPlantDetail
 }
 
@@ -63,6 +64,7 @@ const initialState: RepairSchedule = {
   TotalMajorCategory: 0,
   Details: [],
   isRepairerScheduleLoading: false,
+  isDetailRepairScheduleLoading:false,
   currentPlantDetail: {
     PlantCode: '',
     PlantName: '',

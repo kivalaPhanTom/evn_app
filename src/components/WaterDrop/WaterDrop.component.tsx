@@ -10,6 +10,7 @@ interface Props {
   width?: number
   vbWidth?: number
   vbHeight?: number
+  isShowPercent?: boolean
 }
 
 export default function WaterDrop({
@@ -19,6 +20,7 @@ export default function WaterDrop({
   width = 50,
   vbWidth = 24,
   vbHeight = 24,
+  isShowPercent = true
 }: Props) {
   const isHigh = percent >= 50
   const critical = percent < 20
@@ -153,7 +155,7 @@ export default function WaterDrop({
           <Path d={wavePath} fill="url(#grad)" />
         </G>
       </Svg>
-      <Text
+      {isShowPercent && <Text
         style={[
           styles.percentText,
           {
@@ -165,6 +167,7 @@ export default function WaterDrop({
       >
         {percent}%
       </Text>
+      }
     </Animated.View>
   )
 }
