@@ -133,13 +133,13 @@ function HomeContent() {
           </LazySection>
         )}
 
-        <LazySection shouldLoad={shouldLoadMap} minHeight={200}>
+        {/* <LazySection shouldLoad={shouldLoadMap} minHeight={200}> */}
           <UriWebView
             uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
             headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
             style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
           />
-        </LazySection>
+        {/* </LazySection> */}
 
       </TwinkleStars>
     </ScrollView>
