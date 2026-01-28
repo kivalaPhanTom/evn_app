@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     fontWeight: '400',
     opacity: 0.7,
   },
-  samePeriodValue: {
+  previousValue: {
     color: '#FFFFFF',
     fontSize: px.m(12),
     fontWeight: '600',

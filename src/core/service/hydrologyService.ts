@@ -18,7 +18,7 @@ export const Service = {
 export const servicePattern = {
   getHydrographicChart: `${prefix_api}/hydrographic_chart`,
   getHydrologyFlow: `${prefix_api}/FlowDiagram`,
-  getInflowOutflow: `${prefix_api}/InflowOutflow`,
+  getInflowOutflow: `${prefix_api}/InflowOutflow_v2`,
   getHydrologyPlantsParam: `${prefix_api}/hydrologyplant_detail`,
   getHydrologyPlantsInfo: `${prefix_api}/HydrologyPlantInformation`,
   getUpstreamWaterLevel: `${prefix_api}/GetUpstreamWaterLevel`,
