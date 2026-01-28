@@ -35,6 +35,15 @@ const UriWebView: React.FC<Props> = ({ uri, headers, style }) => {
 		const script = `(function(){try{var els=document.querySelectorAll('.card');els.forEach(function(e){e.style.display='none';});}catch(e){} })();true;`
 		webviewRef.current?.injectJavaScript?.(script)
 	}
+	const handleError = (event: any): void => {
+		const { description } = event.nativeEvent;
+
+		const isSslError = description?.toLowerCase().includes('ssl');
+		if (isSslError) {
+			console.log(description);
+		}
+
+	};
 
 	return (
 		<SectionContainer title=''>
@@ -57,6 +66,7 @@ const UriWebView: React.FC<Props> = ({ uri, headers, style }) => {
 				bounces={false}
 				overScrollMode="never"
 				style={style}
+				onError={handleError}
 			/>
 
 		</SectionContainer>

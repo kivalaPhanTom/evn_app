@@ -2,7 +2,7 @@
   "expo": {
     "name": "HPP GENCO3",
     "slug": "HPPGENCO3",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "hppgenco3",
@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "com.genco3.hppgenco3",
-      "versionCode": 5,
+      "versionCode": 8,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/icon.png",
