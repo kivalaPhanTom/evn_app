@@ -1,8 +1,10 @@
-import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React, { useEffect } from 'react'
+import { View, Text } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { px } from '@/core/utils/scale'
 import { styles } from './ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
+import { getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
 
 interface ReservoirFlowCardProps {
   label: string // "Qvề" hoặc "Qxa"
@@ -10,7 +12,7 @@ interface ReservoirFlowCardProps {
   unit: string // "m³/s"
   color: string // màu chủ đạo (xanh hoặc cam)
   icon: string // "↓" hoặc "↑"
-  samePeriodValue: number // giá trị cùng kỳ
+  previousValue: number // giá trị cùng kỳ
   samePeriodUnit: string // đơn vị cùng kỳ
   gradientColors: [string, string] // màu gradient cho background
 }
@@ -21,7 +23,7 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
   unit,
   color,
   icon,
-  samePeriodValue,
+  previousValue,
   samePeriodUnit,
   gradientColors,
 }) => {
@@ -47,8 +49,8 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
       {/* So sánh cùng kỳ */}
       <View style={styles.samePeriodContainer}>
         <Text style={styles.samePeriodLabel}>Cùng kỳ: </Text>
-        <Text style={styles.samePeriodValue}>
-          {samePeriodValue} {samePeriodUnit}
+        <Text style={styles.previousValue}>
+          {previousValue} {samePeriodUnit}
         </Text>
       </View>
     </GradientCard>
@@ -59,35 +61,89 @@ interface ReservoirMetricData {
   inflow: {
     value: number
     unit: string
-    samePeriodValue: number
+    previousValue: number
     samePeriodUnit: string
   }
   outflow: {
     value: number
     unit: string
-    samePeriodValue: number
+    previousValue: number
+    samePeriodUnit: string
+  }
+  xtflow: {
+    value: number
+    unit: string
+    previousValue: number
     samePeriodUnit: string
   }
 }
 
 const DEFAULT_DATA: ReservoirMetricData = {
   inflow: {
-    value: 184.6,
+    value: 0,
     unit: 'm³/s',
-    samePeriodValue: 156.2,
+    previousValue: 0,
     samePeriodUnit: 'm³/s',
   },
   outflow: {
-    value: 26.3,
+    value: 0,
     unit: 'm³/s',
-    samePeriodValue: 31.5,
+    previousValue: 0,
+    samePeriodUnit: 'm³/s',
+  },
+  xtflow: {
+    value: 0,
+    unit: 'm³/s',
+    previousValue: 0,
     samePeriodUnit: 'm³/s',
   },
 }
 
+function mapInflowOutflowToReservoirMetric(apiData: {
+  unit?: string
+  cards?: { id?: string; title?: string; value?: number; unit?: string }[]
+}): ReservoirMetricData {
+  const unit = apiData?.unit ?? 'm³/s'
+  const cards = apiData?.cards ?? []
+  const inflow = cards[0]
+  const outflow = cards[1]
+  const xtflow = cards[2]
+  return {
+    inflow: {
+      value: inflow?.value ?? 0,
+      unit: inflow?.unit ?? unit,
+      previousValue: 0,
+      samePeriodUnit: inflow?.unit ?? unit,
+    },
+    outflow: {
+      value: outflow?.value ?? 0,
+      unit: outflow?.unit ?? unit,
+      previousValue: 0,
+      samePeriodUnit: outflow?.unit ?? unit,
+    },
+    xtflow: {
+      value: xtflow?.value ?? 0,
+      unit: xtflow?.unit ?? unit,
+      previousValue: 0,
+      samePeriodUnit: xtflow?.unit ?? unit,
+    },
+  }
+}
+
 function ReservoirMetric(props: { currentPlantId: string }) {
   const { currentPlantId } = props
-  const data = DEFAULT_DATA
+  const dispatch = useDispatch()
+  const inflowOutflowData = useSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {})
+  const hasApiData = inflowOutflowData?.cards?.length >= 3
+  const data = hasApiData
+    ? mapInflowOutflowToReservoirMetric(inflowOutflowData)
+    : DEFAULT_DATA
+
+  useEffect(() => {
+    if (currentPlantId) {
+      dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
+    }
+  }, [dispatch, currentPlantId])
 
   return (
     <View style={styles.container}>
@@ -97,18 +153,28 @@ function ReservoirMetric(props: { currentPlantId: string }) {
         unit={data.inflow.unit}
         color="#00DF73"
         icon="↓"
-        samePeriodValue={data.inflow.samePeriodValue}
+        previousValue={data.inflow.previousValue}
         samePeriodUnit={data.inflow.samePeriodUnit}
         gradientColors={['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)']}
       />
       <ReservoirFlowCard
-        label="Qxả"
+        label="Qcm"
         value={data.outflow.value}
         unit={data.outflow.unit}
         color="#FB923C"
         icon="↑"
-        samePeriodValue={data.outflow.samePeriodValue}
+        previousValue={data.outflow.previousValue}
         samePeriodUnit={data.outflow.samePeriodUnit}
+        gradientColors={['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)']}
+      />
+      <ReservoirFlowCard
+        label="Qxt"
+        value={data.xtflow.value}
+        unit={data.xtflow.unit}
+        color="#FB923C"
+        icon="↑"
+        previousValue={data.xtflow.previousValue}
+        samePeriodUnit={data.xtflow.samePeriodUnit}
         gradientColors={['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)']}
       />
     </View>

@@ -54,6 +54,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]
+  const xtflow = isEmptyData ? {} : inflowOutflowData?.cards[2]
   const qIn = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))
   const qOut = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))
 
@@ -86,9 +87,17 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                   />
                   <FlowMetricCard
                     label="Q"
-                    label1="xả"
+                    label1="cm"
                     value={outflow?.value}
                     unit={outflow?.unit}
+                    color="#FF0000"
+                    icon="↓"
+                  />
+                  <FlowMetricCard
+                    label="Q"
+                    label1="xả"
+                    value={xtflow?.value}
+                    unit={xtflow?.unit}
                     color="#FF0000"
                     icon="↓"
                   />
