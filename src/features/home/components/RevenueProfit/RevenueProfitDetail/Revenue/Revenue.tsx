@@ -50,7 +50,8 @@ export default function RevenueDetail() {
     `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
   const endDate = new Date(today)
   endDate.setDate(today.getDate() - 1) //
-
+  const prevDate = new Date(endDate)
+  prevDate.setDate(prevDate.getDate() - 1)
   const fromParts = revenue.Chart.Period.From?.split('-') ?? []
   const toParts = revenue.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
@@ -69,7 +70,7 @@ export default function RevenueDetail() {
             style={{ fontSize: px.f(20) }}
             withBackground
             diff={revenue.Today.ChangePercent / 100}
-            label="so với hôm qua"
+            label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
         <View style={{ marginTop: px.v(10) }}>

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     flexDirection: 'row',
-    gap: 15,
+    gap: 10,
     marginBottom: 15,
   },
   notePanel: {
