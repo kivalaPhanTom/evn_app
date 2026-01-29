@@ -95,7 +95,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                   />
                   <FlowMetricCard
                     label="Q"
-                    label1="xả"
+                    label1="xt"
                     value={xtflow?.value}
                     unit={xtflow?.unit}
                     color="#FF0000"

@@ -165,6 +165,8 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
     `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`
   const endDate = new Date(today)
   endDate.setDate(today.getDate() - 1) //
+  const prevDate = new Date(endDate)
+  prevDate.setDate(prevDate.getDate() - 1)
   const xAxisLabels = values.map((_, idx) => {
     const d = new Date(endDate)
     d.setDate(endDate.getDate() - (values.length - 1 - idx))
@@ -201,7 +203,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
             style={{ fontSize: px.f(20) }}
             withBackground
             diff={profitFactDetail.Today.ChangePercent / 100}
-            label="so với hôm qua"
+            label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
         <View style={{ marginTop: px.v(10) }}>
