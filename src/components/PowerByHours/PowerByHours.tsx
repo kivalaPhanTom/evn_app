@@ -106,7 +106,7 @@ function PowerByHours(props: Props) {
             ) : (
               <>
                 <Text style={styles.statValueAverage}>
-                  {offeredPower} {unit}
+                  {offeredPower >= 0  ? offeredPower: '--' } {unit}
                 </Text>
               </>
             )}
