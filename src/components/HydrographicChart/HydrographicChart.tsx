@@ -124,10 +124,16 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
       {isLoading ? <LineChartSkeleton /> :
         <View style={styles.container}>
           <View style={styles.legendContainer}>
-            <Svg height="2" width="30" style={styles.legendLine}>
-              <Line x1="0" y1="1" x2="24" y2="1" stroke={Colors.warningFull} strokeWidth="2" strokeDasharray="4, 3" />
-            </Svg>
-            <Text style={styles.legendText}>Mực nước chết</Text>
+            <View style={[styles.legendItem, { marginLeft: 8 }]}>
+              <Text style={styles.legendText}>Đơn vị:</Text>
+              <Text style={[styles.legendText, { marginLeft: 4 }]}>m</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <Svg height="2" width="30" style={styles.legendLine}>
+                <Line x1="0" y1="1" x2="24" y2="1" stroke={Colors.warningFull} strokeWidth="2" strokeDasharray="4, 3" />
+              </Svg>
+              <Text style={styles.legendText}>Mực nước chết</Text>
+            </View>
           </View>
 
           <View style={styles.chartContainer}>
@@ -314,7 +320,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                     {/* number */}
                     <SvgText
                       x="100%"
-                      dx={-16}
+                      dx={0}
                       y={thresholdY - 6}
                       fill={Colors.warningFull}
                       fontSize={12}
@@ -325,7 +331,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                     </SvgText>
 
                     {/* unit */}
-                    <SvgText
+                    {/* <SvgText
                       x="100%"
                       dx={-4}
                       y={thresholdY - 6}
@@ -334,7 +340,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       textAnchor="end"
                     >
                       m
-                    </SvgText>
+                    </SvgText> */}
                   </Svg>
                 </View>
               )}
@@ -377,9 +383,14 @@ const styles = StyleSheet.create({
   legendContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     marginBottom: 8,
     paddingRight: 4,
+
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   legendLine: {
     marginRight: 8,

@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
     marginRight: px.h(6),
     // backgroundColor: 'rgba(0, 0, 0, 0.4)',
     backgroundColor: 'transparent',
-    paddingHorizontal: px.h(0),
+    paddingHorizontal: px.h(2),
     paddingVertical: px.v(2),
     borderRadius: px.h(4),
   },

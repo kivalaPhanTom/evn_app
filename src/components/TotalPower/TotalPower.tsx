@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated'
 import styles from './TotalPower.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
@@ -24,9 +31,13 @@ interface Props {
   unit: string
   type: 'power' | 'production'
 }
+const ROTATION_DURATION = 3000
+
 function TotalPower(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
   const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit, type } = props
+  const rotation = useSharedValue(0)
+
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -37,6 +48,22 @@ function TotalPower(props: Props) {
     }
   }, [isLoading])
 
+  useEffect(() => {
+    if (type === 'power' && !isLoading) {
+      rotation.value = withRepeat(
+        withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }),
+        -1,
+        false,
+      )
+    } else {
+      rotation.value = withTiming(0, { duration: 0 })
+    }
+  }, [type, isLoading, rotation])
+
+  const cogwheelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }))
+
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -46,10 +73,19 @@ function TotalPower(props: Props) {
             <BarSkeleton width={40} height={40} />
           ) : (
             <View style={styles.iconPlaceholder}>
-              <Image
-                source={type === 'power' ? require('@/assets/images/cogwheel.png') : require('@/assets/images/hydroelectric.png')}
-                style={{ width: 80, height: 80 }}
-              />
+              {type === 'power' ? (
+                <Animated.View style={[cogwheelAnimatedStyle]}>
+                  <Image
+                    source={require('@/assets/images/cogwheel.png')}
+                    style={{ width: 50, height: 50 }}
+                  />
+                </Animated.View>
+              ) : (
+                <Image
+                  source={require('@/assets/images/hydroelectric.png')}
+                  style={{ width: 50, height: 50 }}
+                />
+              )}
             </View>
           )}
         </View>

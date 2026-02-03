@@ -167,7 +167,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
       style={styles.wrapper}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>MỰC NƯỚC HỒ CHỨA</Text>
+        <Text style={styles.title}>MỰC NƯỚC HỒ CHỨA (m)</Text>
         <Text style={styles.locationName}>{data?.name}</Text>
       </View>
       <View style={styles.container}>
@@ -262,7 +262,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                     ]}
                   >
                     <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                    <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data?.maxLevel}m</Text>
+                    <Text style={[styles.referenceText, { color: '#00DF73', marginRight: 6, marginLeft: 0 }]}>{data?.maxLevel}</Text>
                   </View>
 
                   {/* Reference line */}
@@ -276,7 +276,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                       },
                     ]}
                   >
-                    <Text style={[styles.referenceText, { marginLeft: 0}]}>{data?.deadLevel}m</Text>
+                    <Text style={[styles.referenceText, { marginLeft: 0}]}>{data?.deadLevel}</Text>
                     <View style={styles.dashedLine} />
                   </View>
                 </View>
@@ -287,18 +287,18 @@ function ReservoirInfo(props: { currentPlantId: string }) {
           {/* Right side - Information */}
           <View style={styles.infoContainer}>
             <View style={styles.currentLevelContainer}>
-              <Text style={styles.currentLevel}>{data?.currentLevel} m</Text>
-              <Text style={styles.maxLevel}>/ {data?.maxLevel}m (mực nước tối đa)</Text>
+              <Text style={styles.currentLevel}>{data?.currentLevel}</Text>
+              <Text style={styles.maxLevel}>/ {data?.maxLevel} (mực nước tối đa)</Text>
             </View>
 
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Mực nước chết</Text>
-              <Text style={styles.infoValue}>{data?.deadLevel}m</Text>
+              <Text style={styles.infoValue}>{data?.deadLevel}</Text>
             </View>
 
             <View style={[styles.infoRow, { marginBottom: 0 }]}>
               <Text style={styles.infoLabel}>Cùng kỳ năm ngoái</Text>
-              <Text style={styles.infoValue}>{data?.previousLevel}m</Text>
+              <Text style={styles.infoValue}>{data?.previousLevel}</Text>
             </View>
           </View>
         </View>
