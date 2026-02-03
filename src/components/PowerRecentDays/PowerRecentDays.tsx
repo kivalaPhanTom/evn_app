@@ -29,10 +29,7 @@ function ValueCard({ day }: { day: PowerByDays }) {
   useEffect(() => {
     if (isToday) {
       opacity.value = withRepeat(
-        withSequence(
-          withTiming(0.5, { duration: 300 }),
-          withTiming(1, { duration: 300 }),
-        ),
+        withSequence(withTiming(0.5, { duration: 300 }), withTiming(1, { duration: 300 })),
         -1,
         true,
       )
@@ -43,17 +40,24 @@ function ValueCard({ day }: { day: PowerByDays }) {
 
   return (
     <View style={styles.valueCard}>
-      {isToday ? ( 
+      {isToday ? (
         <View style={styles.valueItem}>
           <Text style={styles.powerValue}>{day.value}</Text>
           <Animated.View style={[styles.valueItem, blinkStyle]}>
             <Text style={styles.dayLabel}>{day.date}</Text>
           </Animated.View>
-        </View>          
+        </View>
       ) : (
         <View style={styles.valueItem}>
           <Text style={styles.powerValue}>{day.value}</Text>
-          <Text style={styles.dayLabel}>{day.date}</Text>
+          <Text
+            style={[
+              styles.dayLabel,
+              { color: day.date === 'Thứ Bảy' || day.date === 'Chủ Nhật' ? '#eab308' : '#8b92a0' },
+            ]}
+          >
+            {day.date}
+          </Text>
         </View>
       )}
     </View>
@@ -63,6 +67,8 @@ function ValueCard({ day }: { day: PowerByDays }) {
 function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
+
+  console.log('PowerRecentDays powerData:', powerData)
 
   const unit = 'MW'
   const lineChartData = powerData.map((item, idx) => ({
@@ -88,25 +94,30 @@ function PowerRecentDays(props: Props) {
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {firstLoading || isLoading ? <SquareSkelenton count={4} /> :
+            {firstLoading || isLoading ? (
+              <SquareSkelenton count={4} />
+            ) : (
               <>
                 {powerData.map((day, index) => (
                   <ValueCard key={index} day={day} />
                 ))}
               </>
-            }
+            )}
           </ScrollView>
-          {firstLoading || isLoading ?
-           <View style={{ marginTop: 20 }}> 
-            <LineChartSkeleton /> 
-           </View>:
+          {firstLoading || isLoading ? (
+            <View style={{ marginTop: 20 }}>
+              <LineChartSkeleton />
+            </View>
+          ) : (
             <View>
               <LineChart
                 data={lineChartData}
-                data2={[{
-                  value: 0,
-                  label: ""
-                }]}
+                data2={[
+                  {
+                    value: 0,
+                    label: '',
+                  },
+                ]}
                 color={Colors.blue}
                 color2={'transparent'}
                 areaChart={false}
@@ -114,7 +125,7 @@ function PowerRecentDays(props: Props) {
                 marginLeftXLabel={20}
               />
             </View>
-          }
+          )}
 
           {/* Bottom Info */}
           <View style={styles.bottomInfo}>
