@@ -68,8 +68,6 @@ function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
 
-  console.log('PowerRecentDays powerData:', powerData)
-
   const unit = 'MW'
   const lineChartData = powerData.map((item, idx) => ({
     value: item.value,
