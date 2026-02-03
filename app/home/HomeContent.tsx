@@ -18,6 +18,7 @@ import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfit
 import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
+import TechInfo from '@/features/home/components/TechInfo/TechInfo'
 
 interface moduleItem {
   code: string
@@ -115,6 +116,11 @@ function HomeContent() {
             <Hydrology />
           </LazySection>
         )}
+
+        <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+            <TechInfo/>
+          </LazySection>
+          
         {checkModulePermission('DOANH_THU') && (
           <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
             <RevenueDetail />

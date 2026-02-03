@@ -18,6 +18,7 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import { t } from 'i18next'
 import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
+import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -131,6 +132,12 @@ function FactoryDetail(props: factoryDetailProps) {
               </SectionContainer>
             </LazySection>
           }
+          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+            <TechInfoDetail
+              currentPlantId={currentPlantId}
+              keyTab={keyTab}
+            />
+          </LazySection>
           {
             checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
