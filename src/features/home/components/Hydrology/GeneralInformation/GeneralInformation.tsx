@@ -33,36 +33,11 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
   const plantsInfoData: { label: string; value: number; unit: string }[] =
     hydrologyPlantsInfo?.PlantsInfoData ?? []
 
-  const renderIcon = (icon: InfoCardData['icon']) => {
-    if (!icon) return null
-    const IconComponent = icon.type === 'material' ? MaterialCommunityIcons : FontAwesome
-    return (
-      <View style={styles.iconContainer}>
-        <IconComponent name={icon.name as any} size={24} color="#000" />
-      </View>
-    )
-  }
-
   const cardsData: InfoCardData[] = plantsInfoData.map((item) => {
-    const key = item.label
-    const icon: InfoCardData['icon'] | undefined =
-      key === 'MNTL'
-        ? {
-            name: 'hydro-power' as keyof typeof MaterialCommunityIcons.glyphMap,
-            type: 'material',
-          }
-        : key === 'MNQT'
-          ? {
-              name: 'thermometer' as keyof typeof FontAwesome.glyphMap,
-              type: 'fontawesome',
-            }
-          : undefined
-
     return {
       label: item.label,
       value: item.value,
       unit: item.unit,
-      ...(icon ? { icon } : {}),
     }
   })
 
@@ -76,7 +51,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
           <View style={styles.row}>
             {cardsData.slice(0, 2).map((card, index) => (
               <View key={index} style={styles.card}>
-                {renderIcon(card.icon)}
                 <Text style={styles.cardLabel}>{card.label}</Text>
                 <View style={styles.valueContainer}>
                   <Text style={styles.cardValue}>{card.value}</Text>
@@ -90,7 +64,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
           <View style={styles.row}>
             {cardsData.slice(2, 4).map((card, index) => (
               <View key={index} style={styles.card}>
-                {renderIcon(card.icon)}
                 <Text style={styles.cardLabel}>{card.label}</Text>
                 <View style={styles.valueContainer}>
                   <Text style={styles.cardValue}>{card.value}</Text>
@@ -103,7 +76,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
           {/* Row 3: SỐ CỬA XẢ - card rộng hơn, ở giữa */}
           <View style={styles.row}>
             <View style={[styles.card, styles.cardWide]}>
-              {renderIcon(cardsData[4]?.icon)}
               <Text style={styles.cardLabel}>{cardsData[4]?.label}</Text>
               <View style={styles.valueContainer}>
                 <Text style={styles.cardValue}>{cardsData[4]?.value}</Text>
