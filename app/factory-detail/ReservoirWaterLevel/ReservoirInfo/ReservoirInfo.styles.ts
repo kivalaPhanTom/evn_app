@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     color: '#22D3EE',
     fontSize: px.m(18),
     fontWeight: '600',
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase',
   },
   locationName: {
     color: '#9CA3AF',
