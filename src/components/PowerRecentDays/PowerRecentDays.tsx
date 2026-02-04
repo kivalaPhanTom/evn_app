@@ -16,6 +16,7 @@ import { Colors } from '@/core/constants/colors'
 interface PowerByDays {
   value: number
   date: string
+  dayOfWeek: string
 }
 interface Props {
   isLoading: boolean
@@ -25,6 +26,8 @@ interface Props {
 function ValueCard({ day }: { day: PowerByDays }) {
   const opacity = useSharedValue(1)
   const isToday = day.date === 'Hôm nay'
+  const isWeekend = day.dayOfWeek === 'Thứ Bảy' || day.dayOfWeek === 'Chủ Nhật'
+  const labelColor = isWeekend ? '#eab308' : '#8b92a0'
 
   useEffect(() => {
     if (isToday) {
@@ -33,33 +36,31 @@ function ValueCard({ day }: { day: PowerByDays }) {
         -1,
         true,
       )
+    } else {
+      // stop any ongoing animation by forcing value to 1
+      opacity.value = 1
     }
   }, [isToday, opacity])
 
-  const blinkStyle = useAnimatedStyle(() => (isToday ? { opacity: opacity.value } : { opacity: 1 }))
+  const blinkStyle = useAnimatedStyle(() => ({ opacity: opacity.value }))
 
   return (
     <View style={styles.valueCard}>
-      {isToday ? (
-        <View style={styles.valueItem}>
-          <Text style={styles.powerValue}>{day.value}</Text>
+      <View style={styles.valueItem}>
+        <Text style={styles.powerValue}>{day.value}</Text>
+
+        {isToday ? (
           <Animated.View style={[styles.valueItem, blinkStyle]}>
-            <Text style={styles.dayLabel}>{day.date}</Text>
+            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.date}</Text>
+            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.dayOfWeek}</Text>
           </Animated.View>
-        </View>
-      ) : (
-        <View style={styles.valueItem}>
-          <Text style={styles.powerValue}>{day.value}</Text>
-          <Text
-            style={[
-              styles.dayLabel,
-              { color: day.date === 'Thứ Bảy' || day.date === 'Chủ Nhật' ? '#eab308' : '#8b92a0' },
-            ]}
-          >
-            {day.date}
-          </Text>
-        </View>
-      )}
+        ) : (
+          <>
+            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.date}</Text>
+            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.dayOfWeek}</Text>
+          </>
+        )}
+      </View>
     </View>
   )
 }
