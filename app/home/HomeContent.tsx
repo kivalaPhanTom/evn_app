@@ -70,6 +70,7 @@ function HomeContent() {
   const shouldLoadProfit = scrollY >= 1400 - preloadOffset
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset
   const shouldLoadMap = scrollY >= 2200 - preloadOffset
+  const shouldLoadTechInfo = scrollY >= 2600 - preloadOffset
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false
@@ -135,16 +136,17 @@ function HomeContent() {
           </LazySection>
         )}
 
-        {/* <LazySection shouldLoad={shouldLoadMap} minHeight={200}> */}
-        <UriWebView
-          uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
-          headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
-          style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
-        />
-         <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
-            <TechInfo/>
-          </LazySection>
-        {/* </LazySection> */}
+        <LazySection shouldLoad={shouldLoadMap} minHeight={200}>
+          <UriWebView
+            uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
+            headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
+            style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
+          />
+        </LazySection>
+        <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
+          <TechInfo />
+        </LazySection>
+
       </TwinkleStars>
     </ScrollView>
   )

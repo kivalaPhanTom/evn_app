@@ -44,6 +44,6 @@ function getPowerByTimeFactDetailApi(factoryId: string = '') {
 }
 function getPowerByDaysFactDetailApi(factoryId: string = '') {
   return api.get(`${servicePattern.getPowerByDays}`, {
-    params: { currentPlantId: factoryId },
+    params: { currentPlantId: factoryId, nString: 7 },
   })
 }
