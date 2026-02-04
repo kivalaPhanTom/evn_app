@@ -16,7 +16,7 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
   const { currentPlantId, selectedYear, setSelectedYear } = props
 
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
+  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
 
   const onPressCard = () => {
     router.navigate({

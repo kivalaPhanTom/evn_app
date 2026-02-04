@@ -16,18 +16,13 @@ import { RootState } from '@/core/redux/store'
 import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
-interface UnitMaintenanceScheduleProps {
-  selectedYear: number
-  setSelectedYear: (year: number) => void
-}
-
-function UnitMaintenanceSchedule(props: UnitMaintenanceScheduleProps) {
-  const { selectedYear, setSelectedYear } = props
+function UnitMaintenanceSchedule() {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const router = useRouter()
   const dispatch = useDispatch()
 
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
+  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
 
   const onPressCard = () => {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
@@ -47,8 +42,8 @@ function UnitMaintenanceSchedule(props: UnitMaintenanceScheduleProps) {
   }, [isRepairerScheduleLoading])
   useEffect(() => {
     // Dispatch action to fetch repair schedule data
-    dispatch(getRepairSchedule())
-  }, [dispatch, countRefesh])
+    dispatch(getRepairSchedule({ year: selectedYear }))
+  }, [dispatch, countRefesh, selectedYear])
 
   return (
     <SectionContainer title={t('repairMaintenance') + ' ' + selectedYear}>

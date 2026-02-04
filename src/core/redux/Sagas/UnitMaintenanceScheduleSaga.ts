@@ -5,14 +5,15 @@ import { setRepairSchedule, setCurrentPlantDetail } from '../slices/UnitMaintena
 import { catchHandle } from '@/core/utils/utils'
 import { setLoading } from '../slices/UnitMaintenanceScheduleSlice'
 
-function* getRepairScheduleSaga(): Generator {
+function* getRepairScheduleSaga(action: ReturnType<typeof getRepairSchedule>): Generator {
   try {
     yield put(
       setLoading({
         isRepairerScheduleLoading: true,
       }),
     )
-    const res = yield call(Service.getRepairScheduleApi)
+    const { year } = action.payload
+    const res = yield call(Service.getRepairScheduleApi, year)
     if (res.status === 200) {
       yield put(setRepairSchedule(res.data))
     }
@@ -38,8 +39,8 @@ function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairS
         isDetailRepairScheduleLoading: true,
       }),
     )
-    const { currentPlantId } = action.payload
-    const res = yield call(Service.getDetailRepairScheduleApi, currentPlantId)
+    const { currentPlantId, year } = action.payload
+    const res = yield call(Service.getDetailRepairScheduleApi, currentPlantId, year)
     if (res.status === 200) {
       yield put(setCurrentPlantDetail(res.data))
     }

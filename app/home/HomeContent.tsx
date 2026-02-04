@@ -35,7 +35,6 @@ function HomeContent() {
     companyName?: string | string[]
     location?: string | string[]
   }>()
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
 
@@ -132,7 +131,7 @@ function HomeContent() {
 
         {checkModulePermission('LICH_SUA_CHUA') && (
           <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-            <UnitMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+            <UnitMaintenanceSchedule />
           </LazySection>
         )}
 

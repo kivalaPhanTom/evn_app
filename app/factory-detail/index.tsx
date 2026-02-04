@@ -37,7 +37,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const { companyName, location, currentPlantId, keyTab } = props;
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
   const router = useRouter();
 
