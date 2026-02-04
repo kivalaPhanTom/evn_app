@@ -35,6 +35,7 @@ function HomeContent() {
     companyName?: string | string[]
     location?: string | string[]
   }>()
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
 
@@ -135,18 +136,17 @@ function HomeContent() {
 
         {checkModulePermission('LICH_SUA_CHUA') && (
           <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-            <UnitMaintenanceSchedule />
+            <UnitMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
           </LazySection>
         )}
 
         {/* <LazySection shouldLoad={shouldLoadMap} minHeight={200}> */}
-          <UriWebView
-            uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
-            headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
-            style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
-          />
+        <UriWebView
+          uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
+          headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
+          style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
+        />
         {/* </LazySection> */}
-
       </TwinkleStars>
     </ScrollView>
   )

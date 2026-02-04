@@ -37,6 +37,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const { companyName, location, currentPlantId, keyTab } = props;
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
 
   const router = useRouter();
 
@@ -153,7 +154,7 @@ function FactoryDetail(props: factoryDetailProps) {
           {
             checkModulePermission('LICH_SUA_CHUA') &&
             <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-              <FactoryMaintenanceSchedule currentPlantId={currentPlantId} />
+              <FactoryMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} currentPlantId={currentPlantId} />
             </LazySection>
           }
         </TwinkleStars>

@@ -10,6 +10,7 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 interface FactoryMaintenanceInfoProps {
   currentPlantId?: string
+  selectedYear?: number
 }
 
 function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
