@@ -55,7 +55,9 @@ function UnitMaintenanceSchedule() {
             return (
               <>
                 <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                  <Text style={styles.selectText}>{selectedYear}</Text>
+                  <Text allowFontScaling={false} style={styles.selectText}>
+                    {selectedYear}
+                  </Text>
                 </TouchableOpacity>
 
                 <Modal

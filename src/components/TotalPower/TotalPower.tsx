@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated'
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated'
 import styles from './TotalPower.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
@@ -50,11 +44,7 @@ function TotalPower(props: Props) {
 
   useEffect(() => {
     if (type === 'power' && !isLoading) {
-      rotation.value = withRepeat(
-        withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }),
-        -1,
-        false,
-      )
+      rotation.value = withRepeat(withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }), -1, false)
     } else {
       rotation.value = withTiming(0, { duration: 0 })
     }
@@ -75,16 +65,10 @@ function TotalPower(props: Props) {
             <View style={styles.iconPlaceholder}>
               {type === 'power' ? (
                 <Animated.View style={[cogwheelAnimatedStyle]}>
-                  <Image
-                    source={require('@/assets/images/cogwheel.png')}
-                    style={{ width: 50, height: 50 }}
-                  />
+                  <Image source={require('@/assets/images/cogwheel.png')} style={{ width: 50, height: 50 }} />
                 </Animated.View>
               ) : (
-                <Image
-                  source={require('@/assets/images/hydroelectric.png')}
-                  style={{ width: 50, height: 50 }}
-                />
+                <Image source={require('@/assets/images/hydroelectric.png')} style={{ width: 50, height: 50 }} />
               )}
             </View>
           )}
@@ -96,7 +80,7 @@ function TotalPower(props: Props) {
           ) : (
             <>
               {/* <Text style={styles.title}>{title}</Text> */}
-              <GradientText text={total} fontSize={px.f(64)} colors={Colors.blue} />
+              <GradientText text={total} fontSize={px.f(60)} colors={Colors.blue} allowFontScaling={false} />
             </>
           )}
 
@@ -129,9 +113,7 @@ function TotalPower(props: Props) {
                         {source.code}
                         {/* {source.name} <Text style={styles.sourceCode}>({source.code})</Text> */}
                       </Text>
-                      <Text style={[styles.sourcePower, { color: source.color }]}>
-                        {source.value}
-                      </Text>
+                      <Text style={[styles.sourcePower, { color: source.color }]}>{source.value}</Text>
                     </View>
                   </View>
                   {/* <Text style={[styles.sourcePower, { color: source.color }]}>

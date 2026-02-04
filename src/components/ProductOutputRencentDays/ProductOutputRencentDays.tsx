@@ -32,7 +32,7 @@ function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
   const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
-  // 
+  //
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
   const unit = 'tr.KWh'
   const dataActual = productionData.map((item) => ({
@@ -71,9 +71,15 @@ function ProductOutputRencentDays(props: Props) {
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
-          <Text style={[styles.headerText, styles.col1]}>NGÀY</Text>
-          <Text style={[styles.headerText, styles.col2]}>THỰC TẾ ({unit})</Text>
-          <Text style={[styles.headerText, styles.col3]}>HỢP ĐỒNG ({unit})</Text>
+          <Text allowFontScaling={false} style={[styles.headerText, styles.col1]}>
+            NGÀY
+          </Text>
+          <Text allowFontScaling={false} style={[styles.headerText, styles.col2]}>
+            THỰC TẾ ({unit})
+          </Text>
+          <Text allowFontScaling={false} style={[styles.headerText, styles.col3]}>
+            HỢP ĐỒNG ({unit})
+          </Text>
           <View style={styles.col4}>
             <View style={styles.samePeriodHeader}>
               {(() => {
@@ -135,7 +141,7 @@ function ProductOutputRencentDays(props: Props) {
         {/* Table Rows */}
         <View
           style={styles.tableBody}
-        // showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
         >
           {firstLoading || isLoading ? (
             <>
@@ -158,12 +164,10 @@ function ProductOutputRencentDays(props: Props) {
                 return (
                   <View key={index} style={styles.rowCard}>
                     <View style={styles.tableRow}>
-                      <Text style={[styles.cellText, styles.col1, styles.dateText, isWeekend && styles.weekendText,]}>
+                      <Text style={[styles.cellText, styles.col1, styles.dateText, isWeekend && styles.weekendText]}>
                         {day.date}
                         {'\n'}
-                        <Text style={styles.dayOfWeek}>
-                          {day.dayOfWeek}
-                        </Text>
+                        <Text style={styles.dayOfWeek}>{day.dayOfWeek}</Text>
                       </Text>
                       <View style={styles.col2}>
                         <Text style={[styles.cellText, styles.valueText, { color: actualColor }]}>
@@ -188,11 +192,11 @@ function ProductOutputRencentDays(props: Props) {
           )}
         </View>
 
-        {firstLoading || isLoading ?
+        {firstLoading || isLoading ? (
           <View style={{ marginTop: 20 }}>
             <LineChartSkeleton />
           </View>
-          :
+        ) : (
           <View>
             <CompareLegend items={legendItems} />
             <LineChart
@@ -207,7 +211,7 @@ function ProductOutputRencentDays(props: Props) {
               marginLeftXLabel={20}
             />
           </View>
-        }
+        )}
         {/* Legend */}
         {/* <View style={styles.legend}>
           <Text style={styles.legendText}>Màu xanh: Đạt/vượt hợp đồng • Màu đỏ: Dưới hợp đồng</Text>

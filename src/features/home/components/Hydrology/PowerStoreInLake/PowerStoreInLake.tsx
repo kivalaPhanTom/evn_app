@@ -48,11 +48,17 @@ const PowerStoreInLake: React.FC = () => {
               fontSize={px.f(52)}
               colors={'#00C853'}
             />
-            <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}>
+            <Text
+              allowFontScaling={false}
+              style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}
+            >
               {powerStoreInLake?.unit ?? ''}
             </Text>
-            <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
-            <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
+            <Text allowFontScaling={false} style={[styles.slash, { color: '#9AA6B6' }]}>
+              {' '}
+              /{' '}
+            </Text>
+            <Text allowFontScaling={false} style={[styles.refValue, { color: '#9AA6B6' }]}>
               {powerStoreInLake?.previousCapacity ?? 0} {powerStoreInLake?.unit ?? ''}
             </Text>
           </>

@@ -35,7 +35,9 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
             return (
               <>
                 <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                  <Text style={styles.selectText}>{selectedYear}</Text>
+                  <Text allowFontScaling={false} style={styles.selectText}>
+                    {selectedYear}
+                  </Text>
                 </TouchableOpacity>
 
                 <Modal
@@ -59,7 +61,9 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
                             setShowSelectModal(false)
                           }}
                         >
-                          <Text style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}>
+                          <Text
+                            style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
+                          >
                             {year}
                           </Text>
                         </TouchableOpacity>

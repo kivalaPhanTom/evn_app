@@ -47,17 +47,27 @@ function ValueCard({ day }: { day: PowerByDays }) {
   return (
     <View style={styles.valueCard}>
       <View style={styles.valueItem}>
-        <Text style={styles.powerValue}>{day.value}</Text>
+        <Text allowFontScaling={false} style={styles.powerValue}>
+          {day.value}
+        </Text>
 
         {isToday ? (
           <Animated.View style={[styles.valueItem, blinkStyle]}>
-            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.date}</Text>
-            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.dayOfWeek}</Text>
+            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+              {day.date}
+            </Text>
+            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+              {day.dayOfWeek}
+            </Text>
           </Animated.View>
         ) : (
           <>
-            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.date}</Text>
-            <Text style={[styles.dayLabel, { color: labelColor }]}>{day.dayOfWeek}</Text>
+            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+              {day.date}
+            </Text>
+            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+              {day.dayOfWeek}
+            </Text>
           </>
         )}
       </View>
