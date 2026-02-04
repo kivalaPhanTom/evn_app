@@ -54,8 +54,12 @@ function TechnologyInfo(props: Props) {
                             {data.map((item, index) => (
                                 <View key={index}>
                                     <View style={styles.row}>
-                                        <Text style={styles.label}>{item.label}</Text>
-                                        <Text style={styles.value}>{item.value}</Text>
+                                        <Text style={styles.label} numberOfLines={0}>
+                                            {item.label}
+                                        </Text>
+                                        <Text style={styles.value} numberOfLines={0}>
+                                            {item.value}
+                                        </Text>
                                     </View>
                                     {index < data.length - 1 && <View style={styles.divider} />}
                                 </View>
@@ -71,18 +75,23 @@ export default TechnologyInfo
 const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: "flex-start", // QUAN TRỌNG
         paddingVertical: 12,
     },
     label: {
         color: "#d6d9ff",
         fontSize: 14,
+        flex: 1,              // chiếm 1 phần
+        flexWrap: "wrap",     // cho phép xuống dòng
+        paddingRight: 8,
     },
     value: {
         color: "#ffffff",
         fontSize: 14,
         fontWeight: "600",
+        flex: 1,              // chiếm 1 phần
+        flexWrap: "wrap",     // cho phép xuống dòng
+        textAlign: "right",   // giữ align phải
     },
     divider: {
         height: 1,
