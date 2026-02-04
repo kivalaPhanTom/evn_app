@@ -79,6 +79,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const shouldLoadRevenue = scrollY >= 1000 - preloadOffset;
   const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
+    const shouldLoadTechInfo = scrollY >= 2200 - preloadOffset
 
   return (
     <ScrollView
@@ -151,7 +152,7 @@ function FactoryDetail(props: factoryDetailProps) {
               <FactoryMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} currentPlantId={currentPlantId} />
             </LazySection>
           }
-          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+          <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
             <TechInfoDetail
               currentPlantId={currentPlantId}
               keyTab={keyTab}
