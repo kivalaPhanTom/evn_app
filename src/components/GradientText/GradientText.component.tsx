@@ -42,6 +42,7 @@ const GradientText: React.FC<GradientTextProps> = ({
         <TextComponent
           entering={animated ? FadeIn.duration(300) : undefined}
           style={[styles.text, { fontSize, fontWeight }, style]}
+          allowFontScaling={false}
           {...props}
         >
           {text}
@@ -50,6 +51,7 @@ const GradientText: React.FC<GradientTextProps> = ({
     >
       <LinearGradient colors={gradientColors as [string, string, ...string[]]} start={start} end={end}>
         <TextComponent
+          allowFontScaling={false}
           style={[
             styles.text,
             { fontSize, fontWeight, opacity: 0 }, // ẩn text thực

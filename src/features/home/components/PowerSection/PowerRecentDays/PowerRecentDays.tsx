@@ -17,7 +17,10 @@ function PowerRecentDays() {
   const router = useRouter()
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { powerByDays: { powerData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.powerSlice)
+  const {
+    powerByDays: { powerData },
+    isLoadingNearCurrentDays,
+  } = useSelector((state: RootState) => state.powerSlice)
 
   const unit = 'tr.Wh'
 
@@ -33,19 +36,24 @@ function PowerRecentDays() {
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-            {isLoadingNearCurrentDays ? <SquareSkelenton count={4} /> :
+            {isLoadingNearCurrentDays ? (
+              <SquareSkelenton count={4} />
+            ) : (
               <>
                 {powerData.map((day, index) => (
                   <View key={index} style={styles.valueCard}>
                     <View style={styles.valueItem}>
-                      <Text style={styles.powerValue}>{day.value}</Text>
-                      <Text style={styles.dayLabel}>{day.date}</Text>
+                      <Text style={styles.powerValue} allowFontScaling={false}>
+                        {day.value}
+                      </Text>
+                      <Text style={styles.dayLabel} allowFontScaling={false}>
+                        {day.date}
+                      </Text>
                     </View>
                   </View>
                 ))}
               </>
-            }
-
+            )}
           </ScrollView>
 
           {/* Bottom Info */}
