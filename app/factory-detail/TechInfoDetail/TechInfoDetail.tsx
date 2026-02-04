@@ -32,17 +32,15 @@ interface TechInfoDetailProps {
 }
 function TechInfoDetail(props: TechInfoDetailProps) {
     const dispatch = useDispatch()
-    const { isLoadingTechInfoDetail } = useSelector((state: RootState) => state.techInfoSlice)
+    const { isLoadingTechInfoDetail, techInfoDetail } = useSelector((state: RootState) => state.techInfoSlice)
     const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
     const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
     const { currentPlantId, keyTab } = props
-    const data = [
-        { label: "Diện tích lưu vực", value: "2.93 km²" },
-        { label: "Mực nước dâng bình thường", value: "487.5 m" },
-        { label: "Cao trình đỉnh đập", value: "492.3 m" },
-        { label: "Chiều dài đập tràn theo đỉnh", value: "45 m" },
-        { label: "Lưu lượng thiết kế", value: "204.9 m³/s" },
-    ];
+    const data = techInfoDetail.map(item => ({
+        label: item.Name,
+        value: `${item.Value} ${item.UoM !== "-" ? `(${(item.UoM)})` : ""}`
+    }))
+
     useEffect(() => {
         if (activeTabIndex === keyTab) {
             dispatch(getTechInfoDetail({ currentPlantId }))
@@ -54,7 +52,7 @@ function TechInfoDetail(props: TechInfoDetailProps) {
         >
             <View
             >
-                <TechnologyInfo data={data} isLoading={isLoadingTechInfoDetail}/>
+                <TechnologyInfo data={data} isLoading={isLoadingTechInfoDetail} />
             </View>
         </SectionContainer>
     )

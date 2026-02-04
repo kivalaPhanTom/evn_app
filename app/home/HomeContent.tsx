@@ -118,10 +118,6 @@ function HomeContent() {
           </LazySection>
         )}
 
-        <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
-            <TechInfo/>
-          </LazySection>
-          
         {checkModulePermission('DOANH_THU') && (
           <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
             <RevenueDetail />
@@ -146,6 +142,9 @@ function HomeContent() {
           headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
           style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
         />
+         <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+            <TechInfo/>
+          </LazySection>
         {/* </LazySection> */}
       </TwinkleStars>
     </ScrollView>

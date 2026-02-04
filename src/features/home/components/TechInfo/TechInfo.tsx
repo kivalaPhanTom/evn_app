@@ -29,7 +29,7 @@ function getCurrentPlantId(activeTab: string): string {
 }
 function TechInfo() {
     const dispatch = useDispatch()
-    const { isLoadingTechInfo } = useSelector((state: RootState) => state.techInfoSlice)
+    const { isLoadingTechInfo, techInfo } = useSelector((state: RootState) => state.techInfoSlice)
     const { currentPlantId } = useLocalSearchParams<{
         currentPlantId?: string
     }>()
@@ -55,13 +55,11 @@ function TechInfo() {
         }
 
     }, [activeTab])
-    const data = [
-        { label: "Diện tích lưu vực", value: "2.93 km²" },
-        { label: "Mực nước dâng bình thường", value: "487.5 m" },
-        { label: "Cao trình đỉnh đập", value: "492.3 m" },
-        { label: "Chiều dài đập tràn theo đỉnh", value: "45 m" },
-        { label: "Lưu lượng thiết kế", value: "204.9 m³/s" },
-    ];
+    
+    const data = techInfo.map(item => ({
+        label: item.Name,
+        value: `${item.Value} ${item.UoM !== "-" ? `(${(item.UoM)})` :""}`
+    }))
 
     return (
         <SectionContainer

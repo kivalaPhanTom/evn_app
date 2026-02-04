@@ -5,13 +5,14 @@ export const Service = {
 }
 
 export const servicePattern = {
-  getTechInfo: ``,
+  getTechInfo: `${prefix_api}/get_Specifications`,
 }
 
-function getTechInfoApi(currentPlantId: string) {
+function getTechInfoApi(currentPlantId: string, type?: string) {
   return api.get(`${servicePattern.getTechInfo}`, {
     params: {
       currentPlantId: currentPlantId,
+      type: type || '',
     },
   })
 }

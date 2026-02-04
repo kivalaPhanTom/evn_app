@@ -1,16 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+interface techInfoItem {
+    ID_NM: string
+    Name: string
+    Value: string
+    UoM: string
+    Group: string
+}
 interface TechInfoState {
     id: number | null
     name: string
     isLoadingTechInfo: boolean
     isLoadingTechInfoDetail: boolean
+    techInfo: techInfoItem[]
+    techInfoDetail: techInfoItem[] 
 }
 const initialState: TechInfoState = {
     id: null,
     name: '',
     isLoadingTechInfo: false,
     isLoadingTechInfoDetail: false,
+    techInfo:[],
+    techInfoDetail:[],
 }
 
 const techInfoSlice = createSlice({
@@ -18,10 +29,10 @@ const techInfoSlice = createSlice({
     initialState,
     reducers: {
         setTechInfo: (state, action) => {
-            let newState = { ...state }
+            state.techInfo = action.payload
         },
         setTechInfoDetail: (state, action) => {
-            let newState = { ...state }
+            state.techInfoDetail = action.payload
         },
         setLoading: (state, action) => {
             return {

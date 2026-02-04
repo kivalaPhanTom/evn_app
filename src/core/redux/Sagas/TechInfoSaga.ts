@@ -24,7 +24,7 @@ function* getTechInfoDetailSaga(action: ReturnType<typeof getTechInfoDetail>): G
     const { currentPlantId } = payload
     try {
         yield put(setLoading({ isLoadingTechInfoDetail: true }))
-        const res = yield call(Service.getTechInfoApi, currentPlantId)
+        const res = yield call(Service.getTechInfoApi, currentPlantId, "detail")
         if (res.status === 200) {
               yield put(setTechInfoDetail(res.data))
         }

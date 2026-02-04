@@ -133,12 +133,6 @@ function FactoryDetail(props: factoryDetailProps) {
               </SectionContainer>
             </LazySection>
           }
-          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-            <TechInfoDetail
-              currentPlantId={currentPlantId}
-              keyTab={keyTab}
-            />
-          </LazySection>
           {
             checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
@@ -157,6 +151,12 @@ function FactoryDetail(props: factoryDetailProps) {
               <FactoryMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} currentPlantId={currentPlantId} />
             </LazySection>
           }
+          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+            <TechInfoDetail
+              currentPlantId={currentPlantId}
+              keyTab={keyTab}
+            />
+          </LazySection>
         </TwinkleStars>
       </View>
     </ScrollView>
