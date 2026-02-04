@@ -28,31 +28,20 @@ function PowerByHoursFactDetail(props: Props) {
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const [HourlyPowerList, setHourlyPowerList] = useState<HourlyPowerList[]>([])
-  const [offeredPower, setOfferedPower] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [currentPower, setCurrentPower] = useState<number>(0)
-  const [offeredPowerList, setOfferedPowerList] = useState<number[]>([])
-  const { currentDate, unit } = useSelector((state: any) => state.powerSlice.powerByTime)
+  const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useSelector((state: any) => state.powerSlice.powerByTime)
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
       dispatch(
         getPowerByTimeFactDetail({
           factoryId: currentPlantId,
-          getDataFromApi: getDataFromApi,
+          getDataFromApi: () => {},
           setLoading: setLoading,
         }),
       )
     }
   }, [currentPlantId, activeTabIndex, countRefesh])
-
-  const getDataFromApi = (data: PowerByTime) => {
-    setOfferedPower(data.offeredPower)
-    setCurrentPower(data.currentPower)
-    setHourlyPowerList(data.HourlyPowerList)
-    setOfferedPowerList(data.offeredPowerList)
-  }
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)
@@ -71,12 +60,13 @@ function PowerByHoursFactDetail(props: Props) {
       isLoading={isLoading}
       currentDate={currentDate}
       currentPower={currentPower}
-      currentTime={currentDate}
+      currentTime={currentTime}
       offeredPower={offeredPower}
       HourlyPowerList={HourlyPowerList}
       onPressCard={onPressCard}
       offeredPowerList={offeredPowerList}
       unit={unit}
+      scrollToEnd={true}
     />
   )
 }

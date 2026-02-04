@@ -296,11 +296,11 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 
                 <View style={styles.levelContainer}>
                   <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
-                    {data.currentLevel}m
+                    {data.currentLevel}
                   </Text>
                   <Text style={styles.maxLevel} numberOfLines={1}>
                     {' '}
-                    / {data.maxLevel}m
+                    / {data.maxLevel}
                   </Text>
                 </View>
 
@@ -368,7 +368,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                         ]}
                       >
                         <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                        <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}m</Text>
+                        <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}</Text>
                       </View>
 
                       {/* Reference line */}
@@ -382,7 +382,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                           },
                         ]}
                       >
-                        <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
+                        <Text style={styles.referenceText}>{data.referenceLevel}</Text>
                         <View style={styles.dashedLine} />
                       </View>
                     </View>
@@ -414,11 +414,11 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 
               <View style={styles.levelContainer}>
                 <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
-                  {data.currentLevel}m
+                  {data.currentLevel}
                 </Text>
                 <Text style={styles.maxLevel} numberOfLines={1}>
                   {' '}
-                  / {data.maxLevel}m
+                  / {data.maxLevel}
                 </Text>
               </View>
 
@@ -486,7 +486,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                       ]}
                     >
                       <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                      <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}m</Text>
+                      <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}</Text>
                     </View>
 
                     {/* Reference line */}
@@ -500,7 +500,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                         },
                       ]}
                     >
-                      <Text style={styles.referenceText}>{data.referenceLevel}m</Text>
+                      <Text style={styles.referenceText}>{data.referenceLevel}</Text>
                       <View style={styles.dashedLine} />
                     </View>
                   </View>

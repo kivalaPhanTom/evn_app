@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Pressable } from 'react-native'
+import { Text, View, Pressable, TouchableOpacity, Modal } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 
@@ -17,8 +17,12 @@ import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleA
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
 function UnitMaintenanceSchedule() {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const router = useRouter()
   const dispatch = useDispatch()
+
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
 
   const onPressCard = () => {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
@@ -38,24 +42,75 @@ function UnitMaintenanceSchedule() {
   }, [isRepairerScheduleLoading])
   useEffect(() => {
     // Dispatch action to fetch repair schedule data
-    dispatch(getRepairSchedule())
-  }, [dispatch, countRefesh])
+    dispatch(getRepairSchedule({ year: selectedYear }))
+  }, [dispatch, countRefesh, selectedYear])
 
   return (
-    <SectionContainer
-      title={t('repairMaintenance') + " " + new Date().getFullYear()}
-    >
+    <SectionContainer title={t('repairMaintenance') + ' ' + selectedYear}>
+      <View style={{ alignItems: 'flex-end' }}>
+        {(() => {
+          const YearPicker: React.FC = () => {
+            const [showSelectModal, setShowSelectModal] = useState(false)
+
+            return (
+              <>
+                <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
+                  <Text style={styles.selectText}>{selectedYear}</Text>
+                </TouchableOpacity>
+
+                <Modal
+                  visible={showSelectModal}
+                  transparent
+                  animationType="fade"
+                  onRequestClose={() => setShowSelectModal(false)}
+                >
+                  <TouchableOpacity
+                    style={styles.modalOverlay}
+                    activeOpacity={1}
+                    onPress={() => setShowSelectModal(false)}
+                  >
+                    <View style={styles.modalContent}>
+                      {years.map((year) => (
+                        <TouchableOpacity
+                          key={year}
+                          style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
+                          onPress={() => {
+                            setSelectedYear(year)
+                            setShowSelectModal(false)
+                          }}
+                        >
+                          <Text
+                            style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
+                          >
+                            {year}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </TouchableOpacity>
+                </Modal>
+              </>
+            )
+          }
+
+          return <YearPicker />
+        })()}
+      </View>
       <Pressable onPress={onPressCard}>
         <View style={styles.infoContainer}>
           <View style={[styles.infoCard]}>
-            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>TỔNG HẠNG MỤC SỬA CHỮA</Text>
+            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>
+              TỔNG HẠNG MỤC SỬA CHỮA
+            </Text>
             <View style={styles.infoRow}>
-              {firstLoading || isRepairerScheduleLoading ? <BarSkeleton /> :
+              {firstLoading || isRepairerScheduleLoading ? (
+                <BarSkeleton />
+              ) : (
                 <>
                   <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalCategory}</Text>
                   <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
                 </>
-              }
+              )}
             </View>
           </View>
           <View style={styles.infoCard}>
@@ -63,18 +118,20 @@ function UnitMaintenanceSchedule() {
               TỔNG NGÀY SỬA CHỮA THỰC TẾ
             </Text>
             <View style={styles.infoRow}>
-              {firstLoading || isRepairerScheduleLoading ? <BarSkeleton /> :
+              {firstLoading || isRepairerScheduleLoading ? (
+                <BarSkeleton />
+              ) : (
                 <>
                   <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalActualDay}</Text>
                   <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
                 </>
-              }
+              )}
             </View>
           </View>
         </View>
       </Pressable>
       <View>
-        {firstLoading || isRepairerScheduleLoading ?
+        {firstLoading || isRepairerScheduleLoading ? (
           <>
             <BarSkeleton width={'100%'} />
             <BarSkeleton width={'95%'} />
@@ -82,7 +139,8 @@ function UnitMaintenanceSchedule() {
             <BarSkeleton width={'85%'} />
             <BarSkeleton width={'80%'} />
             <BarSkeleton width={'75%'} />
-          </> :
+          </>
+        ) : (
           <>
             {Details?.map((item, idex) => (
               <MaintenanceCard
@@ -94,8 +152,9 @@ function UnitMaintenanceSchedule() {
                 plantCode={item.PlantCode}
                 key={idex}
               />
-            ))}</>
-        }
+            ))}
+          </>
+        )}
       </View>
     </SectionContainer>
   )

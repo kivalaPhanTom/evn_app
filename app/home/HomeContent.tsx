@@ -18,6 +18,7 @@ import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfit
 import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
+import TechInfo from '@/features/home/components/TechInfo/TechInfo'
 
 interface moduleItem {
   code: string
@@ -115,6 +116,7 @@ function HomeContent() {
             <Hydrology />
           </LazySection>
         )}
+
         {checkModulePermission('DOANH_THU') && (
           <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
             <RevenueDetail />
@@ -134,13 +136,15 @@ function HomeContent() {
         )}
 
         {/* <LazySection shouldLoad={shouldLoadMap} minHeight={200}> */}
-          <UriWebView
-            uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
-            headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
-            style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
-          />
+        <UriWebView
+          uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
+          headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
+          style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
+        />
+         <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+            <TechInfo/>
+          </LazySection>
         {/* </LazySection> */}
-
       </TwinkleStars>
     </ScrollView>
   )

@@ -18,6 +18,7 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import { t } from 'i18next'
 import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
+import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -36,6 +37,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const { companyName, location, currentPlantId, keyTab } = props;
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
   const router = useRouter();
 
@@ -146,9 +148,15 @@ function FactoryDetail(props: factoryDetailProps) {
           {
             checkModulePermission('LICH_SUA_CHUA') &&
             <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
-              <FactoryMaintenanceSchedule currentPlantId={currentPlantId} />
+              <FactoryMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} currentPlantId={currentPlantId} />
             </LazySection>
           }
+          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+            <TechInfoDetail
+              currentPlantId={currentPlantId}
+              keyTab={keyTab}
+            />
+          </LazySection>
         </TwinkleStars>
       </View>
     </ScrollView>

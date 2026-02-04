@@ -52,6 +52,7 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
           areaChart={false}
           hideDataPoints2
           strokeDashArray2={[12, 3]}
+          scrollToEnd={true}
         />
       </View>
 

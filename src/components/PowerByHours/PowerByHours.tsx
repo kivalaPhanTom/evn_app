@@ -93,9 +93,9 @@ function PowerByHours(props: Props) {
                 <Text style={styles.statValueCurrent}>
                   {currentPower} {unit}
                 </Text>
-                <View style={styles.changeRow}>
+                {/* <View style={styles.changeRow}>
                   <MetricDiff diff={currentPower} compareTo={offeredPower} />
-                </View>
+                </View> */}
               </>
             )}
           </View>
@@ -106,7 +106,7 @@ function PowerByHours(props: Props) {
             ) : (
               <>
                 <Text style={styles.statValueAverage}>
-                  {offeredPower} {unit}
+                  {offeredPower >= 0  ? offeredPower: '--' } {unit}
                 </Text>
               </>
             )}
