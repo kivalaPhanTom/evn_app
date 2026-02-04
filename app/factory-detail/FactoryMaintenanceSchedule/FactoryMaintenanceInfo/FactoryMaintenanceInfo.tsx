@@ -14,7 +14,7 @@ interface FactoryMaintenanceInfoProps {
 }
 
 function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
-  const { currentPlantId } = props
+  const { currentPlantId, selectedYear } = props
   const dispatch = useDispatch()
   const { currentPlantDetail, isDetailRepairScheduleLoading } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
@@ -32,9 +32,9 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
 
   useEffect(() => {
     if (currentPlantId) {
-      dispatch(getDetailRepairSchedule({ currentPlantId }))
+      dispatch(getDetailRepairSchedule({ currentPlantId, year: selectedYear ?? new Date().getFullYear() }))
     }
-  }, [currentPlantId, dispatch, countRefesh])
+  }, [currentPlantId, dispatch, countRefesh, selectedYear])
 
   // Map dữ liệu từ Breakdown - API v2 trả về RCM thay vì Minor và Medium
   const maintenanceTypeData = {
