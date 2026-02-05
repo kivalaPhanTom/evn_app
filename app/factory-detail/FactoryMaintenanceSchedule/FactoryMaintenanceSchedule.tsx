@@ -5,6 +5,7 @@ import FactoryMaintenanceInfo from './FactoryMaintenanceInfo/FactoryMaintenanceI
 import { t } from 'i18next'
 import { router } from 'expo-router'
 import styles from './FactoryMaintenanceSchedule.styles'
+import { generateYearList } from '@/core/utils/date'
 
 interface FactoryMaintenanceScheduleProps {
   currentPlantId?: string
@@ -16,7 +17,7 @@ function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
   const { currentPlantId, selectedYear, setSelectedYear } = props
 
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
+  const years = generateYearList(currentYear)
 
   const onPressCard = () => {
     router.navigate({

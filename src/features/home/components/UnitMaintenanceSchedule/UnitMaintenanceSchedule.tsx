@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { generateYearList } from '@/core/utils/date'
 
 function UnitMaintenanceSchedule() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
@@ -22,7 +23,7 @@ function UnitMaintenanceSchedule() {
   const dispatch = useDispatch()
 
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
+  const years = generateYearList(currentYear)
 
   const onPressCard = () => {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
