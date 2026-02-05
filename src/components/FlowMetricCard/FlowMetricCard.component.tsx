@@ -26,14 +26,24 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
       }}
     >
       <View style={styles.title}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: color }}>{icon}</Text>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#8082A5' }}>
+        <Text allowFontScaling={false} style={{ fontSize: 24, fontWeight: 'bold', color: color }}>
+          {icon}
+        </Text>
+        <Text allowFontScaling={false} style={{ fontSize: 24, fontWeight: 'bold', color: '#8082A5' }}>
           {label}
-          {label1 && <Text style={{ fontSize: 16 }}>{label1}</Text>}
+          {label1 && (
+            <Text allowFontScaling={false} style={{ fontSize: 16 }}>
+              {label1}
+            </Text>
+          )}
         </Text>
       </View>
-      <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#CCCDDB' }}>{value}</Text>
-      <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#CCCDDB' }}>{unit}</Text>
+      <Text allowFontScaling={false} style={{ fontSize: 28, fontWeight: 'bold', color: '#CCCDDB' }}>
+        {value}
+      </Text>
+      <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: 'bold', color: '#CCCDDB' }}>
+        {unit}
+      </Text>
     </View>
   )
 }
