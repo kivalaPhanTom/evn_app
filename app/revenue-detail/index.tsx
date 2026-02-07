@@ -14,7 +14,7 @@ import { typography } from '@/core/constants/typography'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
-interface Props {}
+interface Props { }
 
 const data = {
   powerPrices: [
@@ -73,7 +73,9 @@ export default function RevenueDetail(props: Props) {
   // const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const { countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
   const hydrologyPlants = {
     plantsData: [

@@ -38,7 +38,7 @@ export default function ReveneCompareByTime({
     setOpen(false)
     // onChangeOption?.(value);
   }
-  const [range, setRange] = useState({ from: dayjs().subtract(7, 'day'), to: dayjs() })
+  const [range, setRange] = useState({ from: dayjs().subtract(8, 'day'), to: dayjs().subtract(1, 'day') })
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     setRange(newRange)
     const fromDate = dayjs(newRange.from)
