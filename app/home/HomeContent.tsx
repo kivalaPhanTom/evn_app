@@ -19,6 +19,7 @@ import { saveState } from '@/core/redux/slices/HomeSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
+import DocumentSection from '@/features/home/components/Legal/Documents'
 
 interface moduleItem {
   code: string
@@ -71,6 +72,7 @@ function HomeContent() {
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset
   const shouldLoadMap = scrollY >= 2200 - preloadOffset
   const shouldLoadTechInfo = scrollY >= 2600 - preloadOffset
+  const shouldLoadDocuments = scrollY >= 3000 - preloadOffset
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false
@@ -145,6 +147,9 @@ function HomeContent() {
         </LazySection>
         <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
           <TechInfo />
+        </LazySection>
+        <LazySection shouldLoad={shouldLoadDocuments} minHeight={300}>
+          <DocumentSection />
         </LazySection>
 
       </TwinkleStars>
