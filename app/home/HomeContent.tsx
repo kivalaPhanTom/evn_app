@@ -74,6 +74,7 @@ function HomeContent() {
   const shouldLoadMap = scrollY >= 2200 - preloadOffset
   const shouldLoadTechInfo = scrollY >= 2600 - preloadOffset
   const shouldLoadDocuments = scrollY >= 3000 - preloadOffset
+  const shouldLoadExistence = scrollY >= 3400 - preloadOffset
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false
@@ -107,7 +108,6 @@ function HomeContent() {
             <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
           </View>
         </View>
-        <ExistenceInfo/>
         {checkModulePermission('CONG_SUAT') && <PowerSection />}
 
         {checkModulePermission('SAN_LUONG') && (
@@ -153,7 +153,9 @@ function HomeContent() {
         <LazySection shouldLoad={shouldLoadDocuments} minHeight={300}>
           <DocumentSection />
         </LazySection>
-
+        <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
+          <ExistenceInfo/>
+        </LazySection>
       </TwinkleStars>
     </ScrollView>
   )
