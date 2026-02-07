@@ -23,10 +23,12 @@ interface ProfitDetailProps {
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const dispatch = useDispatch()
   const { dailyAndCumulativeData, profitByPeriod } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
-    to: dayjs(),
+    to: dayjs().subtract(1, 'day'),
   })
 
   useEffect(() => {

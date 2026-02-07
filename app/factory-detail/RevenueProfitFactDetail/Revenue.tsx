@@ -30,9 +30,11 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
 
   const onPressCard = () => {
-    router.navigate({ pathname: '/revenue-detail', params: {
-      currentPlantId: currentPlantId
-    } })
+    router.navigate({
+      pathname: '/revenue-detail', params: {
+        currentPlantId: currentPlantId
+      }
+    })
   }
 
   useEffect(() => {
@@ -129,7 +131,8 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            diff={revenueFactDetail.Today.ChangePercent / 100}
+            unit={revenueFactDetail.Today.Unit}
+            diff={revenueFactDetail.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
@@ -142,7 +145,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={revenueFactDetail.Cumulative.Week.ChangePercent / 100} />
+              <MetricDiff withBackground unit={revenueFactDetail.Cumulative.Week.Unit} diff={revenueFactDetail.Cumulative.Week.ChangeValue} />
             </View>
           </View>
         </View>
@@ -157,7 +160,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={revenueFactDetail.Cumulative.Month.ChangePercent / 100} />
+              <MetricDiff withBackground unit={revenueFactDetail.Cumulative.Month.Unit} diff={revenueFactDetail.Cumulative.Month.ChangeValue} />
             </View>
           </View>
         </View>

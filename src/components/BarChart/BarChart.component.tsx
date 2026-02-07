@@ -333,7 +333,7 @@ const BarChart: React.FC<Props> = ({
           hideRules={!showHorizontalGrid}
           rulesType={rulesType}
           rulesColor="rgb(255,255,255,0.1)"
-          isAnimated
+          isAnimated={false}
           barBorderRadius={rounded ? barRadius : 0}
           barBorderTopRightRadius={rounded ? barRadius : 0}
           barBorderTopLeftRadius={rounded ? barRadius : 0}

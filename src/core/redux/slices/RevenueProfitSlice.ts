@@ -32,6 +32,7 @@ interface RevenueProfitState {
     Breakdown: {
       Color: string
       Percent: number
+      ChangeValue: number
       PlantCode: string
       PlantName: string
       Sparkline: number[]
@@ -49,18 +50,21 @@ interface RevenueProfitState {
     Cumulative: {
       Month: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
         month: string
       }
       Week: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
       }
     }
     Today: {
       ChangePercent: number
+      ChangeValue: number
       Unit: string
       Value: number
     }
@@ -78,18 +82,21 @@ interface RevenueProfitState {
     Cumulative: {
       Month: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
         month: string
       }
       Week: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
       }
     }
     Today: {
       ChangePercent: number
+      ChangeValue: number
       Unit: string
       Value: number
     }
@@ -99,6 +106,7 @@ interface RevenueProfitState {
     Breakdown: {
       Color: string
       Percent: number
+      ChangeValue: number
       PlantCode: string
       PlantName: string
       Sparkline: number[]
@@ -116,18 +124,21 @@ interface RevenueProfitState {
     Cumulative: {
       Month: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
         month: string
       }
       Week: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
       }
     }
     Today: {
       ChangePercent: number
+      ChangeValue: number
       Unit: string
       Value: number
     }
@@ -160,18 +171,21 @@ interface RevenueProfitState {
     Cumulative: {
       Month: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
         month: string
       }
       Week: {
         ChangePercent: number
+        ChangeValue: number
         Unit: string
         Value: number
       }
     }
     Today: {
       ChangePercent: number
+      ChangeValue: number
       Unit: string
       Value: number
     }
@@ -226,18 +240,21 @@ const initialState: RevenueProfitState = {
     Cumulative: {
       Month: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
         month: '',
       },
       Week: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
       },
     },
     Today: {
       ChangePercent: 0,
+      ChangeValue: 0,
       Unit: '',
       Value: 0,
     },
@@ -255,18 +272,21 @@ const initialState: RevenueProfitState = {
     Cumulative: {
       Month: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
         month: '',
       },
       Week: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
       },
     },
     Today: {
       ChangePercent: 0,
+      ChangeValue: 0,
       Unit: '',
       Value: 0,
     },
@@ -285,18 +305,21 @@ const initialState: RevenueProfitState = {
     Cumulative: {
       Month: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
         month: '',
       },
       Week: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
       },
     },
     Today: {
       ChangePercent: 0,
+      ChangeValue: 0,
       Unit: '',
       Value: 0,
     },
@@ -409,18 +432,21 @@ const initialState: RevenueProfitState = {
     Cumulative: {
       Month: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
         month: '',
       },
       Week: {
         ChangePercent: 0,
+        ChangeValue: 0,
         Unit: '',
         Value: 0,
       },
     },
     Today: {
       ChangePercent: 0,
+      ChangeValue: 0,
       Unit: '',
       Value: 0,
     },

@@ -61,6 +61,7 @@ export default function ProfitDetail() {
     d.setDate(endDate.getDate() - (values.length - 1 - idx))
     return formatDay(d)
   })
+  const unit = "tỷ VNĐ";
 
   // Collect negative days for warning cards
   const negativeDays = values
@@ -87,7 +88,8 @@ export default function ProfitDetail() {
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            diff={profit.Today.ChangePercent / 100}
+            unit={unit}
+            diff={profit.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
@@ -100,7 +102,7 @@ export default function ProfitDetail() {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={profit.Cumulative.Week.ChangePercent / 100} />
+              <MetricDiff withBackground unit={unit} diff={profit.Cumulative.Week.ChangeValue} />
             </View>
           </View>
         </View>
@@ -115,7 +117,7 @@ export default function ProfitDetail() {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={profit.Cumulative.Month.ChangePercent / 100} />
+              <MetricDiff withBackground unit={unit} diff={profit.Cumulative.Month.ChangeValue} />
             </View>
           </View>
         </View>
@@ -237,7 +239,7 @@ export default function ProfitDetail() {
                     <Text style={[styles.cardValue, { fontSize: px.f(24) }]}>
                       {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
                     </Text>
-                    <MetricDiff diff={plant.Percent / 100} />
+                    <MetricDiff unit={unit} diff={plant.ChangeValue} />
                   </View>
                 </TouchableOpacity>
               )
