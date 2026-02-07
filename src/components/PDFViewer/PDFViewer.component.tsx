@@ -12,6 +12,7 @@ import { WebView } from 'react-native-webview';
 import styles from './PDFViewer.styles';
 import { Document } from '@/core/model/Document';
 import { formatDate } from '@/core/utils/date';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface PdfViewerProps {
     doc: Document;
@@ -25,7 +26,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
     const [loading, setLoading] = React.useState(true);
     return (
         <Modal visible animationType="slide">
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 {/* Top Navigation */}
                 <View style={styles.header}>
                     <Pressable
@@ -62,7 +63,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
                         startInLoadingState
                         allowsFullscreenVideo
                         onLoadEnd={() => setLoading(false)}
-                        onError={() => setLoading(false)}
+                        onError={() => { setLoading(false); console.log('error loading pdf' ); }}
                     />
 
                     {/* Fallback overlay */}
@@ -88,7 +89,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
                         </Text>
                     </Pressable>
                 </View> */}
-            </View>
+            </SafeAreaView>
         </Modal>
     );
 };
