@@ -10,6 +10,7 @@ import revenueProfitSlice from './slices/RevenueProfitSlice'
 import homeSlice from './slices/HomeSlice'
 import unitMaintenanceScheduleSlice from './slices/UnitMaintenanceScheduleSlice'
 import techInfoSlice from './slices/TechInfoSlice'
+import documentSlice from './slices/DocumentSlice'
 import moduleSlice from './slices/ModuleSlice'
 
 let sagaMiddleware = createSagaMiddleware()
@@ -24,7 +25,8 @@ const allReducer = {
   unitMaintenanceScheduleSlice,
   homeSlice,
   moduleSlice,
-  techInfoSlice
+  techInfoSlice,
+  documentSlice,
 }
 const store = configureStore({
   reducer: {

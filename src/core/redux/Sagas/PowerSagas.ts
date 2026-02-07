@@ -56,6 +56,7 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
     setLoading(true)
     const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId)
     if (res.status === 200) {
+      yield put(setPowerByTime(res.data))
       getDataFromApi(res.data)
     }
     setLoading(false)
