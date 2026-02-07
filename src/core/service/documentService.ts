@@ -15,5 +15,7 @@ function getLegalApi() {
 }
 
 function getExistenceApi(currentPlantId: string) {
-  return api.get(`${servicePattern.getExistence}?currentPlantId=${currentPlantId}`)
+  return api.get(`${servicePattern.getExistence}`, {
+    params: { currentPlantId }
+  })
 }

@@ -20,6 +20,7 @@ import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
 import DocumentSection from '@/features/home/components/Legal/Documents'
+import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
 
 interface moduleItem {
   code: string
@@ -106,6 +107,7 @@ function HomeContent() {
             <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
           </View>
         </View>
+        <ExistenceInfo/>
         {checkModulePermission('CONG_SUAT') && <PowerSection />}
 
         {checkModulePermission('SAN_LUONG') && (

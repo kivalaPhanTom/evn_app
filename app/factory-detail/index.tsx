@@ -19,6 +19,7 @@ import { t } from 'i18next'
 import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
 import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
+import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -103,6 +104,7 @@ function FactoryDetail(props: factoryDetailProps) {
               <Text style={styles.locationText}>{location}</Text>
             </View>
           </View>
+          <ExistenceInfo  currentPlantId={currentPlantId} />
           {
             checkModulePermission('CONG_SUAT') &&
             <PowerSectionFactDetail
