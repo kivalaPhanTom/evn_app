@@ -5,3 +5,7 @@ export function formatDate(date: Date): string {
         year: 'numeric',
     })
 }
+
+export function generateYearList(currentYear: number): number[] {
+    return Array.from({ length: 11 }, (_, i) => currentYear + 5 - i);
+}

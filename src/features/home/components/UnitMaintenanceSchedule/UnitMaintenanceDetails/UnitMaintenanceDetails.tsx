@@ -11,6 +11,7 @@ import {
 import styles from './UnitMaintenanceDetails.styles'
 import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
 import { RootState } from '@/core/redux/store'
+import { generateYearList } from '@/core/utils/date'
 
 const TABS = [
   { id: 'BTS', label: 'Buôn Tua Srah' },
@@ -54,7 +55,7 @@ function UnitMaintenanceDetails() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
   const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - i)
+  const years = generateYearList(currentYear)
 
   useEffect(() => {
     // Update activeTab when effectivePlantId changes

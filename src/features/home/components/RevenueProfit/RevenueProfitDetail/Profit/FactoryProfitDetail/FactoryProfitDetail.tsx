@@ -19,10 +19,12 @@ import { useLocalSearchParams } from 'expo-router'
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
   const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
-    to: dayjs(),
+    to: dayjs().subtract(1, 'day'),
   })
   const [selectedOption, setSelectedOption] = useState<string>('Tổng')
   const [showSelectModal, setShowSelectModal] = useState(false)

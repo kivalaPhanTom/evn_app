@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: '#8b92a0',
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '500',
   },
   bottomInfo: {

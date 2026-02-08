@@ -202,7 +202,8 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            diff={profitFactDetail.Today.ChangePercent / 100}
+            unit={profitFactDetail.Today.Unit}
+            diff={profitFactDetail.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
@@ -215,7 +216,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={profitFactDetail.Cumulative.Week.ChangePercent / 100} />
+              <MetricDiff withBackground unit={profitFactDetail.Cumulative.Week.Unit} diff={profitFactDetail.Cumulative.Week.ChangeValue} />
             </View>
           </View>
         </View>
@@ -230,7 +231,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={profitFactDetail.Cumulative.Month.ChangePercent / 100} />
+              <MetricDiff withBackground unit={profitFactDetail.Cumulative.Month.Unit} diff={profitFactDetail.Cumulative.Month.ChangeValue} />
             </View>
           </View>
         </View>

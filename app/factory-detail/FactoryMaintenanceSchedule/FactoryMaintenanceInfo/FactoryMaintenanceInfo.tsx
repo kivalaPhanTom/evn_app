@@ -88,7 +88,7 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
                 <Text style={styles.durationLabel}>KẾ HOẠCH</Text>
               </View>
 
-              <View style={styles.divider} />
+              {/* <View style={styles.divider} /> */}
 
               <View style={styles.durationItem}>
                 <Text style={styles.durationValue}>{maintenanceDurationData.actual}</Text>
