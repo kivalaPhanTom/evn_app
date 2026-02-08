@@ -19,6 +19,7 @@ import { t } from 'i18next'
 import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
 import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
+import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -79,7 +80,8 @@ function FactoryDetail(props: factoryDetailProps) {
   const shouldLoadRevenue = scrollY >= 1000 - preloadOffset;
   const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
-    const shouldLoadTechInfo = scrollY >= 2200 - preloadOffset
+  const shouldLoadTechInfo = scrollY >= 2200 - preloadOffset;
+  const shouldLoadExistence = scrollY >= 2600 - preloadOffset;
 
   return (
     <ScrollView
@@ -103,6 +105,7 @@ function FactoryDetail(props: factoryDetailProps) {
               <Text style={styles.locationText}>{location}</Text>
             </View>
           </View>
+
           {
             checkModulePermission('CONG_SUAT') &&
             <PowerSectionFactDetail
@@ -157,6 +160,9 @@ function FactoryDetail(props: factoryDetailProps) {
               currentPlantId={currentPlantId}
               keyTab={keyTab}
             />
+          </LazySection>
+          <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
+            <ExistenceInfo currentPlantId={currentPlantId} />
           </LazySection>
         </TwinkleStars>
       </View>

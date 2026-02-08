@@ -57,6 +57,7 @@ export default function RevenueDetail() {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
+  const unit = "tỷ VNĐ";
 
   return (
     <SectionContainer title="Doanh thu">
@@ -69,7 +70,8 @@ export default function RevenueDetail() {
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            diff={revenue.Today.ChangePercent / 100}
+            unit={unit}
+            diff={revenue.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
           />
         </View>
@@ -82,7 +84,7 @@ export default function RevenueDetail() {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={revenue.Cumulative.Week.ChangePercent / 100} />
+              <MetricDiff withBackground unit={unit} diff={revenue.Cumulative.Week.ChangeValue} />
             </View>
           </View>
         </View>
@@ -97,7 +99,7 @@ export default function RevenueDetail() {
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground diff={revenue.Cumulative.Month.ChangePercent / 100} />
+              <MetricDiff  withBackground unit={unit} diff={revenue.Cumulative.Month.ChangeValue} />
             </View>
           </View>
         </View>
@@ -191,7 +193,7 @@ export default function RevenueDetail() {
                     <Text style={[styles.cardValue, { fontSize: px.f(24) }]}>
                       {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
                     </Text>
-                    <MetricDiff diff={plant.Percent / 100} />
+                    <MetricDiff unit={unit} diff={plant.ChangeValue} />
                   </View>
                 </View>
               )
