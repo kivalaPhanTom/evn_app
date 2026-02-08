@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
     View,
     Text,
@@ -20,10 +20,12 @@ interface PdfViewerProps {
 }
 
 const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
-    const openExternal = () => {
-        Linking.openURL(doc.linkFile);
-    };
     const [loading, setLoading] = React.useState(true);
+    const webViewRef = useRef<WebView>(null);
+
+    const onReload = () => {
+        webViewRef.current?.reload();
+    };
     return (
         <Modal visible animationType="slide">
             <SafeAreaView style={styles.container}>
@@ -45,7 +47,13 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
                             {formatDate(new Date(doc.deadline))} • {doc.isValid ? "Còn hiệu lực" : "Hết hiệu lực"}
                         </Text>
                     </View>
-
+                    <Pressable
+                        onPress={onReload}
+                        hitSlop={10}
+                        style={styles.iconButton}
+                    >
+                        <Text style={styles.iconText}>↻</Text>
+                    </Pressable>
                     <View style={{ width: 32 }} />
                 </View>
 
@@ -60,10 +68,11 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
                                 )}`,
 
                         }}
+                        ref={webViewRef}
                         startInLoadingState
                         allowsFullscreenVideo
-                        onLoadEnd={() => setLoading(false)}
-                        onError={() => { setLoading(false); console.log('error loading pdf' ); }}
+                        onLoadEnd={() => { setLoading(false); console.log('loading end'); }}
+                        onError={() => { setLoading(false); console.log('error loading pdf'); }}
                     />
 
                     {/* Fallback overlay */}

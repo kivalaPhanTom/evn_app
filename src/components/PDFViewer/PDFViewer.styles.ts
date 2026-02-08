@@ -89,5 +89,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 14,
     },
+
+    iconButton: {
+        width: 32,
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconText: {
+        fontSize: 22,
+        color: '#333',
+    },
 });
 export default styles;
