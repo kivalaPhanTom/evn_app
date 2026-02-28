@@ -19,7 +19,7 @@ interface ChartPoint {
 /* ===== CONFIG ===== */
 const CHART_HEIGHT = 220;
 const POINT_WIDTH = 60;
-const Y_AXIS_WIDTH = 28;
+const Y_AXIS_WIDTH = 32;
 const PADDING_TOP = 20;
 const PADDING_BOTTOM = 36;
 const PADDING_RIGHT = 16;
