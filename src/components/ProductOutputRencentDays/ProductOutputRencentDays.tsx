@@ -67,7 +67,7 @@ function ProductOutputRencentDays(props: Props) {
     <AnimatedCardContainer onPress={onPressCard}>
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>A 7 NGÀY GẦN NHẤT</Text>
+        <Text style={styles.title}>A - 7 NGÀY GẦN NHẤT</Text>
 
         {/* Table Header */}
         <View style={styles.tableHeader}>

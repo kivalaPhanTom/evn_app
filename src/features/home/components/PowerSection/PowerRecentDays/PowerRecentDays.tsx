@@ -32,7 +32,7 @@ function PowerRecentDays() {
     <AnimatedCardContainer>
       <View>
         <View style={styles.content}>
-          <Text style={styles.title}>P 7 NGÀY GẦN NHẤT</Text>
+          <Text style={styles.title}>P - 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
