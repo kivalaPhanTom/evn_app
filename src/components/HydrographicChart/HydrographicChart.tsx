@@ -118,7 +118,11 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
     })
     .join(' ');
   const thresholdY = getY(referenceLevel);
-
+const formatYAxis = (value: number, range: number) => {
+  if (range < 1) return value.toFixed(2);
+  if (range < 10) return value.toFixed(1);
+  return Math.round(value).toString();
+};
   return (
     <View style={styles.mainContainer}>
       {isLoading ? <LineChartSkeleton /> :
@@ -164,7 +168,8 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       fill="#9fa8da"
                       textAnchor="end"
                     >
-                      {Math.round(value)}
+                    {formatYAxis(value, rangeY)}
+                      {/* {Math.round(value)} */}
                     </SvgText>
                   );
                 })}
