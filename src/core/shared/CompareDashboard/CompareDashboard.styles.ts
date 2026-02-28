@@ -16,6 +16,13 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
     color: 'rgba(255, 255, 255, 0.5)',
   },
+  chartCompareByTime: {
+    textTransform: 'uppercase',
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 12,
+    marginLeft: px(12),
+    marginTop: 10
+  },
   chartWrapper: {
     marginTop: px.v(8),
     marginBottom: px.v(12),
