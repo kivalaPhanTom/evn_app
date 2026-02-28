@@ -20,6 +20,9 @@ import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
 import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
+import { setSelectedOptionsValueFactDetail } from '@/core/redux/slices/HydrologySlice'
+import { RootState } from '@/core/redux/store'
+
 interface factoryDetailProps {
   companyName: string;
   location: string;
@@ -36,6 +39,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
+  const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice) 
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
@@ -82,6 +86,14 @@ function FactoryDetail(props: factoryDetailProps) {
   const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
   const shouldLoadTechInfo = scrollY >= 2200 - preloadOffset;
   const shouldLoadExistence = scrollY >= 2600 - preloadOffset;
+  const options = [
+    { label: "Theo giờ", value: "HOURS" },
+    { label: "Theo 7 ngày gần nhất", value: "7_DAYS" }
+  ];
+
+  const onChange = (val: string) => {
+    dispatch(setSelectedOptionsValueFactDetail(val))
+  }
 
   return (
     <ScrollView
@@ -131,6 +143,10 @@ function FactoryDetail(props: factoryDetailProps) {
                   label: 'Chi tiết',
                   onPress: onPressCardHydro,
                 }}
+                isShowSelectButton={true}
+                options={options}
+                onChangeOption={onChange}
+                selectedValue={selectedOptionsValueFactDetail}
               >
                 <ReservoirWaterLevel currentPlantId={currentPlantId} />
                 <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />

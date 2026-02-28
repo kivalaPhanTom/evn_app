@@ -22,7 +22,7 @@ interface WaterLevelByHoursProps {
 function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const { currentPlantId } = props
   const dispatch = useDispatch()
-  const { hydrologyCharData } = useSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyCharData, selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
     let result = 0
