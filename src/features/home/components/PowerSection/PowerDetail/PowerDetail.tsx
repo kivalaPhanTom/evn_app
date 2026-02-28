@@ -4,6 +4,7 @@ import { ScrollView, Text, View } from 'react-native'
 import ComparePower24h from './ComparePower24h/ComparePower24h'
 import style from './PowerDetail.styles'
 import { useLocalSearchParams } from 'expo-router'
+import ComparePowerByTime from './ComparePowerByTime/ComparePowerByTime'
 
 export default function PowerDetail(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props;
@@ -16,6 +17,9 @@ export default function PowerDetail(props: { currentPlantId?: string, isCheckDis
       <View style={{ paddingHorizontal: 16 }}>
         <View style={style.section}>
           <ComparePower24h currentPlantId={currentPlantId} isCheckDisableDate={isCheckDisableDate}/>
+        </View>
+        <View style={style.section}>
+          <ComparePowerByTime currentPlantId={currentPlantId} isCheckDisableDate={isCheckDisableDate}/>
         </View>
       </View>
     </ScrollView>
