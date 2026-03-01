@@ -65,7 +65,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   const distance = Math.abs(referenceYRaw - maxLevelYRaw)
   let maxLevelY = maxLevelYRaw
   let referenceY = referenceYRaw
-  
+
   if (distance < MIN_DISTANCE) {
     // Nếu referenceY ở dưới maxLevelY, đẩy referenceY xuống
     if (referenceYRaw > maxLevelYRaw) {
@@ -586,12 +586,16 @@ const Overview: React.FC = () => {
         break;
     }
     if (companyId !== "") {
-      dispatch(getHydrographicChart({ companyId: companyId }))
+      const type = selectedOptionsValue === "7_DAYS" ? "day" : ""
+      dispatch(getHydrographicChart({
+        companyId: companyId,
+        type: type
+      }))
       dispatch(getInflowOutflow({ hydroElectricId: companyId }))
     }
 
 
-  }, [hydroElectricId, countRefesh, dispatch])
+  }, [hydroElectricId, countRefesh, dispatch, selectedOptionsValue])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (
@@ -616,7 +620,7 @@ const Overview: React.FC = () => {
           <View style={styles.detailContainer}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
-              <LineChartSkeleton/>
+              <LineChartSkeleton />
             </View>
             <View style={{ marginTop: px.v(16) }}>
               <BarSkeleton width={'100%'} height={100} marginTop={0} />
@@ -659,6 +663,7 @@ const Overview: React.FC = () => {
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
                 bgColor={'#1c056eff'}
+                selectedOptionsValue = {selectedOptionsValue}
               />
               <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
             </>

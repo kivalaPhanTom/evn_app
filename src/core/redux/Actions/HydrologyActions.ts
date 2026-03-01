@@ -5,7 +5,7 @@ export const getHydrologyflowChart = createAction<{ currentPlantId: string; date
   ACTION_TYPES.GET_HYDROLOGY_FLOW_CHART,
 )
 export const getInflowOutflow = createAction<{ hydroElectricId: string }>(ACTION_TYPES.GET_INFLOW_OUTFLOW)
-export const getHydrographicChart = createAction<{ companyId: string }>(ACTION_TYPES.GET_HYDROLOGY_GRAPHIC_CHART)
+export const getHydrographicChart = createAction<{ companyId: string, type: string}>(ACTION_TYPES.GET_HYDROLOGY_GRAPHIC_CHART)
 export const getHydrologyPlantsParam = createAction<{ currentPlantId?: string }>(ACTION_TYPES.GET_HYDROLOGY_PLANTS_PARAM)
 export const getUpstreamWaterLevel = createAction<{ currentPlantId: string; date: string }>(
   ACTION_TYPES.GET_UPSTREAM_WATER_LEVEL,
