@@ -37,19 +37,25 @@ interface HydroChartItem {
   avgVolume: number;
   percent: number;
   values: number;
+  date: string;
 }
 interface HydrographicChartProps {
   isLoading: boolean
   data: HydroChartItem[]
   referenceLevel: number
   maxLevel?: number
-  bgColor?:string
+  bgColor?: string
+  selectedOptionsValue?: string
+}
+const convertDateLabel = (dateString: string) => {
+  const result = dateString.slice(0, 5)
+  return result;
 }
 const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
-  const { isLoading = false, data = [], referenceLevel = 0, bgColor } = props
+  const { isLoading = false, data = [], referenceLevel = 0, bgColor, selectedOptionsValue = "" } = props
   const scrollRef = useRef<ScrollView>(null);
   const convertedData: { label: string; value: number }[] = data.map((item, index) => ({
-    label: `${index}`,
+    label: `${selectedOptionsValue === "7_DAYS" ? convertDateLabel(item.date) : index}`,
     value: item.avgVolume,
   }))
   const waterDrops = useMemo(() => {
@@ -118,11 +124,11 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
     })
     .join(' ');
   const thresholdY = getY(referenceLevel);
-const formatYAxis = (value: number, range: number) => {
-  if (range < 1) return value.toFixed(2);
-  if (range < 10) return value.toFixed(1);
-  return Math.round(value).toString();
-};
+  const formatYAxis = (value: number, range: number) => {
+    if (range < 1) return value.toFixed(2);
+    if (range < 10) return value.toFixed(1);
+    return Math.round(value).toString();
+  };
   return (
     <View style={styles.mainContainer}>
       {isLoading ? <LineChartSkeleton /> :
@@ -168,7 +174,7 @@ const formatYAxis = (value: number, range: number) => {
                       fill="#9fa8da"
                       textAnchor="end"
                     >
-                    {formatYAxis(value, rangeY)}
+                      {formatYAxis(value, rangeY)}
                       {/* {Math.round(value)} */}
                     </SvgText>
                   );
@@ -288,13 +294,13 @@ const formatYAxis = (value: number, range: number) => {
                           style={{
                             position: 'absolute',
                             left: x,
-                            width: POINT_WIDTH,      
-                            alignItems: 'center', 
+                            width: POINT_WIDTH,
+                            alignItems: 'center',
                             transform: [{ translateX: -POINT_WIDTH / 2 }],
                           }}
                         >
                           <View style={styles.dropScale}>
-                            <WaterDrop percent={drop.percent} fontSize={12} isShowPercent = {false}/>
+                            <WaterDrop percent={drop.percent} fontSize={12} isShowPercent={false} />
                           </View>
 
                           <Text style={styles.volumeText}>

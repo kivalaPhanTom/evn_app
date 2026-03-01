@@ -42,6 +42,7 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
           data={hydrologyCharData}
           referenceLevel={referenceLevel}
           bgColor={'#000033'}
+          selectedOptionsValue={selectedOptionsValueFactDetail}
         />
       </View>
     </>

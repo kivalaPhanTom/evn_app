@@ -19,15 +19,21 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getHydrographicChart({ companyId: currentPlantId }))
+      const type = selectedOptionsValueFactDetail === "7_DAYS" ? "day" : ""
+      dispatch(getHydrographicChart({
+        companyId: currentPlantId,
+        type: type
+      }))
       dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
       dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
+  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh, selectedOptionsValueFactDetail])
 
   return (
     <ScrollView>
