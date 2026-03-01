@@ -25,6 +25,8 @@ interface hydrologyState {
   countRefesh: number
   inboundTraffic: number
   dischargeFlow: number
+  selectedOptionsValue:string
+  selectedOptionsValueFactDetail: string
   inflowOutflow: {
     unit: string
     cards: {
@@ -156,6 +158,8 @@ const initialState: hydrologyState = {
   countRefesh: 0,
   inboundTraffic: 0,
   dischargeFlow: 0,
+  selectedOptionsValue: 'HOURS',
+  selectedOptionsValueFactDetail: 'HOURS',
   inflowOutflow: {
     unit: '',
     cards: [],
@@ -324,6 +328,12 @@ const hydrologySlice = createSlice({
     setCountRefesh: (state, action) => {
         state.countRefesh = action.payload
     },
+    setSelectedOptionsValue: (state, action) => {
+        state.selectedOptionsValue = action.payload
+    },
+    setSelectedOptionsValueFactDetail: (state, action) => {
+        state.selectedOptionsValueFactDetail = action.payload
+    },
     setLoading: (state, action) => {
       return {
         ...state,
@@ -349,7 +359,9 @@ export const {
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
   setCountRefesh,
-  setLoading
+  setLoading,
+  setSelectedOptionsValue,
+  setSelectedOptionsValueFactDetail
 } = hydrologySlice.actions
 
 export default reducer

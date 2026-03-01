@@ -530,7 +530,7 @@ const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
 }
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
-  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants, selectedOptionsValue } = useSelector((state: RootState) => state.hydrologySlice)
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {

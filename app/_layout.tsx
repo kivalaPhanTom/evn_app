@@ -12,6 +12,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Host } from 'react-native-portalize';
 import ToastManager from 'toastify-react-native'
 import VersionChecker from '@/components/VersionChecker/VersionChecker'
 import { BlurView } from 'expo-blur'
@@ -76,7 +77,8 @@ export default function RootLayout() {
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <AuthProvider>
               <VersionChecker />
-              <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
+              <Host>
+                <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
                 <Stack
                   initialRouteName="splash"
                   screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
@@ -117,6 +119,7 @@ export default function RootLayout() {
                 <ToastManager theme={'dark'} position={'top'} animationStyle="fade" />
                 <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
               </SafeAreaView>
+              </Host>
             </AuthProvider>
           </ThemeProvider>
         </ThemeToggleContext.Provider>

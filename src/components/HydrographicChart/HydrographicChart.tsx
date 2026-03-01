@@ -19,7 +19,7 @@ interface ChartPoint {
 /* ===== CONFIG ===== */
 const CHART_HEIGHT = 220;
 const POINT_WIDTH = 60;
-const Y_AXIS_WIDTH = 28;
+const Y_AXIS_WIDTH = 32;
 const PADDING_TOP = 20;
 const PADDING_BOTTOM = 36;
 const PADDING_RIGHT = 16;
@@ -118,7 +118,11 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
     })
     .join(' ');
   const thresholdY = getY(referenceLevel);
-
+const formatYAxis = (value: number, range: number) => {
+  if (range < 1) return value.toFixed(2);
+  if (range < 10) return value.toFixed(1);
+  return Math.round(value).toString();
+};
   return (
     <View style={styles.mainContainer}>
       {isLoading ? <LineChartSkeleton /> :
@@ -164,7 +168,8 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       fill="#9fa8da"
                       textAnchor="end"
                     >
-                      {Math.round(value)}
+                    {formatYAxis(value, rangeY)}
+                      {/* {Math.round(value)} */}
                     </SvgText>
                   );
                 })}

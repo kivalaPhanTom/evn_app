@@ -10,7 +10,7 @@ interface LegendItemData {
 
 interface CompareLegendProps {
   items?: LegendItemData[]
-  displayType?: 'power' | 'output' // Thêm prop để biết kiểu hiển thị
+  displayType?: 'power' | 'output' | 'compareByTime' // Thêm prop để biết kiểu hiển thị
 }
 
 const CompareLegend: React.FC<CompareLegendProps> = ({ items, displayType = 'output' }) => {
@@ -27,7 +27,13 @@ const CompareLegend: React.FC<CompareLegendProps> = ({ items, displayType = 'out
     { type: 'line', color: '#FBBF24', label: 'Hợp đồng ngày MT' },
   ]
 
-  const defaultItems = displayType === 'power' ? defaultItemsPower : defaultItemsOutput
+  // Nếu type = 'compareByTime', chỉ hiển thị 2 items: Ngày mục tiêu và Ngày so sánh nhưng đều là line
+  const defaultItemsCompareByTime: LegendItemData[] = [
+    { type: 'line', label: 'Ngày so sánh' },
+    { type: 'line', color: '#60A5FA', label: 'Ngày mục tiêu' },
+  ]
+
+  const defaultItems = displayType === 'power' ? defaultItemsPower : displayType === 'compareByTime' ? defaultItemsCompareByTime : defaultItemsOutput
   const legendItems = items || defaultItems
 
   return (

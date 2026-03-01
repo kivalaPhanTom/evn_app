@@ -4,6 +4,7 @@ import { ScrollView, View } from 'react-native'
 import CompareOutput24h from './CompareOutput24h/CompareOutput24h'
 import style from './ProductOutputDetail.styles'
 import { useLocalSearchParams } from 'expo-router'
+import CompareOutputByTime from './CompareOutputByTime/CompareOutputByTime'
 
 export default function ProductOutputDetail(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
   const { type } = useLocalSearchParams<{ type?: string }>()
@@ -17,6 +18,9 @@ export default function ProductOutputDetail(props: { currentPlantId?: string, is
       <View style={{ paddingHorizontal: 16 }}>
         <View style={style.section}>
           <CompareOutput24h currentPlantId={currentPlantId} isCheckDisableDate = {isCheckDisableDate}/>
+        </View>
+        <View style={style.section}>
+          <CompareOutputByTime currentPlantId={currentPlantId} isCheckDisableDate = {isCheckDisableDate}/>
         </View>
         <View style={style.section}>
           <ProductCumulativeOutput currentPlantId={currentPlantId} />
