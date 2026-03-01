@@ -15,10 +15,9 @@ const styles = StyleSheet.create({
     // flex: 1,
   },
   title: {
-    color: '#a8b2c1',
-    fontSize: 15,
+    color: Colors.subCardTitle,
+    fontSize: 14,
     fontWeight: '600',
-    marginBottom: 24,
     letterSpacing: 1,
   },
   tableHeader: {
@@ -173,6 +172,20 @@ const styles = StyleSheet.create({
   },
   weekendText: {
     color: Colors.yellow
-  }
+  },
+  actionButton: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
 })
 export default styles
