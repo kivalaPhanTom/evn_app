@@ -5,7 +5,7 @@ import styles from './PDFViewer.styles'
 import { Document } from '@/core/model/Document'
 import { formatDate } from '@/core/utils/date'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import Pdf from 'react-native-pdf';
 interface PdfViewerProps {
   doc: Document
   onClose: () => void
@@ -44,28 +44,39 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
 
         {/* PDF Content */}
         <View style={styles.viewer}>
-          <WebView
-            source={{
-              uri:
-                Platform.OS === 'ios'
-                  ? doc.linkFile
-                  : `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(doc.linkFile)}`,
-            }}
-            ref={webViewRef}
-            startInLoadingState
-            allowsFullscreenVideo
-            onLoadEnd={() => {
-              setLoading(false)
-              console.log('loading end')
-            }}
-            onError={() => {
-              setLoading(false)
-              console.log('error loading pdf')
-            }}
-          />
+          {
+            Platform.OS === 'ios' ? <WebView
+              source={{
+                uri: doc.linkFile
+              }}
+              ref={webViewRef}
+              startInLoadingState
+              allowsFullscreenVideo
+              onLoadEnd={() => {
+                setLoading(false)
+                console.log('loading end')
+              }}
+              onError={() => {
+                setLoading(false)
+                console.log('error loading pdf')
+              }}
+            /> : <Pdf
+              source={{ uri: doc.linkFile }}
+              style={styles.pdf}
+              trustAllCerts={false}
+              onLoadComplete={(numberOfPages) => {
+                setLoading(false)
+                console.log(`Number of pages: ${numberOfPages}`);
+              }}
+              onError={(error) => {
+                setLoading(false)
+                console.log(error);
+              }}
+            />
+          }
 
           {/* Fallback overlay */}
-          {loading && (
+          {loading && Platform.OS === 'ios' && (
             <View pointerEvents="none" style={styles.loadingOverlay}>
               <Text style={styles.loadingIcon}>📄</Text>
               <Text style={styles.loadingText}>Đang tải tài liệu...</Text>
