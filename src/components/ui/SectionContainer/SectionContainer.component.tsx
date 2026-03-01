@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end", // 👈 đẩy về cuối (bên phải)
+    marginHorizontal: px.h(16), // 👈 giảm margin để nút sát hơn
   },
   overlay: {
     position: "absolute",
