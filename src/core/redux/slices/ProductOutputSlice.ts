@@ -89,6 +89,7 @@ interface productOutputState {
         }
       }
     }
+    ContractData: number[]
   }
 }
 const initialState: productOutputState = {
@@ -162,6 +163,7 @@ const initialState: productOutputState = {
         },
       },
     },
+    ContractData: [],
   },
 }
 

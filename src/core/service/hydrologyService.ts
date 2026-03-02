@@ -29,8 +29,12 @@ export const servicePattern = {
   getPowerStoreInLakeFactDetail: `${prefix_api}/PowerStoreInLakeOfFactory`,
   getOperateWaterLevel: `${prefix_api}/GetOperateWaterLevel`,
 }
-function getHydrologyGraphicChartApi(companyId: string) {
-  return apiFormUrlEncoded.get(`${servicePattern.getHydrographicChart}/${companyId}`)
+function getHydrologyGraphicChartApi(companyId: string, type: string) {
+  return apiFormUrlEncoded.get(`${servicePattern.getHydrographicChart}/${companyId}`, {
+    params: {
+      type: type ? type : null,
+    }
+  })
 }
 function getHydrologyFlowApi(currentPlantId: string, date: string) {
   return apiFormUrlEncoded.get(`${servicePattern.getHydrologyFlow}?currentPlantId=${currentPlantId}&date=${date}`)
@@ -84,10 +88,10 @@ function getPowerStoreInLake() {
 function getPowerStoreInLakeFactDetail(currentPlantId: string) {
   return apiFormUrlEncoded.get(
     `${servicePattern.getPowerStoreInLakeFactDetail}`, {
-      params: {
-        currentPlantId: currentPlantId,
-      }
+    params: {
+      currentPlantId: currentPlantId,
     }
+  }
   )
 }
 

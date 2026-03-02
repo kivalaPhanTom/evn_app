@@ -4,6 +4,7 @@ interface HydroChartItem {
   avgVolume: number
   percent: number
   values: number
+  date: string
 }
 interface flowChartItem {
   label: string
