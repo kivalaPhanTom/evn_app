@@ -43,7 +43,7 @@ const localStyles = StyleSheet.create({
 
 interface CompareDashboardProps {
   data: { value: number; label: string }[]
-  lineData?: number
+  lineData?: number[]
   lineData2?: { value: number }[]
   currentPlantId?: string
   isCheckDisableDate: boolean
@@ -132,8 +132,8 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
     value: item,
   }))
 
-  const lineData1Converted = data?.map(() => ({
-    value: lineData,
+  const lineData1Converted = data?.map((_, index) => ({
+    value: lineData?.[index] ?? 0,
   }))
 
   useEffect(() => {
