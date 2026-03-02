@@ -185,7 +185,7 @@ const BarChart: React.FC<Props> = ({
                 setSelectedGroupItems(group.items)
               },
               topLabelComponent:
-                (item.showValuesOnTop ?? true)
+                (item.showValuesOnTop ?? true) && item.value !== 0
                   ? () => (
                       <View style={{ transform: [{ translateY: -labelOffset }] }}>
                         <Text
