@@ -167,8 +167,6 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
         <View>
           <View
             style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
-            onStartShouldSetResponder={() => true}
-            onResponderTerminationRequest={() => false}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
@@ -203,6 +201,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
               startFillColor2="#4ADE80"
               endFillColor2="#4ADE80"
               animateOnDataChange={false}
+              scrollToEnd={true}
             />
             <View style={styles.line} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
