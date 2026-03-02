@@ -14,7 +14,7 @@ function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisab
   const dispatch = useDispatch()
   const {isLoadingCompareProductOutput} = useSelector((state: RootState) => state.productOutputSlice)
   const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
-  const { Unit = '', BarChartData, compareLineChartData, Summary, Contractvalue } = compareProductOutput
+  const { Unit = '', BarChartData, compareLineChartData, Summary, ContractData } = compareProductOutput
  
   return (
     <AnimatedCardContainer>
@@ -32,7 +32,7 @@ function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisab
         <CompareDashboardOutput
           currentPlantId={currentPlantId}
           data={BarChartData}
-          lineData={Contractvalue}
+          lineData={ContractData}
           lineData2={compareLineChartData}
           isCheckDisableDate={isCheckDisableDate}
         />
