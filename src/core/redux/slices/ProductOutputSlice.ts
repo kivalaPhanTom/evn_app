@@ -6,6 +6,7 @@ interface productOutputState {
   isLoadingNearCurrentDays: boolean
   isLoadingCompareProductOutput: boolean
   isLoadingProductCummulativeOutput: boolean
+  isLoadingProductOutputCompareChart: boolean
   productOutputByHours: {
     currentDate: string
     contractPowerValue: number
@@ -91,6 +92,12 @@ interface productOutputState {
     }
     ContractData: number[]
   }
+  productOutputCompareChart: {
+    date: string
+    currentValue: number
+    contractValue: number
+    compareValue: string
+  }[]
 }
 const initialState: productOutputState = {
   isLoadingOverview: false,
@@ -98,6 +105,7 @@ const initialState: productOutputState = {
   isLoadingNearCurrentDays: false,
   isLoadingCompareProductOutput: false,
   isLoadingProductCummulativeOutput: false,
+  isLoadingProductOutputCompareChart: false,
   productOutputByHours: {
     currentDate: '',
     unit: '',
@@ -165,6 +173,7 @@ const initialState: productOutputState = {
     },
     ContractData: [],
   },
+  productOutputCompareChart: [],
 }
 
 const productOutputSlice = createSlice({
@@ -196,6 +205,9 @@ const productOutputSlice = createSlice({
     setCompareProductOutput: (state, action) => {
       state.compareProductOutput = action.payload
     },
+    setProductOutputCompareChart: (state, action) => {
+      state.productOutputCompareChart = action.payload
+    },
     setLoading: (state, action) => {
       return {
         ...state,
@@ -211,6 +223,7 @@ export const {
   setProductOutputByDays,
   setProductCummulativeOutput,
   setCompareProductOutput,
+  setProductOutputCompareChart,
   setLoading,
 } = productOutputSlice.actions
 export default reducer

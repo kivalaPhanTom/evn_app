@@ -19,7 +19,7 @@ interface BarGroup {
 
 interface CompareDashboardProps {
   data: { value: number; label: string }[]
-  lineData2?: { value: number; id: number; label: string }[]
+  lineData2?: { value: number; label: string }[]
   rangeCompare: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   rangeTarget: { from: dayjs.Dayjs; to: dayjs.Dayjs }
   onChangeDateRangeCompare: (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => void
@@ -60,7 +60,6 @@ const CompareDashboardV2 = ({
     const ratio = valueDiff / lineMaxValue // tỷ lệ chênh lệch
     lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% của chiều cao tương ứng với tỷ lệ
   }
-  console.log('lineMaxValue:', lineMaxValue, 'barMaxValue:', barMaxValue, 'lineDataPointsShift2:', lineDataPointsShift2)
 
   const customDataPoint = (
     <View
@@ -86,21 +85,6 @@ const CompareDashboardV2 = ({
     </View>
   )
 
-  const convertData = data?.map((item) => ({
-    label: item.label,
-    items: [item.value],
-  }))
-
-  const barData: BarGroup[] = convertData.map((item, idx) => ({
-    id: idx,
-    label: item.label,
-    items: [
-      {
-        value: item.items[0],
-        frontColor: barColor,
-      },
-    ],
-  }))
   return (
     <View>
       <View>
@@ -129,31 +113,16 @@ const CompareDashboardV2 = ({
         {isLoading ? (
           <LineBarChartSkeleton height={150} />
         ) : (
-          <BarChart
-            data={barData}
-            rounded
-            barWidth={barWidth}
-            spacing={barSpacing}
-            showLine={true}
-            noOfSection={4}
-            rulesType="dash"
-            lineColor="transparent"
-            lineData2={lineData2}
-            lineColor2="#A78BFA"
-            lineDataPointsShift2={lineDataPointsShift2}
-            customDataPoint2={customDataPoint}
-            scrollToEnd={scrollToEnd}
+          <LineChart
+            data={data}
+            data2={lineData2}
+            height={px(200)}
+            color={'#4975B3'}
+            color2="#A78BFA"
+            areaChart={false}
+            hideYAxisText={true}
+            scrollToEnd={true}
           />
-          // <LineChart
-          //   data={lineData2}
-          //   data2={lineData2}
-          //   color={Colors.orange}
-          //   color2={Colors.blue}
-          //   hideDataPoints2={false}
-          //   hideYAxisText={true}
-          //   hideDataPoints1={true}
-          //   scrollToEnd={scrollToEnd}
-          // />
         )}
       </View>
     </View>
