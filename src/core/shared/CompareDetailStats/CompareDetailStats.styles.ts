@@ -1,3 +1,4 @@
+import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
 // Color constants
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   valueText: {
-    fontSize: 32,
+    fontSize: px(32),
     fontWeight: '700',
     color: '#FFFFFF',
     letterSpacing: -0.5,
