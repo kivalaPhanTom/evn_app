@@ -7,13 +7,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getComparePower } from '@/core/redux/Actions/PowerActions'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
+import { getProductOutputCompareChart } from '@/core/redux/Actions/ProductOutputActions'
 
 function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
   const dispatch = useDispatch()
-  const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
-  const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
-  const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
+  const productOutputCompareChartData = useSelector(
+    (state: any) => state.productOutputSlice.productOutputCompareChart || {},
+  )
+  const { isLoadingProductOutputCompareChart } = useSelector((state: any) => state.productOutputSlice)
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [rangeCompare, setRangeCompare] = useState({
     from: dayjs().subtract(14, 'day'),
@@ -25,9 +27,11 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
   })
   useEffect(() => {
     dispatch(
-      getComparePower({
-        tagetDate: rangeCompare.to.format('DD/MM/YYYY'),
-        compareDate: rangeCompare.from.format('DD/MM/YYYY'),
+      getProductOutputCompareChart({
+        currentFromDate: rangeTarget.from.format('DD/MM/YYYY'),
+        currentToDate: rangeTarget.to.format('DD/MM/YYYY'),
+        compareFromDate: rangeCompare.from.format('DD/MM/YYYY'),
+        compareToDate: rangeCompare.to.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
       }),
     )
@@ -46,9 +50,11 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
       return
     }
     dispatch(
-      getComparePower({
-        tagetDate: toDate.format('DD/MM/YYYY'),
-        compareDate: fromDate.format('DD/MM/YYYY'),
+      getProductOutputCompareChart({
+        currentFromDate: rangeTarget.from.format('DD/MM/YYYY'),
+        currentToDate: rangeTarget.to.format('DD/MM/YYYY'),
+        compareFromDate: fromDate.format('DD/MM/YYYY'),
+        compareToDate: toDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
       }),
     )
@@ -61,34 +67,40 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
 
     // Nếu giá trị invalid, return luôn hoặc gán về mặc định (optional)
     if (!fromDate.isValid() || !toDate.isValid()) return
+
     setRangeTarget({ from: fromDate, to: toDate })
 
     if (fromDate.isAfter(toDate)) {
       return
     }
     dispatch(
-      getComparePower({
-        tagetDate: toDate.format('DD/MM/YYYY'),
-        compareDate: fromDate.format('DD/MM/YYYY'),
+      getProductOutputCompareChart({
+        currentFromDate: fromDate.format('DD/MM/YYYY'),
+        currentToDate: toDate.format('DD/MM/YYYY'),
+        compareFromDate: rangeCompare.from.format('DD/MM/YYYY'),
+        compareToDate: rangeCompare.to.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
       }),
     )
   }
-  const currentDate = new Date()
-  const currentBarchartData =
-    BarChartData?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
-  // const currentCompareLineChartData =
-  //   compareLineChartData?.slice(0, currentBarchartData.length)?.map((item: any) => ({
-  //     value: typeof item === 'number' ? item : item?.value,
-  //   })) || []
-  const currentCompareLineChartData =
-    compareLineChartData
-      ?.map((item: any, idx: number) => ({
-        id: String(idx),
-        label: idx + 'h',
-        value: typeof item === 'number' ? item : item?.value,
-      }))
-      ?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
+
+  const currentLineData = productOutputCompareChartData
+    ?.map((item: any) => {
+      return {
+        label: item.date?.split('/').slice(0, 2).join('/'),
+        value: item.currentValue,
+      }
+    })
+    .filter((item: any) => item.value > -1)
+
+  const compareLineData = productOutputCompareChartData
+    ?.map((item: any) => {
+      return {
+        label: item.date?.split('/').slice(0, 2).join('/'),
+        value: item.compareValue,
+      }
+    })
+    .filter((item: any) => item.value > -1)
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>
@@ -103,13 +115,13 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
 
         {/* Dashboard */}
         <CompareDashboardV2
-          data={currentBarchartData}
-          lineData2={currentCompareLineChartData}
+          data={currentLineData}
+          lineData2={compareLineData}
           rangeCompare={rangeCompare}
           rangeTarget={rangeTarget}
           onChangeDateRangeCompare={onChangeDateRangeCompare}
           onChangeDateRangeTarget={onChangeDateRangeTarget}
-          isLoading={isLoadingComparePower}
+          isLoading={isLoadingProductOutputCompareChart}
           isCheckDisableDate={isCheckDisableDate}
           scrollToEnd
         />
