@@ -5,10 +5,10 @@ import {
   getProductOutputByDays,
   getProductCummulativeOutput,
   getCompareProductOutput,
-
   getProductOutputOverviewFactDetail,
   getProductOutputByHoursFactDetail,
-  getProductOutputByDaysFactDetail
+  getProductOutputByDaysFactDetail,
+  getProductOutputCompareChart,
 } from '../Actions/ProductOutputActions'
 import { Service } from '@/core/service/productOutput'
 import {
@@ -17,7 +17,8 @@ import {
   setProductOutputByDays,
   setProductCummulativeOutput,
   setCompareProductOutput,
-  setLoading
+  setProductOutputCompareChart,
+  setLoading,
 } from '../slices/ProductOutputSlice'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -56,7 +57,6 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
     const samePeriodYear = action.payload?.samePeriodYear || new Date().getFullYear() - 1
     const res = yield call(Service.getProductOutputByDaysApi, n, samePeriodYear)
     if (res.status === 200) {
-      
       yield put(setProductOutputByDays(res.data))
     }
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
@@ -100,8 +100,9 @@ function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProduc
   }
 }
 
-
-function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getProductOutputOverviewFactDetail>): Generator {
+function* getProductOutputOverviewFactDetailSaga(
+  action: ReturnType<typeof getProductOutputOverviewFactDetail>,
+): Generator {
   try {
     const payload = action.payload
     const { factoryId, getDataFromApi, setLoading } = payload
@@ -116,7 +117,9 @@ function* getProductOutputOverviewFactDetailSaga(action: ReturnType<typeof getPr
     catchHandle(error, 'getProductOutputOverviewFactDetailSaga')
   }
 }
-function* getProductOutputByHoursFactDetailSaga(action: ReturnType<typeof getProductOutputByHoursFactDetail>): Generator {
+function* getProductOutputByHoursFactDetailSaga(
+  action: ReturnType<typeof getProductOutputByHoursFactDetail>,
+): Generator {
   try {
     const payload = action.payload
     const { factoryId, getDataFromApi, setLoading } = payload
@@ -146,6 +149,42 @@ function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProd
     catchHandle(error, 'getProductOutputByDaysFactDetailSaga')
   }
 }
+
+function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductOutputCompareChart>): Generator {
+  try {
+    yield put(setLoading({ isLoadingProductOutputCompareChart: true }))
+    const payload = action.payload as {
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      currentPlantId: string
+    }
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const currentPlantId = payload?.currentPlantId || ''
+
+    const res = yield call(
+      Service.getProductOutputCompareChartApi,
+      currentFromDate,
+      currentToDate,
+      compareFromDate,
+      compareToDate,
+      currentPlantId,
+    )
+
+    if (res.status === 200) {
+      yield put(setProductOutputCompareChart(res.data))
+    }
+    yield put(setLoading({ isLoadingProductOutputCompareChart: false }))
+  } catch (error) {
+    yield put(setLoading({ isLoadingProductOutputCompareChart: false }))
+    catchHandle(error, 'getProductOutputCompareChartSaga')
+  }
+}
+
 function* handleGetProductOutputByHoursApi() {
   yield takeEvery(getProductOutputByHours, getProductOutputByHoursSaga)
 }
@@ -172,6 +211,10 @@ function* getProductOutputByHoursFactDetailSagaApi() {
 function* getProductOutputByDaysFactDetailSagaApi() {
   yield takeEvery(getProductOutputByDaysFactDetail, getProductOutputByDaysFactDetailSaga)
 }
+
+function* getProductOutputCompareChartSagaApi() {
+  yield takeEvery(getProductOutputCompareChart, getProductOutputCompareChartSaga)
+}
 export function* productOutputSagaList() {
   yield all([
     handleGetProductOutputByHoursApi(),
@@ -181,7 +224,7 @@ export function* productOutputSagaList() {
     handleGetCompareProductOutputApi(),
     handleGetProductOutputOverviewFactDetailApi(),
     getProductOutputByHoursFactDetailSagaApi(),
-    getProductOutputByDaysFactDetailSagaApi()
-
+    getProductOutputByDaysFactDetailSagaApi(),
+    getProductOutputCompareChartSagaApi(),
   ])
 }
