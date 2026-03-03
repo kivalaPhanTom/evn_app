@@ -30,10 +30,35 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const { t } = useTranslation()
-  const [range, setRange] = useState({
-    from: dayjs().subtract(10, 'day'),
-    to: dayjs(),
-  })
+
+  const getDefaultRange = (type: 'day' | 'month' | 'year') => {
+    const now = dayjs()
+
+    if (type === 'day') {
+      return {
+        from: now.subtract(10, 'day'),
+        to: now,
+      }
+    }
+
+    if (type === 'month') {
+      return {
+        from: now.startOf('year'),   // January of current year
+        to: now.endOf('month'),      // End of current month
+      }
+    }
+
+    if (type === 'year') {
+      return {
+        from: now.subtract(4, 'year').startOf('year'), // currentYear - 4
+        to: now.endOf('year'),                         // currentYear
+      }
+    }
+
+    return { from: now, to: now }
+  }
+  const [range, setRange] = useState(getDefaultRange('day'))
+  console.log(range);
 
   const contentAnim = useRef(new Animated.Value(1)).current
 
@@ -93,14 +118,16 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const onTabChange = (newTab: TabType) => {
     setTab(newTab)
 
+    const newRange = getDefaultRange(newTab)
+    setRange(newRange)
     if (dayjs(range.from).isAfter(dayjs(range.to))) {
       return
     }
     dispatch(
       getProductCummulativeOutput({
         type: newTab,
-        from: dayjs(range.from).format('DD/MM/YYYY'),
-        to: dayjs(range.to).format('DD/MM/YYYY'),
+        from: newRange.from.format('DD/MM/YYYY'),
+        to: newRange.to.format('DD/MM/YYYY'),
         currentPlantId: props.currentPlantId || '',
       }),
     )

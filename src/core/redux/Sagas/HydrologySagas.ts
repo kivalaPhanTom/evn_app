@@ -35,9 +35,10 @@ import { catchHandle } from '@/core/utils/utils'
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
     yield put(setLoading({ isLoadingHydrologyChart: true }))
-    const payload = action.payload as { companyId: string }
+    const payload = action.payload as { companyId: string; type: string }
     const companyId = payload?.companyId || ''
-    const res = yield call(Service.getHydrologyGraphicChartApi, companyId)
+    const type = payload?.type || ''
+    const res = yield call(Service.getHydrologyGraphicChartApi, companyId, type)
     if (res.status === 200) {
       yield put(setHydrologyChart(res.data))
     }

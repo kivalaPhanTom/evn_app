@@ -18,9 +18,9 @@ export default function PowerDetail(props: { currentPlantId?: string, isCheckDis
         <View style={style.section}>
           <ComparePower24h currentPlantId={currentPlantId} isCheckDisableDate={isCheckDisableDate}/>
         </View>
-        <View style={style.section}>
+        {/* <View style={style.section}>
           <ComparePowerByTime currentPlantId={currentPlantId} isCheckDisableDate={isCheckDisableDate}/>
-        </View>
+        </View> */}
       </View>
     </ScrollView>
   )

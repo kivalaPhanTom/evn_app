@@ -64,11 +64,14 @@ function ProductOutputRencentDays(props: Props) {
     { type: 'line', label: 'Cùng kỳ', color: '#7a8596' },
   ]
   return (
-    <AnimatedCardContainer onPress={onPressCard}>
+    <AnimatedCardContainer >
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>A 7 NGÀY GẦN NHẤT</Text>
-
+        <Text style={styles.title}>A - 7 NGÀY GẦN NHẤT</Text>
+        <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Chi tiết</Text>
+          <Text style={styles.actionButtonIcon}>{'>'}</Text>
+        </TouchableOpacity>
         {/* Table Header */}
         <View style={styles.tableHeader}>
           <Text allowFontScaling={false} style={[styles.headerText, styles.col1]}>
@@ -141,7 +144,7 @@ function ProductOutputRencentDays(props: Props) {
         {/* Table Rows */}
         <View
           style={styles.tableBody}
-          // showsVerticalScrollIndicator={false}
+        // showsVerticalScrollIndicator={false}
         >
           {firstLoading || isLoading ? (
             <>

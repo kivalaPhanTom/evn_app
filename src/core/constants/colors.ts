@@ -1,6 +1,7 @@
 export const Colors = {
   white: '#FFF',
   grey: '#808080',
+  subCardTitle: '#8b92a0',
   black: '#000',
   lightGray: '#F3F4F6',
   darkGray: '#211F32',

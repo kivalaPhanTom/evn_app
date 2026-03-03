@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   title: {
-    color: '#8b92a0',
-    fontSize: 12,
+    color: Colors.subCardTitle,
+    fontSize: 14,
     fontWeight: '600',
     marginBottom: 20,
     letterSpacing: 0.5,
