@@ -39,6 +39,7 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
           style={[
             styles.icon,
             !doc.isValid ? styles.iconExpired : styles.iconNormal,
+            doc.isUpcomingDue && styles.iconUpcomingDue,
           ]}
         >
           <Text style={styles.iconText}><DocumentIcon /></Text>
@@ -49,6 +50,7 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
             style={[
               styles.title,
               !doc.isValid && styles.expiredTitle,
+              doc.isUpcomingDue && styles.upComingDueTitle,
             ]}
             numberOfLines={2}
           >
@@ -65,6 +67,7 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
           style={[
             styles.date,
             !doc.isValid && styles.expiredDate,
+            doc.isUpcomingDue && styles.upComingDueDate,
           ]}
         >
           {formatDate(expiryDate)}
@@ -72,6 +75,10 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
 
         {!doc.isValid && (
           <Text style={styles.expiredLabel}>Hết hiệu lực</Text>
+        )}
+
+        {doc.isUpcomingDue && (
+          <Text style={styles.upcomingDueLabel}>Sắp hết hiệu lực</Text>
         )}
       </View>
     </Pressable>
