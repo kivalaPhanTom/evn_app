@@ -12,9 +12,10 @@ import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
 import { TabType } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import dayjs from 'dayjs'
+import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Animated, StyleSheet, Text, View } from 'react-native'
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Toast } from 'toastify-react-native'
 interface CumulativeSummaryItem {
@@ -29,6 +30,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
+  const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()
 
   const getDefaultRange = (type: 'day' | 'month' | 'year') => {
@@ -135,7 +137,19 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
 
   return (
     <AnimatedCardContainer>
-      <Text style={styles.title}>Sản lượng lũy kế</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Sản lượng lũy kế</Text>
+      </View>
+      <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => setComparePeriodEnabled((prev) => !prev)}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.checkbox, comparePeriodEnabled && styles.checkboxChecked]}>
+            {comparePeriodEnabled && <Ionicons name="checkmark" size={14} color="#fff" />}
+          </View>
+          <Text style={styles.checkboxLabel}>So sánh đầu kỳ – cuối kỳ</Text>
+        </TouchableOpacity>
       <View>
         <TabSwitcher
           tabs={[
@@ -251,11 +265,41 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
 }
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
   title: {
     fontSize: px.f(24),
     fontWeight: 'bold',
-    marginBottom: 12,
     color: '#fff',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginBottom: 12,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  checkboxChecked: {
+    backgroundColor: '#60a5fa',
+    borderColor: '#60a5fa',
+  },
+  checkboxLabel: {
+    color: '#fff',
+    fontSize: px.f(14),
   },
   cumulativeCard: {
     backgroundColor: '#1e2838',
