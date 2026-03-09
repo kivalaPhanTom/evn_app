@@ -64,15 +64,27 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
 
   const contentAnim = useRef(new Animated.Value(1)).current
 
-  useEffect(() => {
+  const fetchProductCummulativeOutput = (params: {
+    type: string
+    from: string
+    to: string
+    startEndOnly?: boolean
+  }) => {
     dispatch(
       getProductCummulativeOutput({
-        type: tab,
-        from: dayjs().subtract(10, 'day').format('DD/MM/YYYY'),
-        to: dayjs().format('DD/MM/YYYY'),
+        ...params,
         currentPlantId: props.currentPlantId || '',
       }),
     )
+  }
+
+  useEffect(() => {
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: dayjs(range.from).format('DD/MM/YYYY'),
+      to: dayjs(range.to).format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countRefesh])
 
@@ -107,14 +119,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       return
     }
 
-    dispatch(
-      getProductCummulativeOutput({
-        type: tab,
-        from: fromDate.format('DD/MM/YYYY'),
-        to: toDate.format('DD/MM/YYYY'),
-        currentPlantId: props.currentPlantId || '',
-      }),
-    )
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: fromDate.format('DD/MM/YYYY'),
+      to: toDate.format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
   }
 
   const onTabChange = (newTab: TabType) => {
@@ -125,14 +135,23 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
     if (dayjs(range.from).isAfter(dayjs(range.to))) {
       return
     }
-    dispatch(
-      getProductCummulativeOutput({
-        type: newTab,
-        from: newRange.from.format('DD/MM/YYYY'),
-        to: newRange.to.format('DD/MM/YYYY'),
-        currentPlantId: props.currentPlantId || '',
-      }),
-    )
+    fetchProductCummulativeOutput({
+      type: newTab,
+      from: newRange.from.format('DD/MM/YYYY'),
+      to: newRange.to.format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
+  }
+
+  const onToggleComparePeriod = () => {
+    const newValue = !comparePeriodEnabled
+    setComparePeriodEnabled(newValue)
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: dayjs(range.from).format('DD/MM/YYYY'),
+      to: dayjs(range.to).format('DD/MM/YYYY'),
+      startEndOnly: newValue || undefined,
+    })
   }
 
   return (
@@ -142,7 +161,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       </View>
       <TouchableOpacity
           style={styles.checkboxContainer}
-          onPress={() => setComparePeriodEnabled((prev) => !prev)}
+          onPress={onToggleComparePeriod}
           activeOpacity={0.7}
         >
           <View style={[styles.checkbox, comparePeriodEnabled && styles.checkboxChecked]}>
@@ -185,14 +204,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
                 return
               }
               setRange(newRange)
-              dispatch(
-                getProductCummulativeOutput({
-                  type: tab,
-                  from: fromDate.format('DD/MM/YYYY'),
-                  to: dayjs(newRange.to).format('DD/MM/YYYY'),
-                  currentPlantId: props.currentPlantId || '',
-                }),
-              )
+              fetchProductCummulativeOutput({
+                type: tab,
+                from: fromDate.format('DD/MM/YYYY'),
+                to: dayjs(newRange.to).format('DD/MM/YYYY'),
+                startEndOnly: comparePeriodEnabled || undefined,
+              })
             }}
           />
           <MonthPickerCustom
@@ -213,14 +230,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
                 return
               }
               setRange(newRange)
-              dispatch(
-                getProductCummulativeOutput({
-                  type: tab,
-                  from: dayjs(newRange.from).format('DD/MM/YYYY'),
-                  to: toDate.format('DD/MM/YYYY'),
-                  currentPlantId: props.currentPlantId || '',
-                }),
-              )
+              fetchProductCummulativeOutput({
+                type: tab,
+                from: dayjs(newRange.from).format('DD/MM/YYYY'),
+                to: toDate.format('DD/MM/YYYY'),
+                startEndOnly: comparePeriodEnabled || undefined,
+              })
             }}
           />
         </View>
