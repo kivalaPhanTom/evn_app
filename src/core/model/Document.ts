@@ -4,6 +4,7 @@ export interface Document {
     linkFile: string;
     deadline: string; // ISO string
     isValid: boolean;
+    isUpcomingDue: boolean;
 }
 export interface Existence {
     id: number; 
