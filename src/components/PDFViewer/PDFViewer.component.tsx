@@ -33,7 +33,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
               {doc.name}
             </Text>
             <Text style={styles.subtitle}>
-              {formatDate(new Date(doc.deadline))} • {doc.isValid ? 'Còn hiệu lực' : 'Hết hiệu lực'}
+              {formatDate(new Date(doc.deadline))} • {doc.isValid ? doc.isUpcomingDue ? 'Sắp hết hiệu lực' : 'Còn hiệu lực' : 'Hết hiệu lực'}
             </Text>
           </View>
           <Pressable onPress={onReload} hitSlop={10} style={styles.iconButton}>
