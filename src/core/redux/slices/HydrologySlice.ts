@@ -157,12 +157,17 @@ interface hydrologyState {
     waterLevelRange: waterLevelRangeItem[]
   }
   filterByTime: {
+    // Tab: Theo giờ
     rangeCurrentDate: rangeDate
-    rangeCompareDate: rangeDate
-    rangeTargetDate: rangeDate
-    rangeCompareMonth: rangeDate
-    rangeTargetMonth: rangeDate
+    // Tab: Theo ngày
+    rangeCompareDate: rangeDate // Ngày so sánh
+    rangeTargetDate: rangeDate // Ngày mục tiêu
+    // Tab: Theo tháng
+    rangeCompareMonth: rangeDate // Tháng so sánh
+    rangeTargetMonth: rangeDate // Tháng mục tiêu
+    // Tab: Theo năm
     rangeCompareYear: rangeDate
+    // Id tab được chọn
     currentFilterTab: 'hour' | 'day' | 'month' | 'year'
   }
   isLoadingHydrologyChart: boolean
