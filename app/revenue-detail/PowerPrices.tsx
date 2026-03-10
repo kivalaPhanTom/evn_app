@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux'
 import { formatNumber } from '@/core/utils/utils'
 interface Props { }
@@ -16,13 +17,17 @@ export default function PowerPrices(props: Props) {
                 label: 'GIÁ TT BÌNH QUÂN NGÀY',
                 value: powerPriceDetail.AvgMarketPrice.Value || 0,
                 unit: powerPriceDetail.AvgMarketPrice.Unit || 'Đồng/kWh',
-                type: 'blue'
+                type: 'blue',
+                icon: 'flash' as const,
+                iconColor: '#10B981',
             },
             {
                 label: 'GIÁ CÔNG SUẤT BQ',
                 value: powerPriceDetail.AvgCapacityPrice.Value || 0,
                 unit: powerPriceDetail.AvgCapacityPrice.Unit || 'Đồng/kWh',
-                type: 'gray'
+                type: 'gray',
+                icon: 'stats-chart' as const,
+                iconColor: '#3B82F6',
             },
 
             // ✅ FULL WIDTH
@@ -32,18 +37,24 @@ export default function PowerPrices(props: Props) {
                 unit: powerPriceDetail.FullMarketPrice.Unit || 'Đồng/kWh',
                 type: 'green',
                 full: true,
+                icon: 'trending-up' as const,
+                iconColor: '#A78BFA',
             },
             {
                 label: 'GIÁ TRẦN CHÀO',
                 value: powerPriceDetail.PriceCeiling.Value || 0,
                 unit: powerPriceDetail.PriceCeiling.Unit || 'Đồng/kWh',
-                type: 'gray'
+                type: 'gray',
+                icon: 'arrow-up-circle' as const,
+                iconColor: '#EF4444',
             },
             {
                 label: 'GIÁ HĐ THÁNG (TẠM TÍNH)',
                 value: powerPriceDetail.MonthlyContractPrice.Value || 0,
                 unit: powerPriceDetail.MonthlyContractPrice.Unit || 'Đồng/kWh',
-                type: 'gray'
+                type: 'gray',
+                icon: 'document-text' as const,
+                iconColor: '#F59E0B',
             },
 
             // ✅ FULL WIDTH
@@ -54,6 +65,8 @@ export default function PowerPrices(props: Props) {
                 note: powerPriceDetail.FuelVariablePrice.Note,
                 type: 'gray',
                 full: true,
+                icon: 'flame' as const,
+                iconColor: '#F97316',
             },
         ],
     };
@@ -73,7 +86,16 @@ export default function PowerPrices(props: Props) {
 
                     return (
                         <SectionBox key={idx} style={boxStyle}>
-                            <Text style={styles.label}>{item.label}</Text>
+                            <View style={styles.labelRow}>
+                                <View style={[styles.iconBox, { backgroundColor: item.iconColor }]}>
+                                    <Ionicons
+                                        name={item.icon}
+                                        size={18}
+                                        color={'#000'}
+                                    />
+                                </View>
+                                <Text style={styles.label}>{item.label}</Text>
+                            </View>
                             <Text style={styles.value}>{formatNumber(item.value)}</Text>
                             <Text style={styles.unit}>{item.unit}</Text>
                             {item.note && <Text style={styles.note}>{item.note}</Text>}
@@ -146,12 +168,27 @@ const styles = StyleSheet.create({
         marginRight: 0,
     },
 
+    labelRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 6,
+    },
+    iconBox: {
+        width: 24,
+        height: 24,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
     label: {
-        color: '#94A3B8',
+        flex: 1,
+        flexShrink: 1,
+        minWidth: 0,
+        color: '#fff',
         fontSize: 11,
         letterSpacing: 0.8,
         textTransform: 'uppercase',
-        marginBottom: 6,
     },
 
     value: {

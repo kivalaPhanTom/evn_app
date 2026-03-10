@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -25,9 +25,15 @@ interface Props {
     data: InfoItem[];
     isLoading: boolean;
 }
+
+const VISIBLE_LINES_COLLAPSED = 6
+
 function TechnologyInfo(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
+    const [expanded, setExpanded] = useState(false)
     const { data, isLoading } = props
+    const hasMoreThanVisible = data.length > VISIBLE_LINES_COLLAPSED
+    const displayData = expanded || !hasMoreThanVisible ? data : data.slice(0, VISIBLE_LINES_COLLAPSED)
     useEffect(() => {
         setFirstLoading(true)
     }, [])
@@ -51,7 +57,7 @@ function TechnologyInfo(props: Props) {
                             <BarSkeleton width={'100%'} height={30} />
                         </> :
                         <>
-                            {data.map((item, index) => (
+                            {displayData.map((item, index) => (
                                 <View key={index}>
                                     <View style={styles.row}>
                                         <Text style={styles.label} numberOfLines={0}>
@@ -61,9 +67,22 @@ function TechnologyInfo(props: Props) {
                                             {item.value}
                                         </Text>
                                     </View>
-                                    {index < data.length - 1 && <View style={styles.divider} />}
+                                    {index < displayData.length - 1 && <View style={styles.divider} />}
                                 </View>
                             ))}
+                            {hasMoreThanVisible && (
+                                <TouchableOpacity
+                                    style={styles.expandButton}
+                                    onPress={() => setExpanded((prev) => !prev)}
+                                    activeOpacity={0.7}
+                                >
+                                    <Ionicons
+                                        name={expanded ? 'chevron-up' : 'chevron-down'}
+                                        size={24}
+                                        color="rgba(255,255,255,0.7)"
+                                    />
+                                </TouchableOpacity>
+                            )}
                         </>
                 }
             </View>
@@ -96,5 +115,10 @@ const styles = StyleSheet.create({
     divider: {
         height: 1,
         backgroundColor: "rgba(255,255,255,0.15)",
+    },
+    expandButton: {
+        paddingVertical: 12,
+        alignItems: "center",
+        justifyContent: "center",
     },
 })
