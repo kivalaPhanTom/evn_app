@@ -46,24 +46,26 @@ export default function DateRangePicker({
   inputStyle,
   labelStyle,
   allowToBeforeFrom = false,
-  isCheckDisableDate = true
-
+  isCheckDisableDate = true,
 }: Props) {
   const [focused, setFocused] = useState<'from' | 'to' | null>(null)
   const defaultStyles = useDefaultStyles()
 
   // const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
-  const formatDate = useCallback((d: any) => {
-    if (!d) return '';
-    const day = dayjs(d);
-    return day.isValid() ? day.format(format) : '';
-  }, [format]);
+  const formatDate = useCallback(
+    (d: any) => {
+      if (!d) return ''
+      const day = dayjs(d)
+      return day.isValid() ? day.format(format) : ''
+    },
+    [format],
+  )
   const components: CalendarComponents = useMemo(
     () => ({
       IconNext: chooseMode === 'year' ? null : <Ionicons name="chevron-forward" size={20} color="#fff" />,
       IconPrev: chooseMode === 'year' ? null : <Ionicons name="chevron-back" size={20} color="#fff" />,
     }),
-    [chooseMode]
+    [chooseMode],
   )
 
   const pickerStyles: any = {
@@ -77,7 +79,9 @@ export default function DateRangePicker({
     header: { backgroundColor: '#1A1D2E' },
     month_label: { color: '#fff', fontWeight: 'bold' },
     month_selector_label:
-      chooseMode === 'year' ? { display: 'none' } : { color: '#fff', fontSize: chooseMode !== 'day' ? 30 : 12, marginRight: 10 },
+      chooseMode === 'year'
+        ? { display: 'none' }
+        : { color: '#fff', fontSize: chooseMode !== 'day' ? 30 : 12, marginRight: 10 },
     year_label: { color: '#fff', fontWeight: 'bold' },
     year_selector_label: { color: '#fff', fontSize: chooseMode === 'year' ? 40 : chooseMode === 'month' ? 30 : 12 },
     selected_month: { backgroundColor: '#4f9cff' },
@@ -103,7 +107,7 @@ export default function DateRangePicker({
 
       onChange({ from: nextFrom, to: nextTo })
     },
-    [focused, onChange, value, chooseMode, allowToBeforeFrom]
+    [focused, onChange, value, chooseMode, allowToBeforeFrom],
   )
 
   const getQuickDate = useCallback(() => {
@@ -115,7 +119,7 @@ export default function DateRangePicker({
 
   const getQuickLabel = useMemo(
     () => (chooseMode === 'year' ? 'Năm hiện tại' : chooseMode === 'month' ? 'Tháng hiện tại' : 'Hôm nay'),
-    [chooseMode]
+    [chooseMode],
   )
 
   const handleQuickSelect = useCallback(() => {
@@ -157,7 +161,7 @@ export default function DateRangePicker({
         </TouchableOpacity>
       </View>
     ),
-    [backgroundColor, borderColor, focused, formatDate, iconColor, inputStyle, labelColor, labelStyle, textColor]
+    [backgroundColor, borderColor, focused, formatDate, iconColor, inputStyle, labelColor, labelStyle, textColor],
   )
 
   const picker = (
@@ -207,7 +211,7 @@ export default function DateRangePicker({
         const today = dayjs()
         const base = focused === 'from' ? value.from : value.to
         let d = dayjs(base).year(year)
-        let newDate = (chooseMode === 'year' ? d.startOf('year') : d.startOf('month'))
+        let newDate = chooseMode === 'year' ? d.startOf('year') : d.startOf('month')
         const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
         if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {
           newDate = minDate
@@ -234,7 +238,10 @@ export default function DateRangePicker({
             <View style={styles.modalContent}>
               {picker}
               <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity onPress={handleQuickSelect} style={[styles.closeBtn, { flex: 1, backgroundColor: '#2e3348', marginRight: 10 }]}>
+                <TouchableOpacity
+                  onPress={handleQuickSelect}
+                  style={[styles.closeBtn, { flex: 1, backgroundColor: '#2e3348', marginRight: 10 }]}
+                >
                   <Text style={styles.closeText}>{getQuickLabel}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setFocused(null)} style={[styles.closeBtn, { flex: 1 }]}>
@@ -253,7 +260,7 @@ export default function DateRangePicker({
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', padding: 10 },
-  label: { fontSize: 12, marginBottom: 6, letterSpacing: 1 },
+  label: { fontSize: 12, marginBottom: 6 },
   input: {
     height: 30,
     borderRadius: 18,

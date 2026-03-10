@@ -15,6 +15,9 @@ interface MonthPickerCustomProps {
   currentMonthText?: string
   formatMonth?: (date: dayjs.Dayjs) => string
   containerStyle?: any
+  pickerStyle?: any
+  selectedDateStyle?: any
+  pickerLabelStyle?: any
 }
 
 const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
@@ -27,6 +30,9 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
   currentMonthText = 'Tháng hiện tại',
   formatMonth = (date: dayjs.Dayjs) => `Tháng ${date.format('MM/YYYY')}`,
   containerStyle,
+  pickerStyle,
+  selectedDateStyle,
+  pickerLabelStyle,
 }) => {
   const [visible, setVisible] = useState(false)
   const [tempMonth, setTempMonth] = useState(selectedDate.month() + 1)
@@ -70,7 +76,9 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
   }
 
   const handleConfirm = () => {
-    const newDate = dayjs().month(tempMonth - 1).year(tempYear)
+    const newDate = dayjs()
+      .month(tempMonth - 1)
+      .year(tempYear)
     onConfirm(newDate)
     setVisible(false)
   }
@@ -91,9 +99,9 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
     <>
       {/* Input */}
       <View style={[styles.monthPickerContainer, containerStyle]}>
-        {label && <Text style={styles.monthPickerLabel}>{label}</Text>}
-        <TouchableOpacity style={styles.monthPickerInput} onPress={handleOpenPicker}>
-          <Text style={styles.monthPickerText}>{formatMonth(selectedDate)}</Text>
+        {label && <Text style={[styles.monthPickerLabel, pickerLabelStyle]}>{label}</Text>}
+        <TouchableOpacity style={[styles.monthPickerInput, pickerStyle]} onPress={handleOpenPicker}>
+          <Text style={[styles.monthPickerText, selectedDateStyle]}>{formatMonth(selectedDate)}</Text>
           <Ionicons name="calendar-outline" size={16} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -112,18 +120,10 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
                   {months.map((month) => (
                     <TouchableOpacity
                       key={month}
-                      style={[
-                        styles.pickerItem,
-                        tempMonth === month && styles.pickerItemSelected,
-                      ]}
+                      style={[styles.pickerItem, tempMonth === month && styles.pickerItemSelected]}
                       onPress={() => handleMonthSelect(month)}
                     >
-                      <Text
-                        style={[
-                          styles.pickerItemText,
-                          tempMonth === month && styles.pickerItemTextSelected,
-                        ]}
-                      >
+                      <Text style={[styles.pickerItemText, tempMonth === month && styles.pickerItemTextSelected]}>
                         {month.toString().padStart(2, '0')}
                       </Text>
                     </TouchableOpacity>
@@ -138,18 +138,10 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
                   {years.map((year) => (
                     <TouchableOpacity
                       key={year}
-                      style={[
-                        styles.pickerItem,
-                        tempYear === year && styles.pickerItemSelected,
-                      ]}
+                      style={[styles.pickerItem, tempYear === year && styles.pickerItemSelected]}
                       onPress={() => handleYearSelect(year)}
                     >
-                      <Text
-                        style={[
-                          styles.pickerItemText,
-                          tempYear === year && styles.pickerItemTextSelected,
-                        ]}
-                      >
+                      <Text style={[styles.pickerItemText, tempYear === year && styles.pickerItemTextSelected]}>
                         {year}
                       </Text>
                     </TouchableOpacity>
@@ -165,10 +157,7 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
               >
                 <Text style={styles.modalButtonText}>{currentMonthText}</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleConfirm}
-                style={[styles.modalButton, styles.modalButtonPrimary]}
-              >
+              <TouchableOpacity onPress={handleConfirm} style={[styles.modalButton, styles.modalButtonPrimary]}>
                 <Text style={styles.modalButtonText}>{confirmText}</Text>
               </TouchableOpacity>
             </View>
