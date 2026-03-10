@@ -49,6 +49,7 @@ function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) 
       from: params.from,
       to: params.to,
       currentPlantId: params.currentPlantId || '',
+      ...(params.startEndOnly && { startEndOnly: true }),
     },
   })
 }

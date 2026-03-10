@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import dayjs from 'dayjs'
 
 interface HydroChartItem {
   avgVolume: number
@@ -16,6 +17,11 @@ interface flowChartItem {
   unit: string
 }
 
+interface rangeDate {
+  from: dayjs.Dayjs
+  to: dayjs.Dayjs
+}
+
 interface waterLevelRangeItem {
   fromDate: string
   toDate: string
@@ -26,7 +32,7 @@ interface hydrologyState {
   countRefesh: number
   inboundTraffic: number
   dischargeFlow: number
-  selectedOptionsValue:string
+  selectedOptionsValue: string
   selectedOptionsValueFactDetail: string
   inflowOutflow: {
     unit: string
@@ -150,10 +156,24 @@ interface hydrologyState {
   operateWaterLevel: {
     waterLevelRange: waterLevelRangeItem[]
   }
-  isLoadingHydrologyChart:boolean
-  isLoadingPowerStoreInLake:boolean
-  isLoadingInflowOutflow:boolean
-  isLoadingFlowChart:boolean
+  filterByTime: {
+    // Tab: Theo giờ
+    rangeCurrentDate: rangeDate
+    // Tab: Theo ngày
+    rangeCompareDate: rangeDate // Ngày so sánh
+    rangeTargetDate: rangeDate // Ngày mục tiêu
+    // Tab: Theo tháng
+    rangeCompareMonth: rangeDate // Tháng so sánh
+    rangeTargetMonth: rangeDate // Tháng mục tiêu
+    // Tab: Theo năm
+    rangeCompareYear: rangeDate
+    // Id tab được chọn
+    currentFilterTab: 'hour' | 'day' | 'month' | 'year'
+  }
+  isLoadingHydrologyChart: boolean
+  isLoadingPowerStoreInLake: boolean
+  isLoadingInflowOutflow: boolean
+  isLoadingFlowChart: boolean
 }
 const initialState: hydrologyState = {
   countRefesh: 0,
@@ -275,10 +295,37 @@ const initialState: hydrologyState = {
   operateWaterLevel: {
     waterLevelRange: [],
   },
-  isLoadingHydrologyChart:false,
-  isLoadingPowerStoreInLake:false,
-  isLoadingInflowOutflow:false,
-  isLoadingFlowChart:false
+  filterByTime: {
+    rangeCurrentDate: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    rangeCompareDate: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    rangeTargetDate: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    rangeCompareMonth: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    rangeTargetMonth: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    rangeCompareYear: {
+      from: dayjs(),
+      to: dayjs(),
+    },
+    currentFilterTab: 'hour',
+  },
+  isLoadingHydrologyChart: false,
+  isLoadingPowerStoreInLake: false,
+  isLoadingInflowOutflow: false,
+  isLoadingFlowChart: false,
 }
 
 const hydrologySlice = createSlice({
@@ -327,13 +374,19 @@ const hydrologySlice = createSlice({
       state.operateWaterLevel = action.payload
     },
     setCountRefesh: (state, action) => {
-        state.countRefesh = action.payload
+      state.countRefesh = action.payload
     },
     setSelectedOptionsValue: (state, action) => {
-        state.selectedOptionsValue = action.payload
+      state.selectedOptionsValue = action.payload
     },
     setSelectedOptionsValueFactDetail: (state, action) => {
-        state.selectedOptionsValueFactDetail = action.payload
+      state.selectedOptionsValueFactDetail = action.payload
+    },
+    setFilterByTime: (state, action) => {
+      state.filterByTime = {
+        ...state.filterByTime,
+        ...action.payload,
+      }
     },
     setLoading: (state, action) => {
       return {
@@ -360,10 +413,10 @@ export const {
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
   setCountRefesh,
+  setFilterByTime,
   setLoading,
   setSelectedOptionsValue,
-  setSelectedOptionsValueFactDetail
+  setSelectedOptionsValueFactDetail,
 } = hydrologySlice.actions
 
 export default reducer
-

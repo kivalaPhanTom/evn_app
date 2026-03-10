@@ -11,6 +11,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Image } from 'expo-image'
 import { CircleLineIcon } from '@/components/ui/circle-line-icon'
 import CompareLegend from '@/core/shared/CompareLegend'
+import { useSelector } from 'react-redux'
 
 interface LegendItemData {
   type: 'box' | 'line'
@@ -29,10 +30,21 @@ interface FlowRateProps {
 
 const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff', unit, title, flowRateInfo = [] }) => {
   // Nếu type = 'output', hiển thị đầy đủ 3 items
-  const legendItems: LegendItemData[] = [
-    { type: 'line', label: 'Hôm nay', color: currentColor },
-    { type: 'line', label: 'Cùng kỳ', color: '#A78BFA' },
-  ]
+  const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
+  const currentFilterTab = filterByTime?.currentFilterTab
+
+  const legendItems: LegendItemData[] =
+    currentFilterTab === 'year'
+      ? []
+      : currentFilterTab === 'month'
+        ? [
+            { type: 'line', label: 'Tháng mục tiêu', color: currentColor },
+            { type: 'line', label: 'Tháng so sánh', color: '#A78BFA' },
+          ]
+        : [
+            { type: 'line', label: 'Ngày mục tiêu', color: currentColor },
+            { type: 'line', label: 'Ngày so sánh', color: '#A78BFA' },
+          ]
 
   return (
     <AnimatedCardContainer>
@@ -40,7 +52,7 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
         <Text style={styles.title}>{title}</Text>
       </View>
       <View style={{ marginBottom: 20 }}>
-        <CompareLegend items={legendItems} displayType="output" />
+        {filterByTime.currentFilterTab !== 'year' && <CompareLegend items={legendItems} displayType="output" />}
       </View>
       <View style={{ marginBottom: 20 }}>
         <LineChart
