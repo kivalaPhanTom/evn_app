@@ -3,6 +3,7 @@
   "day": "NGÀY",
   "month": "THÁNG",
   "year": "NĂM",
+  "byHour": "Theo giờ",
   "byDay": "Theo ngày",
   "byMonth": "Theo tháng",
   "byYear": "Theo năm",
