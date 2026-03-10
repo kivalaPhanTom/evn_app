@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { formatNumber } from '@/core/utils/utils'
+import { Colors } from '@/core/constants/colors';
 interface Item {
     PlantCode: string;
     PlantName: string;
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        color: '#94A3B8',
+        color: '#f0f6ff',
         fontSize: 13,
         fontWeight: '700',
         marginBottom: 8,
@@ -101,12 +102,12 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        color: '#94A3B8',
+        color: '#e3efff',
         fontSize: 11,
     },
 
     value: {
-        color: '#22C55E',
+        color: Colors.green,
         fontSize: 11,
         fontWeight: '600',
     },
