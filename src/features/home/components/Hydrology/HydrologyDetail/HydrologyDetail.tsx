@@ -9,7 +9,10 @@ import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
+import {
+  getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel, getUpstreamWaterLevel_2, getUpstreamWaterLevel_3,
+  getInflow2, getInflow3, getOutflow2, getOutflow3, getTurbineflow2, getTurbineflow3
+} from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
 import FilterByTime from '../FilterByTime/FilterByTime'
@@ -45,7 +48,6 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
 
-  console.log('filterByTime', filterByTime)
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
@@ -74,11 +76,83 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       currentPlantId: activeTab,
       date: formatDate(selectedDate),
     }
-    dispatch(getUpstreamWaterLevel(payload))
-    dispatch(getInflow(payload))
-    dispatch(getOutflow(payload))
-    dispatch(getTurbineflow(payload))
-  }, [activeTab, selectedDate, countRefesh, dispatch])
+    switch (filterByTime.currentFilterTab) {
+      case "hour":
+        const currentDateH = filterByTime?.rangeCurrentDate?.from
+        const compareDateH = filterByTime?.rangeCurrentDate?.to
+        const payloadH = {
+          currentPlantId: activeTab,
+          currentDate: formatDate(new Date(currentDateH.toDate())),
+          compareDate: formatDate(new Date(compareDateH.toDate())),
+          type: "hour"
+        }
+        dispatch(getUpstreamWaterLevel_2(payloadH))
+        dispatch(getInflow2(payloadH))
+        dispatch(getOutflow2(payloadH))
+        dispatch(getTurbineflow2(payloadH))
+        break;
+      case "year":
+        const currentDateY = filterByTime?.rangeCompareYear?.from
+        const compareDateY = filterByTime?.rangeCompareYear?.to
+        const payloadY = {
+          currentPlantId: activeTab,
+          currentDate: formatDate(new Date(currentDateY.toDate())),
+          compareDate: formatDate(new Date(compareDateY.toDate())),
+          type: "year"
+        }
+        console.log('payloadY:', payloadY)
+        dispatch(getUpstreamWaterLevel_2(payloadY))
+        dispatch(getInflow2(payloadY))
+        dispatch(getOutflow2(payloadY))
+        dispatch(getTurbineflow2(payloadY))
+        break;
+
+      case "day":
+        const currentFromDateD = filterByTime?.rangeCurrentDate?.from
+        const currentToDateD = filterByTime?.rangeCurrentDate?.to
+        const compareFromDateD = filterByTime?.rangeCompareDate?.from
+        const compareToDateD = filterByTime?.rangeCompareDate?.to
+        const payloadD = {
+          currentPlantId: activeTab,
+          currentFromDate: formatDate(new Date(currentFromDateD.toDate())),
+          currentToDate: formatDate(new Date(currentToDateD.toDate())),
+          compareFromDate: formatDate(new Date(compareFromDateD.toDate())),
+          compareToDate: formatDate(new Date(compareToDateD.toDate())),
+          type: "day"
+        }
+        dispatch(getUpstreamWaterLevel_3(payloadD))
+        dispatch(getInflow3(payloadD))
+        dispatch(getOutflow3(payloadD))
+        dispatch(getTurbineflow3(payloadD))
+        break;
+      case "month":
+        const currentFromDate = filterByTime?.rangeCurrentDate?.from
+        const currentToDate = filterByTime?.rangeCurrentDate?.to
+        const compareFromDate = filterByTime?.rangeCompareDate?.from
+        const compareToDate = filterByTime?.rangeCompareDate?.to
+        const payloadM = {
+          currentPlantId: activeTab,
+          currentFromDate: formatDate(new Date(currentFromDate.toDate())),
+          currentToDate: formatDate(new Date(currentToDate.toDate())),
+          compareFromDate: formatDate(new Date(compareFromDate.toDate())),
+          compareToDate: formatDate(new Date(compareToDate.toDate())),
+          type: "month"
+        }
+        dispatch(getUpstreamWaterLevel_3(payloadM))
+        dispatch(getInflow3(payloadM))
+        dispatch(getOutflow3(payloadM))
+        dispatch(getTurbineflow3(payloadM))
+        break;
+
+      default:
+        dispatch(getUpstreamWaterLevel(payload))
+        dispatch(getInflow(payload))
+        dispatch(getOutflow(payload))
+        dispatch(getTurbineflow(payload))
+        break;
+    }
+
+  }, [activeTab, selectedDate, countRefesh, dispatch, JSON.stringify(filterByTime)])
 
   const preloadOffset = 300 // px before entering viewport
 
