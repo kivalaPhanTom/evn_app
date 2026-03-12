@@ -45,7 +45,6 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
     setTab(newTab)
     dispatch(setFilterByTime({ currentFilterTab: newTab }))
   }
-
   const updateDateRange = (key: DateRangeKey) => (newRange: RangeValue) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
@@ -110,6 +109,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
         onChange={updateDateRange(keyRange)}
         mode="modal"
         chooseMode="day"
+        isCheckDisableDate={false}
       />
     </View>
   )

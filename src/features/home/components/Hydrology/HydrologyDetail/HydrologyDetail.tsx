@@ -10,8 +10,18 @@ import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.com
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import {
-  getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel, getUpstreamWaterLevel_2, getUpstreamWaterLevel_3,
-  getInflow2, getInflow3, getOutflow2, getOutflow3, getTurbineflow2, getTurbineflow3
+  getInflow,
+  getOutflow,
+  getTurbineflow,
+  getUpstreamWaterLevel,
+  getUpstreamWaterLevel_2,
+  getUpstreamWaterLevel_3,
+  getInflow2,
+  getInflow3,
+  getOutflow2,
+  getOutflow3,
+  getTurbineflow2,
+  getTurbineflow3,
 } from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
@@ -67,7 +77,15 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const getFromPastToCurrentData = (data: any[]) => {
     const newData = JSON.parse(JSON.stringify(data))
-    return newData.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours())
+    if (filterByTime.currentFilterTab === 'hour') {
+      return newData.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours())
+    } else if (filterByTime.currentFilterTab === 'year') {
+      return newData
+    } else if (filterByTime.currentFilterTab === 'day') {
+      return newData
+    } else if (filterByTime.currentFilterTab === 'month') {
+      return newData
+    }
   }
 
   useEffect(() => {
@@ -77,81 +95,79 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       date: formatDate(selectedDate),
     }
     switch (filterByTime.currentFilterTab) {
-      case "hour":
+      case 'hour':
         const currentDateH = filterByTime?.rangeCurrentDate?.from
         const compareDateH = filterByTime?.rangeCurrentDate?.to
         const payloadH = {
           currentPlantId: activeTab,
           currentDate: formatDate(new Date(currentDateH.toDate())),
           compareDate: formatDate(new Date(compareDateH.toDate())),
-          type: "hour"
+          type: 'hour',
         }
         dispatch(getUpstreamWaterLevel_2(payloadH))
         dispatch(getInflow2(payloadH))
         dispatch(getOutflow2(payloadH))
         dispatch(getTurbineflow2(payloadH))
-        break;
-      case "year":
+        break
+      case 'year':
         const currentDateY = filterByTime?.rangeCompareYear?.from
         const compareDateY = filterByTime?.rangeCompareYear?.to
         const payloadY = {
           currentPlantId: activeTab,
           currentDate: formatDate(new Date(currentDateY.toDate())),
           compareDate: formatDate(new Date(compareDateY.toDate())),
-          type: "year"
+          type: 'year',
         }
-        console.log('payloadY:', payloadY)
         dispatch(getUpstreamWaterLevel_2(payloadY))
         dispatch(getInflow2(payloadY))
         dispatch(getOutflow2(payloadY))
         dispatch(getTurbineflow2(payloadY))
-        break;
+        break
 
-      case "day":
-        const currentFromDateD = filterByTime?.rangeCurrentDate?.from
-        const currentToDateD = filterByTime?.rangeCurrentDate?.to
+      case 'day':
+        const targetFromDateD = filterByTime?.rangeTargetDate?.from
+        const targetToDateD = filterByTime?.rangeTargetDate?.to
         const compareFromDateD = filterByTime?.rangeCompareDate?.from
         const compareToDateD = filterByTime?.rangeCompareDate?.to
         const payloadD = {
           currentPlantId: activeTab,
-          currentFromDate: formatDate(new Date(currentFromDateD.toDate())),
-          currentToDate: formatDate(new Date(currentToDateD.toDate())),
+          currentFromDate: formatDate(new Date(targetFromDateD.toDate())),
+          currentToDate: formatDate(new Date(targetToDateD.toDate())),
           compareFromDate: formatDate(new Date(compareFromDateD.toDate())),
           compareToDate: formatDate(new Date(compareToDateD.toDate())),
-          type: "day"
+          type: 'day',
         }
         dispatch(getUpstreamWaterLevel_3(payloadD))
         dispatch(getInflow3(payloadD))
         dispatch(getOutflow3(payloadD))
         dispatch(getTurbineflow3(payloadD))
-        break;
-      case "month":
-        const currentFromDate = filterByTime?.rangeCurrentDate?.from
-        const currentToDate = filterByTime?.rangeCurrentDate?.to
-        const compareFromDate = filterByTime?.rangeCompareDate?.from
-        const compareToDate = filterByTime?.rangeCompareDate?.to
+        break
+      case 'month':
+        const currentFromMonth = filterByTime?.rangeTargetMonth?.from
+        const currentToMonth = filterByTime?.rangeTargetMonth?.to
+        const compareFromMonth = filterByTime?.rangeCompareMonth?.from
+        const compareToMonth = filterByTime?.rangeCompareMonth?.to
         const payloadM = {
           currentPlantId: activeTab,
-          currentFromDate: formatDate(new Date(currentFromDate.toDate())),
-          currentToDate: formatDate(new Date(currentToDate.toDate())),
-          compareFromDate: formatDate(new Date(compareFromDate.toDate())),
-          compareToDate: formatDate(new Date(compareToDate.toDate())),
-          type: "month"
+          currentFromDate: formatDate(new Date(currentFromMonth.toDate())),
+          currentToDate: formatDate(new Date(currentToMonth.toDate())),
+          compareFromDate: formatDate(new Date(compareFromMonth.toDate())),
+          compareToDate: formatDate(new Date(compareToMonth.toDate())),
+          type: 'month',
         }
         dispatch(getUpstreamWaterLevel_3(payloadM))
         dispatch(getInflow3(payloadM))
         dispatch(getOutflow3(payloadM))
         dispatch(getTurbineflow3(payloadM))
-        break;
+        break
 
       default:
         dispatch(getUpstreamWaterLevel(payload))
         dispatch(getInflow(payload))
         dispatch(getOutflow(payload))
         dispatch(getTurbineflow(payload))
-        break;
+        break
     }
-
   }, [activeTab, selectedDate, countRefesh, dispatch, JSON.stringify(filterByTime)])
 
   const preloadOffset = 300 // px before entering viewport
@@ -164,6 +180,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedUpstreamData = {
     title: 'Mực nước thượng lưu (MNTL)',
+    activeTab: activeTab,
     data: upstreamData?.todayUpstream ? getFromPastToCurrentData(upstreamData?.todayUpstream) : [],
     data2: upstreamData?.samePeriodUpstream ? getFromPastToCurrentData(upstreamData?.samePeriodUpstream) : [],
     currentColor: '#0EA5E9',
@@ -177,8 +194,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedInflowData = {
     title: 'Lưu lượng về (Qve)',
-    data: inflow?.todayInflow ? getFromPastToCurrentData(inflow?.todayInflow) : [],
-    data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [],
+    // data: inflow?.todayInflow ? getFromPastToCurrentData(inflow?.todayInflow) : [],  // api v1 dùng todayInflow và samePeriodInflow
+    // data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [], // api v1 dùng todayInflow và samePeriodInflow
+    data: inflow?.todayUpstream ? getFromPastToCurrentData(inflow?.todayUpstream) : [],
+    data2: inflow?.samePeriodUpstream ? getFromPastToCurrentData(inflow?.samePeriodUpstream) : [],
     currentColor: '#3B82F6',
     unit: inflow?.unit,
     flowRateInfo: [
@@ -190,8 +209,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedOutflowData = {
     title: 'Lưu lượng xả tràn (Qxt)',
-    data: outflow?.turbinflowData ? getFromPastToCurrentData(outflow?.turbinflowData) : [],
-    data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],
+    // data: outflow?.turbinflowData ? getFromPastToCurrentData(outflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
+    // data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
+    data: outflow?.todayUpstream ? getFromPastToCurrentData(outflow?.todayUpstream) : [],
+    data2: outflow?.samePeriodUpstream ? getFromPastToCurrentData(outflow?.samePeriodUpstream) : [],
     currentColor: '#F59E0B',
     unit: outflow?.unit,
     flowRateInfo: [
@@ -203,8 +224,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
 
   const convertedTurbineflowData = {
     title: 'Lưu lượng chạy máy (Qcm)',
-    data: turbineflow?.turbinflowData ? getFromPastToCurrentData(turbineflow?.turbinflowData) : [],
-    data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],
+    // data: turbineflow?.turbinflowData ? getFromPastToCurrentData(turbineflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
+    // data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
+    data: turbineflow?.todayUpstream ? getFromPastToCurrentData(turbineflow?.todayUpstream) : [],
+    data2: turbineflow?.samePeriodUpstream ? getFromPastToCurrentData(turbineflow?.samePeriodUpstream) : [],
     currentColor: '#10B981',
     unit: turbineflow?.unit,
     flowRateInfo: [
