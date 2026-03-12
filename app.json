@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hppgenco3Portal.Iphone"
     },
     "splash": {
       "image": "./src/assets/images/icon.png",
