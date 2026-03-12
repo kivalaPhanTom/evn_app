@@ -14,6 +14,14 @@ export const Service = {
   getPowerStoreInLake,
   getOperateWaterLevel,
   getPowerStoreInLakeFactDetail,
+  getUpstreamWaterLevelApi_2,
+  getUpstreamWaterLevelApi_3,
+  getInflowApi_2,
+  getInflowApi_3,
+  getOutflowApi_2,
+  getOutflowApi_3,
+  getTurbineFlowApi_2,
+  getTurbineFlowApi_3,
 }
 export const servicePattern = {
   getHydrographicChart: `${prefix_api}/hydrographic_chart`,
@@ -101,4 +109,112 @@ function getOperateWaterLevel(selectedMonth: string) {
   )
 }
 
+function getUpstreamWaterLevelApi_2(currentPlantId: string, currentDate: string, compareDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getUpstreamWaterLevel}_v2`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentDate: currentDate,
+      compareDate: compareDate,
+      type: type
+    }
+  }
+  )
+}
 
+function getUpstreamWaterLevelApi_3(currentPlantId: string, currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getUpstreamWaterLevel}_v3`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentFromDate: currentFromDate,
+      currentToDate: currentToDate,
+      compareFromDate:compareFromDate,
+      compareToDate: compareToDate,
+      type: type
+    }
+  }
+  )
+}
+
+
+function getInflowApi_2(currentPlantId: string, currentDate: string, compareDate: string,  type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getInflow}_v2`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentDate: currentDate,
+      compareDate: compareDate,
+      type: type
+    }
+  }
+  )
+}
+
+function getInflowApi_3(currentPlantId: string, currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getInflow}_v3`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentFromDate: currentFromDate,
+      currentToDate: currentToDate,
+      compareFromDate: compareFromDate,
+      compareToDate: compareToDate,
+      type: type
+    }
+  }
+  )
+}
+
+function getOutflowApi_2(currentPlantId: string, currentDate: string, compareDate: string,  type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getOutflow}_v2`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentDate: currentDate,
+      compareDate: compareDate,
+      type: type
+    }
+  }
+  )
+}
+function getOutflowApi_3(currentPlantId: string, currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getOutflow}_v3`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentFromDate: currentFromDate,
+      currentToDate: currentToDate,
+      compareFromDate: compareFromDate,
+      compareToDate: compareToDate,
+      type: type
+    }
+  }
+  )
+}
+function getTurbineFlowApi_2(currentPlantId: string, currentDate: string, compareDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getTurbineflow}_v2`, {
+    params: {
+      currentPlantId: currentPlantId,
+      currentDate: currentDate,
+      compareDate: compareDate,
+      type: type
+    }
+  }
+  )
+}
+function getTurbineFlowApi_3(currentPlantId: string, currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string) {
+  return apiFormUrlEncoded.get(
+    `${servicePattern.getTurbineflow}_v3`, {
+    params: {
+       currentPlantId: currentPlantId,
+      currentFromDate: currentFromDate,
+      currentToDate: currentToDate,
+      compareFromDate: compareFromDate,
+      compareToDate: compareToDate,
+      type: type
+    }
+  }
+  )
+}

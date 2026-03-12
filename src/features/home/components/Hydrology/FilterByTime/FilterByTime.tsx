@@ -41,12 +41,10 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
 
   const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
   const [tab, setTab] = useState<FilterTab>('hour')
-
   const handleTabChange = (newTab: FilterTab) => {
     setTab(newTab)
     dispatch(setFilterByTime({ currentFilterTab: newTab }))
   }
-
   const updateDateRange = (key: DateRangeKey) => (newRange: RangeValue) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
@@ -111,6 +109,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
         onChange={updateDateRange(keyRange)}
         mode="modal"
         chooseMode="day"
+        isCheckDisableDate={false}
       />
     </View>
   )
