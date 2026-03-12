@@ -48,8 +48,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
   const updateDateRange = (key: DateRangeKey) => (newRange: RangeValue) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
-
-    if (!fromDate.isValid() || !toDate.isValid() || fromDate.isAfter(toDate)) return
+    if (!fromDate.isValid() || !toDate.isValid() || toDate.isAfter(fromDate)) return
 
     dispatch(
       setFilterByTime({
@@ -110,6 +109,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
         mode="modal"
         chooseMode="day"
         isCheckDisableDate={false}
+        allowToBeforeFrom={true}
       />
     </View>
   )

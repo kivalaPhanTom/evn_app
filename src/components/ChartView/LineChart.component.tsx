@@ -125,6 +125,7 @@ export const LineChart: React.FC<LineCharProps> = ({
 
   const overallMax = allValues.length ? Math.max(...allValues) : 0
   const overallMin = allValues.length ? Math.min(...allValues) : 0
+  const padding = (overallMax - overallMin) * 0.1
 
   // ===== Render Chart =====
   return (
@@ -148,7 +149,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         startOpacity2={0.3}
         endOpacity1={0}
         height={height}
-        maxValue={overallMax - overallMin}
+        maxValue={overallMax - overallMin + padding}
         yAxisOffset={overallMin}
         hideDataPoints1={hideDataPoints1}
         hideDataPoints2={hideDataPoints2}
