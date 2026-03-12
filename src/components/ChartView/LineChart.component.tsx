@@ -121,11 +121,10 @@ export const LineChart: React.FC<LineCharProps> = ({
   }
 
   const screenWidth = Dimensions.get('window').width
-  const maxValue1 = data && data.length > 0 ? Math.max(...data.map((item) => item.value)) : 0
-  const maxValue2 = data2 && data2.length > 0 ? Math.max(...data2.map((item) => item.value)) : 0
-  const maxValue3 = data3 && data3.length > 0 ? Math.max(...data3.map((item) => item.value)) : 0
-  const overallMax = Math.max(maxValue1, maxValue2, maxValue3)
-  const yAxisMaxValue = overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
+  const allValues = [...(data || []), ...(data2 || []), ...(data3 || [])].map((i) => i.value)
+
+  const overallMax = allValues.length ? Math.max(...allValues) : 0
+  const overallMin = allValues.length ? Math.min(...allValues) : 0
 
   // ===== Render Chart =====
   return (
@@ -149,7 +148,8 @@ export const LineChart: React.FC<LineCharProps> = ({
         startOpacity2={0.3}
         endOpacity1={0}
         height={height}
-        maxValue={yAxisMaxValue}
+        maxValue={overallMax - overallMin}
+        yAxisOffset={overallMin}
         hideDataPoints1={hideDataPoints1}
         hideDataPoints2={hideDataPoints2}
         hideDataPoints3={hideDataPoints3}
