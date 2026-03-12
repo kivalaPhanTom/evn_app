@@ -298,26 +298,26 @@ const initialState: hydrologyState = {
   filterByTime: {
     rangeCurrentDate: {
       from: dayjs(),
-      to: dayjs(),
+      to: dayjs().subtract(1, 'year'),
     },
     rangeCompareDate: {
-      from: dayjs(),
-      to: dayjs(),
+      from: dayjs().subtract(14, 'day'),
+      to: dayjs().subtract(7, 'day'),
     },
     rangeTargetDate: {
-      from: dayjs(),
+      from: dayjs().subtract(7, 'day'),
       to: dayjs(),
     },
     rangeCompareMonth: {
-      from: dayjs(),
-      to: dayjs(),
+      from: dayjs().subtract(1, 'year').set('month', 0),
+      to: dayjs().subtract(1, 'year'),
     },
     rangeTargetMonth: {
-      from: dayjs(),
+      from: dayjs().set('month', 0),
       to: dayjs(),
     },
     rangeCompareYear: {
-      from: dayjs(),
+      from: dayjs().subtract(5, 'year'),
       to: dayjs(),
     },
     currentFilterTab: 'hour',

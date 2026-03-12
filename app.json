@@ -2,14 +2,15 @@
   "expo": {
     "name": "HPP GENCO3",
     "slug": "HPPGENCO3",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "hppgenco3",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hppgenco3Portal.Iphone"
     },
     "splash": {
       "image": "./src/assets/images/icon.png",
@@ -18,7 +19,7 @@
     },
     "android": {
       "package": "com.genco3.hppgenco3",
-      "versionCode": 13,
+      "versionCode": 14,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/icon.png",

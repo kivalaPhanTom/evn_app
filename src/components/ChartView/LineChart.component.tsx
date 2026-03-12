@@ -171,12 +171,17 @@ export const LineChart: React.FC<LineCharProps> = ({
         {...(ruleTypes && { xAxisColor, rulesColor: rulesColor, dashGap: 10, dashWidth: 5 })}
         noOfSections={3}
         rulesType={ruleTypes}
-        initialSpacing={15}
+        initialSpacing={30}
         endSpacing={15}
         strokeDashArray1={strokedashArray1}
         strokeDashArray2={strokeDashArray2}
         showXAxisIndices={true}
         scrollToEnd={scrollToEnd}
+        formatYLabel={(value) => {
+          const num = Number(value)
+          if (isNaN(num)) return value
+          return parseFloat(num.toFixed(2)).toString()
+        }}
         //customDataPoint={customDataPoint ? () => customDataPoint : undefined}
         pointerConfig={
           pointerConfig
