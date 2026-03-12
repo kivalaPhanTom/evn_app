@@ -49,6 +49,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fee2e2',
     },
 
+    iconUpcomingDue: {
+        backgroundColor: Colors.warningZero,
+    },
+
     iconText: {
         fontSize: 16,
     },
@@ -67,6 +71,10 @@ const styles = StyleSheet.create({
         color: Colors.red,
     },
 
+    upComingDueTitle: {
+        color: Colors.warningFull,
+    },
+
     right: {
         alignItems: 'flex-end',
         marginLeft: 12,
@@ -82,12 +90,24 @@ const styles = StyleSheet.create({
         color: '#dc2626',
     },
 
+    upComingDueDate: {
+        color: Colors.warningFull,
+    },
+
     expiredLabel: {
         marginTop: 2,
         fontSize: 8,
         letterSpacing: 2,
         fontWeight: '900',
         color: '#dc2626',
+    },
+
+    upcomingDueLabel: {
+        marginTop: 2,
+        fontSize: 8,
+        letterSpacing: 2,
+        fontWeight: '900',
+        color: Colors.warningFull,
     },
 
     emptyContainer: {

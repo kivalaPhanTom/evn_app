@@ -3,4 +3,5 @@ export interface ProductCummulativeOutputParams {
   from: string
   to: string
   currentPlantId?: string
+  startEndOnly?: boolean
 }

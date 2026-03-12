@@ -18,14 +18,24 @@ export const MOCK_DOCUMENTS: Document[] = [
         "name": "Giấy phép hoạt động điện lực",
         "linkFile": "https://mygenco3-api.genco3.com/files/output.pdf",
         "deadline": "2028-12-31T00:00:00",
-        "isValid": true
+        "isValid": true,
+        "isUpcomingDue": true
     },
     {
         "id": 2,
         "name": "Giấy phép sử dụng mặt nước",
         "linkFile": "https://mygenco3-api.genco3.com/files/output.pdf",
         "deadline": "2025-12-31T00:00:00",
-        "isValid": false
+        "isValid": false,
+        "isUpcomingDue": false
+    },
+      {
+        "id": 3,
+        "name": "Giấy phép sử dụng mặt nước",
+        "linkFile": "https://mygenco3-api.genco3.com/files/output.pdf",
+        "deadline": "2025-12-31T00:00:00",
+        "isValid": true,
+        "isUpcomingDue": false
     }
 ]
 const TableHeader = () => (

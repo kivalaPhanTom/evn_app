@@ -12,9 +12,10 @@ import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
 import { TabType } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import dayjs from 'dayjs'
+import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Animated, StyleSheet, Text, View } from 'react-native'
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Toast } from 'toastify-react-native'
 interface CumulativeSummaryItem {
@@ -29,6 +30,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const { countRefesh } = useSelector((state: any) => state.homeSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
+  const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()
 
   const getDefaultRange = (type: 'day' | 'month' | 'year') => {
@@ -62,15 +64,27 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
 
   const contentAnim = useRef(new Animated.Value(1)).current
 
-  useEffect(() => {
+  const fetchProductCummulativeOutput = (params: {
+    type: string
+    from: string
+    to: string
+    startEndOnly?: boolean
+  }) => {
     dispatch(
       getProductCummulativeOutput({
-        type: tab,
-        from: dayjs().subtract(10, 'day').format('DD/MM/YYYY'),
-        to: dayjs().format('DD/MM/YYYY'),
+        ...params,
         currentPlantId: props.currentPlantId || '',
       }),
     )
+  }
+
+  useEffect(() => {
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: dayjs(range.from).format('DD/MM/YYYY'),
+      to: dayjs(range.to).format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countRefesh])
 
@@ -105,14 +119,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       return
     }
 
-    dispatch(
-      getProductCummulativeOutput({
-        type: tab,
-        from: fromDate.format('DD/MM/YYYY'),
-        to: toDate.format('DD/MM/YYYY'),
-        currentPlantId: props.currentPlantId || '',
-      }),
-    )
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: fromDate.format('DD/MM/YYYY'),
+      to: toDate.format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
   }
 
   const onTabChange = (newTab: TabType) => {
@@ -123,19 +135,40 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
     if (dayjs(range.from).isAfter(dayjs(range.to))) {
       return
     }
-    dispatch(
-      getProductCummulativeOutput({
-        type: newTab,
-        from: newRange.from.format('DD/MM/YYYY'),
-        to: newRange.to.format('DD/MM/YYYY'),
-        currentPlantId: props.currentPlantId || '',
-      }),
-    )
+    fetchProductCummulativeOutput({
+      type: newTab,
+      from: newRange.from.format('DD/MM/YYYY'),
+      to: newRange.to.format('DD/MM/YYYY'),
+      startEndOnly: comparePeriodEnabled || undefined,
+    })
+  }
+
+  const onToggleComparePeriod = () => {
+    const newValue = !comparePeriodEnabled
+    setComparePeriodEnabled(newValue)
+    fetchProductCummulativeOutput({
+      type: tab,
+      from: dayjs(range.from).format('DD/MM/YYYY'),
+      to: dayjs(range.to).format('DD/MM/YYYY'),
+      startEndOnly: newValue || undefined,
+    })
   }
 
   return (
     <AnimatedCardContainer>
-      <Text style={styles.title}>Sản lượng lũy kế</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Sản lượng lũy kế</Text>
+      </View>
+      <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={onToggleComparePeriod}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.checkbox, comparePeriodEnabled && styles.checkboxChecked]}>
+            {comparePeriodEnabled && <Ionicons name="checkmark" size={14} color="#fff" />}
+          </View>
+          <Text style={styles.checkboxLabel}>So sánh đầu kỳ – cuối kỳ</Text>
+        </TouchableOpacity>
       <View>
         <TabSwitcher
           tabs={[
@@ -171,14 +204,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
                 return
               }
               setRange(newRange)
-              dispatch(
-                getProductCummulativeOutput({
-                  type: tab,
-                  from: fromDate.format('DD/MM/YYYY'),
-                  to: dayjs(newRange.to).format('DD/MM/YYYY'),
-                  currentPlantId: props.currentPlantId || '',
-                }),
-              )
+              fetchProductCummulativeOutput({
+                type: tab,
+                from: fromDate.format('DD/MM/YYYY'),
+                to: dayjs(newRange.to).format('DD/MM/YYYY'),
+                startEndOnly: comparePeriodEnabled || undefined,
+              })
             }}
           />
           <MonthPickerCustom
@@ -199,14 +230,12 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
                 return
               }
               setRange(newRange)
-              dispatch(
-                getProductCummulativeOutput({
-                  type: tab,
-                  from: dayjs(newRange.from).format('DD/MM/YYYY'),
-                  to: toDate.format('DD/MM/YYYY'),
-                  currentPlantId: props.currentPlantId || '',
-                }),
-              )
+              fetchProductCummulativeOutput({
+                type: tab,
+                from: dayjs(newRange.from).format('DD/MM/YYYY'),
+                to: toDate.format('DD/MM/YYYY'),
+                startEndOnly: comparePeriodEnabled || undefined,
+              })
             }}
           />
         </View>
@@ -251,11 +280,41 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
 }
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
   title: {
     fontSize: px.f(24),
     fontWeight: 'bold',
-    marginBottom: 12,
     color: '#fff',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginBottom: 12,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  checkboxChecked: {
+    backgroundColor: '#60a5fa',
+    borderColor: '#60a5fa',
+  },
+  checkboxLabel: {
+    color: '#fff',
+    fontSize: px.f(14),
   },
   cumulativeCard: {
     backgroundColor: '#1e2838',

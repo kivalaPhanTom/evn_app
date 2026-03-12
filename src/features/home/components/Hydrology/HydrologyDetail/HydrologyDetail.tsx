@@ -12,6 +12,7 @@ import { RootState } from '@/core/redux/store'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
+import FilterByTime from '../FilterByTime/FilterByTime'
 
 interface HydrologyDetailProps {
   currentPlantId?: string
@@ -40,10 +41,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const { currentPlantId, scrollY = 0 } = props
   const dispatch = useDispatch()
   const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
-  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants, filterByTime } = useSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
 
+  console.log('filterByTime', filterByTime)
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
@@ -166,6 +168,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
         <View style={{ marginBottom: 20 }}>
           <LazySection shouldLoad={shouldLoadGeneralInfo} minHeight={300}>
             <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
+          </LazySection>
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <LazySection shouldLoad={shouldLoadGeneralInfo} minHeight={300}>
+            <FilterByTime date={formatDate(selectedDate)} currentPlantId={activeTab} />
           </LazySection>
         </View>
         <View style={{ marginBottom: 20 }}>

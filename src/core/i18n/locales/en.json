@@ -3,6 +3,7 @@
   "day": "DAY",
   "month": "MONTH",
   "year": "YEAR",
+  "byHour": "BY HOUR",
   "byDay": "BY DAY",
   "byMonth": "BY MONTH",
   "byYear": "BY YEAR",
