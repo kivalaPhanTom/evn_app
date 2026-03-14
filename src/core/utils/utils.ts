@@ -76,7 +76,7 @@ export const catchHandle = (e: any, fnName?: string): void => {
       break;
     }
     case 404: {
-      notify('Yêu cầu không tồn tại. Vui lòng thử lại sau.');
+      notify(data ?? 'Yêu cầu không tồn tại. Vui lòng thử lại sau.');
       break;
     }
     case 500: {

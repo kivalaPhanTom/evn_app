@@ -111,14 +111,13 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   )
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
-    setRange(newRange)
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
-
     if (fromDate.isAfter(toDate)) {
+      Toast.warn('Ngày bắt đầu không được sau ngày kết thúc')
       return
     }
-
+    setRange(newRange)
     fetchProductCummulativeOutput({
       type: tab,
       from: fromDate.format('DD/MM/YYYY'),
@@ -183,7 +182,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       </View>
 
       {tab === 'day' ? (
-        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" chooseMode="day" />
+        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
       ) : (
         <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between' }}>
           <MonthPickerCustom

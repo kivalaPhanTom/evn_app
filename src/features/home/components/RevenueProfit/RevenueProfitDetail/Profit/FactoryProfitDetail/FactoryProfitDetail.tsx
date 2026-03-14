@@ -15,6 +15,7 @@ import { Colors } from '@/core/constants/colors'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { px } from '@/core/utils/scale'
 import { useLocalSearchParams } from 'expo-router'
+import { Toast } from 'toastify-react-native'
 
 function FactoryProfitDetail() {
   const dispatch = useDispatch()
@@ -35,6 +36,16 @@ function FactoryProfitDetail() {
   const plantId = currentPlantId || ''
 
   const selectOptions = ['Tổng', 'BTS', 'BK', 'SP3']
+
+  const onChangeDateRage = (newRange: { from: any; to: any }) => {
+    const fromDate = dayjs(newRange.from)
+    const toDate = dayjs(newRange.to)
+    if (fromDate.isAfter(toDate)) {
+      Toast.warn('Ngày bắt đầu không được sau ngày kết thúc')
+      return
+    }
+    setRange(newRange)
+  }
 
   useEffect(() => {
     dispatch(getProfit())
@@ -225,7 +236,7 @@ function FactoryProfitDetail() {
             </View>
           </TouchableOpacity>
         </Modal>
-        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
+        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
         <View>
           <View style={[styles.chartWrapper]}>
             <BarChart data={rawBarGroups} rounded noOfSection={3} />
