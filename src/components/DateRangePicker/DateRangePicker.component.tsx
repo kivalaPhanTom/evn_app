@@ -27,6 +27,7 @@ interface Props {
   labelStyle?: TextStyle
   allowToBeforeFrom?: boolean
   isCheckDisableDate?: boolean
+  noRangeConstraint?: boolean
 }
 
 export default function DateRangePicker({
@@ -47,6 +48,7 @@ export default function DateRangePicker({
   labelStyle,
   allowToBeforeFrom = false,
   isCheckDisableDate = true,
+  noRangeConstraint = false,
 }: Props) {
   const [focused, setFocused] = useState<'from' | 'to' | null>(null)
   const defaultStyles = useDefaultStyles()
@@ -98,7 +100,7 @@ export default function DateRangePicker({
       let nextTo = focused === 'to' ? newDate : value.to
 
       // Chỉ tự động cập nhật value.to khi allowToBeforeFrom=false
-      if (isFrom && value.to && !allowToBeforeFrom) {
+      if (!noRangeConstraint && isFrom && value.to && !allowToBeforeFrom) {
         const unit = chooseMode === 'day' ? 'day' : chooseMode === 'month' ? 'month' : 'year'
         if (dayjs(newDate).isAfter(dayjs(value.to), unit)) {
           nextTo = newDate
@@ -107,7 +109,7 @@ export default function DateRangePicker({
 
       onChange({ from: nextFrom, to: nextTo })
     },
-    [focused, onChange, value, chooseMode, allowToBeforeFrom],
+    [focused, onChange, value, chooseMode, allowToBeforeFrom, noRangeConstraint],
   )
 
   const getQuickDate = useCallback(() => {
@@ -197,9 +199,11 @@ export default function DateRangePicker({
         const today = dayjs()
         const base = focused === 'from' ? value.from : value.to
         let newDate = dayjs(base).month(monthIndex).startOf('month')
-        const minDate = dayjs(value.from).startOf('month')
-        if (newDate.isBefore(minDate, 'month')) {
-          newDate = minDate
+        if (!noRangeConstraint) {
+          const minDate = dayjs(value.from).startOf('month')
+          if (newDate.isBefore(minDate, 'month')) {
+            newDate = minDate
+          }
         }
         // Không vượt quá tháng hiện tại
         if (newDate.isAfter(today, 'month')) {
@@ -212,9 +216,12 @@ export default function DateRangePicker({
         const base = focused === 'from' ? value.from : value.to
         let d = dayjs(base).year(year)
         let newDate = chooseMode === 'year' ? d.startOf('year') : d.startOf('month')
-        const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
-        if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {
-          newDate = minDate
+        if (!noRangeConstraint) {
+          const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
+
+          if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {
+            newDate = minDate
+          }
         }
         // Không vượt quá năm hiện tại
         const unit = chooseMode === 'year' ? 'year' : 'month'

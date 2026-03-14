@@ -19,7 +19,7 @@
     },
     "android": {
       "package": "com.genco3.hppgenco3",
-      "versionCode": 14,
+      "versionCode": 15,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/icon.png",

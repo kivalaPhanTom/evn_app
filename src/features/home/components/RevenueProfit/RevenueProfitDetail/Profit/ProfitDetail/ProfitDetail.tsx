@@ -14,6 +14,7 @@ import { BarGroup } from '@/core/types'
 import { Colors } from '@/core/constants/colors'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { px } from '@/core/utils/scale'
+import { Toast } from 'toastify-react-native'
 
 interface ProfitDetailProps {
   plantName?: string
@@ -31,6 +32,15 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
     to: dayjs().subtract(1, 'day'),
   })
 
+  const onChangeDateRage = (newRange: { from: any; to: any }) => {
+    const fromDate = dayjs(newRange.from)
+    const toDate = dayjs(newRange.to)
+    if (fromDate.isAfter(toDate)) {
+      Toast.warn('Ngày bắt đầu không được sau ngày kết thúc')
+      return
+    }
+    setRange(newRange)
+  }
   useEffect(() => {
     dispatch(getProfit())
   }, [dispatch])
@@ -137,7 +147,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
       {/* Lãi/Lỗ theo thời gian */}
       <AnimatedCardContainer>
         <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
-        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={setRange} mode="modal" chooseMode="day" />
+        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" chooseMode="day" />
         <View>
           <View style={[styles.chartWrapper]}>
             <BarChart data={rawBarGroups} rounded noOfSection={3} />
