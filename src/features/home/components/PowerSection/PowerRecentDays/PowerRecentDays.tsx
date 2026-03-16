@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import styles from './PowerRecentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -21,12 +21,18 @@ function PowerRecentDays() {
     powerByDays: { powerData },
     isLoadingNearCurrentDays,
   } = useSelector((state: RootState) => state.powerSlice)
+  const scrollViewRef = useRef(null);
 
   const unit = 'tr.Wh'
 
   useEffect(() => {
     dispatch(getPowerByDays(7))
   }, [countRefesh])
+
+    const handleContentSizeChange = () => {
+    // Call scrollToEnd() on the ref
+    scrollViewRef.current?.scrollToEnd({ animated: true }); 
+  };
 
   return (
     <AnimatedCardContainer>
@@ -35,7 +41,7 @@ function PowerRecentDays() {
           <Text style={styles.title}>P - 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <ScrollView ref={scrollViewRef} horizontal onContentSizeChange={handleContentSizeChange} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             {isLoadingNearCurrentDays ? (
               <SquareSkelenton count={4} />
             ) : (

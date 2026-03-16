@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -78,6 +78,7 @@ function ValueCard({ day }: { day: PowerByDays }) {
 function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
+  const scrollViewRef = useRef(null);
 
   const unit = 'MW'
   const lineChartData = powerData.map((item, idx) => ({
@@ -94,7 +95,10 @@ function PowerRecentDays(props: Props) {
       setFirstLoading(false)
     }
   }, [isLoading])
-
+  const handleContentSizeChange = () => {
+    // Call scrollToEnd() on the ref
+    scrollViewRef.current?.scrollToEnd({ animated: true }); 
+  };
   return (
     <AnimatedCardContainer>
       <View>
@@ -102,7 +106,7 @@ function PowerRecentDays(props: Props) {
           <Text style={styles.title}>P - 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <ScrollView ref={scrollViewRef} horizontal onContentSizeChange={handleContentSizeChange} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             {firstLoading || isLoading ? (
               <SquareSkelenton count={4} />
             ) : (
@@ -132,6 +136,7 @@ function PowerRecentDays(props: Props) {
                 areaChart={false}
                 hideYAxisText={true}
                 marginLeftXLabel={20}
+                scrollToEnd={true}
               />
             </View>
           )}
