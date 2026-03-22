@@ -168,7 +168,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
         dispatch(getTurbineflow(payload))
         break
     }
-  }, [activeTab, selectedDate, countRefesh, dispatch, JSON.stringify(filterByTime)])
+  }, [activeTab, selectedDate, countRefesh, dispatch, filterByTime.currentFilterTab, filterByTime?.rangeCurrentDate?.from, filterByTime?.rangeCurrentDate?.to, filterByTime?.rangeCompareYear?.from, filterByTime?.rangeCompareYear?.to, filterByTime?.rangeTargetDate?.from, filterByTime?.rangeTargetDate?.to, filterByTime?.rangeCompareDate?.from, filterByTime?.rangeCompareDate?.to, filterByTime?.rangeTargetMonth?.from, filterByTime?.rangeTargetMonth?.to, filterByTime?.rangeCompareMonth?.from, filterByTime?.rangeCompareMonth?.to])
 
   const preloadOffset = 300 // px before entering viewport
 
@@ -281,6 +281,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedUpstreamData.currentColor}
               unit={convertedUpstreamData.unit}
               flowRateInfo={convertedUpstreamData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -293,6 +294,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedInflowData.currentColor}
               unit={convertedInflowData.unit}
               flowRateInfo={convertedInflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -305,6 +307,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedTurbineflowData.currentColor}
               unit={convertedTurbineflowData.unit}
               flowRateInfo={convertedTurbineflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -317,6 +320,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedOutflowData.currentColor}
               unit={convertedOutflowData.unit}
               flowRateInfo={convertedOutflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>

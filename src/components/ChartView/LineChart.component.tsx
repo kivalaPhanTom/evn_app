@@ -125,7 +125,25 @@ export const LineChart: React.FC<LineCharProps> = ({
 
   const overallMax = allValues.length ? Math.max(...allValues) : 0
   const overallMin = allValues.length ? Math.min(...allValues) : 0
-  const padding = (overallMax - overallMin) * 0.1
+  const noOfSections = 3
+
+  const getNiceStep = (range: number, sections: number) => {
+    const roughStep = range / sections
+
+    const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)))
+    const normalized = roughStep / magnitude
+
+    let niceNormalized
+
+    if (normalized <= 1) niceNormalized = 1
+    else if (normalized <= 2) niceNormalized = 2
+    else if (normalized <= 5) niceNormalized = 5
+    else niceNormalized = 10
+
+    return niceNormalized * magnitude
+  }
+  const niceStep = getNiceStep(overallMax - overallMin, noOfSections)
+  const niceRange = niceStep * noOfSections
 
   // ===== Render Chart =====
   return (
@@ -149,7 +167,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         startOpacity2={0.3}
         endOpacity1={0}
         height={height}
-        maxValue={overallMax - overallMin + padding}
+        maxValue={niceRange}
         yAxisOffset={overallMin}
         hideDataPoints1={hideDataPoints1}
         hideDataPoints2={hideDataPoints2}
@@ -170,7 +188,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         hideYAxisText={hideYAxisText}
         yAxisColor="transparent"
         {...(ruleTypes && { xAxisColor, rulesColor: rulesColor, dashGap: 10, dashWidth: 5 })}
-        noOfSections={3}
+        noOfSections={noOfSections}
         rulesType={ruleTypes}
         initialSpacing={30}
         endSpacing={15}
@@ -187,80 +205,83 @@ export const LineChart: React.FC<LineCharProps> = ({
         pointerConfig={
           pointerConfig
             ? {
-                pointerStripHeight: height,
-                pointerStripColor: 'rgba(255,255,255,0.3)',
-                pointerStripWidth: 2,
-                strokeDashArray: [5, 5],
-                pointerColor: color,
-                radius: px.h(6),
-                pointerLabelWidth: px.h(100),
-                pointerLabelHeight: px.v(90),
-                activatePointersOnLongPress: true,
-                autoAdjustPointerLabelPosition: true,
-                persistPointer: true,
-                resetPointerOnDataChange: false,
-                pointer1Color: color,
-                pointer2Color: color2,
-                pointerLabelComponent: (items: any) => {
-                  return (
+              pointerStripHeight: height,
+              pointerStripColor: 'rgba(255,255,255,0.3)',
+              pointerStripWidth: 2,
+              strokeDashArray: [5, 5],
+              pointerColor: color,
+              radius: px.h(6),
+              pointerLabelWidth: px.h(100),
+              pointerLabelHeight: px.v(90),
+              activatePointersOnLongPress: true,
+              autoAdjustPointerLabelPosition: true,
+              persistPointer: true,
+              resetPointerOnDataChange: false,
+              pointer1Color: color,
+              pointer2Color: color2,
+              pointerLabelComponent: (items: any) => {
+                const label1Tmp = label1 || data?.find(i => i.id === items[0]?.id)?.label
+                const label2Tmp = label2 || data2?.find(i => i.id === items[1]?.id)?.label
+                const label3Tmp = label3 || data3?.find(i => i.id === items[2]?.id)?.label
+                return (
+                  <View
+                    style={{
+                      height: px.v(90),
+                      width: px.h(200),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: px.v(-5),
+                      marginLeft: px.h(-40),
+                    }}
+                  >
                     <View
                       style={{
-                        height: px.v(90),
-                        width: px.h(200),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: px.v(-5),
-                        marginLeft: px.h(-40),
+                        paddingHorizontal: px.h(14),
+                        paddingVertical: px.v(6),
+                        borderRadius: px.m(8),
+                        backgroundColor: isDark ? '#1f2937' : '#f9fafb',
+                        borderWidth: 1,
+                        borderColor: isDark ? '#374151' : '#e5e7eb',
                       }}
                     >
-                      <View
+                      <Text
                         style={{
-                          paddingHorizontal: px.h(14),
-                          paddingVertical: px.v(6),
-                          borderRadius: px.m(8),
-                          backgroundColor: isDark ? '#1f2937' : '#f9fafb',
-                          borderWidth: 1,
-                          borderColor: isDark ? '#374151' : '#e5e7eb',
+                          textAlign: 'left',
+                          color: color,
+                          fontSize: px.m(16),
                         }}
                       >
+                        {(label1Tmp + " ") + items[0]?.value}
+                      </Text>
+                      {items[1] && (
                         <Text
                           style={{
                             textAlign: 'left',
-                            color: color,
+                            color: color2,
                             fontSize: px.m(16),
+                            marginTop: px.v(4),
                           }}
                         >
-                          {label1 + items[0]?.value}
+                          {(label2Tmp + " ") + items[1]?.value}
                         </Text>
-                        {items[1] && (
-                          <Text
-                            style={{
-                              textAlign: 'left',
-                              color: color2,
-                              fontSize: px.m(16),
-                              marginTop: px.v(4),
-                            }}
-                          >
-                            {label2 + items[1]?.value}
-                          </Text>
-                        )}
-                        {items[2] && (
-                          <Text
-                            style={{
-                              textAlign: 'left',
-                              color: color3,
-                              fontSize: px.m(16),
-                              marginTop: px.v(4),
-                            }}
-                          >
-                            {label3 + items[2]?.value}
-                          </Text>
-                        )}
-                      </View>
+                      )}
+                      {items[2] && (
+                        <Text
+                          style={{
+                            textAlign: 'left',
+                            color: color3,
+                            fontSize: px.m(16),
+                            marginTop: px.v(4),
+                          }}
+                        >
+                          {(label3Tmp + " ") + items[2]?.value}
+                        </Text>
+                      )}
                     </View>
-                  )
-                },
-              }
+                  </View>
+                )
+              },
+            }
             : undefined
         }
       />

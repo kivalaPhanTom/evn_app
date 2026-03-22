@@ -26,13 +26,13 @@ interface FlowRateProps {
   unit?: string
   title?: string
   flowRateInfo?: Array<{ label: string; value: number; color: string }>
+  showPointer?: boolean
 }
 
-const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff', unit, title, flowRateInfo = [] }) => {
+const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff', unit, title, flowRateInfo = [], showPointer = false }) => {
   // Nếu type = 'output', hiển thị đầy đủ 3 items
   const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
   const currentFilterTab = filterByTime?.currentFilterTab
-
   const legendItems: LegendItemData[] =
     currentFilterTab === 'year'
       ? []
@@ -56,15 +56,15 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
       </View>
       <View style={{ marginBottom: 20 }}>
         <LineChart
-          data={data}
-          data2={data2}
+          data={data.map((item, i:number) => ({ ...item, id: i }))}
+          data2={data2.map((item, i:number) => ({ ...item, id: i }))}
           height={px(200)}
           color={currentColor}
           color2="#A78BFA"
           areaChart={false}
-          hideDataPoints2
           strokeDashArray2={[12, 3]}
           scrollToEnd={true}
+          pointerConfig={showPointer}
         />
       </View>
 

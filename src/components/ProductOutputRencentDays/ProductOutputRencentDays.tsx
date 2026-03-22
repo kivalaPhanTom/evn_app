@@ -212,6 +212,7 @@ function ProductOutputRencentDays(props: Props) {
               areaChart={false}
               hideYAxisText={true}
               marginLeftXLabel={20}
+              scrollToEnd={true}
             />
           </View>
         )}
