@@ -281,6 +281,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedUpstreamData.currentColor}
               unit={convertedUpstreamData.unit}
               flowRateInfo={convertedUpstreamData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -293,6 +294,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedInflowData.currentColor}
               unit={convertedInflowData.unit}
               flowRateInfo={convertedInflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -305,6 +307,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedTurbineflowData.currentColor}
               unit={convertedTurbineflowData.unit}
               flowRateInfo={convertedTurbineflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>
@@ -317,6 +320,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedOutflowData.currentColor}
               unit={convertedOutflowData.unit}
               flowRateInfo={convertedOutflowData.flowRateInfo}
+              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
             />
           </LazySection>
         </View>

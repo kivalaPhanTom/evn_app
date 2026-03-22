@@ -202,6 +202,9 @@ export const LineChart: React.FC<LineCharProps> = ({
                 pointer1Color: color,
                 pointer2Color: color2,
                 pointerLabelComponent: (items: any) => {
+                  const label1Tmp = label1 || data?.find(i => i.id === items[0]?.id)?.label 
+                  const label2Tmp = label2 || data2?.find(i => i.id === items[1]?.id)?.label 
+                  const label3Tmp = label3 || data3?.find(i => i.id === items[2]?.id)?.label 
                   return (
                     <View
                       style={{
@@ -230,7 +233,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                             fontSize: px.m(16),
                           }}
                         >
-                          {label1 + items[0]?.value}
+                          {(label1Tmp + " ") + items[0]?.value }
                         </Text>
                         {items[1] && (
                           <Text
@@ -241,7 +244,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                               marginTop: px.v(4),
                             }}
                           >
-                            {label2 + items[1]?.value}
+                            {(label2Tmp + " ") + items[1]?.value }
                           </Text>
                         )}
                         {items[2] && (
@@ -253,7 +256,7 @@ export const LineChart: React.FC<LineCharProps> = ({
                               marginTop: px.v(4),
                             }}
                           >
-                            {label3 + items[2]?.value}
+                            {(label3Tmp + " ") + items[2]?.value}
                           </Text>
                         )}
                       </View>
