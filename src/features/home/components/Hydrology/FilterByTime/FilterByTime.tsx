@@ -40,7 +40,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
   const contentAnim = useRef(new Animated.Value(1)).current
 
   const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
-  const [tab, setTab] = useState<FilterTab>('hour')
+  const [tab, setTab] = useState<FilterTab>(filterByTime.currentFilterTab || 'hour')
   const handleTabChange = (newTab: FilterTab) => {
     setTab(newTab)
     dispatch(setFilterByTime({ currentFilterTab: newTab }))
