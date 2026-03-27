@@ -49,11 +49,11 @@ const CompareDashboard = ({
   // Nếu line cao hơn bar, tính offset âm để push line xuống
   // shift dựa trên tỷ lệ value difference
   let lineDataPointsShift2 = 0
-  if (lineMaxValue > barMaxValue) {
-    const valueDiff = lineMaxValue - barMaxValue
-    const ratio = valueDiff / lineMaxValue // tỷ lệ chênh lệch
-    lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% của chiều cao tương ứng với tỷ lệ
-  }
+  // if (lineMaxValue > barMaxValue) {
+  //   const valueDiff = lineMaxValue - barMaxValue
+  //   const ratio = valueDiff / lineMaxValue // tỷ lệ chênh lệch
+  //   lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% của chiều cao tương ứng với tỷ lệ
+  // }
   console.log('lineMaxValue:', lineMaxValue, 'barMaxValue:', barMaxValue, 'lineDataPointsShift2:', lineDataPointsShift2)
 
   const customDataPoint = (

@@ -39,7 +39,7 @@ const ExistenceInfo: React.FC<ExistenceProps> = (props) => {
         >
             {data.map((problem, index) => {
                 const formattedDate = formatDate(new Date(problem?.date));
-                return (<AnimatedCardContainer key={index}>
+                return (<AnimatedCardContainer style={styles.cardGap} key={index}>
                     {/* Top row */}
                     <View style={styles.topRow}>
                         <Badge status={problem.status} />

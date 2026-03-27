@@ -234,7 +234,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                   )}
 
                   {/* Percentage text in the middle of water */}
-                  {waterHeightPercent > 0 && (
+                  {/* {waterHeightPercent > 0 && (
                     <View
                       style={{
                         position: 'absolute',
@@ -246,9 +246,9 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                         zIndex: 5,
                       }}
                     >
-                      <Text style={styles.percentageText}>{waterHeightPercent}%</Text>
+                      <Text style={styles.percentageText}>{waterHeightPercent} %</Text>
                     </View>
-                  )}
+                  )} */}
 
                   {/* MaxLevel line */}
                   <View

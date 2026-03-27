@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8fafc',
     },
 
+    cardGap: {
+        marginBottom: 6,
+    },
+
     content: {
         padding: 16,
     },
