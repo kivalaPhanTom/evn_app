@@ -147,33 +147,34 @@ const BarChart: React.FC<Props> = ({
             // Luôn có một offset nhỏ mặc định để label không quá gần đầu bar
             const defaultOffset = px.v(topLabelOffset) // Offset mặc định để label có khoảng cách với đầu bar
             let labelOffset = defaultOffset
-            if (paddedMax > 0) {
-              const barValue = item.value
-              // Chiều cao của bar từ dưới lên trên (trong hệ tọa độ Y từ dưới lên)
-              const barHeight = (barValue / paddedMax) * height
+            // Ẩn logic tính toán label của biểu đồ cột
+            // if (paddedMax > 0) {
+            //   const barValue = item.value
+            //   // Chiều cao của bar từ dưới lên trên (trong hệ tọa độ Y từ dưới lên)
+            //   const barHeight = (barValue / paddedMax) * height
 
-              // Kiểm tra lineData1
-              if (lineData1 && lineData1.length > globalIndex && lineData1[globalIndex]) {
-                const line1Value = lineData1[globalIndex].value || 0
-                const line1Height = (line1Value / paddedMax) * height
-                // Nếu line cao hơn bar, tính offset cần thiết
-                if (line1Height > barHeight) {
-                  const offset = line1Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
-                  labelOffset = Math.max(labelOffset, offset)
-                }
-              }
+            //   // Kiểm tra lineData1
+            //   if (lineData1 && lineData1.length > globalIndex && lineData1[globalIndex]) {
+            //     const line1Value = lineData1[globalIndex].value || 0
+            //     const line1Height = (line1Value / paddedMax) * height
+            //     // Nếu line cao hơn bar, tính offset cần thiết
+            //     if (line1Height > barHeight) {
+            //       const offset = line1Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+            //       labelOffset = Math.max(labelOffset, offset)
+            //     }
+            //   }
 
-              // Kiểm tra lineData2
-              if (lineData2 && lineData2.length > globalIndex && lineData2[globalIndex]) {
-                const line2Value = lineData2[globalIndex].value || 0
-                const line2Height = (line2Value / paddedMax) * height
-                // Nếu line cao hơn bar, tính offset cần thiết
-                if (line2Height > barHeight) {
-                  const offset = line2Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
-                  labelOffset = Math.max(labelOffset, offset)
-                }
-              }
-            }
+            //   // Kiểm tra lineData2
+            //   if (lineData2 && lineData2.length > globalIndex && lineData2[globalIndex]) {
+            //     const line2Value = lineData2[globalIndex].value || 0
+            //     const line2Height = (line2Value / paddedMax) * height
+            //     // Nếu line cao hơn bar, tính offset cần thiết
+            //     if (line2Height > barHeight) {
+            //       const offset = line2Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+            //       labelOffset = Math.max(labelOffset, offset)
+            //     }
+            //   }
+            // }
 
             result.push({
               value: item.value,
