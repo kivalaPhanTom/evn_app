@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
@@ -28,10 +28,10 @@ interface moduleItem {
   canAccess: boolean
 }
 function HomeContent() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-  const { modules } = useSelector((state: any) => state.moduleSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const { t } = useTranslation()
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
@@ -22,8 +22,8 @@ interface ProfitDetailProps {
 }
 
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
-  const dispatch = useDispatch()
-  const { dailyAndCumulativeData, profitByPeriod } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const dispatch = useAppDispatch()
+  const { dailyAndCumulativeData, profitByPeriod } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const [selectedDate, setSelectedDate] = useState<Date>(yesterday)

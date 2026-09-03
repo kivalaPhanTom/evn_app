@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { View, Text, Animated } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import dayjs, { Dayjs } from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { Toast } from 'toastify-react-native'
@@ -35,11 +35,11 @@ const colStyle = {
 }
 
 const FilterByTime: React.FC<FilterByTimeProps> = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const contentAnim = useRef(new Animated.Value(1)).current
 
-  const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
+  const filterByTime = useAppSelector((state: any) => state.hydrologySlice.filterByTime)
   const [tab, setTab] = useState<FilterTab>(filterByTime.currentFilterTab || 'hour')
   const handleTabChange = (newTab: FilterTab) => {
     setTab(newTab)

@@ -9,7 +9,7 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
 import { BarGroup } from '@/core/types'
 import BarChart from '@/components/BarChart/BarChart.component'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProfitFactDetail } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import { LineChart } from '@/components/ChartView/LineChart.component'
@@ -22,11 +22,11 @@ interface ProfitFactDetailProps {
 
 export default function ProfitDetail(props: ProfitFactDetailProps) {
   const { currentPlantId, keyTab, currentPlantName } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const { profitFactDetail, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+  const { profitFactDetail, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const fromParts = profitFactDetail.Chart.Period.From?.split('-') ?? []
   const toParts = profitFactDetail.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''

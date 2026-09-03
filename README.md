@@ -110,7 +110,7 @@ src/
 │   │   │   ├── refresh/
 │   │   │   ├── revenue-profit/
 │   │   │   └── technology/
-│   │   ├── Sagas/                   # Saga orchestration hiện tại
+│   │   ├── Sagas/                   # Chỉ chứa RootSaga orchestration
 │   │   ├── hooks.ts                 # useAppDispatch/useAppSelector
 │   │   ├── index.ts                 # Public API của Redux
 │   │   ├── store.ts
@@ -164,6 +164,8 @@ app/                                 # Routes (Expo Router)
 - ✅ **Sạch cấu trúc thư mục**: bỏ `validators/`, `layouts/`, `core/store/`, `core/scripts/`
 - ✅ **Tổ chức Redux theo domain**: action creator và slice mới nằm cạnh nhau trong `core/redux/domains/`
 - ✅ **Typed Redux API**: dùng `useAppDispatch`, `useAppSelector`, `RootState` và `AppDispatch`
+- ✅ **Co-locate saga theo domain**: mỗi domain quản lý actions, slice và saga của chính nó
+- ✅ **Giảm race condition**: các request dữ liệu theo tab/ngày dùng `takeLatest`
 - ✅ **Xóa `Actions/` và `ActionTypes/`**: action type được định nghĩa tại domain action creator
 - ✅ **Giữ nguyên i18next**: Toàn bộ `src/core/i18n/` được giữ nguyên
 - ✅ **Giữ nguyên redux-saga**: saga vẫn được khởi chạy tập trung qua `RootSaga`
@@ -182,6 +184,23 @@ const isLoading = useAppSelector((state) => state.hydrologySlice.isLoadingFlowCh
 ```
 
 Không tạo action type ở thư mục riêng và không import trực tiếp từ `Sagas/` trong màn hình mới. Reducer, action creator và logic domain nằm trong `domains/`.
+
+Kiểm tra code trước khi commit:
+
+```bash
+npm run lint
+npm run typecheck
+```
+
+`serializableCheck: false` trong Redux store hiện được giữ nguyên để tương thích với các action fact-detail đang dùng callback UI.
+
+### Trạng thái hiện tại
+
+- ✅ Toàn bộ text tiếng Việt trong `app/` và `src/` đã được chuẩn hóa về UTF-8, tránh lỗi hiển thị dạng `ThÃ´ng` hoặc `Lá»£i`.
+- ✅ `npm run typecheck` đã chạy thành công.
+- ✅ `npx eslint src/core/redux` đã chạy thành công.
+- ✅ Cấu trúc Redux hiện chỉ còn domain implementations và `RootSaga` orchestration.
+- ℹ️ Các warning lint còn lại nằm ngoài Redux, chủ yếu liên quan dependency của React Hook và có thể xử lý độc lập.
 
 > **Lưu ý:** `node_modules` (429 MB) không thay đổi vì package.json giữ nguyên các dependencies. Dung lượng build APK/IPA sẽ giảm nhẹ do ít code hơn.
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import styles from './FactoryMaintenanceInfo.styles'
@@ -15,9 +15,9 @@ interface FactoryMaintenanceInfoProps {
 
 function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
   const { currentPlantId, selectedYear } = props
-  const dispatch = useDispatch()
-  const { currentPlantDetail, isDetailRepairScheduleLoading } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+  const dispatch = useAppDispatch()
+  const { currentPlantDetail, isDetailRepairScheduleLoading } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [firstLoading, setFirstLoading] = useState(true)
 
   useEffect(() => {

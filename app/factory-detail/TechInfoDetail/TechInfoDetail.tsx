@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -31,10 +31,10 @@ interface TechInfoDetailProps {
     keyTab: number
 }
 function TechInfoDetail(props: TechInfoDetailProps) {
-    const dispatch = useDispatch()
-    const { isLoadingTechInfoDetail, techInfoDetail } = useSelector((state: RootState) => state.techInfoSlice)
-    const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-    const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+    const dispatch = useAppDispatch()
+    const { isLoadingTechInfoDetail, techInfoDetail } = useAppSelector((state: RootState) => state.techInfoSlice)
+    const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+    const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
     const { currentPlantId, keyTab } = props
     const data = techInfoDetail.map(item => ({
         label: item.Name,

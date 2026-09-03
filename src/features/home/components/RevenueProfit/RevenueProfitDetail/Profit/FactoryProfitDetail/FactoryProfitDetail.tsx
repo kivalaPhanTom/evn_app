@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
@@ -18,8 +18,8 @@ import { useLocalSearchParams } from 'expo-router'
 import { Toast } from 'toastify-react-native'
 
 function FactoryProfitDetail() {
-  const dispatch = useDispatch()
-  const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const dispatch = useAppDispatch()
+  const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
@@ -141,7 +141,7 @@ function FactoryProfitDetail() {
             </View>
             {/* Plant Breakdown */}
             <View style={styles.plantBreakdown}>
-              {dailyAndCumulativeData.ByPlantToday.map((plant, idx) => {
+              {dailyAndCumulativeData.ByPlantToday.map((plant: { PlantName: string; Value: number }, idx: number) => {
                 const plantColor = plantColors[idx] || '#A78BFA'
                 return (
                   <Text key={idx} style={[styles.plantItem, { color: plantColor }]}>
@@ -182,7 +182,7 @@ function FactoryProfitDetail() {
                 </View>
               </View>
               <View style={styles.plantBreakdownHorizontal}>
-                {dailyAndCumulativeData.ByPlantMonth.map((plant, idx) => {
+                {dailyAndCumulativeData.ByPlantMonth.map((plant: { PlantName: string; Value: number }, idx: number) => {
                   const plantColor = plantColors[idx] || '#A78BFA'
                   return (
                     <Text key={idx} style={[styles.plantItem, { color: plantColor }]}>

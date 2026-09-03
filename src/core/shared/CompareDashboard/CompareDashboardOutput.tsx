@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Dimensions, Text } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import styles from './CompareDashboard.styles'
 import { BarGroup, LineDataPoint } from '@/components/BarChartWithLines'
 import { px } from '@/core/utils/scale'
@@ -50,13 +50,13 @@ interface CompareDashboardProps {
 }
 
 const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDisableDate }: CompareDashboardProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
   })
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-  const { isLoadingCompareProductOutput } = useSelector((state: RootState) => state.productOutputSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { isLoadingCompareProductOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6

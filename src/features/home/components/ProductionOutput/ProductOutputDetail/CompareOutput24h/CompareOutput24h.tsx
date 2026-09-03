@@ -6,14 +6,14 @@ import { useRouter } from 'expo-router'
 import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashboardOutput'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from "@/core/redux/store";
 
 function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props;
-  const dispatch = useDispatch()
-  const {isLoadingCompareProductOutput} = useSelector((state: RootState) => state.productOutputSlice)
-  const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
+  const dispatch = useAppDispatch()
+  const {isLoadingCompareProductOutput} = useAppSelector((state: RootState) => state.productOutputSlice)
+  const compareProductOutput = useAppSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
   const { Unit = '', BarChartData, compareLineChartData, Summary, ContractData } = compareProductOutput
  
   return (

@@ -27,4 +27,8 @@ import { useAppDispatch, useAppSelector } from '@/core/redux'
 import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
 ```
 
-The old `Actions/`, `ActionTypes/`, and root `slices/` folders have been removed. Saga orchestration remains in `Sagas/`, while each domain owns its slice and action creators.
+The old `Actions/`, `ActionTypes/`, and root `slices/` folders have been removed. `Sagas/` contains only `RootSaga`; each domain owns its actions, slice, and saga.
+
+Data requests that can be superseded by a newer tab, date, or plant selection use `takeLatest`. `auth`, `documents`, `maintenance`, and `modules` keep `takeEvery` where each event is independent.
+
+The store intentionally keeps `serializableCheck: false` for compatibility with existing fact-detail callback actions.

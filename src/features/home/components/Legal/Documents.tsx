@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { useLocalSearchParams } from 'expo-router'
@@ -49,9 +49,9 @@ const TableHeader = () => (
 );
 function DocumentSection() {
     const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-    const dispatch = useDispatch()
-    const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-    const { isLoadingLegal, legal } = useSelector((state: RootState) => state.documentSlice)
+    const dispatch = useAppDispatch()
+    const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+    const { isLoadingLegal, legal } = useAppSelector((state: RootState) => state.documentSlice)
 
     const data = legal.map((item, i) => ({
         ...item,

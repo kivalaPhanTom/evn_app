@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 // import TotalPower from './TotalPower/TotalPower'
 // import PowerRecentDays from './PowerRecentDays/PowerRecentDays'

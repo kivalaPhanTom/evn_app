@@ -5,7 +5,7 @@ import TotalRevenueExpenses from './TotalRevenueExpenses'
 import ReveneCompareByTime from './ReveneCompareByTime'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getRevenuePowerPrices, getRevenueTotalExpense, setCountRefesh } from '@/core/redux/domains/revenue-profit'
 import { getInflow, getOutflow, getTurbineflow, getUpstreamWaterLevel } from '@/core/redux/domains/hydrology'
@@ -65,12 +65,12 @@ function getCurrentPlantId(activeTab: string): string {
   return result
 }
 export default function RevenueDetail(props: Props) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()
-  // const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  const { countRefesh } = useSelector((state: RootState) => state.revenueProfitSlice)
+  // const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { countRefesh } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@/core/redux/hooks'
 import { View } from 'react-native'
 import { RootState } from '@/core/redux/store'
 import { setActiveTab } from '@/core/redux/domains/power'
@@ -10,9 +10,9 @@ import BlankPageSkeleton from '@/components/Skeletons/BlankPageSkeleton'
 import { Colors } from '@/core/constants/colors'
 
 function HomeNewScreen() {
-  const dispatch = useDispatch();
-  const { detail } = useSelector((state: RootState) => state.powerSlice)
-  const activeTab = useSelector((state: RootState) => state.powerSlice.activeTabIndex)
+  const dispatch = useAppDispatch();
+  const { detail } = useAppSelector((state: RootState) => state.powerSlice)
+  const activeTab = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
   const onSetActiveTab = (index: number) => {
     dispatch(setActiveTab(index))
   }

@@ -13,7 +13,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Constants from 'expo-constants'
 import { useTranslation } from 'react-i18next'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useAuth } from '@/core/context/AuthProvider'
 
 export default function CompaniesScreen() {
   const { t } = useTranslation();
@@ -21,12 +21,13 @@ export default function CompaniesScreen() {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const router = useRouter()
+  const { logout } = useAuth()
   const onPress = (c: any) => {
     router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
   }
   const appVersion = Constants.expoConfig?.version ?? ''
   const onLogout = async () => {
-    await AsyncStorage.clear()
+    await logout()
     router.replace('/login')
   }
 

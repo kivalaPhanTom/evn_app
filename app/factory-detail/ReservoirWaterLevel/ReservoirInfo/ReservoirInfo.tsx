@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg'
 import { styles } from './ReservoirInfo.styles'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
 
@@ -24,11 +24,11 @@ interface ReservoirData {
 function ReservoirInfo(props: { currentPlantId: string }) {
   const { currentPlantId } = props;
   const router = useRouter()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [containerWidth, setContainerWidth] = useState(0)
   const containerHeight = px.v(140)
 
-  const { currentHydrologyPlant } = useSelector((state: RootState) => state.hydrologySlice)
+  const { currentHydrologyPlant } = useAppSelector((state: RootState) => state.hydrologySlice)
 
   // Call API when component mounts or currentPlantId changes
   useEffect(() => {

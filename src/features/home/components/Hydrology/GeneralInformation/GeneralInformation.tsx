@@ -4,7 +4,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import styles from './GeneralInformation.style'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getHydrologyPlantsInfo } from '@/core/redux/domains/hydrology'
 
 interface GeneralInformationProps {
@@ -24,8 +24,8 @@ interface InfoCardData {
 
 const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInformationProps) => {
   const { date, currentPlantId } = props
-  const dispatch = useDispatch()
-  const { hydrologyPlantsInfo, countRefesh } = useSelector((state: any) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const { hydrologyPlantsInfo, countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
   useEffect(() => {
     dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId, date: date }))
   }, [date, currentPlantId, countRefesh])

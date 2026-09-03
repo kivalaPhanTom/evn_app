@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { px } from '@/core/utils/scale'
 import { styles } from './ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
@@ -132,8 +132,8 @@ function mapInflowOutflowToReservoirMetric(apiData: {
 
 function ReservoirMetric(props: { currentPlantId: string }) {
   const { currentPlantId } = props
-  const dispatch = useDispatch()
-  const inflowOutflowData = useSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {})
+  const dispatch = useAppDispatch()
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {})
   const hasApiData = inflowOutflowData?.cards?.length >= 3
   const data = hasApiData
     ? mapInflowOutflowToReservoirMetric(inflowOutflowData)

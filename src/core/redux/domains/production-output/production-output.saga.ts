@@ -1,4 +1,4 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeLatest, put, call } from 'redux-saga/effects'
 import {
   getProductOutputByHours,
   getProductOutputOverview,
@@ -9,7 +9,7 @@ import {
   getProductOutputByHoursFactDetail,
   getProductOutputByDaysFactDetail,
   getProductOutputCompareChart,
-} from '../domains/production-output/production-output.actions'
+} from './production-output.actions'
 import { Service } from '@/core/service/productOutput'
 import {
   setProductOutputByHours,
@@ -19,7 +19,7 @@ import {
   setCompareProductOutput,
   setProductOutputCompareChart,
   setLoading,
-} from '../domains/production-output/production-output.slice'
+} from './production-output.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProductOutputByHoursSaga(): Generator {
@@ -180,31 +180,31 @@ function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductO
 }
 
 function* handleGetProductOutputByHoursApi() {
-  yield takeEvery(getProductOutputByHours, getProductOutputByHoursSaga)
+  yield takeLatest(getProductOutputByHours, getProductOutputByHoursSaga)
 }
 function* handleGetProductOutputOverviewApi() {
-  yield takeEvery(getProductOutputOverview, getProductOutputOverviewSaga)
+  yield takeLatest(getProductOutputOverview, getProductOutputOverviewSaga)
 }
 function* handleGetProductOutputByDaysApi() {
-  yield takeEvery(getProductOutputByDays, getProductOutputByDaysSaga)
+  yield takeLatest(getProductOutputByDays, getProductOutputByDaysSaga)
 }
 function* handleGetProductCummulativeOutputApi() {
-  yield takeEvery(getProductCummulativeOutput, getProductCummulativeOutputSaga)
+  yield takeLatest(getProductCummulativeOutput, getProductCummulativeOutputSaga)
 }
 function* handleGetCompareProductOutputApi() {
-  yield takeEvery(getCompareProductOutput, getCompareProductOutputSaga)
+  yield takeLatest(getCompareProductOutput, getCompareProductOutputSaga)
 }
 function* handleGetProductOutputOverviewFactDetailApi() {
-  yield takeEvery(getProductOutputOverviewFactDetail, getProductOutputOverviewFactDetailSaga)
+  yield takeLatest(getProductOutputOverviewFactDetail, getProductOutputOverviewFactDetailSaga)
 }
 function* handleGetProductOutputByHoursFactDetailApi() {
-  yield takeEvery(getProductOutputByHoursFactDetail, getProductOutputByHoursFactDetailSaga)
+  yield takeLatest(getProductOutputByHoursFactDetail, getProductOutputByHoursFactDetailSaga)
 }
 function* handleGetProductOutputByDaysFactDetailApi() {
-  yield takeEvery(getProductOutputByDaysFactDetail, getProductOutputByDaysFactDetailSaga)
+  yield takeLatest(getProductOutputByDaysFactDetail, getProductOutputByDaysFactDetailSaga)
 }
 function* handleGetProductOutputCompareChartApi() {
-  yield takeEvery(getProductOutputCompareChart, getProductOutputCompareChartSaga)
+  yield takeLatest(getProductOutputCompareChart, getProductOutputCompareChartSaga)
 }
 
 export function* productOutputSagaList() {

@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { Toast } from 'toastify-react-native'
 interface CumulativeSummaryItem {
   label: string
@@ -26,9 +26,9 @@ interface CumulativeSummaryItem {
 }
 
 export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
-  const dispatch = useDispatch()
-  const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+  const dispatch = useAppDispatch()
+  const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()

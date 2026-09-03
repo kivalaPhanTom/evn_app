@@ -1,4 +1,4 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeLatest, put, call } from 'redux-saga/effects'
 import {
   getPowerOverivew,
   getPowerByTime,
@@ -7,14 +7,14 @@ import {
   getPowerOverivewFactDetail,
   getPowerByTimeFactDetail,
   getPowerByDaysFactDetail,
-} from '../domains/power/power.actions'
+} from './power.actions'
 import {
   setPowerOverview,
   setPowerByTime,
   setPowerByDays,
   setComparePower,
   setLoading,
-} from '../domains/power/power.slice'
+} from './power.slice'
 import { Service } from '@/core/service/powerService'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -129,25 +129,25 @@ function* getPowerByDaysFactDetailSaga(action: ReturnType<typeof getPowerByDaysF
 }
 
 function* handleGetPowerOverviewApi() {
-  yield takeEvery(getPowerOverivew, getPowerOverviewSaga)
+  yield takeLatest(getPowerOverivew, getPowerOverviewSaga)
 }
 function* handleGetPowerByTimeApi() {
-  yield takeEvery(getPowerByTime, getPowerByTimeSaga)
+  yield takeLatest(getPowerByTime, getPowerByTimeSaga)
 }
 function* handleGetPowerByDaysApi() {
-  yield takeEvery(getPowerByDays, getPowerByDaysSaga)
+  yield takeLatest(getPowerByDays, getPowerByDaysSaga)
 }
 function* handleGetComparePowerApi() {
-  yield takeEvery(getComparePower, getComparePowerSaga)
+  yield takeLatest(getComparePower, getComparePowerSaga)
 }
 function* handleGetPowerOverviewFactDetailApi() {
-  yield takeEvery(getPowerOverivewFactDetail, getPowerOverviewFactDetailSaga)
+  yield takeLatest(getPowerOverivewFactDetail, getPowerOverviewFactDetailSaga)
 }
 function* handleGetPowerByTimeFactDetailApi() {
-  yield takeEvery(getPowerByTimeFactDetail, getPowerByTimeFactDetailSaga)
+  yield takeLatest(getPowerByTimeFactDetail, getPowerByTimeFactDetailSaga)
 }
 function* handleGetPowerByDaysFactDetailApi() {
-  yield takeEvery(getPowerByDaysFactDetail, getPowerByDaysFactDetailSaga)
+  yield takeLatest(getPowerByDaysFactDetail, getPowerByDaysFactDetailSaga)
 }
 
 export function* powerSagaList() {

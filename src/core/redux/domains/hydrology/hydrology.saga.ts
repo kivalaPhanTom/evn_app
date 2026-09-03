@@ -1,4 +1,4 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeLatest, put, call } from 'redux-saga/effects'
 import {
   getHydrologyflowChart,
   getInflowOutflow,
@@ -20,7 +20,7 @@ import {
   getOutflow3,
   getTurbineflow2,
   getTurbineflow3,
-} from '../domains/hydrology/hydrology.actions'
+} from './hydrology.actions'
 import { Service } from '@/core/service/hydrologyService'
 import {
   setInflowOutflow,
@@ -37,7 +37,7 @@ import {
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
   setLoading,
-} from '../domains/hydrology/hydrology.slice'
+} from './hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
@@ -256,7 +256,7 @@ function* getTurbineflow3ApiSaga(action: ReturnType<typeof getTurbineflow3>): Ge
 }
 
 function* getHydrologyChartApi() {
-  yield takeEvery(getHydrographicChart, getHydrographicChartSaga)
+  yield takeLatest(getHydrographicChart, getHydrographicChartSaga)
 }
 
 function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyPlantsParam>): Generator {
@@ -328,25 +328,25 @@ function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterL
   }
 }
 
-function* getHydrologyflowChartApi() { yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga) }
-function* getInflowOutflowApi() { yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga) }
-function* getPowerStoreInLakeApi() { yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga) }
-function* getPowerStoreInLakeFactDetailApi() { yield takeEvery(getPowerStoreInLakeFactDetail, getPowerStoreInLakeFactDetailApiSaga) }
-function* getHydrologyPlantsParamApi() { yield takeEvery(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga) }
-function* getHydrologyPlantsInfoApi() { yield takeEvery(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga) }
-function* getUpstreamWaterLevelApi() { yield takeEvery(getUpstreamWaterLevel, getUpstreamWaterLevelApiSaga) }
-function* getUpstreamWaterLevel2Saga() { yield takeEvery(getUpstreamWaterLevel_2, getUpstreamWaterLevel_2ApiSaga) }
-function* getUpstreamWaterLevel3Saga() { yield takeEvery(getUpstreamWaterLevel_3, getUpstreamWaterLevel_3ApiSaga) }
-function* getInflowApi() { yield takeEvery(getInflow, getInflowApiSaga) }
-function* getInflow2Saga() { yield takeEvery(getInflow2, getInflow2ApiSaga) }
-function* getInflow3Saga() { yield takeEvery(getInflow3, getInflow3ApiSaga) }
-function* getOutflowApi() { yield takeEvery(getOutflow, getOutflowApiSaga) }
-function* getOutflow2Saga() { yield takeEvery(getOutflow2, getOutflow2ApiSaga) }
-function* getOutflow3Saga() { yield takeEvery(getOutflow3, getOutflow3ApiSaga) }
-function* getTurbineflowApi() { yield takeEvery(getTurbineflow, getTurbineflowApiSaga) }
-function* getTurbine2Saga() { yield takeEvery(getTurbineflow2, getTurbineflow2ApiSaga) }
-function* getTurbine3Saga() { yield takeEvery(getTurbineflow3, getTurbineflow3ApiSaga) }
-function* getOperateWaterLevelApi() { yield takeEvery(getOperateWaterLevel, getOperateWaterLevelApiSaga) }
+function* getHydrologyflowChartApi() { yield takeLatest(getHydrologyflowChart, getHydrologyflowChartApiSaga) }
+function* getInflowOutflowApi() { yield takeLatest(getInflowOutflow, getInflowOutflowApiSaga) }
+function* getPowerStoreInLakeApi() { yield takeLatest(getPowerStoreInLake, getPowerStoreInLakeApiSaga) }
+function* getPowerStoreInLakeFactDetailApi() { yield takeLatest(getPowerStoreInLakeFactDetail, getPowerStoreInLakeFactDetailApiSaga) }
+function* getHydrologyPlantsParamApi() { yield takeLatest(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga) }
+function* getHydrologyPlantsInfoApi() { yield takeLatest(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga) }
+function* getUpstreamWaterLevelApi() { yield takeLatest(getUpstreamWaterLevel, getUpstreamWaterLevelApiSaga) }
+function* getUpstreamWaterLevel2Saga() { yield takeLatest(getUpstreamWaterLevel_2, getUpstreamWaterLevel_2ApiSaga) }
+function* getUpstreamWaterLevel3Saga() { yield takeLatest(getUpstreamWaterLevel_3, getUpstreamWaterLevel_3ApiSaga) }
+function* getInflowApi() { yield takeLatest(getInflow, getInflowApiSaga) }
+function* getInflow2Saga() { yield takeLatest(getInflow2, getInflow2ApiSaga) }
+function* getInflow3Saga() { yield takeLatest(getInflow3, getInflow3ApiSaga) }
+function* getOutflowApi() { yield takeLatest(getOutflow, getOutflowApiSaga) }
+function* getOutflow2Saga() { yield takeLatest(getOutflow2, getOutflow2ApiSaga) }
+function* getOutflow3Saga() { yield takeLatest(getOutflow3, getOutflow3ApiSaga) }
+function* getTurbineflowApi() { yield takeLatest(getTurbineflow, getTurbineflowApiSaga) }
+function* getTurbine2Saga() { yield takeLatest(getTurbineflow2, getTurbineflow2ApiSaga) }
+function* getTurbine3Saga() { yield takeLatest(getTurbineflow3, getTurbineflow3ApiSaga) }
+function* getOperateWaterLevelApi() { yield takeLatest(getOperateWaterLevel, getOperateWaterLevelApiSaga) }
 
 export function* hydrologySagaList() {
   yield all([

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View, ScrollView, RefreshControl, } from 'react-native'
@@ -11,10 +11,10 @@ import ProductOutputDetail from '@/features/home/components/ProductionOutput/Pro
 import { saveState } from '@/core/redux/domains/refresh'
 
 const ProductOutputDetailScreen: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [scrollY, setScrollY] = useState(0);
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;

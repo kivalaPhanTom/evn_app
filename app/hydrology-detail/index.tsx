@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -10,9 +10,9 @@ import { setCountRefesh } from '@/core/redux/domains/hydrology'
 import { useLocalSearchParams } from 'expo-router'
 
 const HydrologyDetailScreen: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
+  const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()

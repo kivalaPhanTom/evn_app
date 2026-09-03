@@ -1,5 +1,5 @@
 import { icons, images } from '@/assets'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import GradientButton from '@/components/GradientButton/GradientButton.component'
 import GradientInput from '@/components/GradientInput/GradientInput.component'
 import { Colors } from '@/core/constants/colors'
@@ -25,7 +25,7 @@ type FormValues = {
 
 export default function LoginScreen() {
   const scheme = useAppTheme()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const isDark = scheme === 'dark'
   const {
     control,
@@ -36,17 +36,13 @@ export default function LoginScreen() {
     mode: 'onSubmit',
   })
   const [showPass, setShowPass] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const loading = useAppSelector((state) => state.authenSlice.status === 'loading')
   const insets = useSafeAreaInsets()
   const keyboardOffset = insets.top + px.v(50)
   const appVersion = Constants.expoConfig?.version ?? ''
 
   const onLogin = (data: FormValues) => {
-    setLoading(true)
     dispatch(getToken({ username: data.username, password: data.password }))
-    setTimeout(() => {
-      setLoading(false)
-    }, 900)
   }
   const { t } = useTranslation()
 

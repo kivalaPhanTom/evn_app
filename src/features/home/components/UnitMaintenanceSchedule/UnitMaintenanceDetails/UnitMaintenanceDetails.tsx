@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
@@ -41,8 +41,8 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
 
 function UnitMaintenanceDetails() {
   const { currentPlantId: currentPlantIdFromParams } = useLocalSearchParams<{ currentPlantId?: string | string[] }>()
-  const dispatch = useDispatch()
-  const { currentPlantDetail } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+  const dispatch = useAppDispatch()
+  const { currentPlantDetail } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
   // Normalize currentPlantId from params (handle array case)
   const currentPlantId = Array.isArray(currentPlantIdFromParams)

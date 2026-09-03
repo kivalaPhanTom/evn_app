@@ -14,7 +14,7 @@ const Square = ({ size }: { size: number }) => {
     Animated.loop(
       Animated.timing(translateX, {
         toValue: size,
-        duration: 2200, // chậm, rất sang
+        duration: 2200, // ch?m, r?t sang
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -23,10 +23,10 @@ const Square = ({ size }: { size: number }) => {
 
   return (
     <View style={[styles.square, { width: size, height: size }]}>
-      {/* nền */}
+      {/* n?n */}
       <View style={styles.base} />
 
-      {/* vệt sáng bao trùm */}
+      {/* v?t s�ng bao tr�m */}
       <Animated.View
         style={[
           styles.lightWrap,
@@ -37,7 +37,7 @@ const Square = ({ size }: { size: number }) => {
           colors={[
             "rgba(255,255,255,0.00)",
             "rgba(255,255,255,0.06)",
-            "rgba(255,255,255,0.18)", // tâm sáng
+            "rgba(255,255,255,0.18)", // t�m s�ng
             "rgba(255,255,255,0.06)",
             "rgba(255,255,255,0.00)",
           ]}
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   lightWrap: {
     position: "absolute",
     top: 0,
-    bottom: 0,          // 👈 bao trùm full chiều cao
-    width: "140%",      // 👈 rộng hơn card → ánh sáng lan
+    bottom: 0,          // ?? bao tr�m full chi?u cao
+    width: "140%",      // ?? r?ng hon card ? �nh s�ng lan
   },
 
   light: {

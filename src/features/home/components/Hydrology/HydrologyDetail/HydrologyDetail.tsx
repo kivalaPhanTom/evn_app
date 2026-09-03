@@ -7,7 +7,7 @@ import FlowRate from '../FlowRate/FlowRate'
 import FlowDiagramCard from '../FlowDiagramCard/FlowDiagramCard'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import {
   getInflow,
@@ -52,9 +52,9 @@ function getCurrentPlantId(activeTab: string): string {
 
 function HydrologyDetail(props: HydrologyDetailProps) {
   const { currentPlantId, scrollY = 0 } = props
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
-  const { hydrologyPlants, filterByTime } = useSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
+  const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
 
@@ -69,10 +69,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
     }
   })
 
-  const upstreamData = useSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
-  const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
-  const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
-  const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
+  const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
+  const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {})
+  const outflow = useAppSelector((state: any) => state.hydrologySlice.outflow || {})
+  const turbineflow = useAppSelector((state: any) => state.hydrologySlice.turbineflow || {})
   const currentDate = new Date()
 
   const getFromPastToCurrentData = (data: any[]) => {

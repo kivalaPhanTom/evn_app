@@ -9,7 +9,7 @@ import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart, getHydro
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
 import { Shadow } from 'react-native-shadow-2'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
@@ -529,9 +529,9 @@ const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
   )
 }
 const Overview: React.FC = () => {
-  const dispatch = useDispatch()
-  const { hydrologyPlants, selectedOptionsValue } = useSelector((state: RootState) => state.hydrologySlice)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
+  const dispatch = useAppDispatch()
+  const { hydrologyPlants, selectedOptionsValue } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
     if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
@@ -550,7 +550,7 @@ const Overview: React.FC = () => {
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
-  const { hydrologyCharData, isLoadingHydrologyChart } = useSelector((state: any) => state.hydrologySlice)
+  const { hydrologyCharData, isLoadingHydrologyChart } = useAppSelector((state: any) => state.hydrologySlice)
 
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))

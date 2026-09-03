@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { View, Text } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
@@ -18,9 +18,9 @@ interface flowDiagramCardProps {
 }
 function FlowDiagramCard(props: flowDiagramCardProps) {
     const { dateStr, currentPlantId, oneYearAgo} = props
-    const dispatch = useDispatch();
-    const { countRefesh, isLoadingFlowChart } = useSelector((state: any) => state.hydrologySlice)
-    const { flowChart, flowChartSummary } = useSelector((state: any) => state.hydrologySlice)
+    const dispatch = useAppDispatch();
+    const { countRefesh, isLoadingFlowChart } = useAppSelector((state: any) => state.hydrologySlice)
+    const { flowChart, flowChartSummary } = useAppSelector((state: any) => state.hydrologySlice)
     useEffect(() => {
         const payload = {
             date: dateStr,

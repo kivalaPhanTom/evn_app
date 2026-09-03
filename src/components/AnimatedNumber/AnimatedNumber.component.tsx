@@ -8,10 +8,10 @@ interface AnimatedNumberProps {
   isInitZero?: boolean
   formatter?: (n: number) => string
   render?: (text: string) => React.ReactNode
-  // thêm tùy chọn để mượt hơn
+  // th�m t�y ch?n d? mu?t hon
   easing?: (value: number) => number
   debounceMs?: number
-  pixelsPerSecond?: number // tốc độ thay đổi, giúp duration tự động theo khoảng cách
+  pixelsPerSecond?: number // t?c d? thay d?i, gi�p duration t? d?ng theo kho?ng c�ch
 }
 
 export default function AnimatedNumber({
@@ -22,8 +22,8 @@ export default function AnimatedNumber({
   formatter,
   render,
   easing = Easing.out(Easing.cubic),
-  debounceMs = 120, // giảm giật do API trả về liên tục
-  pixelsPerSecond = 100, // tốc độ thay đổi giá trị/giây
+  debounceMs = 120, // gi?m gi?t do API tr? v? li�n t?c
+  pixelsPerSecond = 100, // t?c d? thay d?i gi� tr?/gi�y
 }: AnimatedNumberProps) {
   const anim = useRef(new Animated.Value(isInitZero ? value : 0)).current
   const [display, setDisplay] = useState<number>(isInitZero ? value : 0)
@@ -31,7 +31,7 @@ export default function AnimatedNumber({
   const targetRef = useRef<number>(value)
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // giữ một listener ổn định, không remove/add lại mỗi lần
+  // gi? m?t listener ?n d?nh, kh�ng remove/add l?i m?i l?n
   useEffect(() => {
     if (listenerId.current == null) {
       listenerId.current = anim.addListener(({ value: v }) => {
@@ -51,9 +51,9 @@ export default function AnimatedNumber({
   }, [])
 
   const animateTo = (to: number) => {
-    // dừng animation hiện tại trước khi bắt đầu cái mới
+    // d?ng animation hi?n t?i tru?c khi b?t d?u c�i m?i
     anim.stopAnimation((current: number) => {
-      // duration tự động theo khoảng cách để giữ tốc độ đều
+      // duration t? d?ng theo kho?ng c�ch d? gi? t?c d? d?u
       const delta = Math.abs(to - current)
       const autoDuration =
         pixelsPerSecond > 0 ? Math.max(120, (delta / pixelsPerSecond) * 1000) : duration
@@ -67,7 +67,7 @@ export default function AnimatedNumber({
     })
   }
 
-  // debounce các lần cập nhật value từ API để tránh giật
+  // debounce c�c l?n c?p nh?t value t? API d? tr�nh gi?t
   useEffect(() => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current)

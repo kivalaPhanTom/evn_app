@@ -1,4 +1,4 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeLatest, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/revenueProfitService'
 import {
   getProfit,
@@ -10,7 +10,7 @@ import {
   getProfitFactDetail,
   getRevenueFactDetail,
   getProfitByPeriod,
-} from '../domains/revenue-profit/revenue-profit.actions'
+} from './revenue-profit.actions'
 import {
   setProfitData,
   setRevenueData,
@@ -22,7 +22,7 @@ import {
   setProfitFactDetailData,
   setRevenueFactDetailData,
   setProfitByPeriod,
-} from '../domains/revenue-profit/revenue-profit.slice'
+} from './revenue-profit.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProfitApiSaga(): Generator {
@@ -162,15 +162,15 @@ function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCum
   }
 }
 
-function* getProfitApi() { yield takeEvery(getProfit, getProfitApiSaga) }
-function* getRevenueApi() { yield takeEvery(getRevenue, getRevenueApiSaga) }
-function* getRevenuePowerPricesApi() { yield takeEvery(getRevenuePowerPrices, getRevenuePowerPricesSaga) }
-function* getRevenueTotalExpenseApi() { yield takeEvery(getRevenueTotalExpense, getRevenueTotalExpenseSaga) }
-function* getProfitFactDetailApi() { yield takeEvery(getProfitFactDetail, getProfitFactDetailApiSaga) }
-function* getRevenueFactDetailApi() { yield takeEvery(getRevenueFactDetail, getRevenueFactDetailApiSaga) }
-function* getRevenueByPeriodApi() { yield takeEvery(getRevenueByPeriod, getRevenueByPeriodSaga) }
-function* getDailyAndCumulativeDataApi() { yield takeEvery(getDailyAndCumulativeData, getDailyAndCumulativeDataSaga) }
-function* getProfitByPeriodApi() { yield takeEvery(getProfitByPeriod, getProfitByPeriodSaga) }
+function* getProfitApi() { yield takeLatest(getProfit, getProfitApiSaga) }
+function* getRevenueApi() { yield takeLatest(getRevenue, getRevenueApiSaga) }
+function* getRevenuePowerPricesApi() { yield takeLatest(getRevenuePowerPrices, getRevenuePowerPricesSaga) }
+function* getRevenueTotalExpenseApi() { yield takeLatest(getRevenueTotalExpense, getRevenueTotalExpenseSaga) }
+function* getProfitFactDetailApi() { yield takeLatest(getProfitFactDetail, getProfitFactDetailApiSaga) }
+function* getRevenueFactDetailApi() { yield takeLatest(getRevenueFactDetail, getRevenueFactDetailApiSaga) }
+function* getRevenueByPeriodApi() { yield takeLatest(getRevenueByPeriod, getRevenueByPeriodSaga) }
+function* getDailyAndCumulativeDataApi() { yield takeLatest(getDailyAndCumulativeData, getDailyAndCumulativeDataSaga) }
+function* getProfitByPeriodApi() { yield takeLatest(getProfitByPeriod, getProfitByPeriodSaga) }
 
 export function* revenueProfitSagaList() {
   yield all([

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -36,12 +36,12 @@ interface moduleItem {
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
-  const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice) 
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-  const { modules } = useSelector((state: any) => state.moduleSlice)
+  const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
   const router = useRouter();

@@ -4,7 +4,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
 import dayjs from 'dayjs'
 import styles from './RegulationWaterLevel.style'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getOperateWaterLevel } from '@/core/redux/domains/hydrology'
 
@@ -20,8 +20,8 @@ interface TimeRangeData {
 }
 
 const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
-  const dispatch = useDispatch()
-  const { operateWaterLevel, countRefesh } = useSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const { operateWaterLevel, countRefesh } = useAppSelector((state: RootState) => state.hydrologySlice)
   const [selectedMonth, setSelectedMonth] = useState(dayjs())
 
   // Tạo dữ liệu mặc định khi không có dữ liệu từ API

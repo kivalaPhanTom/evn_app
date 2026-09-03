@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { RootState } from '@/core/redux/store'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getPowerOverivewFactDetail } from '@/core/redux/domains/power'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
@@ -16,9 +16,9 @@ interface Props {
 }
 function TotalPowerFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-  const dispatch = useDispatch()
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const dispatch = useAppDispatch()
   const [average, setAverage] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
   const [detail, setDetail] = useState<PowerDetail[]>([])

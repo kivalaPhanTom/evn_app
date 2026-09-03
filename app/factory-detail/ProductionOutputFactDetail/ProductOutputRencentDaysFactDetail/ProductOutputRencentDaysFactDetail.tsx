@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/ProductOutputRencentDays'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProductOutputByDaysFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import { useRouter } from 'expo-router'
@@ -17,9 +17,9 @@ interface productionData {
 }
 function ProductOutputRencentDaysFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const dispatch = useAppDispatch()
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
