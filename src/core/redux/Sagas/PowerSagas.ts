@@ -1,7 +1,20 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getPowerOverivew, getPowerByTime, getPowerByDays, getComparePower, getPowerOverivewFactDetail,
-getPowerByTimeFactDetail, getPowerByDaysFactDetail } from '../Actions/PowerActions'
-import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from '../slices/PowerSlice'
+import {
+  getPowerOverivew,
+  getPowerByTime,
+  getPowerByDays,
+  getComparePower,
+  getPowerOverivewFactDetail,
+  getPowerByTimeFactDetail,
+  getPowerByDaysFactDetail,
+} from '../Actions/PowerActions'
+import {
+  setPowerOverview,
+  setPowerByTime,
+  setPowerByDays,
+  setComparePower,
+  setLoading,
+} from '../slices/PowerSlice'
 import { Service } from '@/core/service/powerService'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -69,10 +82,10 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
 function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generator {
   try {
     yield put(setLoading({ isLoadingNearCurrentDays: true }))
-    const n = action.payload || 7 // default is 7 days
+    const n = action.payload || 7
     const res = yield call(Service.getPowerByDaysApi, n)
     if (res.status === 200) {
-      yield put(setPowerByDays(res.data))
+      yield put(setPowerByDays(res.data.detail))
     }
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
@@ -84,13 +97,11 @@ function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generat
 function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Generator {
   try {
     yield put(setLoading({ isLoadingComparePower: true }))
-    const payload = action.payload as { tagetDate: string; compareDate: string, currentPlantId: string }
+    const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
     const currentPlantId = payload?.currentPlantId || ''
-
     const res = yield call(Service.getComparePowerApi, tagetDate, compareDate, currentPlantId)
-
     if (res.status === 200) {
       yield put(setComparePower(res.data))
     }
@@ -129,7 +140,6 @@ function* handleGetPowerByDaysApi() {
 function* handleGetComparePowerApi() {
   yield takeEvery(getComparePower, getComparePowerSaga)
 }
-
 function* handleGetPowerOverviewFactDetailApi() {
   yield takeEvery(getPowerOverivewFactDetail, getPowerOverviewFactDetailSaga)
 }
@@ -148,6 +158,6 @@ export function* powerSagaList() {
     handleGetComparePowerApi(),
     handleGetPowerOverviewFactDetailApi(),
     handleGetPowerByTimeFactDetailApi(),
-    handleGetPowerByDaysFactDetailApi()
+    handleGetPowerByDaysFactDetailApi(),
   ])
 }

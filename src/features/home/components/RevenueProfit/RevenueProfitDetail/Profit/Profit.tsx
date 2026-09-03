@@ -19,7 +19,7 @@ export default function ProfitDetail() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
   const toParts = profit.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''

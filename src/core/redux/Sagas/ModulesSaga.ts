@@ -5,22 +5,21 @@ import { catchHandle } from '@/core/utils/utils'
 import { saveModuleState } from '../slices/ModuleSlice'
 
 function* getModulesSaga(): Generator {
-    try {
-        const res = yield call(Service.getModulesApi)
-        if (res.status === 200) {
-            const dataRes = res.data?.modules || []
-            yield put(saveModuleState(dataRes))
-        }
-    } catch (error) {
-        catchHandle(error, 'getModulesSaga')
+  try {
+    const res = yield call(Service.getModulesApi)
+    if (res.status === 200) {
+      const dataRes = res.data?.modules || []
+      yield put(saveModuleState(dataRes))
     }
+  } catch (error) {
+    catchHandle(error, 'getModulesSaga')
+  }
 }
+
 function* getModulesApi() {
-    yield takeEvery(getModules, getModulesSaga)
+  yield takeEvery(getModules, getModulesSaga)
 }
 
 export function* modulesSagaList() {
-    yield all([
-        getModulesApi(),
-    ])
+  yield all([getModulesApi()])
 }

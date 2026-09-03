@@ -10,10 +10,7 @@ interface HydroChartItem {
 interface flowChartItem {
   label: string
   code: string
-  value: {
-    current: number
-    period: number
-  }
+  value: { current: number; period: number }
   unit: string
 }
 
@@ -36,138 +33,47 @@ interface hydrologyState {
   selectedOptionsValueFactDetail: string
   inflowOutflow: {
     unit: string
-    cards: {
-      id: string
-      title: string
-      value: number
-      unit: string
-    }[]
-    qIn: {
-      label: string
-      value: number
-    }[]
-    qOut: {
-      label: string
-      value: number
-    }[]
+    cards: { id: string; title: string; value: number; unit: string }[]
+    qIn: { label: string; value: number }[]
+    qOut: { label: string; value: number }[]
   }
   hydrologyCharData: HydroChartItem[]
   hydrologyPlantsInfo: {
-    PlantsInfoData: {
-      label: string
-      value: number
-      unit: string
-    }[]
+    PlantsInfoData: { label: string; value: number; unit: string }[]
   }
   hydrologyPlants: {
-    plantsData: {
-      id: number
-      symbol: string
-      abbreviation: string
-      name: string
-      maxLevel: number
-      currentLevel: number
-      referenceLevel: number
-      previousLevel: number
-      percent: number
-    }[]
+    plantsData: any[]
   }
   currentHydrologyPlant: {
-    plantsData: {
-      id: number
-      symbol: string
-      abbreviation: string
-      name: string
-      maxLevel: number
-      currentLevel: number
-      referenceLevel: number
-      previousLevel: number
-      percent: number
-    }[]
+    plantsData: any[]
   }
-  flowChart: {
-    mntl: flowChartItem
-    qve: flowChartItem
-    qcm: flowChartItem
-    qxt: flowChartItem
-    qxmt: flowChartItem
-  }
+  flowChart: any
   flowChartSummary: {
     totalInflow: number
     totalOutflow: number
     unit: string
   }
-  upstreamWaterLevel: {
-    unit: string
-    minValue: number
-    maxValue: number
-    avgValue: number
-    currentValue: number
-    todayUpstream: Array<{ label: string; value: number }>
-    samePeriodUpstream: Array<{ label: string; value: number }>
-  }
-  inflow: {
-    unit: string
-    minValue: number
-    maxValue: number
-    avgValue: number
-    currentValue: number
-    todayInflow: Array<{ label: string; value: number }>
-    samePeriodInflow: Array<{ label: string; value: number }>
-  }
-  outflow: {
-    unit: string
-    minValue: number
-    maxValue: number
-    avgValue: number
-    currentValue: number
-    todayOutflow: Array<{ label: string; value: number }>
-    samePeriodOutflow: Array<{ label: string; value: number }>
-  }
-  turbineflow: {
-    unit: string
-    minValue: number
-    maxValue: number
-    avgValue: number
-    currentValue: number
-    todayTurbineFlow: Array<{ label: string; value: number }>
-    samePeriodTurbineFlow: Array<{ label: string; value: number }>
-  }
+  upstreamWaterLevel: any
+  inflow: any
+  outflow: any
+  turbineflow: any
   powerStoreInLake: {
     currentCapacity: number
     previousCapacity: number
-    segments: {
-      label: string
-      order: number
-      percentOfTotal: number
-      value: number
-    }[]
+    segments: any[]
     unit: string
   }
-  powerStoreInLakeFactDetail: {
-    capacity: number
-    currentCapacity: number
-    currentPercentCapacity: number
-    previousCapacity: number
-    previousPercentCapacity: number
-    unit: string
-    rateOfChange: number
-  }[]
+  powerStoreInLakeFactDetail: any[]
   operateWaterLevel: {
     waterLevelRange: waterLevelRangeItem[]
   }
   filterByTime: {
-    // Tab: Theo giờ
     rangeCurrentDate: rangeDate
-    // Tab: Theo ngày
-    rangeCompareDate: rangeDate // Ngày so sánh
-    rangeTargetDate: rangeDate // Ngày mục tiêu
-    // Tab: Theo tháng
-    rangeCompareMonth: rangeDate // Tháng so sánh
-    rangeTargetMonth: rangeDate // Tháng mục tiêu
-    // Tab: Theo năm
+    rangeCompareDate: rangeDate
+    rangeTargetDate: rangeDate
+    rangeCompareMonth: rangeDate
+    rangeTargetMonth: rangeDate
     rangeCompareYear: rangeDate
-    // Id tab được chọn
     currentFilterTab: 'hour' | 'day' | 'month' | 'year'
   }
   isLoadingHydrologyChart: boolean
@@ -181,145 +87,45 @@ const initialState: hydrologyState = {
   dischargeFlow: 0,
   selectedOptionsValue: 'HOURS',
   selectedOptionsValueFactDetail: 'HOURS',
-  inflowOutflow: {
-    unit: '',
-    cards: [],
-    qIn: [],
-    qOut: [],
-  },
+  inflowOutflow: { unit: '', cards: [], qIn: [], qOut: [] },
   hydrologyCharData: [],
-  hydrologyPlants: {
-    plantsData: [],
-  },
-  currentHydrologyPlant: {
-    plantsData: [],
-  },
-  hydrologyPlantsInfo: {
-    PlantsInfoData: [],
-  },
+  hydrologyPlants: { plantsData: [] },
+  currentHydrologyPlant: { plantsData: [] },
+  hydrologyPlantsInfo: { PlantsInfoData: [] },
   flowChart: {
-    mntl: {
-      label: 'Mực nước thượng lưu',
-      code: 'MNTL',
-      value: {
-        current: 0,
-        period: 0,
-      },
-      unit: 'm',
-    },
-    qve: {
-      label: 'Lưu lượng về',
-      code: 'Qve',
-      value: {
-        current: 0,
-        period: 0,
-      },
-      unit: 'm³/s',
-    },
-    qcm: {
-      label: 'Lưu lượng chạy máy',
-      code: 'Qcm',
-      value: {
-        current: 0,
-        period: 0,
-      },
-      unit: 'm³/s',
-    },
-    qxt: {
-      label: 'Lưu lượng xả tràn',
-      code: 'Qxt',
-      value: {
-        current: 0,
-        period: 0,
-      },
-      unit: 'm³/s',
-    },
-    qxmt: {
-      label: 'Lưu lượng xả qua ống xã MT',
-      code: 'Qxmt',
-      value: {
-        current: 0,
-        period: 0,
-      },
-      unit: 'm³/s',
-    },
+    mntl: { label: 'Mực nước thượng lưu', code: 'MNTL', value: { current: 0, period: 0 }, unit: 'm' },
+    qve: { label: 'Lưu lượng về', code: 'Qve', value: { current: 0, period: 0 }, unit: 'm³/s' },
+    qcm: { label: 'Lưu lượng chạy máy', code: 'Qcm', value: { current: 0, period: 0 }, unit: 'm³/s' },
+    qxt: { label: 'Lưu lượng xả tràn', code: 'Qxt', value: { current: 0, period: 0 }, unit: 'm³/s' },
+    qxmt: { label: 'Lưu lượng xả qua ống xã MT', code: 'Qxmt', value: { current: 0, period: 0 }, unit: 'm³/s' },
   },
-  flowChartSummary: {
-    totalInflow: 395,
-    totalOutflow: 395,
-    unit: 'm³/s',
-  },
+  flowChartSummary: { totalInflow: 395, totalOutflow: 395, unit: 'm³/s' },
   upstreamWaterLevel: {
-    unit: 'm',
-    minValue: 0,
-    maxValue: 0,
-    avgValue: 0,
-    currentValue: 0,
-    todayUpstream: [],
-    samePeriodUpstream: [],
+    unit: 'm', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
+    todayUpstream: [], samePeriodUpstream: [],
   },
   inflow: {
-    unit: 'm³/s',
-    minValue: 0,
-    maxValue: 0,
-    avgValue: 0,
-    currentValue: 0,
-    todayInflow: [],
-    samePeriodInflow: [],
+    unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
+    todayInflow: [], samePeriodInflow: [],
   },
   outflow: {
-    unit: 'm³/s',
-    minValue: 0,
-    maxValue: 0,
-    avgValue: 0,
-    currentValue: 0,
-    todayOutflow: [],
-    samePeriodOutflow: [],
+    unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
+    todayOutflow: [], samePeriodOutflow: [],
   },
   turbineflow: {
-    unit: 'm³/s',
-    minValue: 0,
-    maxValue: 0,
-    avgValue: 0,
-    currentValue: 0,
-    todayTurbineFlow: [],
-    samePeriodTurbineFlow: [],
+    unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
+    todayTurbineFlow: [], samePeriodTurbineFlow: [],
   },
-  powerStoreInLake: {
-    currentCapacity: 0,
-    previousCapacity: 0,
-    segments: [],
-    unit: '',
-  },
+  powerStoreInLake: { currentCapacity: 0, previousCapacity: 0, segments: [], unit: '' },
   powerStoreInLakeFactDetail: [],
-  operateWaterLevel: {
-    waterLevelRange: [],
-  },
+  operateWaterLevel: { waterLevelRange: [] },
   filterByTime: {
-    rangeCurrentDate: {
-      from: dayjs(),
-      to: dayjs().subtract(1, 'year'),
-    },
-    rangeCompareDate: {
-      from: dayjs().subtract(14, 'day'),
-      to: dayjs().subtract(7, 'day'),
-    },
-    rangeTargetDate: {
-      from: dayjs().subtract(7, 'day'),
-      to: dayjs(),
-    },
-    rangeCompareMonth: {
-      from: dayjs().subtract(1, 'year').set('month', 0),
-      to: dayjs().subtract(1, 'year'),
-    },
-    rangeTargetMonth: {
-      from: dayjs().set('month', 0),
-      to: dayjs(),
-    },
-    rangeCompareYear: {
-      from: dayjs().subtract(5, 'year'),
-      to: dayjs(),
-    },
+    rangeCurrentDate: { from: dayjs(), to: dayjs().subtract(1, 'year') },
+    rangeCompareDate: { from: dayjs().subtract(14, 'day'), to: dayjs().subtract(7, 'day') },
+    rangeTargetDate: { from: dayjs().subtract(7, 'day'), to: dayjs() },
+    rangeCompareMonth: { from: dayjs().subtract(1, 'year').set('month', 0), to: dayjs().subtract(1, 'year') },
+    rangeTargetMonth: { from: dayjs().set('month', 0), to: dayjs() },
+    rangeCompareYear: { from: dayjs().subtract(5, 'year'), to: dayjs() },
     currentFilterTab: 'hour',
   },
   isLoadingHydrologyChart: false,
@@ -383,16 +189,10 @@ const hydrologySlice = createSlice({
       state.selectedOptionsValueFactDetail = action.payload
     },
     setFilterByTime: (state, action) => {
-      state.filterByTime = {
-        ...state.filterByTime,
-        ...action.payload,
-      }
+      state.filterByTime = { ...state.filterByTime, ...action.payload }
     },
     setLoading: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
+      return { ...state, ...action.payload }
     },
   },
 })

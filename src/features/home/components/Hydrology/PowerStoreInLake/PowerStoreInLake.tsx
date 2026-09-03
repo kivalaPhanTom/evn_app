@@ -12,7 +12,7 @@ import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
 
 const PowerStoreInLake: React.FC = () => {
   const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { powerStoreInLake, isLoadingPowerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']

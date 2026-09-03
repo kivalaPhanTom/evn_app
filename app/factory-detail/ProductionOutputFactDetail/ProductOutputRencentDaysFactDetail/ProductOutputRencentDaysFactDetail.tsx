@@ -18,7 +18,7 @@ interface productionData {
 function ProductOutputRencentDaysFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)

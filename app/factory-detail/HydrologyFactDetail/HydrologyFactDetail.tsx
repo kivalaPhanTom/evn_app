@@ -18,7 +18,7 @@ interface hydrologyFactDetailProps {
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
   const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
   const dispatch = useDispatch()

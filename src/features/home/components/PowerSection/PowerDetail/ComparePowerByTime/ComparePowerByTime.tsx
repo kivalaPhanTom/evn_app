@@ -14,7 +14,7 @@ function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
   const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [rangeCompare, setRangeCompare] = useState({
     from: dayjs().subtract(14, 'day'),
     to: dayjs().subtract(7, 'day'),

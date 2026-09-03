@@ -12,6 +12,7 @@ interface HourlyPowerList {
 interface PowerByDays {
   value: number
   date: string
+  dayOfWeek: string
 }
 interface powerOverviewState {
   average: number
@@ -38,44 +39,7 @@ interface powerOverviewState {
     Unit: string
     BarChartData: { value: number; label: string }[]
     compareLineChartData: []
-    Summary: {
-      average: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-      max: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-      min: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-    }
+    Summary: any
   }
 }
 const initialState: powerOverviewState = {
@@ -104,42 +68,9 @@ const initialState: powerOverviewState = {
     BarChartData: [],
     compareLineChartData: [],
     Summary: {
-      average: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
-      max: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
-      min: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
+      average: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
+      max: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
+      min: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
     },
   },
 }
@@ -149,25 +80,18 @@ const powerSlice = createSlice({
   initialState,
   reducers: {
     setActiveTab: (state, action) => {
-      let newState = { ...state }
-      newState.activeTabIndex = action.payload
-      return newState
+      state.activeTabIndex = action.payload
     },
     setPowerOverview: (state, action) => {
-      let newState = { ...state }
-      newState.average = action.payload.average
-      newState.total = action.payload.total
-      newState.detail = action.payload.detail
-      return newState
+      state.average = action.payload.average
+      state.total = action.payload.total
+      state.detail = action.payload.detail
     },
     setPowerByTime: (state, action) => {
-      let newState = { ...state }
-      newState.powerByTime = action.payload
-      return newState
+      state.powerByTime = action.payload
     },
     setPowerByDays: (state, action) => {
-      // Không return, chỉ modify state trực tiếp
-      state.powerByDays.powerData = action.payload.detail
+      state.powerByDays.powerData = action.payload
     },
     setComparePower: (state, action) => {
       state.comparePower = action.payload
@@ -181,6 +105,12 @@ const powerSlice = createSlice({
   },
 })
 const { reducer } = powerSlice
-export const { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading, setActiveTab } =
-  powerSlice.actions
+export const {
+  setActiveTab,
+  setPowerOverview,
+  setPowerByTime,
+  setPowerByDays,
+  setComparePower,
+  setLoading,
+} = powerSlice.actions
 export default reducer

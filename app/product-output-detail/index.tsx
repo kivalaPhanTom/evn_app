@@ -8,13 +8,13 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import ProductOutputDetail from '@/features/home/components/ProductionOutput/ProductOutputDetail/ProductOutputDetail'
-import { saveState } from '@/core/redux/slices/HomeSlice'
+import { saveState } from '@/core/redux/slices/RefreshSlice'
 
 const ProductOutputDetailScreen: React.FC = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const [scrollY, setScrollY] = useState(0);
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;

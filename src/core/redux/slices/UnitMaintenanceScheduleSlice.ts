@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { set } from 'react-hook-form'
 
 interface RepairScheduleDetailCategory {
   Total?: number
@@ -64,15 +63,12 @@ const initialState: RepairSchedule = {
   TotalMajorCategory: 0,
   Details: [],
   isRepairerScheduleLoading: false,
-  isDetailRepairScheduleLoading:false,
+  isDetailRepairScheduleLoading: false,
   currentPlantDetail: {
     PlantCode: '',
     PlantName: '',
     MaintenanceItems: 0,
-    Breakdown: {
-      RCM: 0,
-      Major: 0,
-    },
+    Breakdown: { RCM: 0, Major: 0 },
     RepairPlannedDays: 0,
     RepairActualDays: 0,
     Status: 0,
@@ -87,21 +83,17 @@ const unitMaintenanceScheduleSlice = createSlice({
   initialState,
   reducers: {
     setRepairSchedule: (state, action) => {
-      let newState = { ...state }
-      newState = action.payload
-      return newState
+      return { ...state, ...action.payload }
     },
     setLoading: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
+      return { ...state, ...action.payload }
     },
     setCurrentPlantDetail: (state, action) => {
       state.currentPlantDetail = action.payload
     },
   },
 })
+
 const { reducer } = unitMaintenanceScheduleSlice
 export const { setRepairSchedule, setLoading, setCurrentPlantDetail } = unitMaintenanceScheduleSlice.actions
 export default reducer

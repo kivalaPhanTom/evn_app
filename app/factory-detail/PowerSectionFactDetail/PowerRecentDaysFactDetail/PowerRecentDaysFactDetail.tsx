@@ -7,6 +7,7 @@ import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
 interface PowerByDays {
   value: number
   date: string
+  dayOfWeek: string
 }
 interface Props {
   currentPlantId: string

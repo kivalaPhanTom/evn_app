@@ -27,78 +27,18 @@ interface productOutputState {
     }[]
   }
   productOutputByDays: {
-    productionData: {
-      date: string
-      actual: number
-      contract: number
-      dayOfWeek: string
-    }[]
+    productionData: any[]
   }
   productCummulativeOutput: {
     barGroups?: { label: string; value: number }[]
     byLabel: string
-    summary: {
-      [key: string]: {
-        label: string
-        periodLabel: string
-        unit: string
-        value: number
-      }
-    }
+    summary: any
     unit: string
   }
-  compareProductOutput: {
-    Unit: string
-    Contractvalue: number
-    BarChartData: { value: number; label: string }[]
-    compareLineChartData: []
-    Summary: {
-      average: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-      max: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-      min: {
-        target: {
-          date: string
-          value: number
-          unit: string
-        }
-        compare: {
-          date: string
-          value: number
-          unit: string
-        }
-      }
-    }
-    ContractData: number[]
-  }
-  productOutputCompareChart: {
-    date: string
-    currentValue: number
-    contractValue: number
-    compareValue: string
-  }[]
+  compareProductOutput: any
+  productOutputCompareChart: any[]
 }
+
 const initialState: productOutputState = {
   isLoadingOverview: false,
   isLoadingByHours: false,
@@ -119,57 +59,17 @@ const initialState: productOutputState = {
     averagePower: 0,
     powerSources: [],
   },
-  productOutputByDays: {
-    productionData: [],
-  },
-  productCummulativeOutput: {
-    barGroups: [],
-    byLabel: '',
-    summary: {},
-    unit: '',
-  },
+  productOutputByDays: { productionData: [] },
+  productCummulativeOutput: { barGroups: [], byLabel: '', summary: {}, unit: '' },
   compareProductOutput: {
     Unit: '',
     Contractvalue: 0,
     BarChartData: [],
     compareLineChartData: [],
     Summary: {
-      average: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
-      max: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
-      min: {
-        target: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-        compare: {
-          date: '',
-          value: 0,
-          unit: '',
-        },
-      },
+      average: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
+      max: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
+      min: { target: { date: '', value: 0, unit: '' }, compare: { date: '', value: 0, unit: '' } },
     },
     ContractData: [],
   },
@@ -209,10 +109,7 @@ const productOutputSlice = createSlice({
       state.productOutputCompareChart = action.payload
     },
     setLoading: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
+      return { ...state, ...action.payload }
     },
   },
 })

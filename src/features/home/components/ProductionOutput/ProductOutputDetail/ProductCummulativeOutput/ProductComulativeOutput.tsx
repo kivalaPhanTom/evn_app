@@ -28,7 +28,7 @@ interface CumulativeSummaryItem {
 export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const dispatch = useDispatch()
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useSelector((state: RootState) => state.productOutputSlice)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()

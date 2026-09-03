@@ -15,7 +15,7 @@ import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceS
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-import { saveState } from '@/core/redux/slices/HomeSlice'
+import { saveState } from '@/core/redux/slices/RefreshSlice'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
@@ -30,7 +30,7 @@ interface moduleItem {
 function HomeContent() {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
   const { t } = useTranslation()
   const { companyName, location } = useLocalSearchParams<{

@@ -34,7 +34,7 @@ function TechInfoDetail(props: TechInfoDetailProps) {
     const dispatch = useDispatch()
     const { isLoadingTechInfoDetail, techInfoDetail } = useSelector((state: RootState) => state.techInfoSlice)
     const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-    const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+    const { countRefesh } = useSelector((state: any) => state.refreshSlice)
     const { currentPlantId, keyTab } = props
     const data = techInfoDetail.map(item => ({
         label: item.Name,

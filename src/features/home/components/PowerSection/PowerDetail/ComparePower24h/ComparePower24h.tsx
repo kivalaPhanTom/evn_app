@@ -16,7 +16,7 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
   const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
   const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),

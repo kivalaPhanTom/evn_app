@@ -1,47 +1,41 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { getLegal, getExistence } from '../Actions/DocumentActions'
-import { setLoading,  setLegal, setExistence } from '../slices/DocumentSlice'
+import { setLoading, setLegal, setExistence } from '../slices/DocumentSlice'
 import { Service } from '@/core/service/documentService'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getLegalSaga(action: ReturnType<typeof getLegal>): Generator {
-    console.log("getLegalSaga");
-    try {
-        yield put(setLoading({ isLoadingLegal: true }))
-        const res = yield call(Service.getLegalApi)
-        if (res.status === 200) {
-              yield put(setLegal(res.data))
-        }
-        yield put(setLoading({ isLoadingLegal: false }))
-    } catch (error) {
-        yield put(setLoading({ isLoadingLegal: false }))
-        catchHandle(error, 'getLegalSaga')
+function* getLegalSaga(): Generator {
+  try {
+    yield put(setLoading({ isLoadingLegal: true }))
+    const res = yield call(Service.getLegalApi)
+    if (res.status === 200) {
+      yield put(setLegal(res.data))
     }
+    yield put(setLoading({ isLoadingLegal: false }))
+  } catch (error) {
+    yield put(setLoading({ isLoadingLegal: false }))
+    catchHandle(error, 'getLegalSaga')
+  }
 }
+
 function* getExistenceSaga(action: ReturnType<typeof getExistence>): Generator {
-    const payload = action.payload
-    const { currentPlantId } = payload
-    try {
-        yield put(setLoading({ isLoadingExistence: true }))
-        const res = yield call(Service.getExistenceApi, currentPlantId)
-        if (res.status === 200) {
-              yield put(setExistence(res.data))
-        }
-        yield put(setLoading({ isLoadingExistence: false }))
-    } catch (error) {
-        yield put(setLoading({ isLoadingExistence: false }))
-        catchHandle(error, 'getExistenceSaga')
+  const { currentPlantId } = action.payload
+  try {
+    yield put(setLoading({ isLoadingExistence: true }))
+    const res = yield call(Service.getExistenceApi, currentPlantId)
+    if (res.status === 200) {
+      yield put(setExistence(res.data))
     }
+    yield put(setLoading({ isLoadingExistence: false }))
+  } catch (error) {
+    yield put(setLoading({ isLoadingExistence: false }))
+    catchHandle(error, 'getExistenceSaga')
+  }
 }
-function* getLegalApi() {
-    yield takeEvery(getLegal, getLegalSaga)
-}
-function* getExistenceApi() {
-    yield takeEvery(getExistence, getExistenceSaga)
-}
+
+function* getLegalApi() { yield takeEvery(getLegal, getLegalSaga) }
+function* getExistenceApi() { yield takeEvery(getExistence, getExistenceSaga) }
+
 export function* documentSagaList() {
-    yield all([
-        getLegalApi(),
-        getExistenceApi()
-    ])
+  yield all([getLegalApi(), getExistenceApi()])
 }

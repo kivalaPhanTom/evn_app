@@ -16,7 +16,7 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
     (state: any) => state.productOutputSlice.productOutputCompareChart || {},
   )
   const { isLoadingProductOutputCompareChart } = useSelector((state: any) => state.productOutputSlice)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [rangeCompare, setRangeCompare] = useState({
     from: dayjs().subtract(14, 'day'),
     to: dayjs().subtract(7, 'day'),

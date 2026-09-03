@@ -17,7 +17,7 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
   const { currentPlantId, selectedYear } = props
   const dispatch = useDispatch()
   const { currentPlantDetail, isDetailRepairScheduleLoading } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const [firstLoading, setFirstLoading] = useState(true)
 
   useEffect(() => {

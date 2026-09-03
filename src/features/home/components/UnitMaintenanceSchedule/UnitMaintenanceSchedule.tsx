@@ -29,7 +29,7 @@ function UnitMaintenanceSchedule() {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
   const [firstLoading, setFirstLoading] = useState(true)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { isRepairerScheduleLoading, TotalActualDay, TotalCategory, TotalMajorCategory, TotalRCMCategory, Details } =
     useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
   useEffect(() => {

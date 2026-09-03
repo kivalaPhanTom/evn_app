@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { set } from 'react-hook-form'
 
 interface PowerPriceDetailItem {
   Value: number
   Unit: string
-  Estimated: boolean
-  Note: string
+  Estimated?: boolean
+  Note?: string
 }
+
 interface RevenueCostSummaryPlantItem {
   PlantCode: string
   PlantName: string
@@ -24,126 +24,26 @@ interface RevenueSeriesItem {
   Values: number[]
   Color: string
 }
+
+const defaultBreakdown = {
+  Breakdown: [] as any[],
+  Chart: { Data: [] as any, Period: { From: '', To: '' }, Unit: '' },
+  Cumulative: {
+    Month: { ChangePercent: 0, ChangeValue: 0, Unit: '', Value: 0, month: '' },
+    Week: { ChangePercent: 0, ChangeValue: 0, Unit: '', Value: 0 },
+  },
+  Today: { ChangePercent: 0, ChangeValue: 0, Unit: '', Value: 0 },
+  lossWarning: [] as any[],
+}
+
 interface RevenueProfitState {
   countRefesh: number
   isLoadingProfit: boolean
   isLoadingRevenue: boolean
-  profit: {
-    Breakdown: {
-      Color: string
-      Percent: number
-      ChangeValue: number
-      PlantCode: string
-      PlantName: string
-      Sparkline: number[]
-      Unit: string
-      Value: number
-    }[]
-    Chart: {
-      Data: any
-      Period: {
-        From: string
-        To: string
-      }
-      Unit: string
-    }
-    Cumulative: {
-      Month: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-        month: string
-      }
-      Week: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-      }
-    }
-    Today: {
-      ChangePercent: number
-      ChangeValue: number
-      Unit: string
-      Value: number
-    }
-    lossWarning: any
-  }
-  profitFactDetail: {
-    Chart: {
-      Data: any
-      Period: {
-        From: string
-        To: string
-      }
-      Unit: string
-    }
-    Cumulative: {
-      Month: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-        month: string
-      }
-      Week: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-      }
-    }
-    Today: {
-      ChangePercent: number
-      ChangeValue: number
-      Unit: string
-      Value: number
-    }
-    lossWarning: any
-  }
-  revenue: {
-    Breakdown: {
-      Color: string
-      Percent: number
-      ChangeValue: number
-      PlantCode: string
-      PlantName: string
-      Sparkline: number[]
-      Unit: string
-      Value: number
-    }[]
-    Chart: {
-      Data: any
-      Period: {
-        From: string
-        To: string
-      }
-      Unit: string
-    }
-    Cumulative: {
-      Month: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-        month: string
-      }
-      Week: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-      }
-    }
-    Today: {
-      ChangePercent: number
-      ChangeValue: number
-      Unit: string
-      Value: number
-    }
-    lossWarning: any
-  }
+  profit: typeof defaultBreakdown
+  profitFactDetail: typeof defaultBreakdown
+  revenue: typeof defaultBreakdown
+  revenueFactDetail: typeof defaultBreakdown
   powerPriceDetail: {
     AvgMarketPrice: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>
     AvgCapacityPrice: Omit<PowerPriceDetailItem, 'Estimated' | 'Note'>
@@ -159,38 +59,6 @@ interface RevenueProfitState {
     TotalCost: RevenueCostSummaryItem
   }
   isLoadingRevenueCostSummary: boolean
-  revenueFactDetail: {
-    Chart: {
-      Data: any
-      Period: {
-        From: string
-        To: string
-      }
-      Unit: string
-    }
-    Cumulative: {
-      Month: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-        month: string
-      }
-      Week: {
-        ChangePercent: number
-        ChangeValue: number
-        Unit: string
-        Value: number
-      }
-    }
-    Today: {
-      ChangePercent: number
-      ChangeValue: number
-      Unit: string
-      Value: number
-    }
-    lossWarning: any
-  }
   revenueByPeriod: {
     Type: string
     Unit: string
@@ -198,286 +66,70 @@ interface RevenueProfitState {
     Series: RevenueSeriesItem[]
   }
   isLoadingRevenueByPeriod: boolean
-  dailyAndCumulativeData: {
-    Date: string
-    ProfitToday: {
-      Value: number
-      Unit: string
-    }
-    ByPlantToday: RevenueCostSummaryPlantItem[]
-    ProfitMonth: {
-      Value: number
-      Unit: string
-    }
-    ByPlantMonth: RevenueCostSummaryPlantItem[]
-  }
+  dailyAndCumulativeData: any
   profitByPeriod: {
     PlantCode: string
     PlantName: string
     Unit: string
-    Data: {
-      Date: string
-      Value: number
-    }[]
+    Data: { Date: string; Value: number }[]
   }
   isLoadingProfitByPeriod: boolean
 }
 
 const initialState: RevenueProfitState = {
-  countRefesh:0,
+  countRefesh: 0,
   isLoadingProfit: false,
   isLoadingRevenue: false,
-  profit: {
-    Breakdown: [],
-    Chart: {
-      Data: [],
-      Period: {
-        From: '',
-        To: '',
-      },
-      Unit: '',
-    },
-    Cumulative: {
-      Month: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-        month: '',
-      },
-      Week: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-      },
-    },
-    Today: {
-      ChangePercent: 0,
-      ChangeValue: 0,
-      Unit: '',
-      Value: 0,
-    },
-    lossWarning: [],
-  },
-  profitFactDetail: {
-    Chart: {
-      Data: [],
-      Period: {
-        From: '',
-        To: '',
-      },
-      Unit: '',
-    },
-    Cumulative: {
-      Month: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-        month: '',
-      },
-      Week: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-      },
-    },
-    Today: {
-      ChangePercent: 0,
-      ChangeValue: 0,
-      Unit: '',
-      Value: 0,
-    },
-    lossWarning: [],
-  },
-  revenue: {
-    Breakdown: [],
-    Chart: {
-      Data: [],
-      Period: {
-        From: '',
-        To: '',
-      },
-      Unit: '',
-    },
-    Cumulative: {
-      Month: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-        month: '',
-      },
-      Week: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-      },
-    },
-    Today: {
-      ChangePercent: 0,
-      ChangeValue: 0,
-      Unit: '',
-      Value: 0,
-    },
-    lossWarning: [],
-  },
+  profit: { ...defaultBreakdown },
+  profitFactDetail: { ...defaultBreakdown },
+  revenue: { ...defaultBreakdown },
+  revenueFactDetail: { ...defaultBreakdown },
   powerPriceDetail: {
-    AvgMarketPrice: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-    },
-    AvgCapacityPrice: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-    },
-    FullMarketPrice: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-    },
-    PriceCeiling: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-    },
-    MonthlyContractPrice: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-      Estimated: false,
-    },
-    FuelVariablePrice: {
-      Value: 0,
-      Unit: 'Đồng/kWh',
-      Note: 'Thủy điện không áp dụng',
-    },
+    AvgMarketPrice: { Value: 0, Unit: 'Đồng/kWh' },
+    AvgCapacityPrice: { Value: 0, Unit: 'Đồng/kWh' },
+    FullMarketPrice: { Value: 0, Unit: 'Đồng/kWh' },
+    PriceCeiling: { Value: 0, Unit: 'Đồng/kWh' },
+    MonthlyContractPrice: { Value: 0, Unit: 'Đồng/kWh', Estimated: false },
+    FuelVariablePrice: { Value: 0, Unit: 'Đồng/kWh', Note: 'Thủy điện không áp dụng' },
   },
   isLoadingPowerPrice: false,
   revenueCostSummary: {
     MarketRevenue: {
-      Total: 0,
-      Unit: 'tỷ Đồng',
+      Total: 0, Unit: 'tỷ Đồng',
       ByPlant: [
-        {
-          PlantCode: 'SP3',
-          PlantName: 'Srepok 3',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BK',
-          PlantName: 'Buôn Kuốp',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BTS',
-          PlantName: 'Buôn Tua Srah',
-          Value: 0,
-        },
+        { PlantCode: 'SP3', PlantName: 'Srepok 3', Value: 0 },
+        { PlantCode: 'BK', PlantName: 'Buôn Kuốp', Value: 0 },
+        { PlantCode: 'BTS', PlantName: 'Buôn Tua Srah', Value: 0 },
       ],
     },
     ContractRevenue: {
-      Total: 0,
-      Unit: 'tỷ Đồng',
+      Total: 0, Unit: 'tỷ Đồng',
       ByPlant: [
-        {
-          PlantCode: 'SP3',
-          PlantName: 'Srepok 3',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BK',
-          PlantName: 'Buôn Kuốp',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BTS',
-          PlantName: 'Buôn Tua Srah',
-          Value: 0,
-        },
+        { PlantCode: 'SP3', PlantName: 'Srepok 3', Value: 0 },
+        { PlantCode: 'BK', PlantName: 'Buôn Kuốp', Value: 0 },
+        { PlantCode: 'BTS', PlantName: 'Buôn Tua Srah', Value: 0 },
       ],
     },
     TotalCost: {
-      Total: 0,
-      Unit: 'tỷ Đồng',
+      Total: 0, Unit: 'tỷ Đồng',
       ByPlant: [
-        {
-          PlantCode: 'SP3',
-          PlantName: 'Srepok 3',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BK',
-          PlantName: 'Buôn Kuốp',
-          Value: 0,
-        },
-        {
-          PlantCode: 'BTS',
-          PlantName: 'Buôn Tua Srah',
-          Value: 0,
-        },
+        { PlantCode: 'SP3', PlantName: 'Srepok 3', Value: 0 },
+        { PlantCode: 'BK', PlantName: 'Buôn Kuốp', Value: 0 },
+        { PlantCode: 'BTS', PlantName: 'Buôn Tua Srah', Value: 0 },
       ],
     },
   },
   isLoadingRevenueCostSummary: false,
-  revenueFactDetail: {
-    Chart: {
-      Data: [],
-      Period: {
-        From: '',
-        To: '',
-      },
-      Unit: '',
-    },
-    Cumulative: {
-      Month: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-        month: '',
-      },
-      Week: {
-        ChangePercent: 0,
-        ChangeValue: 0,
-        Unit: '',
-        Value: 0,
-      },
-    },
-    Today: {
-      ChangePercent: 0,
-      ChangeValue: 0,
-      Unit: '',
-      Value: 0,
-    },
-    lossWarning: [],
-  },
-  revenueByPeriod: {
-    Type: '',
-    Unit: '',
-    Dates: [],
-    Series: [],
-  },
+  revenueByPeriod: { Type: '', Unit: '', Dates: [], Series: [] },
   isLoadingRevenueByPeriod: false,
   dailyAndCumulativeData: {
     Date: '',
-    ProfitToday: {
-      Value: 0,
-      Unit: 'tỷ Đồng',
-    },
+    ProfitToday: { Value: 0, Unit: 'tỷ Đồng' },
     ByPlantToday: [],
-    ProfitMonth: {
-      Value: 0,
-      Unit: 'tỷ Đồng',
-    },
+    ProfitMonth: { Value: 0, Unit: 'tỷ Đồng' },
     ByPlantMonth: [],
   },
-  profitByPeriod: {
-    PlantCode: '',
-    PlantName: '',
-    Unit: '',
-    Data: [],
-  },
+  profitByPeriod: { PlantCode: '', PlantName: '', Unit: '', Data: [] },
   isLoadingProfitByPeriod: false,
 }
 
@@ -485,44 +137,20 @@ const revenueProfitSlice = createSlice({
   name: 'revenueProfitSlice',
   initialState,
   reducers: {
-    setProfitData: (state, action) => {
-      state.profit = action.payload
-    },
-    setProfitFactDetailData: (state, action) => {
-      state.profitFactDetail = action.payload
-    },
-    setRevenueData: (state, action) => {
-      state.revenue = action.payload
-    },
-    setPowerPrices: (state, action) => {
-      state.powerPriceDetail = action.payload
-    },
-    setRevenueCostSummary: (state, action) => {
-      state.revenueCostSummary = action.payload
-    },
-    setRevenueFactDetailData: (state, action) => {
-      state.revenueFactDetail = action.payload
-    },
-    setRevenueByPeriod: (state, action) => {
-      state.revenueByPeriod = action.payload
-    },
-    setProfitByPeriod: (state, action) => {
-      state.profitByPeriod = action.payload
-    },
-    setLoading: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      }
-    },
-    setDailyAndCumulativeData: (state, action) => {
-      state.dailyAndCumulativeData = action.payload
-    },
-     setCountRefesh: (state, action) => {
-        state.countRefesh = action.payload
-    }
+    setProfitData: (state, action) => { state.profit = action.payload },
+    setProfitFactDetailData: (state, action) => { state.profitFactDetail = action.payload },
+    setRevenueData: (state, action) => { state.revenue = action.payload },
+    setPowerPrices: (state, action) => { state.powerPriceDetail = action.payload },
+    setRevenueCostSummary: (state, action) => { state.revenueCostSummary = action.payload },
+    setRevenueFactDetailData: (state, action) => { state.revenueFactDetail = action.payload },
+    setRevenueByPeriod: (state, action) => { state.revenueByPeriod = action.payload },
+    setProfitByPeriod: (state, action) => { state.profitByPeriod = action.payload },
+    setLoading: (state, action) => { return { ...state, ...action.payload } },
+    setDailyAndCumulativeData: (state, action) => { state.dailyAndCumulativeData = action.payload },
+    setCountRefesh: (state, action) => { state.countRefesh = action.payload },
   },
 })
+
 const { reducer } = revenueProfitSlice
 export const {
   setLoading,
@@ -535,6 +163,6 @@ export const {
   setProfitFactDetailData,
   setRevenueFactDetailData,
   setProfitByPeriod,
-  setCountRefesh
+  setCountRefesh,
 } = revenueProfitSlice.actions
 export default reducer

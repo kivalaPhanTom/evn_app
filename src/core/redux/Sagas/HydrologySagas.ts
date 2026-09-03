@@ -19,7 +19,7 @@ import {
   getOutflow2,
   getOutflow3,
   getTurbineflow2,
-  getTurbineflow3
+  getTurbineflow3,
 } from '../Actions/HydrologyActions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -36,7 +36,7 @@ import {
   setPowerStoreInLake,
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
-  setLoading
+  setLoading,
 } from '../slices/HydrologySlice'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -64,14 +64,7 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
     yield put(setLoading({ isLoadingFlowChart: true }))
     const res = yield call(Service.getHydrologyFlowApi, currentPlantId, date)
     if (res.status === 200) {
-      yield put(
-        setFlowChartData({
-          flowChart: res.data.metrics,
-          flowChartSummary: res.data.summary,
-        }),
-      )
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
+      yield put(setFlowChartData({ flowChart: res.data.metrics, flowChartSummary: res.data.summary }))
     }
     yield put(setLoading({ isLoadingFlowChart: false }))
   } catch (error) {
@@ -84,45 +77,35 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
   try {
     yield put(setLoading({ isLoadingInflowOutflow: true }))
     const payload = action.payload as { hydroElectricId: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
     const hydroElectricId = payload?.hydroElectricId || ''
     const res = yield call(Service.getInflowOutflowApi, hydroElectricId)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setInflowOutflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
     yield put(setLoading({ isLoadingInflowOutflow: false }))
   } catch (error) {
     yield put(setLoading({ isLoadingInflowOutflow: false }))
     catchHandle(error, 'getInflowOutflowApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
 
 function* getUpstreamWaterLevelApiSaga(action: ReturnType<typeof getUpstreamWaterLevel>): Generator {
   try {
     const payload = action.payload as { currentPlantId: string; date: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
     const currentPlantId = payload?.currentPlantId || ''
     const date = payload?.date || ''
-
     const res = yield call(Service.getUpstreamWaterLevelApi, currentPlantId, date)
     if (res.status === 200) {
       yield put(setUpStreamWaterLevel(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getUpstreamWaterLevelApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getUpstreamWaterLevel_2ApiSaga(action: ReturnType<typeof getUpstreamWaterLevel_2>): Generator {
   try {
-    const payload = action.payload as { version: string; currentPlantId: string; currentDate: string; compareDate: string, type: string  }
-    // console.log('Fetching InflowOutflow with payload:', payload)
+    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
     const currentPlantId = payload?.currentPlantId || ''
     const currentDate = payload?.currentDate || ''
     const compareDate = payload?.compareDate || ''
@@ -130,18 +113,15 @@ function* getUpstreamWaterLevel_2ApiSaga(action: ReturnType<typeof getUpstreamWa
     const res = yield call(Service.getUpstreamWaterLevelApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
       yield put(setUpStreamWaterLevel(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getUpstreamWaterLevel_2ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getUpstreamWaterLevel_3ApiSaga(action: ReturnType<typeof getUpstreamWaterLevel_3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
+    const payload = action.payload as { currentPlantId: string; currentFromDate: string; currentToDate: string; compareFromDate: string; compareToDate: string; type: string }
     const currentPlantId = payload?.currentPlantId || ''
     const currentFromDate = payload?.currentFromDate || ''
     const currentToDate = payload?.currentToDate || ''
@@ -151,199 +131,130 @@ function* getUpstreamWaterLevel_3ApiSaga(action: ReturnType<typeof getUpstreamWa
     const res = yield call(Service.getUpstreamWaterLevelApi_3, currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type)
     if (res.status === 200) {
       yield put(setUpStreamWaterLevel(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getUpstreamWaterLevel_3ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
 
 function* getInflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
   try {
     const payload = action.payload as { currentPlantId: string; date: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
     const currentPlantId = payload?.currentPlantId || ''
     const date = payload?.date || ''
-
     const res = yield call(Service.getInflowApi, currentPlantId, date)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setInflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getInflowApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
 
 function* getInflow2ApiSaga(action: ReturnType<typeof getInflow2>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string, type:string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
+    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
     const currentPlantId = payload?.currentPlantId || ''
     const currentDate = payload?.currentDate || ''
     const compareDate = payload?.compareDate || ''
     const type = payload?.type || ''
-
     const res = yield call(Service.getInflowApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setInflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getInflow2ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getInflow3ApiSaga(action: ReturnType<typeof getInflow3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string }
-    const currentPlantId = payload?.currentPlantId || ''
-    const currentFromDate = payload?.currentFromDate || ''
-    const currentToDate = payload?.currentToDate || ''
-    const compareFromDate = payload?.compareFromDate || ''
-    const compareToDate = payload?.compareToDate || ''
-    const type = payload?.type || ''
-
-    const res = yield call(Service.getInflowApi_3, currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type)
+    const payload = action.payload as { currentPlantId: string; currentFromDate: string; currentToDate: string; compareFromDate: string; compareToDate: string; type: string }
+    const res = yield call(Service.getInflowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setInflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getInflow3ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
 
-function* getOutflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
+function* getOutflowApiSaga(action: ReturnType<typeof getOutflow>): Generator {
   try {
     const payload = action.payload as { currentPlantId: string; date: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
     const currentPlantId = payload?.currentPlantId || ''
     const date = payload?.date || ''
-
     const res = yield call(Service.getOutflowApi, currentPlantId, date)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setOutflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getOutflowApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getOutflow2ApiSaga(action: ReturnType<typeof getOutflow2>): Generator {
   try {
-    const payload = action.payload as { version: string; currentPlantId: string; currentDate: string; compareDate: string; type: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
-    const currentPlantId = payload?.currentPlantId || ''
-    const currentDate = payload?.currentDate || ''
-    const compareDate = payload?.compareDate || ''
-    const type = payload?.type || ''
-    const res = yield call(Service.getOutflowApi_2, currentPlantId, currentDate, compareDate, type)
+    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
+    const res = yield call(Service.getOutflowApi_2, payload.currentPlantId, payload.currentDate, payload.compareDate, payload.type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setOutflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getOutflow2ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getOutflow3ApiSaga(action: ReturnType<typeof getOutflow3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string }
-    const currentPlantId = payload?.currentPlantId || ''
-    const currentFromDate = payload?.currentFromDate || ''
-    const currentToDate = payload?.currentToDate || ''
-    const compareFromDate = payload?.compareFromDate || ''
-    const compareToDate = payload?.compareToDate || ''
-    const type = payload?.type || ''
-    const res = yield call(Service.getOutflowApi_3, currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type)
+    const payload = action.payload as any
+    const res = yield call(Service.getOutflowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setOutflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getOutflow3ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
 
-function* getTurbineflowApiSaga(action: ReturnType<typeof getInflow>): Generator {
+function* getTurbineflowApiSaga(action: ReturnType<typeof getTurbineflow>): Generator {
   try {
     const payload = action.payload as { currentPlantId: string; date: string }
-    // console.log('Fetching InflowOutflow with payload:', payload)
     const currentPlantId = payload?.currentPlantId || ''
     const date = payload?.date || ''
-
     const res = yield call(Service.getTurbineFlowApi, currentPlantId, date)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setTurbineflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getTurbineflowApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getTurbineflow2ApiSaga(action: ReturnType<typeof getTurbineflow2>): Generator {
   try {
-    const payload = action.payload as { version: string; currentPlantId: string; currentDate: string; compareDate: string; type: string }
-    const currentPlantId = payload?.currentPlantId || ''
-    const currentDate = payload?.currentDate || ''
-    const compareDate = payload?.compareDate || ''
-    const type = payload?.type || ''
-    const res = yield call(Service.getTurbineFlowApi_2, currentPlantId, currentDate, compareDate, type)
+    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
+    const res = yield call(Service.getTurbineFlowApi_2, payload.currentPlantId, payload.currentDate, payload.compareDate, payload.type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setTurbineflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getTurbineflow2ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getTurbineflow3ApiSaga(action: ReturnType<typeof getTurbineflow3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string }
-     const currentPlantId = payload?.currentPlantId || ''
-    const currentFromDate = payload?.currentFromDate || ''
-    const currentToDate = payload?.currentToDate || ''
-    const compareFromDate = payload?.compareFromDate || ''
-    const compareToDate = payload?.compareToDate || ''
-    const type = payload?.type || ''
-    const res = yield call(Service.getTurbineFlowApi_3, currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type)
+    const payload = action.payload as any
+    const res = yield call(Service.getTurbineFlowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
     if (res.status === 200) {
-      // console.log('Inflow and Outflow chart data:', res.data)
       yield put(setTurbineflow(res.data))
-      // You can dispatch an action to store the data in the Redux store here
-      // yield put(setHydrologyFlowChart(res.data))
     }
   } catch (error) {
     catchHandle(error, 'getTurbineflow3ApiSaga')
-    // console.log('getInflowOutflow error:', error)
   }
 }
+
 function* getHydrologyChartApi() {
   yield takeEvery(getHydrographicChart, getHydrographicChartSaga)
 }
@@ -362,11 +273,12 @@ function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyP
     catchHandle(error, 'getHydrologyPlantsParamApiSaga')
   }
 }
+
 function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPlantsInfo>): Generator {
   try {
-    const payload = action.payload as { plantId: string, date: string }
-    const plantId = payload?.plantId || '';
-    const date = payload?.date || '';
+    const payload = action.payload as { plantId: string; date: string }
+    const plantId = payload?.plantId || ''
+    const date = payload?.date || ''
     const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
       yield put(setHydrologyPlantsInfo(res.data))
@@ -379,7 +291,6 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
 function* getPowerStoreInLakeApiSaga(): Generator {
   try {
     yield put(setLoading({ isLoadingPowerStoreInLake: true }))
-
     const res = yield call(Service.getPowerStoreInLake)
     if (res.status === 200) {
       yield put(setPowerStoreInLake(res.data))
@@ -417,69 +328,25 @@ function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterL
   }
 }
 
-function* getHydrologyflowChartApi() {
-  yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga)
-}
-
-function* getInflowOutflowApi() {
-  yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga)
-}
-
-function* getPowerStoreInLakeApi() {
-  yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga)
-}
-
-function* getPowerStoreInLakeFactDetailApi() {
-  yield takeEvery(getPowerStoreInLakeFactDetail, getPowerStoreInLakeFactDetailApiSaga)
-}
-
-function* getHydrologyPlantsParamApi() {
-  yield takeEvery(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga)
-}
-
-function* getHydrologyPlantsInfoApi() {
-  yield takeEvery(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga)
-}
-
-function* getUpstreamWaterLevelApi() {
-  yield takeEvery(getUpstreamWaterLevel, getUpstreamWaterLevelApiSaga)
-}
-function* getUpstreamWaterLevel2Saga() {
-  yield takeEvery(getUpstreamWaterLevel_2, getUpstreamWaterLevel_2ApiSaga)
-}
-function* getUpstreamWaterLevel3Saga() {
-  yield takeEvery(getUpstreamWaterLevel_3, getUpstreamWaterLevel_3ApiSaga)
-}
-function* getInflowApi() {
-  yield takeEvery(getInflow, getInflowApiSaga)
-}
-function* getInflow2Saga() {
-  yield takeEvery(getInflow2, getInflow2ApiSaga)
-}
-function* getInflow3Saga() {
-  yield takeEvery(getInflow3, getInflow3ApiSaga)
-}
-function* getOutflowApi() {
-  yield takeEvery(getOutflow, getOutflowApiSaga)
-}
-function* getOutflow2Saga() {
-  yield takeEvery(getOutflow2, getOutflow2ApiSaga)
-}
-function* getOutflow3Saga() {
-  yield takeEvery(getOutflow3, getOutflow3ApiSaga)
-}
-function* getTurbineflowApi() {
-  yield takeEvery(getTurbineflow, getTurbineflowApiSaga)
-}
-function* getTurbine2Saga() {
-  yield takeEvery(getTurbineflow2, getTurbineflow2ApiSaga)
-}
-function* getTurbine3Saga() {
-  yield takeEvery(getTurbineflow3, getTurbineflow3ApiSaga)
-}
-function* getOperateWaterLevelApi() {
-  yield takeEvery(getOperateWaterLevel, getOperateWaterLevelApiSaga)
-}
+function* getHydrologyflowChartApi() { yield takeEvery(getHydrologyflowChart, getHydrologyflowChartApiSaga) }
+function* getInflowOutflowApi() { yield takeEvery(getInflowOutflow, getInflowOutflowApiSaga) }
+function* getPowerStoreInLakeApi() { yield takeEvery(getPowerStoreInLake, getPowerStoreInLakeApiSaga) }
+function* getPowerStoreInLakeFactDetailApi() { yield takeEvery(getPowerStoreInLakeFactDetail, getPowerStoreInLakeFactDetailApiSaga) }
+function* getHydrologyPlantsParamApi() { yield takeEvery(getHydrologyPlantsParam, getHydrologyPlantsParamApiSaga) }
+function* getHydrologyPlantsInfoApi() { yield takeEvery(getHydrologyPlantsInfo, getHydrologyPlantsInfoApiSaga) }
+function* getUpstreamWaterLevelApi() { yield takeEvery(getUpstreamWaterLevel, getUpstreamWaterLevelApiSaga) }
+function* getUpstreamWaterLevel2Saga() { yield takeEvery(getUpstreamWaterLevel_2, getUpstreamWaterLevel_2ApiSaga) }
+function* getUpstreamWaterLevel3Saga() { yield takeEvery(getUpstreamWaterLevel_3, getUpstreamWaterLevel_3ApiSaga) }
+function* getInflowApi() { yield takeEvery(getInflow, getInflowApiSaga) }
+function* getInflow2Saga() { yield takeEvery(getInflow2, getInflow2ApiSaga) }
+function* getInflow3Saga() { yield takeEvery(getInflow3, getInflow3ApiSaga) }
+function* getOutflowApi() { yield takeEvery(getOutflow, getOutflowApiSaga) }
+function* getOutflow2Saga() { yield takeEvery(getOutflow2, getOutflow2ApiSaga) }
+function* getOutflow3Saga() { yield takeEvery(getOutflow3, getOutflow3ApiSaga) }
+function* getTurbineflowApi() { yield takeEvery(getTurbineflow, getTurbineflowApiSaga) }
+function* getTurbine2Saga() { yield takeEvery(getTurbineflow2, getTurbineflow2ApiSaga) }
+function* getTurbine3Saga() { yield takeEvery(getTurbineflow3, getTurbineflow3ApiSaga) }
+function* getOperateWaterLevelApi() { yield takeEvery(getOperateWaterLevel, getOperateWaterLevelApiSaga) }
 
 export function* hydrologySagaList() {
   yield all([
@@ -502,6 +369,6 @@ export function* hydrologySagaList() {
     getOutflow2Saga(),
     getOutflow3Saga(),
     getTurbine2Saga(),
-    getTurbine3Saga()
+    getTurbine3Saga(),
   ])
 }

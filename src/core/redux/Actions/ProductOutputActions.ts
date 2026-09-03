@@ -13,7 +13,6 @@ export const getProductCummulativeOutput = createAction<ProductCummulativeOutput
 export const getCompareProductOutput = createAction<{ tagetDate: string; compareDate: string; currentPlantId: string }>(
   ACTION_TYPES.GET_COMPARE_PRODUCT_OUTPUT,
 )
-
 export const getProductOutputOverviewFactDetail = createAction<{
   factoryId: string
   getDataFromApi: any
@@ -29,7 +28,6 @@ export const getProductOutputByDaysFactDetail = createAction<{
   getDataFromApi: any
   setLoading: any
 }>(ACTION_TYPES.GET_PRODUCT_OUTPUT_BY_DAYS_FACT_DETAIL)
-
 export const getProductOutputCompareChart = createAction<{
   currentFromDate: string
   currentToDate: string

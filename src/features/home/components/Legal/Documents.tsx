@@ -51,7 +51,7 @@ const TableHeader = () => (
 function DocumentSection() {
     const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
     const dispatch = useDispatch()
-    const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+    const { countRefesh } = useSelector((state: any) => state.refreshSlice)
     const { isLoadingLegal, legal } = useSelector((state: RootState) => state.documentSlice)
 
     const data = legal.map((item, i) => ({

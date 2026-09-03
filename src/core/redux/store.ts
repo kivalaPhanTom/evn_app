@@ -1,45 +1,41 @@
 import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './Sagas/RootSaga'
-import exampleSlice from './slices/ExampleSlice'
-import powerSlice from './slices/PowerSlice'
-import productOutputSlice from './slices/ProductOutputSlice'
-import hydrologySlice from './slices/HydrologySlice'
-import factoryDetailSlice from './slices/FactoryDetailSlice'
-import revenueProfitSlice from './slices/RevenueProfitSlice'
-import homeSlice from './slices/HomeSlice'
-import unitMaintenanceScheduleSlice from './slices/UnitMaintenanceScheduleSlice'
-import techInfoSlice from './slices/TechInfoSlice'
-import documentSlice from './slices/DocumentSlice'
-import moduleSlice from './slices/ModuleSlice'
+import powerReducer from './slices/PowerSlice'
+import productOutputReducer from './slices/ProductOutputSlice'
+import hydrologyReducer from './slices/HydrologySlice'
+import revenueProfitReducer from './slices/RevenueProfitSlice'
+import unitMaintenanceScheduleReducer from './slices/UnitMaintenanceScheduleSlice'
+import techInfoReducer from './slices/TechInfoSlice'
+import documentReducer from './slices/DocumentSlice'
+import moduleReducer from './slices/ModuleSlice'
+import authenReducer from './slices/AuthenSlice'
+import refreshReducer from './slices/RefreshSlice'
 
-let sagaMiddleware = createSagaMiddleware()
+const sagaMiddleware = createSagaMiddleware()
 
-const allReducer = {
-  exampleSlice,
-  powerSlice,
-  productOutputSlice,
-  hydrologySlice,
-  factoryDetailSlice,
-  revenueProfitSlice,
-  unitMaintenanceScheduleSlice,
-  homeSlice,
-  moduleSlice,
-  techInfoSlice,
-  documentSlice,
-}
 const store = configureStore({
   reducer: {
-    ...allReducer,
+    powerSlice: powerReducer,
+    productOutputSlice: productOutputReducer,
+    hydrologySlice: hydrologyReducer,
+    revenueProfitSlice: revenueProfitReducer,
+    unitMaintenanceScheduleSlice: unitMaintenanceScheduleReducer,
+    techInfoSlice: techInfoReducer,
+    documentSlice: documentReducer,
+    moduleSlice: moduleReducer,
+    authenSlice: authenReducer,
+    refreshSlice: refreshReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: false,
-      serializableCheck: false, // 🔥 cho phép function
+      serializableCheck: false,
     }).concat(sagaMiddleware),
-  // })
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 })
+
 sagaMiddleware.run(rootSaga)
+
 export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 export default store

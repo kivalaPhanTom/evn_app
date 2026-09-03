@@ -12,7 +12,7 @@ import ProductionOutputByHours from '@/components/ProductionOutputByHours/Produc
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 
 function ProductionOutput() {
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const router = useRouter()
   const dispatch = useDispatch()
   const {

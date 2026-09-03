@@ -25,7 +25,7 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { revenueFactDetail, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
 

@@ -19,7 +19,7 @@ import { BarGroup } from '@/core/types'
 export default function RevenueDetail() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
 
   const onPressCard = () => {

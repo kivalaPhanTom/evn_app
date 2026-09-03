@@ -13,7 +13,7 @@ import HydrologyFactDetail from './HydrologyFactDetail/HydrologyFactDetail'
 import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMaintenanceSchedule'
 import RevenueDetail from './RevenueProfitFactDetail/Revenue'
 import ProfitDetail from './RevenueProfitFactDetail/Profit'
-import { saveState } from '@/core/redux/slices/FactoryDetailSlice'
+import { saveState } from '@/core/redux/slices/RefreshSlice'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { t } from 'i18next'
 import { useRouter } from 'expo-router'
@@ -40,7 +40,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
   const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice) 
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { modules } = useSelector((state: any) => state.moduleSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 

@@ -18,7 +18,7 @@ const ExistenceInfo: React.FC<ExistenceProps> = (props) => {
     const dispatch = useDispatch()
     const { currentPlantId } = props
     const { isLoadingExistence, existence } = useSelector((state: RootState) => state.documentSlice)
-    const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+    const { countRefesh } = useSelector((state: any) => state.refreshSlice)
     useEffect(() => {
         console.log(currentPlantId);
         dispatch(getExistence({ currentPlantId }))

@@ -55,7 +55,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
   })
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { isLoadingCompareProductOutput } = useSelector((state: RootState) => state.productOutputSlice)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width

@@ -1,53 +1,38 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import TwinkleStars from "../Background/TwinkleStarsCore";
-import { Colors } from '@/core/constants/colors';
+import React, { useEffect, useRef } from 'react'
+import { View, StyleSheet, Animated } from 'react-native'
 
-interface SquareSkeletonProps {
-    count?: number;
-    size?: number;
+/** Full-page blank skeleton used for lazy section placeholders. */
+export default function BlankPageSkeleton() {
+  const progress = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(progress, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(progress, { toValue: 0, duration: 800, useNativeDriver: true }),
+      ]),
+    ).start()
+  }, [progress])
+
+  const opacity = progress.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.7] })
+
+  return (
+    <View style={styles.container}>
+      <Animated.View style={[styles.block, styles.large, { opacity }]} />
+      <Animated.View style={[styles.row, { opacity }]}>
+        <View style={[styles.block, styles.small]} />
+        <View style={[styles.block, styles.small]} />
+      </Animated.View>
+      <Animated.View style={[styles.block, styles.medium, { opacity }]} />
+    </View>
+  )
 }
 
-export const BlankPageSkeleton = ({
-    count = 4,
-    size = 75,
-}: SquareSkeletonProps) => {
-    return (
-        <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-            <View style={styles.row}>
-            </View>
-        </TwinkleStars>
-
-    );
-};
-export default BlankPageSkeleton
-
 const styles = StyleSheet.create({
-    row: {
-        flexDirection: "row",
-        gap: 12,
-        marginTop: 12,
-    },
-
-    square: {
-        borderRadius: 18,
-        overflow: "hidden",
-        backgroundColor: "#0F1726",
-    },
-
-    base: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(255,255,255,0.045)",
-    },
-
-    lightWrap: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,          // 👈 bao trùm full chiều cao
-        width: "140%",      // 👈 rộng hơn card → ánh sáng lan
-    },
-
-    light: {
-        flex: 1,
-    },
-});
+  container: { flex: 1, padding: 16 },
+  block: { backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12 },
+  large: { height: 200, marginBottom: 16 },
+  medium: { height: 120 },
+  row: { flexDirection: 'row', gap: 16, marginBottom: 16 },
+  small: { flex: 1, height: 90 },
+})

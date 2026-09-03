@@ -1,62 +1,36 @@
-import { getDetailRepairSchedule, getRepairSchedule } from './../Actions/UnitMaintenanceScheduleActions'
+import { getDetailRepairSchedule, getRepairSchedule } from '../Actions/UnitMaintenanceScheduleActions'
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/unitMaintenanceScheduleService'
-import { setRepairSchedule, setCurrentPlantDetail } from '../slices/UnitMaintenanceScheduleSlice'
+import { setRepairSchedule, setCurrentPlantDetail, setLoading } from '../slices/UnitMaintenanceScheduleSlice'
 import { catchHandle } from '@/core/utils/utils'
-import { setLoading } from '../slices/UnitMaintenanceScheduleSlice'
 
 function* getRepairScheduleSaga(action: ReturnType<typeof getRepairSchedule>): Generator {
   try {
-    yield put(
-      setLoading({
-        isRepairerScheduleLoading: true,
-      }),
-    )
+    yield put(setLoading({ isRepairerScheduleLoading: true }))
     const { year } = action.payload
     const res = yield call(Service.getRepairScheduleApi, year)
     if (res.status === 200) {
       yield put(setRepairSchedule(res.data))
     }
-    yield put(
-      setLoading({
-        isRepairerScheduleLoading: false,
-      }),
-    )
+    yield put(setLoading({ isRepairerScheduleLoading: false }))
   } catch (error) {
     catchHandle(error, 'getRepairScheduleSaga')
-    yield put(
-      setLoading({
-        isRepairerScheduleLoading: false,
-      }),
-    )
+    yield put(setLoading({ isRepairerScheduleLoading: false }))
   }
 }
 
 function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairSchedule>): Generator {
   try {
-    yield put(
-      setLoading({
-        isDetailRepairScheduleLoading: true,
-      }),
-    )
+    yield put(setLoading({ isDetailRepairScheduleLoading: true }))
     const { currentPlantId, year } = action.payload
     const res = yield call(Service.getDetailRepairScheduleApi, currentPlantId, year)
     if (res.status === 200) {
       yield put(setCurrentPlantDetail(res.data))
     }
-    yield put(
-      setLoading({
-        isDetailRepairScheduleLoading: false,
-      }),
-    )
+    yield put(setLoading({ isDetailRepairScheduleLoading: false }))
   } catch (error) {
     catchHandle(error, 'getDetailRepairScheduleSaga')
-    yield put(
-      setLoading({
-        isRepairerScheduleLoading: false,
-        isDetailRepairScheduleLoading: false,
-      }),
-    )
+    yield put(setLoading({ isRepairerScheduleLoading: false, isDetailRepairScheduleLoading: false }))
   }
 }
 

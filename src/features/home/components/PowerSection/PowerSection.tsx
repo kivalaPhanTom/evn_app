@@ -22,7 +22,7 @@ function PowerSection() {
     isLoadingNearCurrentDays,
   } = useSelector((state: RootState) => state.powerSlice)
   const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
 
   useAlignedHourlyTimer(() => {
     dispatch(getPowerOverivew())

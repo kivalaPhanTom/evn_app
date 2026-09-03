@@ -1,25 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
-interface moduleItemState {
-    code: string;
-    name: string;
-    canAccess: boolean;
+
+interface ModuleItemState {
+  code: string
+  name: string
+  canAccess: boolean
 }
-interface moduleState {
-    modules: moduleItemState []
+interface ModuleState {
+  modules: ModuleItemState[]
 }
-const initialState: moduleState = {
-    modules: []
+
+const initialState: ModuleState = {
+  modules: [],
 }
 
 const moduleSlice = createSlice({
-    name: 'moduleSlice',
-    initialState,
-    reducers: {
-        saveModuleState: (state, action) => {
-            state.modules = action.payload
-        },
+  name: 'moduleSlice',
+  initialState,
+  reducers: {
+    saveModuleState: (state, action) => {
+      state.modules = action.payload
     },
+  },
 })
+
 const { reducer } = moduleSlice
 export const { saveModuleState } = moduleSlice.actions
 export default reducer

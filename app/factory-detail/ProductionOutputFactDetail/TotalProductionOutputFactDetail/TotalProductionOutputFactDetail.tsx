@@ -29,7 +29,7 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const timerCallback = useCallback(() => {
     if (activeTabIndex === keyTab) {
       dispatch(

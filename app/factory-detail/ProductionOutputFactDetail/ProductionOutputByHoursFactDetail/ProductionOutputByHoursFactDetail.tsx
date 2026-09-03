@@ -22,7 +22,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)

@@ -26,7 +26,7 @@ function PowerByHoursFactDetail(props: Props) {
   const router = useRouter()
   const { currentPlantId, keyTab } = props
   const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { countRefesh } = useSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useSelector((state: any) => state.powerSlice.powerByTime)
