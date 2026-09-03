@@ -4,7 +4,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
-import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart, getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart, getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'

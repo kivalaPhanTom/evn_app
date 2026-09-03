@@ -9,7 +9,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
-import { setFilterByTime } from '@/core/redux/slices/HydrologySlice'
+import { setFilterByTime } from '@/core/redux/domains/hydrology'
 import { px } from '@/core/utils/scale'
 import styles from './FilterByTime.styles'
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputByHoursFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import { View } from 'react-native'
 interface Props {

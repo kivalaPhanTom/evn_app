@@ -9,7 +9,7 @@ import {
   getProductOutputByHoursFactDetail,
   getProductOutputByDaysFactDetail,
   getProductOutputCompareChart,
-} from '../Actions/ProductOutputActions'
+} from '../domains/production-output/production-output.actions'
 import { Service } from '@/core/service/productOutput'
 import {
   setProductOutputByHours,
@@ -19,7 +19,7 @@ import {
   setCompareProductOutput,
   setProductOutputCompareChart,
   setLoading,
-} from '../slices/ProductOutputSlice'
+} from '../domains/production-output/production-output.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProductOutputByHoursSaga(): Generator {

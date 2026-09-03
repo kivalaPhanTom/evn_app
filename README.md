@@ -99,20 +99,20 @@ src/
 │   │   └── locales/
 │   ├── model/                       # Types
 │   ├── redux/
-│   │   ├── Actions/                 # ✅ GIỮ NGUYÊN (saga)
-│   │   ├── ActionTypes/             # ✅ GIỮ NGUYÊN (saga)
-│   │   ├── Sagas/                   # ✅ GIỮ NGUYÊN (saga)
-│   │   ├── slices/                  # 10 slices (gộp HomeSlice + FactoryDetailSlice → RefreshSlice)
-│   │   │   ├── AuthenSlice.ts
-│   │   │   ├── DocumentSlice.ts
-│   │   │   ├── HydrologySlice.ts
-│   │   │   ├── ModuleSlice.ts
-│   │   │   ├── PowerSlice.ts
-│   │   │   ├── ProductOutputSlice.ts
-│   │   │   ├── RefreshSlice.ts      # ✅ NEW - gộp HomeSlice + FactoryDetailSlice
-│   │   │   ├── RevenueProfitSlice.ts
-│   │   │   ├── TechInfoSlice.ts
-│   │   │   └── UnitMaintenanceScheduleSlice.ts
+│   │   ├── domains/                 # Redux theo nghiệp vụ
+│   │   │   ├── auth/                # actions + slice + saga entry point
+│   │   │   ├── documents/
+│   │   │   ├── hydrology/
+│   │   │   ├── maintenance/
+│   │   │   ├── modules/
+│   │   │   ├── power/
+│   │   │   ├── production-output/
+│   │   │   ├── refresh/
+│   │   │   ├── revenue-profit/
+│   │   │   └── technology/
+│   │   ├── Sagas/                   # Saga orchestration hiện tại
+│   │   ├── hooks.ts                 # useAppDispatch/useAppSelector
+│   │   ├── index.ts                 # Public API của Redux
 │   │   ├── store.ts
 │   │   └── StoreProvider.tsx
 │   ├── service/                     # API services
@@ -151,20 +151,37 @@ app/                                 # Routes (Expo Router)
 
 ### Code đã gọn lại (~470 dòng)
 
-| Slice | Trước | Sau | Giảm |
+| Domain slice | Trước | Sau | Ghi chú |
 |-------|------:|----:|-----:|
-| `RevenueProfitSlice.ts` | 540 | 230 | **-310 dòng** |
-| `HydrologySlice.ts` | 422 | 280 | **-140 dòng** |
-| `PowerSlice.ts` | 186 | 165 | **-21 dòng** |
+| `revenue-profit.slice.ts` | 540 | 230 | Đã chuyển vào domain `revenue-profit` |
+| `hydrology.slice.ts` | 422 | 280 | Đã chuyển vào domain `hydrology` |
+| `power.slice.ts` | 186 | 165 | Đã chuyển vào domain `power` |
 
 ### Cải thiện chất lượng code
 
 - ✅ **Xóa dead code**: ~50 files không dùng đã được loại bỏ
-- ✅ **Gộp duplicate slices**: `HomeSlice` + `FactoryDetailSlice` → `RefreshSlice` duy nhất
+- ✅ **Gộp duplicate slices**: state refresh dùng chung cho các màn hình home và factory detail
 - ✅ **Sạch cấu trúc thư mục**: bỏ `validators/`, `layouts/`, `core/store/`, `core/scripts/`
+- ✅ **Tổ chức Redux theo domain**: action creator và slice mới nằm cạnh nhau trong `core/redux/domains/`
+- ✅ **Typed Redux API**: dùng `useAppDispatch`, `useAppSelector`, `RootState` và `AppDispatch`
+- ✅ **Xóa `Actions/` và `ActionTypes/`**: action type được định nghĩa tại domain action creator
 - ✅ **Giữ nguyên i18next**: Toàn bộ `src/core/i18n/` được giữ nguyên
-- ✅ **Giữ nguyên redux-saga**: Toàn bộ `Actions/`, `ActionTypes/`, `Sagas/` được giữ nguyên
-- ✅ **App không bị crash**: Tất cả logic hoạt động bình thường
+- ✅ **Giữ nguyên redux-saga**: saga vẫn được khởi chạy tập trung qua `RootSaga`
+- ✅ **Giữ tương thích state**: reducer keys hiện tại được giữ nguyên để không phá các selector đang dùng
+
+### Quy ước Redux mới
+
+Code mới nên import từ public API của Redux hoặc domain tương ứng:
+
+```tsx
+import { useAppDispatch, useAppSelector } from '@/core/redux'
+import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
+
+const dispatch = useAppDispatch()
+const isLoading = useAppSelector((state) => state.hydrologySlice.isLoadingFlowChart)
+```
+
+Không tạo action type ở thư mục riêng và không import trực tiếp từ `Sagas/` trong màn hình mới. Reducer, action creator và logic domain nằm trong `domains/`.
 
 > **Lưu ý:** `node_modules` (429 MB) không thay đổi vì package.json giữ nguyên các dependencies. Dung lượng build APK/IPA sẽ giảm nhẹ do ít code hơn.
 

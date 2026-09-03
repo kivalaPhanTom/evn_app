@@ -3,14 +3,13 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-// import { getTechInfo, getTechInfoDetail } from '../Actions/TechInfoActions'
 import { useLocalSearchParams } from 'expo-router'
 import { Document } from '@/core/model/Document';
 import styles from './Documents.styles'
 import DocumentRow from './DocumentRow'
 import PdfViewer from '@/components/PDFViewer/PDFViewer.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import { getLegal } from '@/core/redux/Actions/DocumentActions'
+import { getLegal } from '@/core/redux/domains/documents'
 
 export const MOCK_DOCUMENTS: Document[] = [
     {

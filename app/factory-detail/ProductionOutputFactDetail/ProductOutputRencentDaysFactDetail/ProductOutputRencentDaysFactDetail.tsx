@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/ProductOutputRencentDays'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByDaysFactDetail } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputByDaysFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import { useRouter } from 'expo-router'
 

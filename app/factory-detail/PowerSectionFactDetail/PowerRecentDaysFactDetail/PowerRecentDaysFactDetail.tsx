@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'expo-router'
 import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays';
 import { RootState } from '@/core/redux/store'
-import { getPowerByDaysFactDetail } from '@/core/redux/Actions/PowerActions'
+import { getPowerByDaysFactDetail } from '@/core/redux/domains/power'
 interface PowerByDays {
   value: number
   date: string

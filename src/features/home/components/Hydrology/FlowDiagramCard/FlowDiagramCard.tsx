@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
-import { getHydrologyflowChart } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
 
 const BLUE_BG = "rgba(59, 130, 246, 0.10)";     // nền xanh nhạt
 const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";

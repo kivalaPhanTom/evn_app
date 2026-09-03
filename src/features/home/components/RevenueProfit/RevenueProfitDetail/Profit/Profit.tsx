@@ -11,7 +11,7 @@ import { Colors } from '@/core/constants/colors'
 import { BarGroup } from '@/core/types'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 

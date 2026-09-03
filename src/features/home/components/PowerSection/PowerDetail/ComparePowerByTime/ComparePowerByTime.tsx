@@ -4,7 +4,7 @@ import styles from './ComparePowerByTime.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComparePower } from '@/core/redux/Actions/PowerActions'
+import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
 

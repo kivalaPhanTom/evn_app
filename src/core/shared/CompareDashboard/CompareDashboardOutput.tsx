@@ -7,7 +7,7 @@ import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import dayjs from 'dayjs'
-import { getCompareProductOutput } from '@/core/redux/Actions/ProductOutputActions'
+import { getCompareProductOutput } from '@/core/redux/domains/production-output'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { RootState } from '@/core/redux/store'
 

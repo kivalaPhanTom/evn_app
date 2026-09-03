@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { px } from '@/core/utils/scale'
 import { styles } from './ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
-import { getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
+import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 
 interface ReservoirFlowCardProps {
   label: string // "Qvề" hoặc "Qxa"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
+import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import DatePicker from '@/components/DatePicker/DatePicker.component'
 import GradientCard from '@/components/GradientCard/GradientCard.component'

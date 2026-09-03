@@ -9,7 +9,7 @@ import {
   MaintenanceLevel,
 } from '@/components/MaintenanceLevelCard/MaintenanceLevelCard.component'
 import styles from './UnitMaintenanceDetails.styles'
-import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import { generateYearList } from '@/core/utils/date'
 

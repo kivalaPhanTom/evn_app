@@ -6,7 +6,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import { px } from '@/core/utils/scale'
 import { LineChart } from '@/components/ChartView/LineChart.component'
-import { getRevenueByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
+import { getRevenueByPeriod } from '@/core/redux/domains/revenue-profit'
 
 interface Props {
   fromDate: string

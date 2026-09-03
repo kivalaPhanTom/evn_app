@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import styles from './RegulationWaterLevel.style'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getOperateWaterLevel } from '@/core/redux/Actions/HydrologyActions'
+import { getOperateWaterLevel } from '@/core/redux/domains/hydrology'
 
 interface RegulationWaterLevelProps {
   title?: string

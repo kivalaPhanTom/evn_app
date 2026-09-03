@@ -15,7 +15,7 @@ import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceS
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-import { saveState } from '@/core/redux/slices/RefreshSlice'
+import { saveState } from '@/core/redux/domains/refresh'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'

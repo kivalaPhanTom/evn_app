@@ -7,14 +7,14 @@ import {
   getPowerOverivewFactDetail,
   getPowerByTimeFactDetail,
   getPowerByDaysFactDetail,
-} from '../Actions/PowerActions'
+} from '../domains/power/power.actions'
 import {
   setPowerOverview,
   setPowerByTime,
   setPowerByDays,
   setComparePower,
   setLoading,
-} from '../slices/PowerSlice'
+} from '../domains/power/power.slice'
 import { Service } from '@/core/service/powerService'
 import { catchHandle } from '@/core/utils/utils'
 

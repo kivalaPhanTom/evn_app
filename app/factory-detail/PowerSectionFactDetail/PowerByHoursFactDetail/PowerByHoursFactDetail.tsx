@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { RootState } from '@/core/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
+import { getPowerByTimeFactDetail } from '@/core/redux/domains/power'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
 interface Props {
   currentPlantId: string

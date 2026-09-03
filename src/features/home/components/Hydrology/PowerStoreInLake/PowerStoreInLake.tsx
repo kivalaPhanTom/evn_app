@@ -8,7 +8,7 @@ import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.comp
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
+import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
 
 const PowerStoreInLake: React.FC = () => {
   const dispatch = useDispatch()

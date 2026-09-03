@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputOverviewFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'

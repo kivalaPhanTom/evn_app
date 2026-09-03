@@ -20,7 +20,7 @@ import {
   getOutflow3,
   getTurbineflow2,
   getTurbineflow3,
-} from '../Actions/HydrologyActions'
+} from '../domains/hydrology/hydrology.actions'
 import { Service } from '@/core/service/hydrologyService'
 import {
   setInflowOutflow,
@@ -37,7 +37,7 @@ import {
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
   setLoading,
-} from '../slices/HydrologySlice'
+} from '../domains/hydrology/hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {

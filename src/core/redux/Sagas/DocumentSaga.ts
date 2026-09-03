@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getLegal, getExistence } from '../Actions/DocumentActions'
-import { setLoading, setLegal, setExistence } from '../slices/DocumentSlice'
+import { getLegal, getExistence } from '../domains/documents/documents.actions'
+import { setLoading, setLegal, setExistence } from '../domains/documents/documents.slice'
 import { Service } from '@/core/service/documentService'
 import { catchHandle } from '@/core/utils/utils'
 

@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getTechInfo, getTechInfoDetail } from '../Actions/TechInfoActions'
-import { setLoading, setTechInfo, setTechInfoDetail } from '../slices/TechInfoSlice'
+import { getTechInfo, getTechInfoDetail } from '../domains/technology/technology.actions'
+import { setLoading, setTechInfo, setTechInfoDetail } from '../domains/technology/technology.slice'
 import { Service } from '@/core/service/techInfoService'
 import { catchHandle } from '@/core/utils/utils'
 

@@ -10,7 +10,7 @@ import {
   getProfitFactDetail,
   getRevenueFactDetail,
   getProfitByPeriod,
-} from '../Actions/RevenueProfitActions'
+} from '../domains/revenue-profit/revenue-profit.actions'
 import {
   setProfitData,
   setRevenueData,
@@ -22,7 +22,7 @@ import {
   setProfitFactDetailData,
   setRevenueFactDetailData,
   setProfitByPeriod,
-} from '../slices/RevenueProfitSlice'
+} from '../domains/revenue-profit/revenue-profit.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getProfitApiSaga(): Generator {

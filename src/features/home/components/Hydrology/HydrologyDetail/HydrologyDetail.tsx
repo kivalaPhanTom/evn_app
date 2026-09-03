@@ -22,7 +22,7 @@ import {
   getOutflow3,
   getTurbineflow2,
   getTurbineflow3,
-} from '@/core/redux/Actions/HydrologyActions'
+} from '@/core/redux/domains/hydrology'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
 import FilterByTime from '../FilterByTime/FilterByTime'

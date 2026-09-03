@@ -8,7 +8,7 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
 import { Colors } from '@/core/constants/colors'
-import { saveState } from '@/core/redux/slices/RefreshSlice'
+import { saveState } from '@/core/redux/domains/refresh'
 
 const ProductOutputDetailScreen: React.FC = () => {
   const dispatch = useDispatch()

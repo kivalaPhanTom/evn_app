@@ -13,7 +13,7 @@ import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import { t } from 'i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { getRepairSchedule } from '@/core/redux/domains/maintenance'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { generateYearList } from '@/core/utils/date'
 

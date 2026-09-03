@@ -7,7 +7,7 @@ import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboard from '@/core/shared/CompareDashboard'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComparePower } from '@/core/redux/Actions/PowerActions'
+import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 
 function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {

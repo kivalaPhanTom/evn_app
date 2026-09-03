@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { RootState } from '@/core/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPowerOverivewFactDetail } from '@/core/redux/Actions/PowerActions'
+import { getPowerOverivewFactDetail } from '@/core/redux/domains/power'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 interface PowerDetail {

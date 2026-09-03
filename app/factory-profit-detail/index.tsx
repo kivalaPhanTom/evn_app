@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
-import { setCountRefesh } from '@/core/redux/slices/RevenueProfitSlice'
+import { setCountRefesh } from '@/core/redux/domains/revenue-profit'
 
 const FactoryProfitDetailScreen: React.FC = () => {
   const { companyName } = useLocalSearchParams<{

@@ -1,7 +1,7 @@
-import { getDetailRepairSchedule, getRepairSchedule } from '../Actions/UnitMaintenanceScheduleActions'
+import { getDetailRepairSchedule, getRepairSchedule } from '../domains/maintenance/maintenance.actions'
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/unitMaintenanceScheduleService'
-import { setRepairSchedule, setCurrentPlantDetail, setLoading } from '../slices/UnitMaintenanceScheduleSlice'
+import { setRepairSchedule, setCurrentPlantDetail, setLoading } from '../domains/maintenance/maintenance.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getRepairScheduleSaga(action: ReturnType<typeof getRepairSchedule>): Generator {

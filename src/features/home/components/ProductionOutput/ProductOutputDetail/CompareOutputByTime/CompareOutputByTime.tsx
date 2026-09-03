@@ -4,10 +4,10 @@ import styles from './CompareOutputByTime.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComparePower } from '@/core/redux/Actions/PowerActions'
+import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
-import { getProductOutputCompareChart } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputCompareChart } from '@/core/redux/domains/production-output'
 
 function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props

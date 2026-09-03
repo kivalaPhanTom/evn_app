@@ -1,8 +1,8 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getModules } from '../Actions/ModuleActions'
+import { getModules } from '../domains/modules/modules.actions'
 import { Service } from '@/core/service/modulesService'
 import { catchHandle } from '@/core/utils/utils'
-import { saveModuleState } from '../slices/ModuleSlice'
+import { saveModuleState } from '../domains/modules/modules.slice'
 
 function* getModulesSaga(): Generator {
   try {

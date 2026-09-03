@@ -7,7 +7,7 @@ import Svg, { Path, Defs, LinearGradient as SvgLinearGradient, Stop } from 'reac
 import { styles } from './ReservoirInfo.styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
 
 interface ReservoirData {
   currentLevel: number

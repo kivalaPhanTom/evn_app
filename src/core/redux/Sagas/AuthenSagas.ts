@@ -1,9 +1,9 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
-import { getToken } from '../Actions/AuthenActions'
+import { getToken } from '../domains/auth/auth.actions'
 import { Service } from '@/core/service/authenService'
 import { Toast } from 'toastify-react-native'
 import { setAuthToken, setUsernameToAsyncStorage } from '@/core/service/api.service'
-import { getModules } from '../Actions/ModuleActions'
+import { getModules } from '../domains/modules/modules.actions'
 import { router } from 'expo-router'
 import { catchHandle } from '@/core/utils/utils'
 

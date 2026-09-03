@@ -6,7 +6,7 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import HydrologyDetail from '@/features/home/components/Hydrology/HydrologyDetail/HydrologyDetail'
-import { setCountRefesh } from '@/core/redux/slices/HydrologySlice'
+import { setCountRefesh } from '@/core/redux/domains/hydrology'
 import { useLocalSearchParams } from 'expo-router'
 
 const HydrologyDetailScreen: React.FC = () => {

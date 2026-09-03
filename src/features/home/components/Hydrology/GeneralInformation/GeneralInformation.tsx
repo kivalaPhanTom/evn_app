@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import styles from './GeneralInformation.style'
 import { useDispatch, useSelector } from 'react-redux'
-import { getHydrologyPlantsInfo } from '@/core/redux/Actions/HydrologyActions'
+import { getHydrologyPlantsInfo } from '@/core/redux/domains/hydrology'
 
 interface GeneralInformationProps {
   date: string

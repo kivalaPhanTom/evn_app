@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import styles from './FactoryMaintenanceInfo.styles'
-import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 

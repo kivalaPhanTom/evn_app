@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'expo-router'
 import { setAuthToken, clearAuthToken } from '../service/api.service';
-import { getModules } from '@/core/redux/Actions/ModuleActions'
+import { getModules } from '@/core/redux/domains/modules'
 interface AuthContextProps {
   isAuthenticated: boolean;
   loading: boolean;

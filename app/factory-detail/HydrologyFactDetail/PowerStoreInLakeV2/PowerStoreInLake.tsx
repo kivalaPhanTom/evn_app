@@ -8,7 +8,7 @@ import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.comp
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/core/redux/store'
-import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
+import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import styles from './PowerStoreInLake.styles'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
