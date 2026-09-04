@@ -88,20 +88,20 @@ const WaterLevelCard: React.FC<{
   // Thêm offset ban đầu khác nhau cho mỗi tab dựa trên index để tạo hiệu ứng không đồng bộ
   // Mỗi tab có offset khác nhau: 0, Math.PI/2, Math.PI, etc.
   const initialOffset = index * (Math.PI / 2)
-  const waveTranslateX = useRef(new Animated.Value(0)).current
+  const waveTranslateFront = useRef(new Animated.Value(0)).current
+  const waveTranslateBack = useRef(new Animated.Value(0)).current
 
   // Tạo path sóng: trong SVG y=0 là top (reference line), y=waveHeight là bottom
   const createWavePath = (offset: number, amplitude: number, frequency: number, width: number, waveHeight: number) => {
     if (width <= 0 || waveHeight <= 0) return ''
     const steps = 60
-    const quietWaterHeight = waveHeight * 0.8
+    const quietWaterHeight = waveHeight * 0.85
+    const centerWaveY = Math.min(waveHeight * 0.22, amplitude + px.v(3))
     let path = `M 0 ${waveHeight} L 0 ${quietWaterHeight}`
 
     for (let i = 0; i <= steps; i++) {
       const x = (i / steps) * width
       const waveY = amplitude * Math.sin(x * frequency + offset)
-      const waveCenterPercent = 0.1
-      const centerWaveY = waveHeight * waveCenterPercent
       const y = centerWaveY + waveY
       const clampedY = Math.max(0, Math.min(quietWaterHeight, y))
       path += ` L ${x} ${clampedY}`
@@ -110,40 +110,52 @@ const WaterLevelCard: React.FC<{
     return path
   }
 
-  const amplitude1 = waveAreaHeight > 0 ? Math.max(8, waveAreaHeight * 0.15) : 8
-  const amplitude2 = waveAreaHeight > 0 ? Math.max(6, waveAreaHeight * 0.12) : 6
+  // Bien do nho giup mat nuoc mem va khong bi cat phang o dinh.
+  const amplitude1 = Math.min(px.v(7), Math.max(px.v(3), waveAreaHeight * 0.07))
+  const amplitude2 = Math.min(px.v(5), Math.max(px.v(2), waveAreaHeight * 0.05))
   const tiledWaveWidth = containerWidth * 2
   const waveFrequency = containerWidth > 0 ? (Math.PI * 2) / containerWidth : 0
 
   // Path SVG chi duoc tao lai khi kich thuoc/muc nuoc thay doi, khong tao lai o moi frame animation.
   const wavePath1 = useMemo(
-    () => createWavePath(initialOffset, amplitude1, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    () => createWavePath(initialOffset + Math.PI / 5, amplitude1, waveFrequency, tiledWaveWidth, waveAreaHeight),
     [amplitude1, initialOffset, tiledWaveWidth, waveAreaHeight, waveFrequency],
   )
   const wavePath2 = useMemo(
-    () => createWavePath(initialOffset + Math.PI, amplitude2, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    () => createWavePath(initialOffset + Math.PI * 1.15, amplitude2, waveFrequency, tiledWaveWidth, waveAreaHeight),
     [amplitude2, initialOffset, tiledWaveWidth, waveAreaHeight, waveFrequency],
   )
 
   useEffect(() => {
     if (containerWidth <= 0) return
 
-    waveTranslateX.setValue(0)
-    // Chi translate mot path tinh tren UI thread; khong setState va render lai React theo tung frame.
-    const animation = Animated.loop(
-      Animated.timing(waveTranslateX, {
+    waveTranslateFront.setValue(0)
+    waveTranslateBack.setValue(-containerWidth)
+    // Hai lop song chay nguoc chieu voi toc do 5s/7.5s tren UI thread, khong render React theo tung frame.
+    const frontAnimation = Animated.loop(
+      Animated.timing(waveTranslateFront, {
         toValue: -containerWidth,
-        duration: Math.max(4000, 7000 - index * 500),
+        duration: 5000,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
     )
-    animation.start()
+    const backAnimation = Animated.loop(
+      Animated.timing(waveTranslateBack, {
+        toValue: 0,
+        duration: 7500,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    )
+    frontAnimation.start()
+    backAnimation.start()
 
     return () => {
-      animation.stop()
+      frontAnimation.stop()
+      backAnimation.stop()
     }
-  }, [containerWidth, index, waveTranslateX])
+  }, [containerWidth, waveTranslateBack, waveTranslateFront])
 
   return (
     <View
@@ -231,7 +243,24 @@ const WaterLevelCard: React.FC<{
                             style={{
                               position: 'absolute',
                               bottom: 0,
-                              transform: [{ translateX: waveTranslateX }],
+                              transform: [{ translateX: waveTranslateBack }],
+                            }}
+                          >
+                            <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                              {wavePath2 && (
+                                <Path
+                                  d={wavePath2}
+                                  fill={isLowWaterLevel ? Colors.warningHalf : '#3AB7FF'}
+                                  opacity={0.48}
+                                />
+                              )}
+                            </Svg>
+                          </Animated.View>
+                          <Animated.View
+                            style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              transform: [{ translateX: waveTranslateFront }],
                             }}
                           >
                             <Svg height={waveAreaHeight} width={tiledWaveWidth}>
@@ -265,7 +294,6 @@ const WaterLevelCard: React.FC<{
                                 )}
                               </Defs>
                               {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
-                              {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
                             </Svg>
                           </Animated.View>
                         </View>
@@ -357,7 +385,24 @@ const WaterLevelCard: React.FC<{
                           style={{
                             position: 'absolute',
                             bottom: 0,
-                            transform: [{ translateX: waveTranslateX }],
+                            transform: [{ translateX: waveTranslateBack }],
+                          }}
+                        >
+                          <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                            {wavePath2 && (
+                              <Path
+                                d={wavePath2}
+                                fill={isLowWaterLevel ? Colors.warningHalf : '#3AB7FF'}
+                                opacity={0.48}
+                              />
+                            )}
+                          </Svg>
+                        </Animated.View>
+                        <Animated.View
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            transform: [{ translateX: waveTranslateFront }],
                           }}
                         >
                           <Svg height={waveAreaHeight} width={tiledWaveWidth}>
@@ -391,7 +436,6 @@ const WaterLevelCard: React.FC<{
                               )}
                             </Defs>
                             {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
-                            {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
                           </Svg>
                         </Animated.View>
                       </View>
