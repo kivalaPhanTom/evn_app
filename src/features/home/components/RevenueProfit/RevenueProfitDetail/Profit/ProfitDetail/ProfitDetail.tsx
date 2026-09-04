@@ -150,7 +150,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
         <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" chooseMode="day" />
         <View>
           <View style={[styles.chartWrapper]}>
-            <BarChart data={rawBarGroups} rounded noOfSection={3} />
+            <BarChart data={rawBarGroups} rounded noOfSection={3} scrollToEnd />
           </View>
           <View style={styles.axisContainer}>
             {/* <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
