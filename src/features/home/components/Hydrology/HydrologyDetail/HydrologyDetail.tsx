@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import GeneralInformation from '../GeneralInformation/GeneralInformation'
@@ -14,14 +14,7 @@ import {
   getOutflow,
   getTurbineflow,
   getUpstreamWaterLevel,
-  getUpstreamWaterLevel_2,
-  getUpstreamWaterLevel_3,
-  getInflow2,
-  getInflow3,
-  getOutflow2,
-  getOutflow3,
-  getTurbineflow2,
-  getTurbineflow3,
+  getHydrologyComparison,
 } from '@/core/redux/Actions/HydrologyActions'
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
@@ -50,6 +43,14 @@ function getCurrentPlantId(activeTab: string): string {
   return result
 }
 
+function prepareChartData(data: any[] | undefined, currentFilterTab: string, currentHour: number) {
+  if (!data) return []
+  // filter() khong lam thay doi du lieu API, vi vay khong can deep-clone bang JSON truoc moi lan ve bieu do.
+  return currentFilterTab === 'hour'
+    ? data.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentHour)
+    : data
+}
+
 function HydrologyDetail(props: HydrologyDetailProps) {
   const { currentPlantId, scrollY = 0 } = props
   const dispatch = useDispatch()
@@ -73,20 +74,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const inflow = useSelector((state: any) => state.hydrologySlice.inflow || {})
   const outflow = useSelector((state: any) => state.hydrologySlice.outflow || {})
   const turbineflow = useSelector((state: any) => state.hydrologySlice.turbineflow || {})
-  const currentDate = new Date()
-
-  const getFromPastToCurrentData = (data: any[]) => {
-    const newData = JSON.parse(JSON.stringify(data))
-    if (filterByTime.currentFilterTab === 'hour') {
-      return newData.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours())
-    } else if (filterByTime.currentFilterTab === 'year') {
-      return newData
-    } else if (filterByTime.currentFilterTab === 'day') {
-      return newData
-    } else if (filterByTime.currentFilterTab === 'month') {
-      return newData
-    }
-  }
+  const currentHour = new Date().getHours()
 
   useEffect(() => {
     console.log('getHydrologyPlantsInfo reload')
@@ -104,10 +92,8 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           compareDate: formatDate(new Date(compareDateH.toDate())),
           type: 'hour',
         }
-        dispatch(getUpstreamWaterLevel_2(payloadH))
-        dispatch(getInflow2(payloadH))
-        dispatch(getOutflow2(payloadH))
-        dispatch(getTurbineflow2(payloadH))
+        // Gom 4 request thanh mot batch va chi cap nhat Redux mot lan sau khi hoan tat.
+        dispatch(getHydrologyComparison({ version: 2, ...payloadH }))
         break
       case 'year':
         const currentDateY = filterByTime?.rangeCompareYear?.from
@@ -118,10 +104,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           compareDate: formatDate(new Date(compareDateY.toDate())),
           type: 'year',
         }
-        dispatch(getUpstreamWaterLevel_2(payloadY))
-        dispatch(getInflow2(payloadY))
-        dispatch(getOutflow2(payloadY))
-        dispatch(getTurbineflow2(payloadY))
+        dispatch(getHydrologyComparison({ version: 2, ...payloadY }))
         break
 
       case 'day':
@@ -137,10 +120,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           compareToDate: formatDate(new Date(compareToDateD.toDate())),
           type: 'day',
         }
-        dispatch(getUpstreamWaterLevel_3(payloadD))
-        dispatch(getInflow3(payloadD))
-        dispatch(getOutflow3(payloadD))
-        dispatch(getTurbineflow3(payloadD))
+        dispatch(getHydrologyComparison({ version: 3, ...payloadD }))
         break
       case 'month':
         const currentFromMonth = filterByTime?.rangeTargetMonth?.from
@@ -155,10 +135,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           compareToDate: formatDate(new Date(compareToMonth.toDate())),
           type: 'month',
         }
-        dispatch(getUpstreamWaterLevel_3(payloadM))
-        dispatch(getInflow3(payloadM))
-        dispatch(getOutflow3(payloadM))
-        dispatch(getTurbineflow3(payloadM))
+        dispatch(getHydrologyComparison({ version: 3, ...payloadM }))
         break
 
       default:
@@ -168,7 +145,25 @@ function HydrologyDetail(props: HydrologyDetailProps) {
         dispatch(getTurbineflow(payload))
         break
     }
-  }, [activeTab, selectedDate, countRefesh, dispatch, filterByTime.currentFilterTab, filterByTime?.rangeCurrentDate?.from, filterByTime?.rangeCurrentDate?.to, filterByTime?.rangeCompareYear?.from, filterByTime?.rangeCompareYear?.to, filterByTime?.rangeTargetDate?.from, filterByTime?.rangeTargetDate?.to, filterByTime?.rangeCompareDate?.from, filterByTime?.rangeCompareDate?.to, filterByTime?.rangeTargetMonth?.from, filterByTime?.rangeTargetMonth?.to, filterByTime?.rangeCompareMonth?.from, filterByTime?.rangeCompareMonth?.to])
+  }, [
+    activeTab,
+    selectedDate,
+    countRefesh,
+    dispatch,
+    filterByTime.currentFilterTab,
+    filterByTime?.rangeCurrentDate?.from,
+    filterByTime?.rangeCurrentDate?.to,
+    filterByTime?.rangeCompareYear?.from,
+    filterByTime?.rangeCompareYear?.to,
+    filterByTime?.rangeTargetDate?.from,
+    filterByTime?.rangeTargetDate?.to,
+    filterByTime?.rangeCompareDate?.from,
+    filterByTime?.rangeCompareDate?.to,
+    filterByTime?.rangeTargetMonth?.from,
+    filterByTime?.rangeTargetMonth?.to,
+    filterByTime?.rangeCompareMonth?.from,
+    filterByTime?.rangeCompareMonth?.to,
+  ])
 
   const preloadOffset = 300 // px before entering viewport
 
@@ -178,64 +173,77 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const shouldLoadTurbineflowChart = scrollY >= 1400 - preloadOffset
   const shouldLoadOutflowChart = scrollY >= 1800 - preloadOffset
 
-  const convertedUpstreamData = {
-    title: 'Mực nước thượng lưu (MNTL)',
-    activeTab: activeTab,
-    data: upstreamData?.todayUpstream ? getFromPastToCurrentData(upstreamData?.todayUpstream) : [],
-    data2: upstreamData?.samePeriodUpstream ? getFromPastToCurrentData(upstreamData?.samePeriodUpstream) : [],
-    currentColor: '#0EA5E9',
-    unit: upstreamData?.unit,
-    flowRateInfo: [
-      { label: 'Hiện tại', value: upstreamData?.currentValue, color: '#0EA5E9' },
-      { label: 'Cao nhất', value: upstreamData?.maxValue, color: '#fff' },
-      { label: 'Thấp nhất', value: upstreamData?.minValue, color: '#fff' },
-    ],
-  }
+  // Keep unaffected chart props stable when another hydrology response changes.
+  const convertedUpstreamData = useMemo(
+    () => ({
+      title: 'Mực nước thượng lưu (MNTL)',
+      activeTab: activeTab,
+      data: prepareChartData(upstreamData?.todayUpstream, filterByTime.currentFilterTab, currentHour),
+      data2: prepareChartData(upstreamData?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
+      currentColor: '#0EA5E9',
+      unit: upstreamData?.unit,
+      flowRateInfo: [
+        { label: 'Hiện tại', value: upstreamData?.currentValue, color: '#0EA5E9' },
+        { label: 'Cao nhất', value: upstreamData?.maxValue, color: '#fff' },
+        { label: 'Thấp nhất', value: upstreamData?.minValue, color: '#fff' },
+      ],
+    }),
+    [upstreamData, filterByTime.currentFilterTab, currentHour],
+  )
 
-  const convertedInflowData = {
-    title: 'Lưu lượng về (Qve)',
-    // data: inflow?.todayInflow ? getFromPastToCurrentData(inflow?.todayInflow) : [],  // api v1 dùng todayInflow và samePeriodInflow
-    // data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [], // api v1 dùng todayInflow và samePeriodInflow
-    data: inflow?.todayUpstream ? getFromPastToCurrentData(inflow?.todayUpstream) : [],
-    data2: inflow?.samePeriodUpstream ? getFromPastToCurrentData(inflow?.samePeriodUpstream) : [],
-    currentColor: '#3B82F6',
-    unit: inflow?.unit,
-    flowRateInfo: [
-      { label: 'Hiện tại', value: inflow?.currentValue, color: '#3B82F6' },
-      { label: 'Cao nhất', value: inflow?.maxValue, color: '#fff' },
-      { label: 'TB ngày', value: inflow?.avgValue, color: '#fff' },
-    ],
-  }
+  const convertedInflowData = useMemo(
+    () => ({
+      title: 'Lưu lượng về (Qve)',
+      // data: inflow?.todayInflow ? getFromPastToCurrentData(inflow?.todayInflow) : [],  // api v1 dùng todayInflow và samePeriodInflow
+      // data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [], // api v1 dùng todayInflow và samePeriodInflow
+      data: prepareChartData(inflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
+      data2: prepareChartData(inflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
+      currentColor: '#3B82F6',
+      unit: inflow?.unit,
+      flowRateInfo: [
+        { label: 'Hiện tại', value: inflow?.currentValue, color: '#3B82F6' },
+        { label: 'Cao nhất', value: inflow?.maxValue, color: '#fff' },
+        { label: 'TB ngày', value: inflow?.avgValue, color: '#fff' },
+      ],
+    }),
+    [inflow, filterByTime.currentFilterTab, currentHour],
+  )
 
-  const convertedOutflowData = {
-    title: 'Lưu lượng xả tràn (Qxt)',
-    // data: outflow?.turbinflowData ? getFromPastToCurrentData(outflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
-    // data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
-    data: outflow?.todayUpstream ? getFromPastToCurrentData(outflow?.todayUpstream) : [],
-    data2: outflow?.samePeriodUpstream ? getFromPastToCurrentData(outflow?.samePeriodUpstream) : [],
-    currentColor: '#F59E0B',
-    unit: outflow?.unit,
-    flowRateInfo: [
-      { label: 'Hiện tại', value: outflow?.currentValue, color: '#F59E0B' },
-      { label: 'Cao nhất', value: outflow?.maxValue, color: '#fff' },
-      { label: 'TB ngày', value: outflow?.avgValue, color: '#fff' },
-    ],
-  }
+  const convertedOutflowData = useMemo(
+    () => ({
+      title: 'Lưu lượng xả tràn (Qxt)',
+      // data: outflow?.turbinflowData ? getFromPastToCurrentData(outflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
+      // data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
+      data: prepareChartData(outflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
+      data2: prepareChartData(outflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
+      currentColor: '#F59E0B',
+      unit: outflow?.unit,
+      flowRateInfo: [
+        { label: 'Hiện tại', value: outflow?.currentValue, color: '#F59E0B' },
+        { label: 'Cao nhất', value: outflow?.maxValue, color: '#fff' },
+        { label: 'TB ngày', value: outflow?.avgValue, color: '#fff' },
+      ],
+    }),
+    [outflow, filterByTime.currentFilterTab, currentHour],
+  )
 
-  const convertedTurbineflowData = {
-    title: 'Lưu lượng chạy máy (Qcm)',
-    // data: turbineflow?.turbinflowData ? getFromPastToCurrentData(turbineflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
-    // data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
-    data: turbineflow?.todayUpstream ? getFromPastToCurrentData(turbineflow?.todayUpstream) : [],
-    data2: turbineflow?.samePeriodUpstream ? getFromPastToCurrentData(turbineflow?.samePeriodUpstream) : [],
-    currentColor: '#10B981',
-    unit: turbineflow?.unit,
-    flowRateInfo: [
-      { label: 'Hiện tại', value: turbineflow?.currentValue, color: '#10B981' },
-      { label: 'Cao nhất', value: turbineflow?.maxValue, color: '#fff' },
-      { label: 'TB ngày', value: turbineflow?.avgValue, color: '#fff' },
-    ],
-  }
+  const convertedTurbineflowData = useMemo(
+    () => ({
+      title: 'Lưu lượng chạy máy (Qcm)',
+      // data: turbineflow?.turbinflowData ? getFromPastToCurrentData(turbineflow?.turbinflowData) : [],  // api v1 dùng turbinflowData và samePeriodTurbinflowData
+      // data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
+      data: prepareChartData(turbineflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
+      data2: prepareChartData(turbineflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
+      currentColor: '#10B981',
+      unit: turbineflow?.unit,
+      flowRateInfo: [
+        { label: 'Hiện tại', value: turbineflow?.currentValue, color: '#10B981' },
+        { label: 'Cao nhất', value: turbineflow?.maxValue, color: '#fff' },
+        { label: 'TB ngày', value: turbineflow?.avgValue, color: '#fff' },
+      ],
+    }),
+    [turbineflow, filterByTime.currentFilterTab, currentHour],
+  )
 
   return (
     <ScrollView>
@@ -281,7 +289,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedUpstreamData.currentColor}
               unit={convertedUpstreamData.unit}
               flowRateInfo={convertedUpstreamData.flowRateInfo}
-              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
+              showPointer={
+                filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false
+              }
             />
           </LazySection>
         </View>
@@ -294,7 +304,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedInflowData.currentColor}
               unit={convertedInflowData.unit}
               flowRateInfo={convertedInflowData.flowRateInfo}
-              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
+              showPointer={
+                filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false
+              }
             />
           </LazySection>
         </View>
@@ -307,7 +319,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedTurbineflowData.currentColor}
               unit={convertedTurbineflowData.unit}
               flowRateInfo={convertedTurbineflowData.flowRateInfo}
-              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
+              showPointer={
+                filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false
+              }
             />
           </LazySection>
         </View>
@@ -320,7 +334,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
               currentColor={convertedOutflowData.currentColor}
               unit={convertedOutflowData.unit}
               flowRateInfo={convertedOutflowData.flowRateInfo}
-              showPointer={filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false}
+              showPointer={
+                filterByTime.currentFilterTab === 'day' || filterByTime.currentFilterTab === 'month' ? true : false
+              }
             />
           </LazySection>
         </View>
