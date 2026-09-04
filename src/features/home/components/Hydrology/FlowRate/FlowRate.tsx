@@ -29,10 +29,21 @@ interface FlowRateProps {
   showPointer?: boolean
 }
 
-const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff', unit, title, flowRateInfo = [], showPointer = false }) => {
+const FlowRate: React.FC<FlowRateProps> = ({
+  data,
+  data2,
+  currentColor = '#fff',
+  unit,
+  title,
+  flowRateInfo = [],
+  showPointer = false,
+}) => {
   // Nếu type = 'output', hiển thị đầy đủ 3 items
   const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
   const currentFilterTab = filterByTime?.currentFilterTab
+  // Giu nguyen reference du lieu khi parent render vi ly do khong lien quan, vi du khi cuon doc.
+  const chartData = useMemo(() => data.map((item, index) => ({ ...item, id: index })), [data])
+  const comparisonChartData = useMemo(() => data2.map((item, index) => ({ ...item, id: index })), [data2])
   const legendItems: LegendItemData[] =
     currentFilterTab === 'year'
       ? []
@@ -56,8 +67,8 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
       </View>
       <View style={{ marginBottom: 20 }}>
         <LineChart
-          data={data.map((item, i:number) => ({ ...item, id: i }))}
-          data2={data2.map((item, i:number) => ({ ...item, id: i }))}
+          data={chartData}
+          data2={comparisonChartData}
           height={px(200)}
           color={currentColor}
           color2="#A78BFA"
@@ -86,4 +97,5 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
   )
 }
 
-export default FlowRate
+// Tranh ve lai bieu do khi bieu do thuy van khac hoac vi tri cuon thay doi.
+export default React.memo(FlowRate)
