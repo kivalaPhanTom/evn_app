@@ -1,10 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, StyleSheet, Animated, Pressable } from 'react-native'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { View, Text, StyleSheet, Animated, Pressable, Easing } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
-import { getHydrologyflowChart, getInflowOutflow, getHydrographicChart, getHydrologyPlantsParam } from '@/core/redux/Actions/HydrologyActions'
+import {
+  getHydrologyflowChart,
+  getInflowOutflow,
+  getHydrographicChart,
+  getHydrologyPlantsParam,
+} from '@/core/redux/Actions/HydrologyActions'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
@@ -42,20 +47,18 @@ const getColorByIndex = (index: number): string => {
   return plantColors[index % plantColors.length]
 }
 
-const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPress: () => void; isLastTab?: boolean; index: number }> = ({
-  data,
-  isActive,
-  onPress,
-  isLastTab = false,
-  index,
-}) => {
+const WaterLevelCard: React.FC<{
+  data: WaterLevelData
+  isActive: boolean
+  onPress: () => void
+  isLastTab?: boolean
+  index: number
+}> = ({ data, isActive, onPress, isLastTab = false, index }) => {
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
   const MAX_TANK_HEIGHT = 700
 
   // waterHeight tính theo currentLevel, referenceLevel cố định để vẽ đường reference line
-  const waterHeightPercent = (data.currentLevel / MAX_TANK_HEIGHT) * 100
-  const waterHeight = (waterHeightPercent / 100) * containerHeight
   // MaxLevel line position: tính toán giống như reference line
   const maxLevelYRaw = containerHeight - (data.maxLevel / MAX_TANK_HEIGHT) * containerHeight
   const referenceYRaw = containerHeight - (data.referenceLevel / MAX_TANK_HEIGHT) * containerHeight
@@ -85,14 +88,7 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
   // Thêm offset ban đầu khác nhau cho mỗi tab dựa trên index để tạo hiệu ứng không đồng bộ
   // Mỗi tab có offset khác nhau: 0, Math.PI/2, Math.PI, etc.
   const initialOffset = index * (Math.PI / 2)
-  const waveOffset1 = useRef(new Animated.Value(initialOffset)).current
-  const waveOffset2 = useRef(new Animated.Value(initialOffset * 1.2)).current
-  const waveOffsetBottom1 = useRef(new Animated.Value(initialOffset * 0.8)).current
-  const waveOffsetBottom2 = useRef(new Animated.Value(initialOffset * 1.1)).current
-  const [wavePath1, setWavePath1] = useState('')
-  const [wavePath2, setWavePath2] = useState('')
-  const [wavePathBottom1, setWavePathBottom1] = useState('')
-  const [wavePathBottom2, setWavePathBottom2] = useState('')
+  const waveTranslateX = useRef(new Animated.Value(0)).current
 
   // Tạo path sóng: trong SVG y=0 là top (reference line), y=waveHeight là bottom
   const createWavePath = (offset: number, amplitude: number, frequency: number, width: number, waveHeight: number) => {
@@ -114,129 +110,40 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
     return path
   }
 
-  const createBottomWavePath = (
-    offset: number,
-    amplitude: number,
-    frequency: number,
-    width: number,
-    height: number,
-  ) => {
-    if (width <= 0 || height <= 0) return ''
-    const steps = 60
-    const centerY = height / 2
-    let path = `M 0 0`
+  const amplitude1 = waveAreaHeight > 0 ? Math.max(8, waveAreaHeight * 0.15) : 8
+  const amplitude2 = waveAreaHeight > 0 ? Math.max(6, waveAreaHeight * 0.12) : 6
+  const tiledWaveWidth = containerWidth * 2
+  const waveFrequency = containerWidth > 0 ? (Math.PI * 2) / containerWidth : 0
 
-    for (let i = 0; i <= steps; i++) {
-      const x = (i / steps) * width
-      const waveY = amplitude * Math.sin(x * frequency + offset)
-      const y = centerY + waveY
-      const clampedY = Math.max(0, Math.min(height, y))
-      path += ` L ${x} ${clampedY}`
-    }
-    path += ` L ${width} 0 Z`
-    return path
-  }
+  // Path SVG chi duoc tao lai khi kich thuoc/muc nuoc thay doi, khong tao lai o moi frame animation.
+  const wavePath1 = useMemo(
+    () => createWavePath(initialOffset, amplitude1, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    [amplitude1, initialOffset, tiledWaveWidth, waveAreaHeight, waveFrequency],
+  )
+  const wavePath2 = useMemo(
+    () => createWavePath(initialOffset + Math.PI, amplitude2, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    [amplitude2, initialOffset, tiledWaveWidth, waveAreaHeight, waveFrequency],
+  )
 
   useEffect(() => {
     if (containerWidth <= 0) return
 
-    const amplitude1 = waveAreaHeight > 0 ? Math.max(8, waveAreaHeight * 0.15) : 8
-    const amplitude2 = waveAreaHeight > 0 ? Math.max(6, waveAreaHeight * 0.12) : 6
-    const amplitudeBottom1 = waterHeight > 0 ? Math.max(8, waterHeight * 0.15) : 8
-    const amplitudeBottom2 = waterHeight > 0 ? Math.max(6, waterHeight * 0.12) : 6
-
-    if (waveAreaHeight > 0) {
-      setWavePath1(createWavePath(initialOffset, amplitude1, 0.02, containerWidth, waveAreaHeight))
-      setWavePath2(createWavePath(initialOffset * 1.2, amplitude2, 0.025, containerWidth, waveAreaHeight))
-    }
-
-    if (waterHeight > 0) {
-      setWavePathBottom1(
-        createBottomWavePath(initialOffset * 0.8, amplitudeBottom1, 0.015, containerWidth, waterHeight),
-      )
-      setWavePathBottom2(
-        createBottomWavePath(initialOffset * 1.1, amplitudeBottom2, 0.018, containerWidth, waterHeight),
-      )
-    }
-
-    // Tốc độ animation khác nhau dựa trên index: mỗi tab nhanh hơn 0.5s
-    const speedOffset = index * 500 // Giảm duration để animation nhanh hơn
-    const duration1 = Math.max(3000, 6000 - speedOffset) // Tối thiểu 3s
-    const duration2 = Math.max(4000, 7500 - speedOffset) // Tối thiểu 4s
-    const durationBottom1 = Math.max(3500, 6500 - speedOffset) // Tối thiểu 3.5s
-    const durationBottom2 = Math.max(4500, 8000 - speedOffset) // Tối thiểu 4.5s
-
-    const anim1 = Animated.loop(
-      Animated.timing(waveOffset1, {
-        toValue: initialOffset + Math.PI * 2,
-        duration: duration1,
-        useNativeDriver: false,
+    waveTranslateX.setValue(0)
+    // Chi translate mot path tinh tren UI thread; khong setState va render lai React theo tung frame.
+    const animation = Animated.loop(
+      Animated.timing(waveTranslateX, {
+        toValue: -containerWidth,
+        duration: Math.max(4000, 7000 - index * 500),
+        easing: Easing.linear,
+        useNativeDriver: true,
       }),
-      { iterations: -1 },
     )
-    const anim2 = Animated.loop(
-      Animated.timing(waveOffset2, {
-        toValue: initialOffset * 1.2 + Math.PI * 2,
-        duration: duration2,
-        useNativeDriver: false,
-      }),
-      { iterations: -1 },
-    )
-    const animBottom1 = Animated.loop(
-      Animated.timing(waveOffsetBottom1, {
-        toValue: initialOffset * 0.8 + Math.PI * 2,
-        duration: durationBottom1,
-        useNativeDriver: false,
-      }),
-      { iterations: -1 },
-    )
-    const animBottom2 = Animated.loop(
-      Animated.timing(waveOffsetBottom2, {
-        toValue: initialOffset * 1.1 + Math.PI * 2,
-        duration: durationBottom2,
-        useNativeDriver: false,
-      }),
-      { iterations: -1 },
-    )
-
-    const listener1 = waveOffset1.addListener(({ value }) => {
-      if (waveAreaHeight > 0) {
-        setWavePath1(createWavePath(value, amplitude1, 0.02, containerWidth, waveAreaHeight))
-      }
-    })
-    const listener2 = waveOffset2.addListener(({ value }) => {
-      if (waveAreaHeight > 0) {
-        setWavePath2(createWavePath(value, amplitude2, 0.025, containerWidth, waveAreaHeight))
-      }
-    })
-    const listenerBottom1 = waveOffsetBottom1.addListener(({ value }) => {
-      if (waterHeight > 0) {
-        setWavePathBottom1(createBottomWavePath(value, amplitudeBottom1, 0.015, containerWidth, waterHeight))
-      }
-    })
-    const listenerBottom2 = waveOffsetBottom2.addListener(({ value }) => {
-      if (waterHeight > 0) {
-        setWavePathBottom2(createBottomWavePath(value, amplitudeBottom2, 0.018, containerWidth, waterHeight))
-      }
-    })
-
-    anim1.start()
-    anim2.start()
-    animBottom1.start()
-    animBottom2.start()
+    animation.start()
 
     return () => {
-      anim1.stop()
-      anim2.stop()
-      animBottom1.stop()
-      animBottom2.stop()
-      waveOffset1.removeListener(listener1)
-      waveOffset2.removeListener(listener2)
-      waveOffsetBottom1.removeListener(listenerBottom1)
-      waveOffsetBottom2.removeListener(listenerBottom2)
+      animation.stop()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [containerWidth, waveAreaHeight, waterHeight])
+  }, [containerWidth, index, waveTranslateX])
 
   return (
     <View
@@ -316,43 +223,51 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                             left: 0,
                             right: 0,
                             height: waveAreaHeight,
-                            overflow: 'visible',
+                            overflow: 'hidden',
                             zIndex: 1,
                           }}
                         >
-                          <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
-                            <Defs>
-                              {isLowWaterLevel ? (
-                                <>
-                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
-                                  </LinearGradient>
-                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
-                                  </LinearGradient>
-                                </>
-                              ) : (
-                                <>
-                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                                  </LinearGradient>
-                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                                  </LinearGradient>
-                                </>
-                              )}
-                            </Defs>
-                            {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
-                            {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
-                          </Svg>
+                          <Animated.View
+                            style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              transform: [{ translateX: waveTranslateX }],
+                            }}
+                          >
+                            <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                              <Defs>
+                                {isLowWaterLevel ? (
+                                  <>
+                                    <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                    </LinearGradient>
+                                    <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                    </LinearGradient>
+                                  </>
+                                ) : (
+                                  <>
+                                    <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                    </LinearGradient>
+                                    <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                    </LinearGradient>
+                                  </>
+                                )}
+                              </Defs>
+                              {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
+                              {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
+                            </Svg>
+                          </Animated.View>
                         </View>
                       )}
 
@@ -434,43 +349,51 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
                           left: 0,
                           right: 0,
                           height: waveAreaHeight,
-                          overflow: 'visible',
+                          overflow: 'hidden',
                           zIndex: 1,
                         }}
                       >
-                        <Svg height={waveAreaHeight} width={containerWidth} style={{ position: 'absolute', bottom: 0 }}>
-                          <Defs>
-                            {isLowWaterLevel ? (
-                              <>
-                                <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
-                                </LinearGradient>
-                                <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
-                                </LinearGradient>
-                              </>
-                            ) : (
-                              <>
-                                <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                                </LinearGradient>
-                                <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                  <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                  <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                                </LinearGradient>
-                              </>
-                            )}
-                          </Defs>
-                          {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
-                          {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
-                        </Svg>
+                        <Animated.View
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            transform: [{ translateX: waveTranslateX }],
+                          }}
+                        >
+                          <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                            <Defs>
+                              {isLowWaterLevel ? (
+                                <>
+                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                  </LinearGradient>
+                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                  </LinearGradient>
+                                </>
+                              ) : (
+                                <>
+                                  <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                  </LinearGradient>
+                                  <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                  </LinearGradient>
+                                </>
+                              )}
+                            </Defs>
+                            {wavePath1 && <Path d={wavePath1} fill={`url(#waveGrad-${data.id})`} opacity={0.8} />}
+                            {wavePath2 && <Path d={wavePath2} fill={`url(#waveGrad-${data.id})`} opacity={0.6} />}
+                          </Svg>
+                        </Animated.View>
                       </View>
                     )}
 
@@ -517,16 +440,13 @@ const WaterLevelCard: React.FC<{ data: WaterLevelData; isActive: boolean; onPres
 
 const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
   let result = 0
-  const findHydrologyItem = hydrologyPlants.find(e => e.abbreviation === hydroElectricId)
+  const findHydrologyItem = hydrologyPlants.find((e) => e.abbreviation === hydroElectricId)
   if (findHydrologyItem) result = findHydrologyItem.referenceLevel
   return result
 }
 
 const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
-  return hydrologyPlants.reduce(
-    (max, item) => Math.max(max, item.maxLevel),
-    0
-  )
+  return hydrologyPlants.reduce((max, item) => Math.max(max, item.maxLevel), 0)
 }
 const Overview: React.FC = () => {
   const dispatch = useDispatch()
@@ -566,40 +486,46 @@ const Overview: React.FC = () => {
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const hydroElectricId = activeData?.abbreviation || ''
   const currentPlantId = activeData ? activeData.symbol : ''
-  console.log(currentPlantId);
+  console.log(currentPlantId)
   const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
   const maxLevel = getMaxLevel(hydrologyPlants.plantsData)
   useEffect(() => {
-    let companyId = ""
+    let companyId = ''
     switch (hydroElectricId) {
-      case "buon-tua-srah":
-        companyId = "BTS"
-        break;
-      case "buon-kuop":
-        companyId = "BK"
-        break;
-      case "srepok-3":
-        companyId = "SP3"
-        break;
+      case 'buon-tua-srah':
+        companyId = 'BTS'
+        break
+      case 'buon-kuop':
+        companyId = 'BK'
+        break
+      case 'srepok-3':
+        companyId = 'SP3'
+        break
       default:
         // companyId = hydroElectricId
-        break;
+        break
     }
-    if (companyId !== "") {
-      const type = selectedOptionsValue === "7_DAYS" ? "day" : ""
-      dispatch(getHydrographicChart({
-        companyId: companyId,
-        type: type
-      }))
+    if (companyId !== '') {
+      const type = selectedOptionsValue === '7_DAYS' ? 'day' : ''
+      dispatch(
+        getHydrographicChart({
+          companyId: companyId,
+          type: type,
+        }),
+      )
       dispatch(getInflowOutflow({ hydroElectricId: companyId }))
     }
-
-
   }, [hydroElectricId, countRefesh, dispatch, selectedOptionsValue])
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (
-      <AnimatedCardContainer noneBackground={true} backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
+      <AnimatedCardContainer
+        noneBackground={true}
+        backgroundColor={'transparent'}
+        borderWidth={0}
+        style={{ elevation: 0 }}
+        borderRadius={0}
+      >
         <View style={[styles.container, { margin: -24 }]}>
           {/* Skeleton cho tabs */}
           <View style={styles.tabsContainer}>
@@ -632,7 +558,13 @@ const Overview: React.FC = () => {
   }
 
   return (
-    <AnimatedCardContainer noneBackground={true} backgroundColor={'transparent'} borderWidth={0} style={{ elevation: 0 }} borderRadius={0}>
+    <AnimatedCardContainer
+      noneBackground={true}
+      backgroundColor={'transparent'}
+      borderWidth={0}
+      style={{ elevation: 0 }}
+      borderRadius={0}
+    >
       <View style={[styles.container, { margin: -24 }]}>
         <View style={styles.tabsContainer}>
           {waterData.map((data, index) => (
@@ -663,14 +595,14 @@ const Overview: React.FC = () => {
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
                 bgColor={'#1c056eff'}
-                selectedOptionsValue = {selectedOptionsValue}
+                selectedOptionsValue={selectedOptionsValue}
               />
               <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
             </>
           )}
         </View>
-      </View >
-    </AnimatedCardContainer >
+      </View>
+    </AnimatedCardContainer>
   )
 }
 
