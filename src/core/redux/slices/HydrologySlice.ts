@@ -364,6 +364,13 @@ const hydrologySlice = createSlice({
     setTurbineflow: (state, action) => {
       state.turbineflow = action.payload
     },
+    // Ghi ca 4 ket qua trong mot reducer pass, tranh 4 lan render man hinh lien tiep.
+    setHydrologyComparisonData: (state, action) => {
+      state.upstreamWaterLevel = action.payload.upstreamWaterLevel
+      state.inflow = action.payload.inflow
+      state.outflow = action.payload.outflow
+      state.turbineflow = action.payload.turbineflow
+    },
     setPowerStoreInLake: (state, action) => {
       state.powerStoreInLake = action.payload
     },
@@ -409,6 +416,7 @@ export const {
   setInflow,
   setOutflow,
   setTurbineflow,
+  setHydrologyComparisonData,
   setPowerStoreInLake,
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
