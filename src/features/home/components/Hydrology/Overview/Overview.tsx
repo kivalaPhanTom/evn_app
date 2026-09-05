@@ -9,7 +9,7 @@ import {
   getInflowOutflow,
   getHydrographicChart,
   getHydrologyPlantsParam,
-} from '@/core/redux/Actions/HydrologyActions'
+} from '@/core/redux/domains/hydrology'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'

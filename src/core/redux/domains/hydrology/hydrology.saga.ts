@@ -22,7 +22,7 @@ import {
   getTurbineflow3,
   getHydrologyComparison,
   HydrologyComparisonPayload,
-} from '../Actions/HydrologyActions'
+} from './hydrology.actions'
 import { Service } from '@/core/service/hydrologyService'
 import {
   setInflowOutflow,
@@ -39,8 +39,7 @@ import {
   setOperateWaterLevel,
   setPowerStoreInLakeFactDetail,
   setLoading,
-  setHydrologyComparisonData,
-} from '../slices/HydrologySlice'
+} from './hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
 
 function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyComparison>): Generator {
@@ -118,15 +117,13 @@ function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyCompa
           ]
 
     // Chay 4 request song song, sau do day toan bo ket qua vao Redux trong mot lan.
+    // Van ghi vao 4 field cu (upstreamWaterLevel, inflow, outflow, turbineflow) de
+    // HydrologyDetail va cac component lien quan doc duoc binh thuong.
     const [upstreamResponse, inflowResponse, outflowResponse, turbineResponse]: any[] = yield all(requests)
-    yield put(
-      setHydrologyComparisonData({
-        upstreamWaterLevel: upstreamResponse.data,
-        inflow: inflowResponse.data,
-        outflow: outflowResponse.data,
-        turbineflow: turbineResponse.data,
-      }),
-    )
+    if (upstreamResponse?.status === 200) yield put(setUpStreamWaterLevel(upstreamResponse.data))
+    if (inflowResponse?.status === 200) yield put(setInflow(inflowResponse.data))
+    if (outflowResponse?.status === 200) yield put(setOutflow(outflowResponse.data))
+    if (turbineResponse?.status === 200) yield put(setTurbineflow(turbineResponse.data))
   } catch (error) {
     catchHandle(error, 'getHydrologyComparisonSaga')
   }
@@ -290,6 +287,12 @@ function* getInflow3ApiSaga(action: ReturnType<typeof getInflow3>): Generator {
       compareToDate: string
       type: string
     }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
     const res = yield call(
       Service.getInflowApi_3,
       currentPlantId,
@@ -330,6 +333,11 @@ function* getOutflow2ApiSaga(action: ReturnType<typeof getOutflow2>): Generator 
       compareDate: string
       type: string
     }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentDate = payload?.currentDate || ''
+    const compareDate = payload?.compareDate || ''
+    const type = payload?.type || ''
+    const res = yield call(Service.getOutflowApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
       yield put(setOutflow(res.data))
     }
@@ -348,6 +356,12 @@ function* getOutflow3ApiSaga(action: ReturnType<typeof getOutflow3>): Generator 
       compareToDate: string
       type: string
     }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
     const res = yield call(
       Service.getOutflowApi_3,
       currentPlantId,
@@ -388,6 +402,11 @@ function* getTurbineflow2ApiSaga(action: ReturnType<typeof getTurbineflow2>): Ge
       compareDate: string
       type: string
     }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentDate = payload?.currentDate || ''
+    const compareDate = payload?.compareDate || ''
+    const type = payload?.type || ''
+    const res = yield call(Service.getTurbineFlowApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
       yield put(setTurbineflow(res.data))
     }
@@ -407,6 +426,11 @@ function* getTurbineflow3ApiSaga(action: ReturnType<typeof getTurbineflow3>): Ge
       type: string
     }
     const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
     const res = yield call(
       Service.getTurbineFlowApi_3,
       currentPlantId,
