@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Text, View } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import styles from './WaterLevelByHours.styles'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import { RootState } from '@/core/redux/store'
 interface PlantsData {
@@ -21,9 +21,9 @@ interface WaterLevelByHoursProps {
 }
 function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const { currentPlantId } = props
-  const dispatch = useDispatch()
-  const { hydrologyCharData, selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
-  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const { hydrologyCharData, selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
   const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
     let result = 0
     const findHydrologyItem = hydrologyPlants.find(e => e.symbol === hydroElectricId)

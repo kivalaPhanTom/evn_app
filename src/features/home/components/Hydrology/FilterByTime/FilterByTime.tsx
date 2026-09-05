@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { View, Text, Animated } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import dayjs, { Dayjs } from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { Toast } from 'toastify-react-native'
@@ -9,7 +9,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { TabSwitcher } from '@/components/TabSwitcher/TabSwitcher.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
-import { setFilterByTime } from '@/core/redux/slices/HydrologySlice'
+import { setFilterByTime } from '@/core/redux/domains/hydrology'
 import { px } from '@/core/utils/scale'
 import styles from './FilterByTime.styles'
 
@@ -35,11 +35,11 @@ const colStyle = {
 }
 
 const FilterByTime: React.FC<FilterByTimeProps> = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const contentAnim = useRef(new Animated.Value(1)).current
 
-  const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
+  const filterByTime = useAppSelector((state: any) => state.hydrologySlice.filterByTime)
   const [tab, setTab] = useState<FilterTab>(filterByTime.currentFilterTab || 'hour')
   const handleTabChange = (newTab: FilterTab) => {
     setTab(newTab)

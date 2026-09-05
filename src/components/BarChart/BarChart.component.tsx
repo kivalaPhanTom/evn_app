@@ -27,8 +27,8 @@ interface Props {
   spacing?: number
   rounded?: boolean
   frontColor?: string
-  showHorizontalGrid?: boolean // hiển thị grid ngang
-  showYAxis?: boolean // hiển thị trục tung và nhãn trục tung
+  showHorizontalGrid?: boolean // hi?n th? grid ngang
+  showYAxis?: boolean // hi?n th? tr?c tung v� nh�n tr?c tung
   groupInnerSpacing?: number
   barRadius?: number
   showLine?: boolean
@@ -84,7 +84,7 @@ const BarChart: React.FC<Props> = ({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
-  // Trạng thái nhóm đang được chọn
+  // Tr?ng th�i nh�m dang du?c ch?n
   const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null)
   const [selectedGroupItems, setSelectedGroupItems] = useState<BarPoint[] | null>(null)
 
@@ -141,36 +141,36 @@ const BarChart: React.FC<Props> = ({
 
             const isLastOverall = gIdx === data.length - 1 && isLastInGroup
 
-            // Tính toán offset cho label dựa trên chiều cao của lineData1 và lineData2
-            // topLabelComponent được render ở trên cùng của bar (đầu bar)
-            // Nếu line cao hơn bar, cần đẩy label lên trên để nằm trên cả line
-            // Luôn có một offset nhỏ mặc định để label không quá gần đầu bar
-            const defaultOffset = px.v(topLabelOffset) // Offset mặc định để label có khoảng cách với đầu bar
+            // T�nh to�n offset cho label d?a tr�n chi?u cao c?a lineData1 v� lineData2
+            // topLabelComponent du?c render ? tr�n c�ng c?a bar (d?u bar)
+            // N?u line cao hon bar, c?n d?y label l�n tr�n d? n?m tr�n c? line
+            // Lu�n c� m?t offset nh? m?c d?nh d? label kh�ng qu� g?n d?u bar
+            const defaultOffset = px.v(topLabelOffset) // Offset m?c d?nh d? label c� kho?ng c�ch v?i d?u bar
             let labelOffset = defaultOffset
-            // Ẩn logic tính toán label của biểu đồ cột
+            // ?n logic t�nh to�n label c?a bi?u d? c?t
             // if (paddedMax > 0) {
             //   const barValue = item.value
-            //   // Chiều cao của bar từ dưới lên trên (trong hệ tọa độ Y từ dưới lên)
+            //   // Chi?u cao c?a bar t? du?i l�n tr�n (trong h? t?a d? Y t? du?i l�n)
             //   const barHeight = (barValue / paddedMax) * height
 
-            //   // Kiểm tra lineData1
+            //   // Ki?m tra lineData1
             //   if (lineData1 && lineData1.length > globalIndex && lineData1[globalIndex]) {
             //     const line1Value = lineData1[globalIndex].value || 0
             //     const line1Height = (line1Value / paddedMax) * height
-            //     // Nếu line cao hơn bar, tính offset cần thiết
+            //     // N?u line cao hon bar, t�nh offset c?n thi?t
             //     if (line1Height > barHeight) {
-            //       const offset = line1Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+            //       const offset = line1Height - barHeight + px.v(12) // Th�m padding d? label kh�ng qu� g?n line
             //       labelOffset = Math.max(labelOffset, offset)
             //     }
             //   }
 
-            //   // Kiểm tra lineData2
+            //   // Ki?m tra lineData2
             //   if (lineData2 && lineData2.length > globalIndex && lineData2[globalIndex]) {
             //     const line2Value = lineData2[globalIndex].value || 0
             //     const line2Height = (line2Value / paddedMax) * height
-            //     // Nếu line cao hơn bar, tính offset cần thiết
+            //     // N?u line cao hon bar, t�nh offset c?n thi?t
             //     if (line2Height > barHeight) {
-            //       const offset = line2Height - barHeight + px.v(12) // Thêm padding để label không quá gần line
+            //       const offset = line2Height - barHeight + px.v(12) // Th�m padding d? label kh�ng qu� g?n line
             //       labelOffset = Math.max(labelOffset, offset)
             //     }
             //   }
@@ -213,7 +213,7 @@ const BarChart: React.FC<Props> = ({
       }
     }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height, topLabelOffset]) || []
 
-  // Tính toán vị trí overlay theo index nhóm
+  // T�nh to�n v? tr� overlay theo index nh�m
   const getGroupMetrics = (gIdx: number | null) => {
     if (gIdx === null) return null
     const n = data[gIdx]?.items.length ?? 0
@@ -230,7 +230,7 @@ const BarChart: React.FC<Props> = ({
     const initialSpacing = spacing
     const yAxisLabelWidthOffset = showYAxis ? 20 : 0 // default width used by gifted charts
 
-    // Mép trái đúng của toàn nhóm (bắt đầu từ mép trái cột đầu tiên)
+    // M�p tr�i d�ng c?a to�n nh�m (b?t d?u t? m�p tr�i c?t d?u ti�n)
     const left = wrapPadding + yAxisLabelWidthOffset + initialSpacing + beforeGroupsWidth + gIdx * spacing
 
     return { left, width: groupWidth }
@@ -240,7 +240,7 @@ const BarChart: React.FC<Props> = ({
 
   return (
     <View style={styles.wrap}>
-      {/* Overlay xám bao nhóm */}
+      {/* Overlay x�m bao nh�m */}
       {selectedMetrics && showCustomTooltip && (
         <View
           pointerEvents="none"
@@ -249,7 +249,7 @@ const BarChart: React.FC<Props> = ({
             {
               left: selectedMetrics.left + 10,
               width: selectedMetrics.width + px.h(15),
-              // đặt overlay sao cho chân chạm trục hoành (x-axis)
+              // d?t overlay sao cho ch�n ch?m tr?c ho�nh (x-axis)
               top:
                 height -
                 ((selectedGroupItems && selectedGroupItems.length > 0
@@ -258,7 +258,7 @@ const BarChart: React.FC<Props> = ({
                   paddedMax) *
                   height +
                 5,
-              // chiều cao overlay = chiều cao cột cao nhất trong nhóm + 10
+              // chi?u cao overlay = chi?u cao c?t cao nh?t trong nh�m + 10
               height:
                 ((selectedGroupItems && selectedGroupItems.length > 0
                   ? Math.max(...selectedGroupItems.map((i) => i.value))
@@ -273,7 +273,7 @@ const BarChart: React.FC<Props> = ({
         />
       )}
 
-      {/* Tooltip hiển thị giá trị từng cột */}
+      {/* Tooltip hi?n th? gi� tr? t?ng c?t */}
       {selectedMetrics && selectedGroupItems && showCustomTooltip && (
         <View
           pointerEvents="none"

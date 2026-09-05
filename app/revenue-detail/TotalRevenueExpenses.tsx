@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/core/redux/hooks'
 import TotalRevenueExpensesItem from './TotalRevenueExpensesItem';
 
 
 export default function TotalRevenueExpenses() {
-    const { revenueCostSummary } = useSelector((state: any) => state.revenueProfitSlice)
+    const { revenueCostSummary } = useAppSelector((state: any) => state.revenueProfitSlice)
     return (
         <View style={[styles.card]}>
             <Text style={{ color: '#94A3B8', marginTop: 5, fontWeight: '700' }}>

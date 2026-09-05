@@ -82,7 +82,7 @@ export default function DatePicker({
               locale="vi"
               onChange={(params) => {
                 if (params.date) {
-                  onChange(params.date)
+                  onChange(dayjs(params.date).toDate())
                   setShowModal(false)
                 }
               }}

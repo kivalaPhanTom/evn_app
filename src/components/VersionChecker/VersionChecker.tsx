@@ -58,9 +58,7 @@ const VersionChecker: React.FC = () => {
   const openStore = async () => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android'
 
-    const link = payload?.storeUrl?.find(
-      item => item.platform === platform
-    )?.url
+    const link = payload?.storeUrl?.[platform]
 
     if (!link) return
 
@@ -76,11 +74,11 @@ const VersionChecker: React.FC = () => {
       <View style={styles.overlay}>
         <View style={styles.box}>
           <Text style={styles.message}>
-            {payload?.message || 'Ứng dụng đã có phiên bản mới.\nVui lòng tải phiên bản mới để tiếp tục.'}
+            {payload?.message || '?ng d?ng d� c� phi�n b?n m?i.\nVui l�ng t?i phi�n b?n m?i d? ti?p t?c.'}
           </Text>
           <View style={styles.actions}>
             <GradientButton
-              title={'CẬP NHẬT'}
+              title={'C?P NH?T'}
               onPress={openStore}
               //loading={loading}
               gradientColors={['#0EA5E9', '#06B6D4']}

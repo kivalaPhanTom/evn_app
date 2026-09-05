@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useRouter } from 'expo-router'
 import { View } from 'react-native'
 import styles from './ProductionOutput.styles'
 import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/ProductOutputRencentDays'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { RootState } from '@/core/redux/store'
-import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDays } from '@/core/redux/Actions/ProductOutputActions'
+import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDays } from '@/core/redux/domains/production-output'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 
 function ProductionOutput() {
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const router = useRouter()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     productOutputOverview: { totalPower, averagePower, powerSources },
     isLoadingOverview
-  } = useSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByHours, isLoadingByHours } = useSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useSelector((state: RootState) => state.productOutputSlice)
+  } = useAppSelector((state: RootState) => state.productOutputSlice)
+  const { productOutputByHours, isLoadingByHours } = useAppSelector((state: RootState) => state.productOutputSlice)
+  const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useAppSelector((state: RootState) => state.productOutputSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
 
   useAlignedHourlyTimer(() => {

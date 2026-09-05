@@ -1,10 +1,10 @@
 export function mapStatusVNToEN(status: string): string {
     switch (status) {
-        case 'Mới':
+        case 'M?i':
             return 'NEW';
-        case 'Đang xử lý':
+        case '�ang x? l�':
             return 'DOING';
-        case 'Đã xử lý':
+        case '�� x? l�':
             return 'DONE';
         default:
             return 'UNKNOWN';

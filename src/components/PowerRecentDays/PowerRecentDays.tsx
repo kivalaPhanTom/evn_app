@@ -78,7 +78,7 @@ function ValueCard({ day }: { day: PowerByDays }) {
 function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView | null>(null)
 
   const unit = 'MW'
   const lineChartData = powerData.map((item, idx) => ({

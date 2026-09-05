@@ -10,8 +10,8 @@ import FlowMetricCard from '@/components/FlowMetricCard/FlowMetricCard.component
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Image } from 'expo-image'
 import { CircleLineIcon } from '@/components/ui/circle-line-icon'
-import { useDispatch, useSelector } from 'react-redux'
-import { getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 import { isEmpty } from '@/core/utils/utils'
 
 interface InflowOutflowProps {
@@ -19,8 +19,8 @@ interface InflowOutflowProps {
 }
 
 const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
-  const dispatch = useDispatch()
-  const inflowOutflowData = useSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
+  const dispatch = useAppDispatch()
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]

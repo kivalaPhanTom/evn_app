@@ -11,7 +11,7 @@ import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Image } from 'expo-image'
 import { CircleLineIcon } from '@/components/ui/circle-line-icon'
 import CompareLegend from '@/core/shared/CompareLegend'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/core/redux/hooks'
 
 interface LegendItemData {
   type: 'box' | 'line'
@@ -39,7 +39,7 @@ const FlowRate: React.FC<FlowRateProps> = ({
   showPointer = false,
 }) => {
   // Nếu type = 'output', hiển thị đầy đủ 3 items
-  const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
+  const filterByTime = useAppSelector((state: any) => state.hydrologySlice.filterByTime)
   const currentFilterTab = filterByTime?.currentFilterTab
   // Giu nguyen reference du lieu khi parent render vi ly do khong lien quan, vi du khi cuon doc.
   const chartData = useMemo(() => data.map((item, index) => ({ ...item, id: index })), [data])

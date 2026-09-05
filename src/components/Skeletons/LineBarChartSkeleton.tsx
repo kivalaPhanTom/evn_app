@@ -140,7 +140,7 @@ interface LineBarChartSkeletonProps{
 const LineBarChartSkeleton: React.FC<LineBarChartSkeletonProps>  = (props) => {
   const {isShowLine = true, height = 200} = props
   const [chartWidth, setChartWidth] = useState(0);
-  const barHeights = ['25%', '35%', '60%', '45%', '75%', '90%'];
+  const barHeights: `${number}%`[] = ['25%', '35%', '60%', '45%', '75%', '90%'];
 
   return (
     <View style={styles.container}>

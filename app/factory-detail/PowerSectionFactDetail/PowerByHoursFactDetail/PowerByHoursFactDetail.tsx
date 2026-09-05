@@ -1,8 +1,8 @@
 import React, { use, useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { RootState } from '@/core/redux/store'
-import { useDispatch, useSelector } from 'react-redux'
-import { getPowerByTimeFactDetail } from '@/core/redux/Actions/PowerActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getPowerByTimeFactDetail } from '@/core/redux/domains/power'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
 interface Props {
   currentPlantId: string
@@ -25,11 +25,11 @@ interface PowerByTime {
 function PowerByHoursFactDetail(props: Props) {
   const router = useRouter()
   const { currentPlantId, keyTab } = props
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const dispatch = useAppDispatch()
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useSelector((state: any) => state.powerSlice.powerByTime)
+  const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useAppSelector((state: any) => state.powerSlice.powerByTime)
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
