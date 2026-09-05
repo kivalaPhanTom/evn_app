@@ -1,5 +1,25 @@
 import { createAction } from '@reduxjs/toolkit'
 
+// Payload gom 4 bieu do thuy van (MNTL, Qve, Qxt, Qcm) trong mot action de saga
+// chi dispatch Redux mot lan (fix lagging Hydrology).
+export type HydrologyComparisonPayload =
+  | {
+      version: 2
+      currentPlantId: string
+      currentDate: string
+      compareDate: string
+      type: string
+    }
+  | {
+      version: 3
+      currentPlantId: string
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      type: string
+    }
+
 export const getHydrologyflowChart = createAction<{ currentPlantId: string; date: string }>('GET_HYDROLOGY_FLOW_CHART')
 export const getInflowOutflow = createAction<{ hydroElectricId: string }>('GET_INFLOW_OUTFLOW')
 export const getHydrographicChart = createAction<{ companyId: string; type: string }>('GET_HYDROLOGY_GRAPHIC_CHART')
@@ -68,3 +88,6 @@ export const getTurbineflow3 = createAction<{
   compareToDate: string
   type: string
 }>('GET_TURBINE_FLOW_3')
+
+// Gom 4 bieu do thuy van bang mot action de Redux chi can cap nhat mot lan.
+export const getHydrologyComparison = createAction<HydrologyComparisonPayload>('GET_HYDROLOGY_COMPARISON')

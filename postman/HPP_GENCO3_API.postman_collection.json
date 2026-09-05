@@ -1,0 +1,1448 @@
+{
+  "info": {
+    "name": "HPP GENCO3 API",
+    "description": "Bộ sưu tập Postman cho toàn bộ API của app HPP GENCO3 (Expo Router + React Native).\n\n**Cách dùng:**\n1. Import file này vào Postman (Import -> File -> chọn file).\n2. Mở collection, vào tab **Variables** để chỉnh `baseUrl` (mặc định: `https://mygenco3-api.genco3.com/`).\n3. Chạy request **Auth -> Get Token** trước để lấy `access_token` (script tự động lưu vào biến collection `authToken`).\n4. Tất cả request khác đã được cấu hình tự động đính `Authorization: Bearer {{authToken}}`.\n\n**Base URL thật:** lấy từ `app.config.js` -> `API_BASE_URL`.\n**Prefix path:** `api/API` (xem `src/core/constants/vars.ts`).\n\nNguồn: tham chiếu toàn bộ service trong `src/core/service/`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "hpp-genco3-2026-09-05",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://mygenco3-api.genco3.com/",
+      "type": "string"
+    },
+    {
+      "key": "apiPrefix",
+      "value": "api/API",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "your_username",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "your_password",
+      "type": "string"
+    },
+    {
+      "key": "currentPlantId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "date",
+      "value": "05/09/2026",
+      "type": "string"
+    },
+    {
+      "key": "year",
+      "value": "2026",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Get Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}Token",
+              "host": ["{{baseUrl}}"],
+              "path": ["Token"]
+            },
+            "description": "Đăng nhập OAuth2 password flow. Trả về `access_token` và `expires_in`. Token tự động lưu vào biến collection `authToken` sau khi request thành công."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.access_token) {",
+                  "  pm.collectionVariables.set('authToken', json.access_token);",
+                  "  console.log('✅ authToken saved');",
+                  "} else {",
+                  "  console.log('❌ No access_token in response');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modules",
+      "item": [
+        {
+          "name": "Get Modules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/Get_Modules",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "Get_Modules"]
+            },
+            "description": "Danh sách module (cây menu). Nguồn: `modulesService.getModulesApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Document",
+      "item": [
+        {
+          "name": "Get Legal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/get_Legal",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "get_Legal"]
+            },
+            "description": "Tài liệu pháp lý. Nguồn: `documentService.getLegalApi`."
+          }
+        },
+        {
+          "name": "Get Existence",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/get_Existence?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "get_Existence"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tài liệu hiện hữu (tồn tại). Nguồn: `documentService.getExistenceApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "TechInfo",
+      "item": [
+        {
+          "name": "Get Specifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/get_Specifications?currentPlantId={{currentPlantId}}&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "get_Specifications"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Thông số kỹ thuật nhà máy. Nguồn: `techInfoService.getTechInfoApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Power",
+      "item": [
+        {
+          "name": "Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "overview"]
+            },
+            "description": "Tổng quan công suất. Nguồn: `powerService.getPowerOverviewApi`."
+          }
+        },
+        {
+          "name": "Power By Time",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/power_by_time_v2",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "power_by_time_v2"]
+            },
+            "description": "Công suất theo thời gian (phiên bản v2). Nguồn: `powerService.getPowerByTimeApi`."
+          }
+        },
+        {
+          "name": "Recent Days",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/Recent_days?nString=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "Recent_days"],
+              "query": [
+                {
+                  "key": "nString",
+                  "value": "7",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Công suất các ngày gần đây (mặc định 7 ngày). Nguồn: `powerService.getPowerByDaysApi`."
+          }
+        },
+        {
+          "name": "Compare Power",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ComparePower?tagetDate={{date}}&compareDate=05/09/2025&currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ComparePower"],
+              "query": [
+                {
+                  "key": "tagetDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "So sánh công suất giữa hai ngày. Nguồn: `powerService.getComparePowerApi`."
+          }
+        },
+        {
+          "name": "Overview Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/overview?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "overview"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tổng quan công suất theo từng nhà máy. Nguồn: `powerService.getPowerOverviewFactDetailApi`."
+          }
+        },
+        {
+          "name": "Power By Time Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/power_by_time_v2?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "power_by_time_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Công suất theo thời gian của từng nhà máy. Nguồn: `powerService.getPowerByTimeFactDetailApi`."
+          }
+        },
+        {
+          "name": "Recent Days Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/Recent_days?nString=7&currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "Recent_days"],
+              "query": [
+                {
+                  "key": "nString",
+                  "value": "7",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Công suất các ngày gần đây theo từng nhà máy. Nguồn: `powerService.getPowerByDaysFactDetailApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProductOutput",
+      "item": [
+        {
+          "name": "Product By Hours",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductByHours?date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductByHours"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng theo giờ trong ngày (mặc định = hôm nay). Nguồn: `productOutputService.getProductOutputByHoursApi`."
+          }
+        },
+        {
+          "name": "Product Output Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductOutputOverview?currentPlantId=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductOutputOverview"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tổng quan sản lượng. Nguồn: `productOutputService.getProductOutputOverviewApi`."
+          }
+        },
+        {
+          "name": "Product Recent Days",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/Product_Recent_Days?nString=7&samePeriod=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "Product_Recent_Days"],
+              "query": [
+                {
+                  "key": "nString",
+                  "value": "7",
+                  "type": "text"
+                },
+                {
+                  "key": "samePeriod",
+                  "value": "2025",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng các ngày gần đây và cùng kỳ năm trước. Nguồn: `productOutputService.getProductOutputByDaysApi`."
+          }
+        },
+        {
+          "name": "Product Cumulative Output",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductCummulativeOutput?type=&from=&to=&currentPlantId=&startEndOnly=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductCummulativeOutput"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "startEndOnly",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng luỹ kế theo khoảng thời gian. Nguồn: `productOutputService.getProductCummulativeOutputApi`."
+          }
+        },
+        {
+          "name": "Compare Product Output",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/CompareProductOutput?tagetDate={{date}}&compareDate=05/09/2025&currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "CompareProductOutput"],
+              "query": [
+                {
+                  "key": "tagetDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "So sánh sản lượng giữa hai ngày. Nguồn: `productOutputService.getCompareProductOutputApi`."
+          }
+        },
+        {
+          "name": "Product Output Overview Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductOutputOverview?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductOutputOverview"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tổng quan sản lượng theo từng nhà máy. Nguồn: `productOutputService.getProductOutputOverviewFactDetailApi`."
+          }
+        },
+        {
+          "name": "Product By Hours Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductByHours?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductByHours"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng theo giờ của từng nhà máy. Nguồn: `productOutputService.getProductOutputByHoursFactDetailApi`."
+          }
+        },
+        {
+          "name": "Product Recent Days Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/Product_Recent_Days?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "Product_Recent_Days"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng các ngày gần đây của từng nhà máy. Nguồn: `productOutputService.getProductOutputByDaysFactDetailApi`."
+          }
+        },
+        {
+          "name": "Product Output Compare Chart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/ProductOutput_compare_chart?currentFromDate=&currentToDate=&compareFromDate=&compareToDate=&currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "ProductOutput_compare_chart"],
+              "query": [
+                {
+                  "key": "currentFromDate",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "currentToDate",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "compareFromDate",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "compareToDate",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Dữ liệu biểu đồ so sánh sản lượng theo khoảng. Nguồn: `productOutputService.getProductOutputCompareChartApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "RevenueProfit",
+      "item": [
+        {
+          "name": "Profit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/profit?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "profit"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lợi nhuận. Nguồn: `revenueProfitService.getProfitApi`."
+          }
+        },
+        {
+          "name": "Revenue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/revenue?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "revenue"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Doanh thu. Nguồn: `revenueProfitService.getRevenueApi`."
+          }
+        },
+        {
+          "name": "Electricity Prices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/electricityPrices?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "electricityPrices"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Giá điện theo khung giờ. Nguồn: `revenueProfitService.getRevenuePowerPricesApi`."
+          }
+        },
+        {
+          "name": "Revenue Cost Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/revenueCostSummary?date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "revenueCostSummary"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tổng chi phí theo doanh thu. Nguồn: `revenueProfitService.getRevenueTotalExpensesApi`."
+          }
+        },
+        {
+          "name": "Revenue By Period",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/revenueByPeriod?startDate=01/01/2026&endDate=05/09/2026&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "revenueByPeriod"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "01/01/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Doanh thu theo khoảng thời gian. Nguồn: `revenueProfitService.getRevenueByPeriodApi`."
+          }
+        },
+        {
+          "name": "Daily And Cumulative",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/dailyAndCumulative?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "dailyAndCumulative"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sản lượng/giá trị hằng ngày và luỹ kế. Nguồn: `revenueProfitService.getDailyAndCumulativeApi`."
+          }
+        },
+        {
+          "name": "Profit By Period",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/byPeriod?startDate=01/01/2026&endDate=05/09/2026&currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "byPeriod"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "01/01/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lợi nhuận theo khoảng thời gian. Nguồn: `revenueProfitService.getProfitByPeriodApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hydrology",
+      "item": [
+        {
+          "name": "Hydrographic Chart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/hydrographic_chart/{{currentPlantId}}?type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "hydrographic_chart", "{{currentPlantId}}"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Biểu đồ thuỷ văn. Nguồn: `hydrologyService.getHydrologyGraphicChartApi`."
+          }
+        },
+        {
+          "name": "Flow Diagram",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/FlowDiagram?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "FlowDiagram"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Sơ đồ dòng chảy. Nguồn: `hydrologyService.getHydrologyFlowApi`."
+          }
+        },
+        {
+          "name": "Inflow Outflow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/InflowOutflow_v2?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "InflowOutflow_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng vào/ra. Nguồn: `hydrologyService.getInflowOutflowApi`."
+          }
+        },
+        {
+          "name": "Hydrology Plant Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/hydrologyplant_detail?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "hydrologyplant_detail"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Tham số thuỷ văn của nhà máy. Nguồn: `hydrologyService.getHydrologyPlantsParamApi`."
+          }
+        },
+        {
+          "name": "Hydrology Plant Information",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/HydrologyPlantInformation?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "HydrologyPlantInformation"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Thông tin thuỷ văn nhà máy. Nguồn: `hydrologyService.getHydrologyPlantsInfoApi`."
+          }
+        },
+        {
+          "name": "Upstream Water Level",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/GetUpstreamWaterLevel?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "GetUpstreamWaterLevel"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Mực nước thượng lưu. Nguồn: `hydrologyService.getUpstreamWaterLevelApi`."
+          }
+        },
+        {
+          "name": "Inflow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getInflow?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getInflow"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng vào. Nguồn: `hydrologyService.getInflowApi`."
+          }
+        },
+        {
+          "name": "Outflow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getOutflow?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getOutflow"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng ra. Nguồn: `hydrologyService.getOutflowApi`."
+          }
+        },
+        {
+          "name": "Turbine Flow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getTurbineflow?currentPlantId={{currentPlantId}}&date={{date}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getTurbineflow"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng tua bin. Nguồn: `hydrologyService.getTurbineFlowApi`."
+          }
+        },
+        {
+          "name": "Power Store In Lake",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/PowerStoreInLake",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "PowerStoreInLake"]
+            },
+            "description": "Công suất tích trong hồ. Nguồn: `hydrologyService.getPowerStoreInLake`."
+          }
+        },
+        {
+          "name": "Power Store In Lake Fact Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/PowerStoreInLakeOfFactory?currentPlantId={{currentPlantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "PowerStoreInLakeOfFactory"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Công suất tích trong hồ theo từng nhà máy. Nguồn: `hydrologyService.getPowerStoreInLakeFactDetail`."
+          }
+        },
+        {
+          "name": "Operate Water Level",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/GetOperateWaterLevel?selectedMonth=2026-09",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "GetOperateWaterLevel"],
+              "query": [
+                {
+                  "key": "selectedMonth",
+                  "value": "2026-09",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Mực nước vận hành theo tháng. Nguồn: `hydrologyService.getOperateWaterLevel`."
+          }
+        },
+        {
+          "name": "Upstream Water Level v2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/GetUpstreamWaterLevel_v2?currentPlantId={{currentPlantId}}&currentDate={{date}}&compareDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "GetUpstreamWaterLevel_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Mực nước thượng lưu (so sánh, phiên bản 2). Nguồn: `hydrologyService.getUpstreamWaterLevelApi_2`."
+          }
+        },
+        {
+          "name": "Upstream Water Level v3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/GetUpstreamWaterLevel_v3?currentPlantId={{currentPlantId}}&currentFromDate=01/09/2026&currentToDate=05/09/2026&compareFromDate=01/09/2025&compareToDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "GetUpstreamWaterLevel_v3"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentFromDate",
+                  "value": "01/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "currentToDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "compareFromDate",
+                  "value": "01/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "compareToDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Mực nước thượng lưu (so sánh theo khoảng, phiên bản 3). Nguồn: `hydrologyService.getUpstreamWaterLevelApi_3`."
+          }
+        },
+        {
+          "name": "Inflow v2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getInflow_v2?currentPlantId={{currentPlantId}}&currentDate={{date}}&compareDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getInflow_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng vào (so sánh, phiên bản 2). Nguồn: `hydrologyService.getInflowApi_2`."
+          }
+        },
+        {
+          "name": "Inflow v3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getInflow_v3?currentPlantId={{currentPlantId}}&currentFromDate=01/09/2026&currentToDate=05/09/2026&compareFromDate=01/09/2025&compareToDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getInflow_v3"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentFromDate",
+                  "value": "01/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "currentToDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "compareFromDate",
+                  "value": "01/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "compareToDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng vào (so sánh theo khoảng, phiên bản 3). Nguồn: `hydrologyService.getInflowApi_3`."
+          }
+        },
+        {
+          "name": "Outflow v2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getOutflow_v2?currentPlantId={{currentPlantId}}&currentDate={{date}}&compareDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getOutflow_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng ra (so sánh, phiên bản 2). Nguồn: `hydrologyService.getOutflowApi_2`."
+          }
+        },
+        {
+          "name": "Outflow v3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getOutflow_v3?currentPlantId={{currentPlantId}}&currentFromDate=01/09/2026&currentToDate=05/09/2026&compareFromDate=01/09/2025&compareToDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getOutflow_v3"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentFromDate",
+                  "value": "01/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "currentToDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "compareFromDate",
+                  "value": "01/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "compareToDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng ra (so sánh theo khoảng, phiên bản 3). Nguồn: `hydrologyService.getOutflowApi_3`."
+          }
+        },
+        {
+          "name": "Turbine Flow v2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getTurbineflow_v2?currentPlantId={{currentPlantId}}&currentDate={{date}}&compareDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getTurbineflow_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentDate",
+                  "value": "{{date}}",
+                  "type": "text"
+                },
+                {
+                  "key": "compareDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng tua bin (so sánh, phiên bản 2). Nguồn: `hydrologyService.getTurbineFlowApi_2`."
+          }
+        },
+        {
+          "name": "Turbine Flow v3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/getTurbineflow_v3?currentPlantId={{currentPlantId}}&currentFromDate=01/09/2026&currentToDate=05/09/2026&compareFromDate=01/09/2025&compareToDate=05/09/2025&type=",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "getTurbineflow_v3"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "currentFromDate",
+                  "value": "01/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "currentToDate",
+                  "value": "05/09/2026",
+                  "type": "text"
+                },
+                {
+                  "key": "compareFromDate",
+                  "value": "01/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "compareToDate",
+                  "value": "05/09/2025",
+                  "type": "text"
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lưu lượng tua bin (so sánh theo khoảng, phiên bản 3). Nguồn: `hydrologyService.getTurbineFlowApi_3`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "UnitMaintenanceSchedule",
+      "item": [
+        {
+          "name": "Repair Schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/repairSchedule_v2?year={{year}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "repairSchedule_v2"],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "{{year}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lịch sửa chữa theo năm. Nguồn: `unitMaintenanceScheduleService.getRepairScheduleApi`."
+          }
+        },
+        {
+          "name": "Detail Repair Schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/detailRepairSchedule_v2?currentPlantId={{currentPlantId}}&year={{year}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "detailRepairSchedule_v2"],
+              "query": [
+                {
+                  "key": "currentPlantId",
+                  "value": "{{currentPlantId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "{{year}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Chi tiết lịch sửa chữa theo nhà máy và năm. Nguồn: `unitMaintenanceScheduleService.getDetailRepairScheduleApi`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Version",
+      "item": [
+        {
+          "name": "Check App Version",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}api/API/App_Version?platform=android&version=1.0.13",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "API", "App_Version"],
+              "query": [
+                {
+                  "key": "platform",
+                  "value": "android",
+                  "type": "text"
+                },
+                {
+                  "key": "version",
+                  "value": "1.0.13",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Kiểm tra phiên bản app, bắt buộc cập nhật. Nguồn: `version.service.checkAppVersion`.\nLưu ý: request này dùng `baseUrl` trực tiếp, không qua prefix `api/API` vì endpoint đã bao gồm sẵn prefix."
+          }
+        }
+      ]
+    }
+  ]
+}

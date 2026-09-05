@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import { View, Text, StyleSheet, Animated } from 'react-native'
+import { View, Text, Animated, Easing } from 'react-native'
 import { useRouter } from 'expo-router'
 import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
@@ -22,7 +22,7 @@ interface ReservoirData {
 }
 
 function ReservoirInfo(props: { currentPlantId: string }) {
-  const { currentPlantId } = props;
+  const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useAppDispatch()
   const [containerWidth, setContainerWidth] = useState(0)
@@ -58,9 +58,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const waterHeightPercent = data?.percent || 0
   const waterHeight = (waterHeightPercent / 100) * containerHeight
   // Reference line position: calculate from bottom based on maxLevel
-  const referenceY = data?.maxLevel
-    ? containerHeight - ((data.deadLevel / data.maxLevel) * containerHeight)
-    : 0
+  const referenceY = data?.maxLevel ? containerHeight - (data.deadLevel / data.maxLevel) * containerHeight : 0
   // MaxLevel line position: at the top (y = 0) since maxLevel is the maximum
   const maxLevelY = 0
   const waveAreaHeight = waterHeight
@@ -69,25 +67,20 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   // Check if water level is low
   const isLowWaterLevel = (data?.currentLevel || 0) < (data?.referenceLevel || 0)
 
-  // Wave animation offsets
-  const initialOffset = 0
-  const waveOffset1 = useRef(new Animated.Value(initialOffset)).current
-  const waveOffset2 = useRef(new Animated.Value(initialOffset * 1.2)).current
-  const [wavePath1, setWavePath1] = useState('')
-  const [wavePath2, setWavePath2] = useState('')
+  const waveTranslateFront = useRef(new Animated.Value(0)).current
+  const waveTranslateBack = useRef(new Animated.Value(0)).current
 
   // Create wave path
   const createWavePath = (offset: number, amplitude: number, frequency: number, width: number, waveHeight: number) => {
     if (width <= 0 || waveHeight <= 0) return ''
     const steps = 60
-    const quietWaterHeight = waveHeight * 0.8
+    const quietWaterHeight = waveHeight * 0.85
+    const centerWaveY = Math.min(waveHeight * 0.22, amplitude + px.v(3))
     let path = `M 0 ${waveHeight} L 0 ${quietWaterHeight}`
 
     for (let i = 0; i <= steps; i++) {
       const x = (i / steps) * width
       const waveY = amplitude * Math.sin(x * frequency + offset)
-      const waveCenterPercent = 0.1
-      const centerWaveY = waveHeight * waveCenterPercent
       const y = centerWaveY + waveY
       const clampedY = Math.max(0, Math.min(quietWaterHeight, y))
       path += ` L ${x} ${clampedY}`
@@ -96,59 +89,52 @@ function ReservoirInfo(props: { currentPlantId: string }) {
     return path
   }
 
+  // Bien do nho giup mat nuoc mem va khong bi cat phang o dinh.
+  const amplitude1 = Math.min(px.v(7), Math.max(px.v(3), waveAreaHeight * 0.07))
+  const amplitude2 = Math.min(px.v(5), Math.max(px.v(2), waveAreaHeight * 0.05))
+  const tiledWaveWidth = gaugeWidth * 2
+  const waveFrequency = gaugeWidth > 0 ? (Math.PI * 2) / gaugeWidth : 0
+
+  // Path SVG chi duoc tao lai khi kich thuoc hoac muc nuoc thay doi, khong tao lai theo tung frame.
+  const wavePath1 = useMemo(
+    () => createWavePath(Math.PI / 5, amplitude1, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    [amplitude1, tiledWaveWidth, waveAreaHeight, waveFrequency],
+  )
+  const wavePath2 = useMemo(
+    () => createWavePath(Math.PI * 1.15, amplitude2, waveFrequency, tiledWaveWidth, waveAreaHeight),
+    [amplitude2, tiledWaveWidth, waveAreaHeight, waveFrequency],
+  )
+
   useEffect(() => {
-    if (gaugeWidth <= 0) return
+    if (gaugeWidth <= 0 || waveAreaHeight <= 0) return
 
-    const amplitude1 = waveAreaHeight > 0 ? Math.max(8, waveAreaHeight * 0.15) : 8
-    const amplitude2 = waveAreaHeight > 0 ? Math.max(6, waveAreaHeight * 0.12) : 6
-
-    if (waveAreaHeight > 0) {
-      setWavePath1(createWavePath(initialOffset, amplitude1, 0.02, gaugeWidth, waveAreaHeight))
-      setWavePath2(createWavePath(initialOffset * 1.2, amplitude2, 0.025, gaugeWidth, waveAreaHeight))
-    }
-
-    const duration1 = 6000
-    const duration2 = 7500
-
-    const anim1 = Animated.loop(
-      Animated.timing(waveOffset1, {
-        toValue: initialOffset + Math.PI * 2,
-        duration: duration1,
-        useNativeDriver: false,
+    waveTranslateFront.setValue(0)
+    waveTranslateBack.setValue(-gaugeWidth)
+    // Hai lop song chay nguoc chieu, khac toc do tren UI thread de chuyen dong tu nhien ma van nhe.
+    const frontAnimation = Animated.loop(
+      Animated.timing(waveTranslateFront, {
+        toValue: -gaugeWidth,
+        duration: 5000,
+        easing: Easing.linear,
+        useNativeDriver: true,
       }),
-      { iterations: -1 },
     )
-    const anim2 = Animated.loop(
-      Animated.timing(waveOffset2, {
-        toValue: initialOffset * 1.2 + Math.PI * 2,
-        duration: duration2,
-        useNativeDriver: false,
+    const backAnimation = Animated.loop(
+      Animated.timing(waveTranslateBack, {
+        toValue: 0,
+        duration: 7500,
+        easing: Easing.linear,
+        useNativeDriver: true,
       }),
-      { iterations: -1 },
     )
-
-    const listener1 = waveOffset1.addListener(({ value }: { value: number }) => {
-      if (waveAreaHeight > 0) {
-        setWavePath1(createWavePath(value, amplitude1, 0.02, gaugeWidth, waveAreaHeight))
-      }
-    })
-    const listener2 = waveOffset2.addListener(({ value }: { value: number }) => {
-      if (waveAreaHeight > 0) {
-        setWavePath2(createWavePath(value, amplitude2, 0.025, gaugeWidth, waveAreaHeight))
-      }
-    })
-
-    anim1.start()
-    anim2.start()
+    frontAnimation.start()
+    backAnimation.start()
 
     return () => {
-      anim1.stop()
-      anim2.stop()
-      waveOffset1.removeListener(listener1)
-      waveOffset2.removeListener(listener2)
+      frontAnimation.stop()
+      backAnimation.stop()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gaugeWidth, waveAreaHeight])
+  }, [gaugeWidth, waveAreaHeight, waveTranslateBack, waveTranslateFront])
 
   // Calculate gradient direction for 122.53deg
   // 122.53deg from vertical = 32.53deg from horizontal
@@ -193,43 +179,65 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                         left: 0,
                         right: 0,
                         height: waveAreaHeight,
-                        overflow: 'visible',
+                        overflow: 'hidden',
                         zIndex: 1,
                       }}
                     >
-                      <Svg height={waveAreaHeight} width={gaugeWidth} style={{ position: 'absolute', bottom: 0 }}>
-                        <Defs>
-                          {isLowWaterLevel ? (
-                            <>
-                              <SvgLinearGradient id="waterGrad-reservoir" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
-                              </SvgLinearGradient>
-                              <SvgLinearGradient id="waveGrad-reservoir" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <Stop offset="0%" stopColor="#FF6B6B" stopOpacity="0.8" />
-                                <Stop offset="50%" stopColor="#FF4757" stopOpacity="0.9" />
-                                <Stop offset="100%" stopColor="#FF3838" stopOpacity="1" />
-                              </SvgLinearGradient>
-                            </>
-                          ) : (
-                            <>
-                              <SvgLinearGradient id="waterGrad-reservoir" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                              </SvgLinearGradient>
-                              <SvgLinearGradient id="waveGrad-reservoir" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
-                              </SvgLinearGradient>
-                            </>
-                          )}
-                        </Defs>
-                        {wavePath1 && <Path d={wavePath1} fill="url(#waveGrad-reservoir)" opacity={0.8} />}
-                        {wavePath2 && <Path d={wavePath2} fill="url(#waveGrad-reservoir)" opacity={0.6} />}
-                      </Svg>
+                      <Animated.View
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          transform: [{ translateX: waveTranslateBack }],
+                        }}
+                      >
+                        <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                          <Defs>
+                            <SvgLinearGradient id="waveGrad-reservoir-back" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop
+                                offset="0%"
+                                stopColor={isLowWaterLevel ? '#FF8A8A' : '#8CF4FF'}
+                                stopOpacity="0.55"
+                              />
+                              <Stop
+                                offset="100%"
+                                stopColor={isLowWaterLevel ? '#FF4757' : '#3AB7FF'}
+                                stopOpacity="0.7"
+                              />
+                            </SvgLinearGradient>
+                          </Defs>
+                          {wavePath2 && <Path d={wavePath2} fill="url(#waveGrad-reservoir-back)" />}
+                        </Svg>
+                      </Animated.View>
+                      <Animated.View
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          transform: [{ translateX: waveTranslateFront }],
+                        }}
+                      >
+                        <Svg height={waveAreaHeight} width={tiledWaveWidth}>
+                          <Defs>
+                            <SvgLinearGradient id="waveGrad-reservoir-front" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <Stop
+                                offset="0%"
+                                stopColor={isLowWaterLevel ? '#FF6B6B' : '#7DF0FF'}
+                                stopOpacity="0.78"
+                              />
+                              <Stop
+                                offset="55%"
+                                stopColor={isLowWaterLevel ? '#FF4757' : '#3AB7FF'}
+                                stopOpacity="0.88"
+                              />
+                              <Stop
+                                offset="100%"
+                                stopColor={isLowWaterLevel ? '#E92D3D' : '#1E90FF'}
+                                stopOpacity="0.96"
+                              />
+                            </SvgLinearGradient>
+                          </Defs>
+                          {wavePath1 && <Path d={wavePath1} fill="url(#waveGrad-reservoir-front)" />}
+                        </Svg>
+                      </Animated.View>
                     </View>
                   )}
 
@@ -262,7 +270,9 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                     ]}
                   >
                     <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                    <Text style={[styles.referenceText, { color: '#00DF73', marginRight: 6, marginLeft: 0 }]}>{data?.maxLevel}</Text>
+                    <Text style={[styles.referenceText, { color: '#00DF73', marginRight: 6, marginLeft: 0 }]}>
+                      {data?.maxLevel}
+                    </Text>
                   </View>
 
                   {/* Reference line */}
@@ -276,7 +286,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                       },
                     ]}
                   >
-                    <Text style={[styles.referenceText, { marginLeft: 0}]}>{data?.deadLevel}</Text>
+                    <Text style={[styles.referenceText, { marginLeft: 0 }]}>{data?.deadLevel}</Text>
                     <View style={styles.dashedLine} />
                   </View>
                 </View>

@@ -1,4 +1,4 @@
-import { all, takeLatest, put, call } from 'redux-saga/effects'
+import { all, takeEvery, takeLatest, put, call } from 'redux-saga/effects'
 import {
   getHydrologyflowChart,
   getInflowOutflow,
@@ -20,6 +20,8 @@ import {
   getOutflow3,
   getTurbineflow2,
   getTurbineflow3,
+  getHydrologyComparison,
+  HydrologyComparisonPayload,
 } from './hydrology.actions'
 import { Service } from '@/core/service/hydrologyService'
 import {
@@ -39,6 +41,93 @@ import {
   setLoading,
 } from './hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
+
+function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyComparison>): Generator {
+  try {
+    const payload: HydrologyComparisonPayload = action.payload
+    const requests =
+      payload.version === 2
+        ? [
+            call(
+              Service.getUpstreamWaterLevelApi_2,
+              payload.currentPlantId,
+              payload.currentDate,
+              payload.compareDate,
+              payload.type,
+            ),
+            call(
+              Service.getInflowApi_2,
+              payload.currentPlantId,
+              payload.currentDate,
+              payload.compareDate,
+              payload.type,
+            ),
+            call(
+              Service.getOutflowApi_2,
+              payload.currentPlantId,
+              payload.currentDate,
+              payload.compareDate,
+              payload.type,
+            ),
+            call(
+              Service.getTurbineFlowApi_2,
+              payload.currentPlantId,
+              payload.currentDate,
+              payload.compareDate,
+              payload.type,
+            ),
+          ]
+        : [
+            call(
+              Service.getUpstreamWaterLevelApi_3,
+              payload.currentPlantId,
+              payload.currentFromDate,
+              payload.currentToDate,
+              payload.compareFromDate,
+              payload.compareToDate,
+              payload.type,
+            ),
+            call(
+              Service.getInflowApi_3,
+              payload.currentPlantId,
+              payload.currentFromDate,
+              payload.currentToDate,
+              payload.compareFromDate,
+              payload.compareToDate,
+              payload.type,
+            ),
+            call(
+              Service.getOutflowApi_3,
+              payload.currentPlantId,
+              payload.currentFromDate,
+              payload.currentToDate,
+              payload.compareFromDate,
+              payload.compareToDate,
+              payload.type,
+            ),
+            call(
+              Service.getTurbineFlowApi_3,
+              payload.currentPlantId,
+              payload.currentFromDate,
+              payload.currentToDate,
+              payload.compareFromDate,
+              payload.compareToDate,
+              payload.type,
+            ),
+          ]
+
+    // Chay 4 request song song, sau do day toan bo ket qua vao Redux trong mot lan.
+    // Van ghi vao 4 field cu (upstreamWaterLevel, inflow, outflow, turbineflow) de
+    // HydrologyDetail va cac component lien quan doc duoc binh thuong.
+    const [upstreamResponse, inflowResponse, outflowResponse, turbineResponse]: any[] = yield all(requests)
+    if (upstreamResponse?.status === 200) yield put(setUpStreamWaterLevel(upstreamResponse.data))
+    if (inflowResponse?.status === 200) yield put(setInflow(inflowResponse.data))
+    if (outflowResponse?.status === 200) yield put(setOutflow(outflowResponse.data))
+    if (turbineResponse?.status === 200) yield put(setTurbineflow(turbineResponse.data))
+  } catch (error) {
+    catchHandle(error, 'getHydrologyComparisonSaga')
+  }
+}
 
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
@@ -105,7 +194,13 @@ function* getUpstreamWaterLevelApiSaga(action: ReturnType<typeof getUpstreamWate
 
 function* getUpstreamWaterLevel_2ApiSaga(action: ReturnType<typeof getUpstreamWaterLevel_2>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
+    const payload = action.payload as {
+      version: string
+      currentPlantId: string
+      currentDate: string
+      compareDate: string
+      type: string
+    }
     const currentPlantId = payload?.currentPlantId || ''
     const currentDate = payload?.currentDate || ''
     const compareDate = payload?.compareDate || ''
@@ -121,14 +216,29 @@ function* getUpstreamWaterLevel_2ApiSaga(action: ReturnType<typeof getUpstreamWa
 
 function* getUpstreamWaterLevel_3ApiSaga(action: ReturnType<typeof getUpstreamWaterLevel_3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string; currentToDate: string; compareFromDate: string; compareToDate: string; type: string }
+    const payload = action.payload as {
+      currentPlantId: string
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      type: string
+    }
     const currentPlantId = payload?.currentPlantId || ''
     const currentFromDate = payload?.currentFromDate || ''
     const currentToDate = payload?.currentToDate || ''
     const compareFromDate = payload?.compareFromDate || ''
     const compareToDate = payload?.compareToDate || ''
     const type = payload?.type || ''
-    const res = yield call(Service.getUpstreamWaterLevelApi_3, currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type)
+    const res = yield call(
+      Service.getUpstreamWaterLevelApi_3,
+      currentPlantId,
+      currentFromDate,
+      currentToDate,
+      compareFromDate,
+      compareToDate,
+      type,
+    )
     if (res.status === 200) {
       yield put(setUpStreamWaterLevel(res.data))
     }
@@ -169,8 +279,29 @@ function* getInflow2ApiSaga(action: ReturnType<typeof getInflow2>): Generator {
 
 function* getInflow3ApiSaga(action: ReturnType<typeof getInflow3>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentFromDate: string; currentToDate: string; compareFromDate: string; compareToDate: string; type: string }
-    const res = yield call(Service.getInflowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
+    const payload = action.payload as {
+      currentPlantId: string
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      type: string
+    }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
+    const res = yield call(
+      Service.getInflowApi_3,
+      currentPlantId,
+      currentFromDate,
+      currentToDate,
+      compareFromDate,
+      compareToDate,
+      type,
+    )
     if (res.status === 200) {
       yield put(setInflow(res.data))
     }
@@ -195,8 +326,18 @@ function* getOutflowApiSaga(action: ReturnType<typeof getOutflow>): Generator {
 
 function* getOutflow2ApiSaga(action: ReturnType<typeof getOutflow2>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
-    const res = yield call(Service.getOutflowApi_2, payload.currentPlantId, payload.currentDate, payload.compareDate, payload.type)
+    const payload = action.payload as {
+      version: string
+      currentPlantId: string
+      currentDate: string
+      compareDate: string
+      type: string
+    }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentDate = payload?.currentDate || ''
+    const compareDate = payload?.compareDate || ''
+    const type = payload?.type || ''
+    const res = yield call(Service.getOutflowApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
       yield put(setOutflow(res.data))
     }
@@ -207,8 +348,29 @@ function* getOutflow2ApiSaga(action: ReturnType<typeof getOutflow2>): Generator 
 
 function* getOutflow3ApiSaga(action: ReturnType<typeof getOutflow3>): Generator {
   try {
-    const payload = action.payload as any
-    const res = yield call(Service.getOutflowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
+    const payload = action.payload as {
+      currentPlantId: string
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      type: string
+    }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
+    const res = yield call(
+      Service.getOutflowApi_3,
+      currentPlantId,
+      currentFromDate,
+      currentToDate,
+      compareFromDate,
+      compareToDate,
+      type,
+    )
     if (res.status === 200) {
       yield put(setOutflow(res.data))
     }
@@ -233,8 +395,18 @@ function* getTurbineflowApiSaga(action: ReturnType<typeof getTurbineflow>): Gene
 
 function* getTurbineflow2ApiSaga(action: ReturnType<typeof getTurbineflow2>): Generator {
   try {
-    const payload = action.payload as { currentPlantId: string; currentDate: string; compareDate: string; type: string }
-    const res = yield call(Service.getTurbineFlowApi_2, payload.currentPlantId, payload.currentDate, payload.compareDate, payload.type)
+    const payload = action.payload as {
+      version: string
+      currentPlantId: string
+      currentDate: string
+      compareDate: string
+      type: string
+    }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentDate = payload?.currentDate || ''
+    const compareDate = payload?.compareDate || ''
+    const type = payload?.type || ''
+    const res = yield call(Service.getTurbineFlowApi_2, currentPlantId, currentDate, compareDate, type)
     if (res.status === 200) {
       yield put(setTurbineflow(res.data))
     }
@@ -245,8 +417,29 @@ function* getTurbineflow2ApiSaga(action: ReturnType<typeof getTurbineflow2>): Ge
 
 function* getTurbineflow3ApiSaga(action: ReturnType<typeof getTurbineflow3>): Generator {
   try {
-    const payload = action.payload as any
-    const res = yield call(Service.getTurbineFlowApi_3, payload.currentPlantId, payload.currentFromDate, payload.currentToDate, payload.compareFromDate, payload.compareToDate, payload.type)
+    const payload = action.payload as {
+      currentPlantId: string
+      currentFromDate: string
+      currentToDate: string
+      compareFromDate: string
+      compareToDate: string
+      type: string
+    }
+    const currentPlantId = payload?.currentPlantId || ''
+    const currentFromDate = payload?.currentFromDate || ''
+    const currentToDate = payload?.currentToDate || ''
+    const compareFromDate = payload?.compareFromDate || ''
+    const compareToDate = payload?.compareToDate || ''
+    const type = payload?.type || ''
+    const res = yield call(
+      Service.getTurbineFlowApi_3,
+      currentPlantId,
+      currentFromDate,
+      currentToDate,
+      compareFromDate,
+      compareToDate,
+      type,
+    )
     if (res.status === 200) {
       yield put(setTurbineflow(res.data))
     }
@@ -348,6 +541,11 @@ function* getTurbine2Saga() { yield takeLatest(getTurbineflow2, getTurbineflow2A
 function* getTurbine3Saga() { yield takeLatest(getTurbineflow3, getTurbineflow3ApiSaga) }
 function* getOperateWaterLevelApi() { yield takeLatest(getOperateWaterLevel, getOperateWaterLevelApiSaga) }
 
+function* getHydrologyComparisonWatcher() {
+  // Chi lua chon bo loc moi nhat duoc phep cap nhat 4 bieu do so sanh.
+  yield takeLatest(getHydrologyComparison, getHydrologyComparisonSaga)
+}
+
 export function* hydrologySagaList() {
   yield all([
     getHydrologyChartApi(),
@@ -370,5 +568,6 @@ export function* hydrologySagaList() {
     getOutflow3Saga(),
     getTurbine2Saga(),
     getTurbine3Saga(),
+    getHydrologyComparisonWatcher(),
   ])
 }

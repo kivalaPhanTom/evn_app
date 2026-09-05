@@ -250,6 +250,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
               barWidth={25}
               spacing={20}
               showHorizontalGrid={false}
+              scrollToEnd
             />
         }
       </View>

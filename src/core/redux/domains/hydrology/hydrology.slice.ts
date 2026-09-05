@@ -106,15 +106,15 @@ const initialState: hydrologyState = {
   },
   inflow: {
     unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
-    todayInflow: [], samePeriodInflow: [],
+    todayUpstream: [], samePeriodUpstream: [],
   },
   outflow: {
     unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
-    todayOutflow: [], samePeriodOutflow: [],
+    todayUpstream: [], samePeriodUpstream: [],
   },
   turbineflow: {
     unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
-    todayTurbineFlow: [], samePeriodTurbineFlow: [],
+    todayUpstream: [], samePeriodUpstream: [],
   },
   powerStoreInLake: { currentCapacity: 0, previousCapacity: 0, segments: [], unit: '' },
   powerStoreInLakeFactDetail: [],
