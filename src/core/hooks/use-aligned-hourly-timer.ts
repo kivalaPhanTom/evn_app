@@ -38,7 +38,7 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalSe
 
   const startAlignedCycle = useCallback(async () => {
     if (isStartingRef.current) {
-      console.log('[useAlignedHourlyTimer] B? qua: dang kh?i d?ng...')
+      console.log('[useAlignedHourlyTimer] Bỏ qua: đang khởi động...')
       return
     }
     isStartingRef.current = true
@@ -48,13 +48,13 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalSe
 
       const waitMs = msUntilNextHour()
     
-      // Thi?t l?p l?p ngay (m?i INTERVAL_SECONDS)
+      // Thiết lập lặp ngay (mỗi INTERVAL_SECONDS)
       intervalRef.current = setInterval(runAndStamp, INTERVAL_SECONDS * 1000)
 
-      // �?ng th?i gi? timeout d? ch?y ch�nh x�c v�o m?c gi? (resync), nhung kh�ng t�i t?o interval
+      // Đồng thời giữ timeout để chạy chính xác vào mốc giờ (resync), nhưng không tái tạo interval
       alignTimeoutRef.current = setTimeout(async () => {
         await runAndStamp()
-        // kh�ng c?n t?o l?i interval n?u d� t?n t?i
+        // không cần tạo lại interval nếu đã tồn tại
       }, waitMs)
     } finally {
       isStartingRef.current = false
@@ -64,7 +64,7 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalSe
   useEffect(() => {
     let mounted = true
 
-    // Kh?i d?ng l?n d?u khi mount (n?u app dang active)
+    // Khởi động lần đầu khi mount (nếu app đang active)
     if (AppState.currentState === 'active') {
       void startAlignedCycle()
     }
@@ -72,24 +72,24 @@ export function useAlignedHourlyTimer(callback: Callback, options?: { intervalSe
     const sub = AppState.addEventListener('change', (state) => {
       const prev = lastAppStateRef.current
       lastAppStateRef.current = state
-      console.log(`[useAlignedHourlyTimer] Tr?ng th�i ?ng d?ng thay d?i: ${prev} -> ${state}`)
+      console.log(`[useAlignedHourlyTimer] Trạng thái ứng dụng thay đổi: ${prev} -> ${state}`)
 
       if (!mounted) return
 
-      // V�o n?n ho?c kh�ng ho?t d?ng: d?n timers ngay
+      // Vào nền hoặc không hoạt động: dọn timers ngay
       if (state === 'background' || state === 'inactive') {
-        console.log('[useAlignedHourlyTimer] ?ng d?ng v�o n?n/kh�ng ho?t d?ng, x�a timers...')
+        console.log('[useAlignedHourlyTimer] Ứng dụng vào nền/không hoạt động, xóa timers...')
         clearTimers()
         return
       }
 
-      // Tr? l?i active t? n?n/inactive: kh?i d?ng l?i chu k?
+      // Trở lại active từ nền/inactive: khởi động lại chu kỳ
       if (state === 'active' && (prev === 'background' || prev === 'inactive')) {
-        console.log('[useAlignedHourlyTimer] ?ng d?ng ho?t d?ng tr? l?i, kh?i d?ng l?i chu k? can gi?...')
-        // tr�nh async trong listener, dispatch ra microtask
+        console.log('[useAlignedHourlyTimer] Ứng dụng hoạt động trở lại, khởi động lại chu kỳ căn giờ...')
+        // tránh async trong listener, dispatch ra microtask
         void Promise.resolve()
           .then(() => startAlignedCycle())
-          .catch((err) => console.error('[useAlignedHourlyTimer] L?i khi kh?i d?ng l?i chu k?:', err))
+          .catch((err) => console.error('[useAlignedHourlyTimer] Lỗi khi khởi động lại chu kỳ:', err))
       }
     })
 
