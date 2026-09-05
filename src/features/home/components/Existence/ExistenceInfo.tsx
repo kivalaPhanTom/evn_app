@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import {  Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-import { getExistence } from '@/core/redux/Actions/DocumentActions'
+import { getExistence } from '@/core/redux/domains/documents'
 import styles from './ExistenceInfo.styles'
 import { Badge } from '@/components/Badge/Badge.component'
 import { formatDate } from '@/core/utils/date'
@@ -15,12 +15,13 @@ interface ExistenceProps {
 }
 
 const ExistenceInfo: React.FC<ExistenceProps> = (props) => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const { currentPlantId } = props
-    const { isLoadingExistence, existence } = useSelector((state: RootState) => state.documentSlice)
-    const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+    const { isLoadingExistence, existence } = useAppSelector((state: RootState) => state.documentSlice)
+    const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
     useEffect(() => {
         console.log(currentPlantId);
+        if (!currentPlantId) return
         dispatch(getExistence({ currentPlantId }))
         console.log(existence);
     }, [dispatch, currentPlantId, countRefesh])

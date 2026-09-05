@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
@@ -15,7 +15,7 @@ import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceS
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
-import { saveState } from '@/core/redux/slices/HomeSlice'
+import { saveState } from '@/core/redux/domains/refresh'
 import { LazySection } from '@/components/LazySection/LazySection'
 import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
@@ -28,10 +28,10 @@ interface moduleItem {
   canAccess: boolean
 }
 function HomeContent() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { modules } = useSelector((state: any) => state.moduleSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const { t } = useTranslation()
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]

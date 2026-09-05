@@ -48,17 +48,17 @@ const CompareDashboardV2 = ({
   const barWidth = (availableWidth - barSpacing * (barsToShow - 1)) / barsToShow
   const chartHeight = px.v(150)
 
-  // Tính offset cho line data2 dựa trên giá trị lớn nhất của bar vs line
+  // T�nh offset cho line data2 d?a tr�n gi� tr? l?n nh?t c?a bar vs line
   const barMaxValue = data.length > 0 ? Math.max(...data.map((item) => item.value || 0)) : 0
   const lineMaxValue = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
 
-  // Nếu line cao hơn bar, tính offset âm để push line xuống
-  // shift dựa trên tỷ lệ value difference
+  // N?u line cao hon bar, t�nh offset �m d? push line xu?ng
+  // shift d?a tr�n t? l? value difference
   let lineDataPointsShift2 = 0
   if (lineMaxValue > barMaxValue) {
     const valueDiff = lineMaxValue - barMaxValue
-    const ratio = valueDiff / lineMaxValue // tỷ lệ chênh lệch
-    lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% của chiều cao tương ứng với tỷ lệ
+    const ratio = valueDiff / lineMaxValue // t? l? ch�nh l?ch
+    lineDataPointsShift2 = -Math.ceil(chartHeight * ratio * 0.5) // 50% c?a chi?u cao tuong ?ng v?i t? l?
   }
 
   const customDataPoint = (
@@ -88,7 +88,7 @@ const CompareDashboardV2 = ({
   return (
     <View>
       <View>
-        <Text style={styles.chartCompareByTime}>Ngày so sánh</Text>
+        <Text style={styles.chartCompareByTime}>Ng�y so s�nh</Text>
         <DateRangePicker
           format={'DD/MM/YYYY'}
           value={rangeCompare}
@@ -99,7 +99,7 @@ const CompareDashboardV2 = ({
         />
       </View>
       <View>
-        <Text style={styles.chartCompareByTime}>Ngày mục tiêu</Text>
+        <Text style={styles.chartCompareByTime}>Ng�y m?c ti�u</Text>
         <DateRangePicker
           format={'DD/MM/YYYY'}
           value={rangeTarget}

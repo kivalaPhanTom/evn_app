@@ -1,28 +1,28 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { useRouter } from 'expo-router'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import styles from './PowerSection.styles'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-import { getPowerOverivew, getPowerByTime, getPowerByDays } from '@/core/redux/Actions/PowerActions'
+import { getPowerOverivew, getPowerByTime, getPowerByDays } from '@/core/redux/domains/power'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 
 function PowerSection() {
   const router = useRouter()
-  const { average, total, detail, isLoadingOverview } = useSelector((state: RootState) => state.powerSlice)
+  const { average, total, detail, isLoadingOverview } = useAppSelector((state: RootState) => state.powerSlice)
   const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList, offeredPower, offeredPowerList, unit } =
-    useSelector((state: any) => state.powerSlice.powerByTime)
-  const { isLoadingByHours } = useSelector((state: any) => state.powerSlice)
+    useAppSelector((state: any) => state.powerSlice.powerByTime)
+  const { isLoadingByHours } = useAppSelector((state: any) => state.powerSlice)
   const {
     powerByDays: { powerData },
     isLoadingNearCurrentDays,
-  } = useSelector((state: RootState) => state.powerSlice)
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  } = useAppSelector((state: RootState) => state.powerSlice)
+  const dispatch = useAppDispatch()
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
 
   useAlignedHourlyTimer(() => {
     dispatch(getPowerOverivew())

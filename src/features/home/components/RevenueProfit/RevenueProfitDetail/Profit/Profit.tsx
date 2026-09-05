@@ -10,16 +10,16 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
 import { BarGroup } from '@/core/types'
 import BarChart from '@/components/BarChart/BarChart.component'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProfit } from '@/core/redux/Actions/RevenueProfitActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getProfit } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 
 export default function ProfitDetail() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const { profit, isLoadingProfit } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { profit, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
   const toParts = profit.Chart.Period.To?.split('-') ?? []
   const fromDay = fromParts[2] ?? ''
