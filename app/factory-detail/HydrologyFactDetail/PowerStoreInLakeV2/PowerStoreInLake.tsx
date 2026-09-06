@@ -6,15 +6,15 @@ import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component
 import { px } from '@/core/utils/scale'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
-import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
+import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import styles from './PowerStoreInLake.styles'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
 
 const PowerStoreInLakeV2: React.FC = () => {
-  const { powerStoreInLakeFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
+  const { powerStoreInLakeFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
   const isLoading: boolean = false

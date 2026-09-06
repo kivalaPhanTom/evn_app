@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { ScrollView, View } from 'react-native'
 import styles from './HydrologyFactDetail.styles'
 import WaterLevelByHours from './WaterLevelByHours/WaterLevelByHours'
-import { useDispatch, useSelector } from 'react-redux'
-import { getHydrographicChart, getInflowOutflow, getPowerStoreInLakeFactDetail } from '@/core/redux/Actions/HydrologyActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getHydrographicChart, getInflowOutflow, getPowerStoreInLakeFactDetail } from '@/core/redux/domains/hydrology'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import PowerStoreInLakeV2 from './PowerStoreInLakeV2/PowerStoreInLake'
 import { px } from '@/core/utils/scale'
@@ -17,11 +17,11 @@ interface hydrologyFactDetailProps {
 }
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice)
-  const { hydrologyPlants } = useSelector((state: RootState) => state.hydrologySlice)
-  const dispatch = useDispatch()
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {

@@ -23,7 +23,7 @@ interface Props {
   detail: PowerDetail[]
   title?: string
   unit: string
-  type: 'power' | 'production'
+  type?: 'power' | 'production'
 }
 const ROTATION_DURATION = 3000
 

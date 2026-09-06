@@ -3,15 +3,15 @@ import { View } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import PowerStoreInLake from './PowerStoreInLake/PowerStoreInLake'
-import { setSelectedOptionsValue } from '@/core/redux/slices/HydrologySlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { setSelectedOptionsValue } from '@/core/redux/domains/hydrology'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import Overview from './Overview/Overview'
 
 function Hydrology() {
   const router = useRouter()
-const dispatch = useDispatch()
-  const { selectedOptionsValue } = useSelector((state: RootState) => state.hydrologySlice)
+const dispatch = useAppDispatch()
+  const { selectedOptionsValue } = useAppSelector((state: RootState) => state.hydrologySlice)
   const onPressCard = () => {
     router.navigate({ pathname: '/hydrology-detail' as any })
   }

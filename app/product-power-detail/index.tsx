@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ScrollView, RefreshControl, StyleSheet, Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
@@ -8,13 +8,13 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import PowerDetail from '@/features/home/components/PowerSection/PowerDetail/PowerDetail'
 import { Colors } from '@/core/constants/colors'
-import { saveState } from '@/core/redux/slices/HomeSlice'
+import { saveState } from '@/core/redux/domains/refresh'
 
 const ProductOutputDetailScreen: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [scrollY, setScrollY] = useState(0);
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;

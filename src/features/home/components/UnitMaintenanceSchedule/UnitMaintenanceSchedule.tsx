@@ -11,16 +11,16 @@ import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.co
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import { t } from 'i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
-import { getRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import { getRepairSchedule } from '@/core/redux/domains/maintenance'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { generateYearList } from '@/core/utils/date'
 
 function UnitMaintenanceSchedule() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const router = useRouter()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const currentYear = new Date().getFullYear()
   const years = generateYearList(currentYear)
@@ -29,9 +29,9 @@ function UnitMaintenanceSchedule() {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
   }
   const [firstLoading, setFirstLoading] = useState(true)
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { isRepairerScheduleLoading, TotalActualDay, TotalCategory, TotalMajorCategory, TotalRCMCategory, Details } =
-    useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+    useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
   useEffect(() => {
     setFirstLoading(true)
   }, [])

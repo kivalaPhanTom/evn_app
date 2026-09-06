@@ -6,17 +6,17 @@ import { useRouter } from 'expo-router'
 import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboard from '@/core/shared/CompareDashboard'
-import { useDispatch, useSelector } from 'react-redux'
-import { getComparePower } from '@/core/redux/Actions/PowerActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 
 function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
-  const dispatch = useDispatch()
-  const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
-  const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
+  const dispatch = useAppDispatch()
+  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {})
+  const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import dayjs from 'dayjs'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import { px } from '@/core/utils/scale'
 import { LineChart } from '@/components/ChartView/LineChart.component'
-import { getRevenueByPeriod } from '@/core/redux/Actions/RevenueProfitActions'
+import { getRevenueByPeriod } from '@/core/redux/domains/revenue-profit'
 
 interface Props {
   fromDate: string
@@ -31,8 +31,8 @@ export default function ReveneCompareByTime({
 }: Props) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState(OPTIONS[0])
-  const revenueByPeriod = useSelector((state: any) => state.revenueProfitSlice.revenueByPeriod)
-  const { countRefesh } = useSelector((state: any) => state.revenueProfitSlice)
+  const revenueByPeriod = useAppSelector((state: any) => state.revenueProfitSlice.revenueByPeriod)
+  const { countRefesh } = useAppSelector((state: any) => state.revenueProfitSlice)
   const onSelect = (value: any) => {
     setSelected(value)
     setOpen(false)
@@ -52,7 +52,7 @@ export default function ReveneCompareByTime({
     //   }),
     // )
   }
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const startDate = dayjs(range?.from).format('DD/MM/YYYY')
   const endDate = dayjs(range?.to).format('DD/MM/YYYY')
 
