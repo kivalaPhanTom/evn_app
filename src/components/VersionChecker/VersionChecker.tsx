@@ -74,11 +74,11 @@ const VersionChecker: React.FC = () => {
       <View style={styles.overlay}>
         <View style={styles.box}>
           <Text style={styles.message}>
-            {payload?.message || '?ng d?ng d� c� phi�n b?n m?i.\nVui l�ng t?i phi�n b?n m?i d? ti?p t?c.'}
+            {payload?.message || 'Ứng dụng đã có phiên bản mới.\nVui lòng tải phiên bản mới để tiếp tục.'}
           </Text>
           <View style={styles.actions}>
             <GradientButton
-              title={'C?P NH?T'}
+              title={'CẬP NHẬT'}
               onPress={openStore}
               //loading={loading}
               gradientColors={['#0EA5E9', '#06B6D4']}

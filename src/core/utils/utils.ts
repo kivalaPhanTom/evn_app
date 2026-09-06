@@ -21,13 +21,13 @@ export const isDeviceIdGreaterThanOrEqual15 = (deviceId: any) => {
   const match = deviceId.match(regex)
 
   if (match) {
-    // Thay d?u ph?y b?ng d?u ch?m v� chuy?n sang s?
+    // Thay dấu phẩy bằng dấu chấm và chuyển sang số
     const deviceNumber = parseFloat(match[1].replace(',', '.'))
-    // So s�nh gi� tr?
+    // So sánh giá trị
     return deviceNumber >= 15.2
   }
 
-  // Tru?ng h?p kh�ng kh?p v?i d?nh d?ng iPhone
+  // Trường hợp không khớp với định dạng iPhone
   return false
 }
 
@@ -71,24 +71,24 @@ export const catchHandle = (e: any, fnName?: string): void => {
 
   switch (status) {
     case 401: {
-      notify('Vui l�ng dang nh?p l?i d? ti?p t?c.');
+      notify('Vui lòng đăng nhập lại để tiếp tục.');
       router.replace('/login');
       break;
     }
     case 404: {
-      notify(data ?? 'Y�u c?u kh�ng t?n t?i. Vui l�ng th? l?i sau.');
+      notify(data ?? 'Yêu cầu không tồn tại. Vui lòng thử lại sau.');
       break;
     }
     case 500: {
-      notify('�� c� l?i x?y ra ? ph�a m�y ch?. Vui l�ng th? l?i sau.');
+      notify('Đã có lỗi xảy ra ở phía máy chủ. Vui lòng thử lại sau.');
       break;
     }
     case 400: {
-      notify('Y�u c?u kh�ng h?p l?. Vui l�ng th? l?i sau.');
+      notify('Yêu cầu không hợp lệ. Vui lòng thử lại sau.');
       break;
     }
     default: {
-      notify('�� c� l?i x?y ra, vui l�ng th? l?i sau.');
+      notify('Đã có lỗi xảy ra, vui lòng thử lại sau.');
     }
   }
 };

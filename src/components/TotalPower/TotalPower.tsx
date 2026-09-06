@@ -29,7 +29,7 @@ const ROTATION_DURATION = 3000
 
 function TotalPower(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
-  const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit, type = 'power' } = props
+  const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit, type } = props
   const rotation = useSharedValue(0)
 
   useEffect(() => {

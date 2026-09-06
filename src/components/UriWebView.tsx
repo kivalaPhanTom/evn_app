@@ -12,7 +12,7 @@ type Props = {
 const UriWebView: React.FC<Props> = ({ uri, headers, style }) => {
 	const webviewRef = useRef<any>(null)
 
-	// ch�n meta viewport d? cho ph�p zoom (user-scalable=yes) tru?c khi n?i dung load
+	// chèn meta viewport để cho phép zoom (user-scalable=yes) trước khi nội dung load
 	const injectedBefore = `(function(){
 		try{
 				var meta = document.querySelector('meta[name="viewport"]');
@@ -30,7 +30,7 @@ const UriWebView: React.FC<Props> = ({ uri, headers, style }) => {
 		}catch(e){}
 })();true;`
 
-	// script ch?y sau khi load xong d? ?n .card (nhu tru?c)
+	// script chạy sau khi load xong để ẩn .card (như trước)
 	const onWebviewLoadEnd = (_syntheticEvent: any) => {
 		const script = `(function(){try{var els=document.querySelectorAll('.card');els.forEach(function(e){e.style.display='none';});}catch(e){} })();true;`
 		webviewRef.current?.injectJavaScript?.(script)
@@ -53,10 +53,10 @@ const UriWebView: React.FC<Props> = ({ uri, headers, style }) => {
 					headers,
 				}}
 				ref={webviewRef}
-				// b?t javascript + dom storage
+				// bật javascript + dom storage
 				javaScriptEnabled={true}
 				domStorageEnabled={true}
-				// gi�p trang co d�n/zoom (iOS/Android)
+				// giúp trang co dãn/zoom (iOS/Android)
 				scalesPageToFit={false}
 				injectedJavaScriptBeforeContentLoaded={injectedBefore}
 				onLoadEnd={onWebviewLoadEnd}
