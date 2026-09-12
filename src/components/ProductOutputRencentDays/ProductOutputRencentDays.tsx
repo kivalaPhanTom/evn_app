@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { View, Text, TouchableOpacity, Modal } from 'react-native'
 import { px } from '@/core/utils/scale'
 import styles from './ProductOutputRencentDays.styles'
@@ -35,19 +35,16 @@ function ProductOutputRencentDays(props: Props) {
   //
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
   const unit = 'tr.KWh'
-  const dataActual = productionData.map((item) => ({
-    value: item.actual,
-    label: item.date,
-  }))
-  const contractData = productionData.map((item) => ({
-    value: item.contract,
-    label: item.date,
-  }))
-  const samePeriodData = productionData.map((item) => ({
-    value: item.samePeriod ?? 0,
-    label: item.date,
-  }))
-  const lineChartData = dataActual
+  const { dataActual, contractData, samePeriodData } = useMemo(() => {
+    // API tra ve hom nay truoc. Tao ban sao dao nguoc chi cho bieu do de qua khu o trai, hom nay o phai.
+    const chronologicalData = [...productionData].reverse()
+
+    return {
+      dataActual: chronologicalData.map((item) => ({ value: item.actual, label: item.date })),
+      contractData: chronologicalData.map((item) => ({ value: item.contract, label: item.date })),
+      samePeriodData: chronologicalData.map((item) => ({ value: item.samePeriod ?? 0, label: item.date })),
+    }
+  }, [productionData])
 
   useEffect(() => {
     setFirstLoading(true)
