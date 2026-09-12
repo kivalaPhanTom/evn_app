@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated'
+import Animated, {
+  cancelAnimation,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated'
 import styles from './TotalPower.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
@@ -31,6 +38,7 @@ function TotalPower(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
   const { total = 0, average = 0, isLoading = false, detail = [], title = 'TỔNG CÔNG SUẤT', unit, type } = props
   const rotation = useSharedValue(0)
+  const hasPower = Number(total) > 0
 
   useEffect(() => {
     setFirstLoading(true)
@@ -43,12 +51,15 @@ function TotalPower(props: Props) {
   }, [isLoading])
 
   useEffect(() => {
-    if (type === 'power' && !isLoading) {
+    if (type === 'power' && !isLoading && hasPower) {
+      rotation.value = 0
+      // -1 nghia la lap vo han; chi khoi dong khi nha may dang co cong suat.
       rotation.value = withRepeat(withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }), -1, false)
     } else {
-      rotation.value = withTiming(0, { duration: 0 })
+      // Dung tai goc hien tai khi cong suat bang 0, khong giat banh rang ve vi tri ban dau.
+      cancelAnimation(rotation)
     }
-  }, [type, isLoading, rotation])
+  }, [type, isLoading, hasPower, rotation])
 
   const cogwheelAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
