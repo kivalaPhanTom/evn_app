@@ -2,7 +2,8 @@ import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
-export const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) =>
+  StyleSheet.create({
   wrapper: {
     width: '100%',
     marginBottom: px.v(16),
@@ -24,11 +25,11 @@ export const styles = StyleSheet.create({
     // textTransform: 'uppercase',
   },
   locationName: {
-    color: '#9CA3AF',
+    color: isDark ? '#9CA3AF' : '#6B7280',
     fontSize: px.m(14),
     fontWeight: '600',
     textTransform: 'uppercase',
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
     borderRadius: px.h(16),
     paddingHorizontal: px.h(12),
     paddingVertical: px.v(4),
@@ -50,7 +51,7 @@ export const styles = StyleSheet.create({
   waterContainer: {
     position: 'relative',
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: isDark ? '#fff' : '#E5E7EB',
     borderTopWidth: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
@@ -105,7 +106,7 @@ export const styles = StyleSheet.create({
     lineHeight: px.m(38),
   },
   maxLevel: {
-    color: '#FFFFFF',
+    color: isDark ? '#FFFFFF' : '#6B7280',
     fontSize: px.m(16),
     fontWeight: '400',
     marginTop: px.v(4),
@@ -116,21 +117,23 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: px.v(12),
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
     borderRadius: px.h(8),
     paddingHorizontal: px.h(12),
     paddingVertical: px.v(10),
   },
   infoLabel: {
-    color: '#FFFFFF',
+    color: isDark ? '#FFFFFF' : '#475569',
     fontSize: px.m(14),
     fontWeight: '400',
     opacity: 0.8,
   },
   infoValue: {
-    color: '#FFFFFF',
+    color: isDark ? '#FFFFFF' : '#111827',
     fontSize: px.m(14),
     fontWeight: '600',
   },
 })
+
+export default createStyles
 

@@ -358,7 +358,8 @@ const BarChart: React.FC<Props> = ({
                     dataPointsColor: lineColor1,
                     dataPointsRadius: 6,
                     shiftY: lineDataPointsShift1,
-                    customDataPoint: () => customDataPoint1,
+                    customDataPoint: (item: any, index: number) =>
+                      React.cloneElement(customDataPoint1, { key: `dp1-${index}` }),
                   }
                 : {
                     isAnimated: true,
@@ -376,7 +377,8 @@ const BarChart: React.FC<Props> = ({
                     dataPointsColor: lineColor,
                     dataPointsRadius: 6,
                     shiftY: lineDataPointsShift,
-                    customDataPoint: () => customDataPoint,
+                    customDataPoint: (item: any, index: number) =>
+                      React.cloneElement(customDataPoint, { key: `dp-${index}` }),
                   }
                 : {
                     isAnimated: true,
@@ -397,7 +399,8 @@ const BarChart: React.FC<Props> = ({
                   dataPointsColor: lineColor2,
                   dataPointsRadius: 5,
                   shiftY: lineDataPointsShift2,
-                  customDataPoint: () => customDataPoint2,
+                  customDataPoint: (item: any, index: number) =>
+                    React.cloneElement(customDataPoint2, { key: `dp2-${index}` }),
                 }
               : {
                   isAnimated: true,

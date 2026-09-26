@@ -27,7 +27,8 @@
   "common": {
     "ok": "Đồng ý",
     "cancel": "Hủy",
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "backgroundColor": "Màu nền"
   },
 
   "auth": {

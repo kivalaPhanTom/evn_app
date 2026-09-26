@@ -15,6 +15,7 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { Image } from 'expo-image'
 
 interface PowerDetail {
@@ -64,6 +65,8 @@ function TotalPower(props: Props) {
   const cogwheelAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
   }))
+
+  const isDark = useAppTheme() === 'dark'
 
   return (
     <AnimatedCardContainer>
@@ -120,7 +123,7 @@ function TotalPower(props: Props) {
                   <View style={styles.sourceInfo}>
                     <View style={[styles.dot, { backgroundColor: source.color }]} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                      <Text style={styles.sourceName}>
+                      <Text style={[styles.sourceName, !isDark && { color: '#8b92a0', fontWeight: '700' }]}>
                         {source.code}
                         {/* {source.name} <Text style={styles.sourceCode}>({source.code})</Text> */}
                       </Text>

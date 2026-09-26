@@ -5,11 +5,13 @@ import { RootState } from '@/core/redux/store'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { useLocalSearchParams } from 'expo-router'
 import { Document } from '@/core/model/Document';
-import styles from './Documents.styles'
+import createStyles from './Documents.styles'
 import DocumentRow from './DocumentRow'
+import DocumentIcon from './DocumentIcon'
 import PdfViewer from '@/components/PDFViewer/PDFViewer.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { getLegal } from '@/core/redux/domains/documents'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 export const MOCK_DOCUMENTS: Document[] = [
     {
@@ -37,21 +39,23 @@ export const MOCK_DOCUMENTS: Document[] = [
         "isUpcomingDue": false
     }
 ]
-const TableHeader = () => (
-    <View style={styles.headerRow}>
-        <Text style={[styles.headerText, { flex: 1 }]}>
-            Tên giấy phép
-        </Text>
-        <Text style={[styles.headerText, { width: 130, textAlign: 'right' }]}>
-            Ngày hết hiệu lực
-        </Text>
-    </View>
-);
 function DocumentSection() {
     const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
     const dispatch = useAppDispatch()
     const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
     const { isLoadingLegal, legal } = useAppSelector((state: RootState) => state.documentSlice)
+    const scheme = useAppTheme()
+    const isDark = scheme === 'dark'
+    const styles = createStyles(isDark)
+
+    const tableHeader = (
+        <View style={styles.docHeader}>
+            <View style={styles.docHeaderIcon}>
+                <DocumentIcon size={18} color={isDark ? '#4ADE80' : '#16A34A'} />
+            </View>
+            <Text style={styles.docHeaderText}>DANH SÁCH GIẤY PHÉP</Text>
+        </View>
+    );
 
     const data = legal.map((item, i) => ({
         ...item,
@@ -73,19 +77,22 @@ function DocumentSection() {
     return (
         <SectionContainer
             title="Pháp lý"
+            titleIcon={<DocumentIcon size={18} color="#2563EB" />}
         >
             <AnimatedCardContainer>
                 <View>
                     {data.length === 0 ? (
                         <Text style={styles.emptyText}>Không có tài liệu pháp lý nào.</Text>
                     ) : (<View style={styles.container}>
-                        <TableHeader />
-                        {data.map((doc) => (
-                            <DocumentRow
-                                key={doc.id}
-                                doc={doc}
-                                onPress={onSelect}
-                            />
+                        {tableHeader}
+                        {data.map((doc, i) => (
+                            <React.Fragment key={doc.id}>
+                                <DocumentRow
+                                    doc={doc}
+                                    onPress={onSelect}
+                                />
+                                {i < data.length - 1 && <View style={styles.separator} />}
+                            </React.Fragment>
                         ))}
                     </View>)}
 

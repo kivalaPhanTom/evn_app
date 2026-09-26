@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, ViewStyle, TextStyle }
 import DateTimePicker, { CalendarComponents, useDefaultStyles } from 'react-native-ui-datepicker'
 import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 
 export interface DateRange {
   from: any
@@ -37,11 +39,11 @@ export default function DateRangePicker({
   chooseMode = 'day',
   labelFrom = 'TỪ NGÀY',
   labelTo = 'ĐẾN NGÀY',
-  iconColor = '#fff',
-  textColor = '#fff',
-  labelColor = '#999',
-  borderColor = 'rgba(255,255,255,0.15)',
-  backgroundColor = 'rgba(255,255,255,0.06)',
+  iconColor,
+  textColor,
+  labelColor,
+  borderColor,
+  backgroundColor,
   format = 'DD/MM/YYYY',
   containerStyle,
   inputStyle,
@@ -52,6 +54,15 @@ export default function DateRangePicker({
 }: Props) {
   const [focused, setFocused] = useState<'from' | 'to' | null>(null)
   const defaultStyles = useDefaultStyles()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
+  const resolvedIconColor = iconColor ?? palette.icon
+  const resolvedTextColor = textColor ?? palette.textPrimary
+  const resolvedLabelColor = labelColor ?? palette.textSecondary
+  const resolvedBorderColor = borderColor ?? palette.border
+  const resolvedBackgroundColor = backgroundColor ?? palette.inputBg
 
   // const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
   const formatDate = useCallback(
@@ -64,31 +75,34 @@ export default function DateRangePicker({
   )
   const components: CalendarComponents = useMemo(
     () => ({
-      IconNext: chooseMode === 'year' ? null : <Ionicons name="chevron-forward" size={20} color="#fff" />,
-      IconPrev: chooseMode === 'year' ? null : <Ionicons name="chevron-back" size={20} color="#fff" />,
+      IconNext: chooseMode === 'year' ? null : <Ionicons name="chevron-forward" size={20} color={palette.iconStrong} />,
+      IconPrev: chooseMode === 'year' ? null : <Ionicons name="chevron-back" size={20} color={palette.iconStrong} />,
     }),
-    [chooseMode],
+    [chooseMode, palette.iconStrong],
   )
 
   const pickerStyles: any = {
     ...defaultStyles,
-    today: { borderColor: chooseMode === 'day' ? '#4f9cff' : '#555', borderWidth: 1 },
-    today_label: { color: chooseMode === 'day' ? '#4f9cff' : '#555', fontWeight: 'bold' },
-    selected: { backgroundColor: chooseMode === 'day' ? '#4f9cff' : '#333' },
+    today: { borderColor: chooseMode === 'day' ? '#4f9cff' : palette.disabledText, borderWidth: 1 },
+    today_label: { color: chooseMode === 'day' ? '#4f9cff' : palette.disabledText, fontWeight: 'bold' },
+    selected: { backgroundColor: chooseMode === 'day' ? '#4f9cff' : isDark ? '#333' : '#4f9cff' },
     selected_label: { color: '#fff' },
-    day_label: { color: '#fff' },
-    weekday_label: chooseMode === 'day' ? { color: '#fff' } : { display: 'none' },
-    header: { backgroundColor: '#1A1D2E' },
-    month_label: { color: '#fff', fontWeight: 'bold' },
+    day_label: { color: palette.textPrimary },
+    weekday_label: chooseMode === 'day' ? { color: palette.textSecondary } : { display: 'none' },
+    header: { backgroundColor: palette.modalBackground },
+    month_label: { color: palette.textPrimary, fontWeight: 'bold' },
     month_selector_label:
       chooseMode === 'year'
         ? { display: 'none' }
-        : { color: '#fff', fontSize: chooseMode !== 'day' ? 30 : 12, marginRight: 10 },
-    year_label: { color: '#fff', fontWeight: 'bold' },
-    year_selector_label: { color: '#fff', fontSize: chooseMode === 'year' ? 40 : chooseMode === 'month' ? 30 : 12 },
+        : { color: palette.textPrimary, fontSize: chooseMode !== 'day' ? 30 : 12, marginRight: 10 },
+    year_label: { color: palette.textPrimary, fontWeight: 'bold' },
+    year_selector_label: {
+      color: palette.textPrimary,
+      fontSize: chooseMode === 'year' ? 40 : chooseMode === 'month' ? 30 : 12,
+    },
     selected_month: { backgroundColor: '#4f9cff' },
     selected_year: { backgroundColor: '#4f9cff' },
-    disabled_label: { color: '#555' },
+    disabled_label: { color: palette.disabledText },
     button_next: chooseMode === 'year' ? { display: 'none' } : {},
     button_prev: chooseMode === 'year' ? { display: 'none' } : {},
   }
@@ -148,22 +162,32 @@ export default function DateRangePicker({
   const renderInput = useCallback(
     (label: string, date: any, key: 'from' | 'to') => (
       <View style={{ flex: 1 }}>
-        <Text style={[styles.label, { color: labelColor }, labelStyle]}>{label}</Text>
+        <Text style={[styles.label, { color: resolvedLabelColor }, labelStyle]}>{label}</Text>
         <TouchableOpacity
           style={[
             styles.input,
-            { borderColor, backgroundColor },
+            { borderColor: resolvedBorderColor, backgroundColor: resolvedBackgroundColor },
             inputStyle,
             focused === key && { borderColor: '#4f9cff' },
           ]}
           onPress={() => setFocused(key)}
         >
-          <Text style={[styles.dateText, { color: textColor }]}>{formatDate(date)}</Text>
-          <Ionicons name="calendar-outline" size={15} color={iconColor} />
+          <Text style={[styles.dateText, { color: resolvedTextColor }]}>{formatDate(date)}</Text>
+          <Ionicons name="calendar-outline" size={15} color={resolvedIconColor} />
         </TouchableOpacity>
       </View>
     ),
-    [backgroundColor, borderColor, focused, formatDate, iconColor, inputStyle, labelColor, labelStyle, textColor],
+    [
+      resolvedBackgroundColor,
+      resolvedBorderColor,
+      focused,
+      formatDate,
+      resolvedIconColor,
+      inputStyle,
+      resolvedLabelColor,
+      labelStyle,
+      resolvedTextColor,
+    ],
   )
 
   const picker = (
@@ -247,9 +271,16 @@ export default function DateRangePicker({
               <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
                   onPress={handleQuickSelect}
-                  style={[styles.closeBtn, { flex: 1, backgroundColor: '#2e3348', marginRight: 10 }]}
+                  style={[
+                    styles.closeBtn,
+                    {
+                      flex: 1,
+                      backgroundColor: isDark ? '#2e3348' : 'rgba(0,0,0,0.06)',
+                      marginRight: 10,
+                    },
+                  ]}
                 >
-                  <Text style={styles.closeText}>{getQuickLabel}</Text>
+                  <Text style={[styles.closeText, !isDark && { color: '#374151' }]}>{getQuickLabel}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setFocused(null)} style={[styles.closeBtn, { flex: 1 }]}>
                   <Text style={styles.closeText}>Đóng</Text>
@@ -265,21 +296,24 @@ export default function DateRangePicker({
   )
 }
 
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', padding: 10 },
-  label: { fontSize: 12, marginBottom: 6 },
-  input: {
-    height: 30,
-    borderRadius: 18,
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  dateText: { fontSize: 14, fontWeight: '500' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', padding: 20 },
-  modalContent: { backgroundColor: '#1A1D2E', borderRadius: 18, padding: 12 },
-  closeBtn: { marginTop: 12, padding: 12, backgroundColor: '#4f9cff', borderRadius: 10 },
-  closeText: { textAlign: 'center', color: '#fff', fontWeight: '600' },
-})
+const createStyles = (isDark: boolean) => {
+  const palette = createThemePalette(isDark)
+  return StyleSheet.create({
+    row: { flexDirection: 'row', padding: 10 },
+    label: { fontSize: 12, marginBottom: 6 },
+    input: {
+      height: 30,
+      borderRadius: 18,
+      borderWidth: 1,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    dateText: { fontSize: 14, fontWeight: '500' },
+    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', padding: 20 },
+    modalContent: { backgroundColor: palette.modalBackground, borderRadius: 18, padding: 12 },
+    closeBtn: { marginTop: 12, padding: 12, backgroundColor: '#4f9cff', borderRadius: 10 },
+    closeText: { textAlign: 'center', color: '#fff', fontWeight: '600' },
+  })
+}

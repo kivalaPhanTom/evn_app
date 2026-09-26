@@ -10,19 +10,24 @@ import { useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
 import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
-import styles from './PowerStoreInLake.styles'
+import createStyles from '@/features/factory-detail/HydrologyFactDetail/PowerStoreInLakeV2/PowerStoreInLake.styles'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { Shadow } from 'react-native-shadow-2'
 
 const PowerStoreInLakeV2: React.FC = () => {
   const { powerStoreInLakeFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
   const isLoading: boolean = false
 
   const powerStoreInLakeData = powerStoreInLakeFactDetail ? powerStoreInLakeFactDetail[0] : ({} as any)
 
-  return (
-    <AnimatedCardContainer>
+  const card = (
+    <AnimatedCardContainer style={isDark ? undefined : { elevation: 0, shadowOpacity: 0, shadowRadius: 0 }}>
       <View style={styles.pill}>
         <Text style={[styles.pillText, { color: '#A855F7' }]}>Điện năng tích trữ</Text>
         <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData?.rateOfChange / 100} />
@@ -66,7 +71,7 @@ const PowerStoreInLakeV2: React.FC = () => {
       <View style={{ marginTop: px.v(10) }}>
         <View style={styles.revenueCard}>
           <View>
-            <Text style={[styles.cardTitle, { color: '#FFF' }]}>{`Cùng kỳ năm ngoái`}</Text>
+            <Text style={[styles.cardTitle, { color: isDark ? '#FFF' : '#475569' }]}>{`Cùng kỳ năm ngoái`}</Text>
             <Text style={styles.cardValue}>
               {powerStoreInLakeData?.previousCapacity ?? 0}{' '}
               <Text style={styles.cardUnit}>
@@ -82,6 +87,12 @@ const PowerStoreInLakeV2: React.FC = () => {
         </View>
       </View>
     </AnimatedCardContainer>
+  )
+
+  return isDark ? card : (
+    <Shadow distance={5} startColor="rgba(0, 0, 0, 0.10)" offset={[0, -2]} stretch>
+      {card}
+    </Shadow>
   )
 }
 

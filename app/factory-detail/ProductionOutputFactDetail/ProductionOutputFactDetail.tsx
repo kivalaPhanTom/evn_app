@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import styles from './ProductionOutputFactDetail.styles'
+import styles from '@/features/factory-detail/ProductionOutputFactDetail/ProductionOutputFactDetail.styles'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import TotalProductionOutputFactDetail from './TotalProductionOutputFactDetail/TotalProductionOutputFactDetail'
 import ProuductOutputByHoursFactDetail from './ProductionOutputByHoursFactDetail/ProductionOutputByHoursFactDetail'

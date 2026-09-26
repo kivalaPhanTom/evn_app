@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native'
 import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
 import { px } from '@/core/utils/scale'
-import styles from './MonthPickerCustom.styles'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import createStyles from './MonthPickerCustom.styles'
 
 interface MonthPickerCustomProps {
   selectedDate: dayjs.Dayjs
@@ -18,6 +19,8 @@ interface MonthPickerCustomProps {
   pickerStyle?: any
   selectedDateStyle?: any
   pickerLabelStyle?: any
+  iconColor?: string
+  labelColor?: string
 }
 
 const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
@@ -33,7 +36,12 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
   pickerStyle,
   selectedDateStyle,
   pickerLabelStyle,
+  iconColor = '#fff',
+  labelColor,
 }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const [visible, setVisible] = useState(false)
   const [tempMonth, setTempMonth] = useState(selectedDate.month() + 1)
   const [tempYear, setTempYear] = useState(selectedDate.year())
@@ -99,10 +107,10 @@ const MonthPickerCustom: React.FC<MonthPickerCustomProps> = ({
     <>
       {/* Input */}
       <View style={[styles.monthPickerContainer, containerStyle]}>
-        {label && <Text style={[styles.monthPickerLabel, pickerLabelStyle]}>{label}</Text>}
+        {label && <Text style={[styles.monthPickerLabel, pickerLabelStyle, labelColor ? { color: labelColor } : null]}>{label}</Text>}
         <TouchableOpacity style={[styles.monthPickerInput, pickerStyle]} onPress={handleOpenPicker}>
           <Text style={[styles.monthPickerText, selectedDateStyle]}>{formatMonth(selectedDate)}</Text>
-          <Ionicons name="calendar-outline" size={16} color="#fff" />
+          <Ionicons name="calendar-outline" size={16} color={iconColor} />
         </TouchableOpacity>
       </View>
 

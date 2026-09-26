@@ -1,6 +1,7 @@
 import { Colors } from '@/core/constants/colors';
 import { StyleSheet } from 'react-native'
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) =>
+    StyleSheet.create({
     container: {
         // backgroundColor: 'rgba(255,255,255,0.3)',
         borderRadius: 12,
@@ -9,7 +10,7 @@ const styles = StyleSheet.create({
 
     separator: {
         height: 1,
-        backgroundColor: 'rgba(255,255,255,0.15)',
+        backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
     },
 
     row: {
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     },
 
     pressed: {
-        backgroundColor: 'rgba(255,255,255,0.4)',
+        backgroundColor: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.04)',
     },
 
     expiredRow: {
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     icon: {
         width: 36,
         height: 36,
-        borderRadius: 12,
+        borderRadius: 18,
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     iconNormal: {
-        backgroundColor: 'rgba(255,255,255,0.6)',
+        backgroundColor: isDark ? 'rgba(255,255,255,0.6)' : '#E5E7EB',
     },
 
     iconExpired: {
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#ffffff',
+        color: isDark ? '#ffffff' : '#111827',
     },
 
     expiredTitle: {
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 16,
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         // backgroundColor: 'rgba(255,255,255,0.7)',
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.2)',
+        borderBottomColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
     },
 
     headerText: {
@@ -152,5 +153,74 @@ const styles = StyleSheet.create({
         color: '#6b7280',
         textTransform: 'uppercase',
     },
+
+    docHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+    },
+
+    docHeaderIcon: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: isDark ? 'rgba(34,197,94,0.25)' : '#DCFCE7',
+    },
+
+    docHeaderText: {
+        fontSize: 14,
+        fontWeight: '700',
+        letterSpacing: 0.5,
+        color: isDark ? '#ffffff' : '#111827',
+    },
+
+    docInfoIcon: {
+        color: isDark ? '#60A5FA' : '#2563EB',
+    },
+
+    docIconChip: {
+        backgroundColor: isDark ? 'rgba(37,99,235,0.35)' : '#DBEAFE',
+    },
+
+    docName: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: isDark ? '#ffffff' : '#111827',
+    },
+
+    dateLine: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        marginTop: 2,
+    },
+
+    dateText: {
+        fontSize: 12,
+        color: '#6b7280',
+        fontVariant: ['tabular-nums'],
+    },
+
+    statusLabel: {
+        fontSize: 9,
+        letterSpacing: 1,
+        fontWeight: '800',
+        marginLeft: 4,
+    },
+
+    eyeButton: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        backgroundColor: isDark ? '#3B82F6' : '#2563EB',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
-export default styles
+export default createStyles

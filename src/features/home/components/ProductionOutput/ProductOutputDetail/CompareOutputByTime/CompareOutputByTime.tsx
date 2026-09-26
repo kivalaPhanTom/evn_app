@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
-import styles from './CompareOutputByTime.styles'
+import createStyles from './CompareOutputByTime.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -8,10 +8,14 @@ import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
 import { getProductOutputCompareChart } from '@/core/redux/domains/production-output'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const productOutputCompareChartData = useAppSelector(
     (state: any) => state.productOutputSlice.productOutputCompareChart || {},
   )

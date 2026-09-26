@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { View, Text, StyleSheet, ViewStyle } from 'react-native'
 import { px } from '@/core/utils/scale'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 export interface StackedItem {
   label: string
@@ -35,6 +36,7 @@ const StackedBar: React.FC<Props> = ({
   legendRowGap = px.v(6),
   valueDecimals = 1,
 }) => {
+  const isDark = useAppTheme() === 'dark'
   const filtered = useMemo(() => items.filter(i => i.value > 0), [items])
   const sum = useMemo(() => filtered.reduce((a, b) => a + b.value, 0), [filtered])
   const total = totalOverride ?? sum
@@ -43,7 +45,7 @@ const StackedBar: React.FC<Props> = ({
   return (
     <View style={style}>
       {/* Stacked bar */}
-      <View style={[styles.barContainer, { height, borderRadius: radius }, barStyle]}>
+      <View style={[styles.barContainer, { height, borderRadius: radius, backgroundColor: isDark ? '#ffffff10' : 'rgba(0, 0, 0, 0.05)' }, barStyle]}>
         {filtered.map((it, idx) => {
           const flex = total > 0 ? it.value / total : 0
           const isFirst = idx === 0
@@ -99,8 +101,8 @@ const StackedBar: React.FC<Props> = ({
                   marginRight: px.h(6),
                 }}
               />
-              <Text style={styles.labelText}>{it.label} </Text>
-              <Text style={styles.valueText}>
+              <Text style={[styles.labelText, !isDark && { color: '#6B7280' }]}>{it.label} </Text>
+              <Text style={[styles.valueText, !isDark && { color: '#111827' }]}>
                 {it.value.toFixed(valueDecimals)}
                 {showPercent ? ` (${percent.toFixed(1)}%)` : ''}
               </Text>

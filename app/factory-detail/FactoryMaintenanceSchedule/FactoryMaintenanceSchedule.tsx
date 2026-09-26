@@ -4,8 +4,9 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 import FactoryMaintenanceInfo from './FactoryMaintenanceInfo/FactoryMaintenanceInfo'
 import { t } from 'i18next'
 import { router } from 'expo-router'
-import styles from './FactoryMaintenanceSchedule.styles'
+import createStyles from '@/features/factory-detail/FactoryMaintenanceSchedule/FactoryMaintenanceSchedule.styles'
 import { generateYearList } from '@/core/utils/date'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface FactoryMaintenanceScheduleProps {
   currentPlantId?: string
@@ -15,6 +16,9 @@ interface FactoryMaintenanceScheduleProps {
 
 function FactoryMaintenanceSchedule(props: FactoryMaintenanceScheduleProps) {
   const { currentPlantId, selectedYear, setSelectedYear } = props
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
 
   const currentYear = new Date().getFullYear()
   const years = generateYearList(currentYear)

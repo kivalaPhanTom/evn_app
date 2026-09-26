@@ -3,6 +3,7 @@ import { px } from '@/core/utils/scale'
 import { LinearGradient } from 'expo-linear-gradient'
 import React from 'react'
 import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 type TabId = 'day' | 'month' | 'year' | string
 
@@ -21,6 +22,8 @@ export function TabSwitcher<T extends TabId>({
   durationOut?: number
   durationIn?: number
 }) {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const handlePress = (id: T) => {
     if (id === activeTab) return
     if (contentAnim) {
@@ -45,7 +48,7 @@ export function TabSwitcher<T extends TabId>({
   }
 
   return (
-    <View style={styles.segment}>
+    <View style={[styles.segment, !isDark && { backgroundColor: 'rgba(0,0,0,0.04)' }]}>
       {tabs.map((t) => {
         const active = t.id === activeTab
         return (
@@ -66,7 +69,7 @@ export function TabSwitcher<T extends TabId>({
               </LinearGradient>
             ) : (
               <View style={styles.segmentItem}>
-                <Text style={styles.segmentText}>{t.label}</Text>
+                <Text style={[styles.segmentText, !isDark && { color: '#6B7280' }]}>{t.label}</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -83,7 +86,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.03)',
     padding: px.v(4),
     borderRadius: px.h(24),
-    height: px.v(42),
     overflow: 'hidden',
   },
   segmentItem: {

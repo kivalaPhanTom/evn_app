@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, ViewStyle } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import styles, { TAB_WIDTH } from './ScrollableTabBar.styles'
+import createStyles, { TAB_WIDTH } from './ScrollableTabBar.styles'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface Tab {
   id: string
@@ -19,6 +20,9 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
   const scrollViewRef = useRef<ScrollView>(null)
   const isScrollingRef = useRef(false)
   const lastActiveIndexRef = useRef<number>(-1)
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
 
   useEffect(() => {
     if (!isScrollingRef.current) {
@@ -115,7 +119,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
         </ScrollView>
         {/* Left shadow gradient - fixed position */}
         <LinearGradient
-          colors={['rgba(0, 0, 0, 0.4)', 'transparent']}
+          colors={isDark ? ['rgba(0, 0, 0, 0.4)', 'transparent'] : ['rgba(255, 255, 255, 0.9)', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.shadowGradientLeft}
@@ -123,7 +127,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
         />
         {/* Right shadow gradient - fixed position */}
         <LinearGradient
-          colors={['transparent', 'rgba(0, 0, 0, 0.4)']}
+          colors={isDark ? ['transparent', 'rgba(0, 0, 0, 0.4)'] : ['transparent', 'rgba(255, 255, 255, 0.9)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.shadowGradientRight}

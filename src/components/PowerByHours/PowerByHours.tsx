@@ -8,6 +8,7 @@ import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from 'toastify-react-native/config/theme'
 import { px } from '@/core/utils/scale'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface HourlyPowerList {
   value: number
@@ -42,6 +43,7 @@ function PowerByHours(props: Props) {
   } = props
   const title = 'P theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate
+  const isDark = useAppTheme() === 'dark'
   const hourlyData = HourlyPowerList
     ? HourlyPowerList.map((d: any) => ({ ...d }))?.filter(
         (item) => Number(item.label?.slice(0, -1)) <= Number(currentTime?.slice(0, -1)),
@@ -69,7 +71,7 @@ function PowerByHours(props: Props) {
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={[styles.title, !isDark && { color: '#111827' }]}>{title}</Text>
           <View style={styles.headerTop}>
             <Text style={styles.subtitle}>{subtitle}</Text>
             <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>

@@ -8,6 +8,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
 import { textGradients } from '@/core/constants/gradients'
 import { Ionicons } from '@expo/vector-icons'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const DEFAULT_COMPANY_NAME = 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'
 const DEFAULT_LOCATION = 'Đắk Lắk, Việt Nam'
@@ -17,13 +18,15 @@ const UnitMaintenanceScheduleDetailScreen: React.FC = () => {
     companyName?: string | string[]
     location?: string | string[]
   }>()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
 
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName || DEFAULT_COMPANY_NAME
   const companyLocation = Array.isArray(location) ? location[0] : location || DEFAULT_LOCATION
 
   return (
     <TwinkleStars
-      background={Colors.background}
+      background={isDark ? Colors.background : Colors.lightBackground}
       particleDensity={50}
       particleColor={Colors.textColor}
       minSize={0.5}
@@ -38,7 +41,7 @@ const UnitMaintenanceScheduleDetailScreen: React.FC = () => {
         />
         <View style={styles.locationRow}>
           <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={styles.locationIcon} />
-          <Text style={styles.locationText}>{companyLocation}</Text>
+          <Text style={[styles.locationText, { color: isDark ? '#FFF' : '#6B7280' }]}>{companyLocation}</Text>
         </View>
       </View>
       <UnitMaintenanceDetails />
@@ -64,7 +67,6 @@ const styles = StyleSheet.create({
     marginRight: px.h(6),
   },
   locationText: {
-    color: '#FFF',
     fontSize: px.m(14),
     fontWeight: 'bold',
   },

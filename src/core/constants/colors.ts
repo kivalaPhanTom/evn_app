@@ -4,6 +4,7 @@ export const Colors = {
   subCardTitle: '#8b92a0',
   black: '#000',
   lightGray: '#F3F4F6',
+  lightBackground: '#F3F4F6',
   darkGray: '#211F32',
   darkerGray: '#000010',
   darkBlue: '#050f1c',

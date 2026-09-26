@@ -8,12 +8,13 @@ import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import { Ionicons } from '@expo/vector-icons'
 import { useFocusEffect, useRouter } from 'expo-router'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useContext, useMemo, useRef, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Constants from 'expo-constants'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/core/context/AuthProvider'
+import { ThemeToggleContext } from '@/core/context/theme'
 
 export default function CompaniesScreen() {
   const { t } = useTranslation();
@@ -22,8 +23,9 @@ export default function CompaniesScreen() {
   const isDark = scheme === 'dark'
   const router = useRouter()
   const { logout } = useAuth()
+  const { setPreference } = useContext(ThemeToggleContext)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [lightOn, setLightOn] = useState(false)
+  const lightOn = !isDark
   const onPress = (c: any) => {
     router.navigate({ pathname: '/home', params: { companyName: c.name, location: c.location } })
   }
@@ -35,7 +37,7 @@ export default function CompaniesScreen() {
 
   return (
     <TwinkleStars
-      background={lightOn ? Colors.lightGray : Colors.background}
+      background={lightOn ? Colors.lightBackground : Colors.background}
       particleDensity={50}
       particleColor={Colors.textColor}
       minSize={0.5}
@@ -58,7 +60,7 @@ export default function CompaniesScreen() {
               <View style={styles.menuRow}>
                 <Text style={styles.menuText}>{t('common.backgroundColor')}</Text>
                 <Pressable
-                  onPress={() => setLightOn((v) => !v)}
+                  onPress={() => setPreference(isDark ? 'light' : 'dark')}
                   hitSlop={8}
                   style={[styles.toggleTrack, { backgroundColor: lightOn ? '#F97316' : '#111827' }]}
                 >
