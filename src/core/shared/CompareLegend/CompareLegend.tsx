@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import styles from './CompareLegend.styles'
+import createStyles from './CompareLegend.styles'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface LegendItemData {
   type: 'box' | 'line'
@@ -14,6 +15,9 @@ interface CompareLegendProps {
 }
 
 const CompareLegend: React.FC<CompareLegendProps> = ({ items, displayType = 'output' }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   // Nếu type = 'power', chỉ hiển thị 2 items: Ngày mục tiêu và Ngày so sánh
   const defaultItemsPower: LegendItemData[] = [
     { type: 'line', label: 'Ngày so sánh' },

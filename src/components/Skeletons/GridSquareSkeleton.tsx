@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Animated, Easing } from 'react-native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 
 const BOX_SIZE = 100
 const GAP = 12
-const COLOR = 'rgba(255,255,255,0.10)'
 
 export default function GridSquareSkeleton() {
+  const isDark = useAppTheme() === 'dark'
+  const styles = createStyles(isDark)
   const progress = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -38,17 +41,20 @@ export default function GridSquareSkeleton() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: BOX_SIZE * 2 + GAP,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: GAP,
-  },
-  box: {
-    width: BOX_SIZE,
-    height: BOX_SIZE,
-    backgroundColor: COLOR,
-    borderRadius: 12,
-  },
-})
+const createStyles = (isDark: boolean) => {
+  const p = createThemePalette(isDark)
+  return StyleSheet.create({
+    container: {
+      width: BOX_SIZE * 2 + GAP,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: GAP,
+    },
+    box: {
+      width: BOX_SIZE,
+      height: BOX_SIZE,
+      backgroundColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.08)',
+      borderRadius: 12,
+    },
+  })
+}

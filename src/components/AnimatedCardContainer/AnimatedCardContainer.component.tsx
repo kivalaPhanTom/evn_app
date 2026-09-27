@@ -120,6 +120,13 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
             transform: [{ scale }],
             shadowColor: '#000',
           },
+          !isDark && {
+            elevation: 3,
+            shadowOpacity: 0.1,
+            shadowRadius: 6,
+            shadowOffset: { width: 0, height: 2 },
+            backgroundColor: typeof resolvedBg === 'string' ? resolvedBg : '#FFFFFF',
+          },
           style,
         ]}
       >
@@ -193,7 +200,6 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-    // elevation: 6, // remove elevation to avoid shadow cut off
     shadowOpacity: 0.25,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,

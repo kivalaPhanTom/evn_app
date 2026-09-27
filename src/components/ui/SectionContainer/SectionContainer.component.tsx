@@ -3,7 +3,8 @@ import { Colors } from '@/core/constants/colors'
 import { lightGradients } from '@/core/constants/gradients'
 import { GradientColors } from '@/core/types'
 import { px } from '@/core/utils/scale'
-import { useTheme } from '@react-navigation/native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState, useRef } from "react";
 import { Platform } from 'react-native';
@@ -16,6 +17,7 @@ interface optionItem {
 type OnChangeHandler = (val: string) => void;
 interface SectionContainerProps {
   title: string
+  titleIcon?: React.ReactNode
   children: React.ReactNode
   style?: ViewStyle
   showDivider?: boolean
@@ -33,6 +35,7 @@ interface SectionContainerProps {
 
 const SectionContainer: React.FC<SectionContainerProps> = ({
   title,
+  titleIcon,
   children,
   style,
   showDivider = false,
@@ -43,8 +46,9 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
   onChangeOption = null,
   options = []
 }) => {
-  const theme = useTheme()
-  const isDark = theme.dark
+  const theme = useAppTheme()
+  const isDark = theme === 'dark'
+  const p = createThemePalette(isDark)
 
   const backgroundColors: GradientColors = backgroundColor
     ? backgroundColor === 'transparent'
@@ -89,15 +93,18 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
       style={[styles.container, style]}
     >
       <View style={styles.gradientBackground}>
-        {title && <View style={styles.headerRow}>
-          <GradientText
-            text={title.toUpperCase()}
-            colors={['#fff', '#fff']}
-            fontSize={px.m(18)}
-            fontWeight="600"
-            style={styles.title}
-          />
-        </View>}
+        {title ? <View style={styles.headerRow}>
+          <View style={styles.titleRowInner}>
+            {titleIcon && <View style={styles.titleIconWrap}>{titleIcon}</View>}
+            <GradientText
+              text={title.toUpperCase()}
+              colors={[p.title, p.title]}
+              fontSize={px.m(18)}
+              fontWeight="600"
+              style={styles.title}
+            />
+          </View>
+        </View> : null}
 
         <View style={styles.rowContainer}>
           <View style={{ position: "relative" }}>
@@ -110,12 +117,12 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
                   onPress={handleOpenDropdown}
                 >
                   <LinearGradient
-                    colors={["#2a2f55", "#1b1f3a"]}
-                    style={styles.selectContainer}
+                    colors={isDark ? ['#2a2f55', '#1b1f3a'] : ['#FFFFFF', '#F3F4F6']}
+                    style={[styles.selectContainer, !isDark && { borderColor: p.borderStrong }]}
                   >
-                    <Text style={styles.selectText}>{selectedLabel}</Text>
-                    <Text style={styles.arrow}>
-                      {open ? "▲" : "▼"}
+                    <Text style={[styles.selectText, !isDark && { color: p.title }]}>{selectedLabel}</Text>
+                    <Text style={[styles.arrow, !isDark && { color: p.title }]}>
+                      {open ? '▲' : '▼'}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -143,6 +150,11 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
                       <View
                         style={[
                           styles.dropdown,
+                          !isDark && {
+                            backgroundColor: '#FFFFFF',
+                            borderColor: p.divider,
+                            borderWidth: 1,
+                          },
                           {
                             zIndex: 2,
                             position: 'absolute',
@@ -161,7 +173,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
                               setOpen(false);
                             }}
                           >
-                            <Text style={styles.optionText}>
+                            <Text style={[styles.optionText, !isDark && { color: p.title }]}>
                               {item.label}
                             </Text>
                           </TouchableOpacity>
@@ -218,6 +230,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  titleRowInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  titleIconWrap: {
+    marginRight: px.h(8),
+    justifyContent: 'center',
   },
   title: {
     textAlign: 'left',

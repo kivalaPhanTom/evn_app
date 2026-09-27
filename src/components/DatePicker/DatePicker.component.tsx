@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, ViewStyle } from 'reac
 import DateTimePicker, { CalendarComponents, useDefaultStyles } from 'react-native-ui-datepicker'
 import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 
 interface Props {
   value: Date
@@ -29,14 +31,18 @@ export default function DatePicker({
   inputStyle,
 }: Props) {
   const [showModal, setShowModal] = useState(false)
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
 
   const defaultStyles = useDefaultStyles()
 
   const formatDate = (d: Date) => dayjs(d).format(format)
 
   const components: CalendarComponents = {
-    IconNext: <Ionicons name="chevron-forward" size={20} color="#fff" />,
-    IconPrev: <Ionicons name="chevron-back" size={20} color="#fff" />,
+    IconNext: <Ionicons name="chevron-forward" size={20} color={palette.iconStrong} />,
+    IconPrev: <Ionicons name="chevron-back" size={20} color={palette.iconStrong} />,
   }
 
   return (
@@ -69,15 +75,16 @@ export default function DatePicker({
                 today_label: { color: '#4f9cff', fontWeight: 'bold' },
                 selected: { backgroundColor: '#4f9cff' },
                 selected_label: { color: 'white' },
-                day_label: { color: '#fff' },
-                weekday_label: { color: '#fff' },
-                header: { backgroundColor: '#1A1D2E' },
-                month_label: { color: '#fff', fontWeight: 'bold' },
-                month_selector_label: { color: '#fff' },
-                year_label: { color: '#fff', fontWeight: 'bold' },
-                year_selector_label: { color: '#fff' },
+                day_label: { color: palette.textPrimary },
+                weekday_label: { color: palette.textSecondary },
+                header: { backgroundColor: palette.modalBackground },
+                month_label: { color: palette.textPrimary, fontWeight: 'bold' },
+                month_selector_label: { color: palette.textPrimary },
+                year_label: { color: palette.textPrimary, fontWeight: 'bold' },
+                year_selector_label: { color: palette.textPrimary },
                 selected_month: { backgroundColor: '#4f9cff' },
                 selected_year: { backgroundColor: '#4f9cff' },
+                disabled_label: { color: palette.disabledText },
               }}
               locale="vi"
               onChange={(params) => {
@@ -95,9 +102,16 @@ export default function DatePicker({
                   onChange(today)
                   setShowModal(false)
                 }}
-                style={[styles.closeBtn, { flex: 1, backgroundColor: '#2e3348', marginRight: 10 }]}
+                style={[
+                  styles.closeBtn,
+                  {
+                    flex: 1,
+                    backgroundColor: isDark ? '#2e3348' : 'rgba(0,0,0,0.06)',
+                    marginRight: 10,
+                  },
+                ]}
               >
-                <Text style={styles.closeText}>Hôm nay</Text>
+                <Text style={[styles.closeText, !isDark && { color: '#374151' }]}>Hôm nay</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => setShowModal(false)} style={[styles.closeBtn, { flex: 1 }]}>
@@ -111,44 +125,47 @@ export default function DatePicker({
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
-  input: {
-    height: 50,
-    borderRadius: 12,
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  dateText: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: '#1A1D2E',
-    borderRadius: 18,
-    padding: 12,
-  },
-  closeBtn: {
-    marginTop: 12,
-    padding: 12,
-    backgroundColor: '#4f9cff',
-    borderRadius: 10,
-  },
-  closeText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: '600',
-  },
-})
+const createStyles = (isDark: boolean) => {
+  const palette = createThemePalette(isDark)
+  return StyleSheet.create({
+    container: {
+      width: '100%',
+    },
+    input: {
+      height: 50,
+      borderRadius: 12,
+      borderWidth: 1,
+      paddingHorizontal: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    dateText: {
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.45)',
+      justifyContent: 'center',
+      padding: 20,
+    },
+    modalContent: {
+      backgroundColor: palette.modalBackground,
+      borderRadius: 18,
+      padding: 12,
+    },
+    closeBtn: {
+      marginTop: 12,
+      padding: 12,
+      backgroundColor: '#4f9cff',
+      borderRadius: 10,
+    },
+    closeText: {
+      textAlign: 'center',
+      color: '#fff',
+      fontWeight: '600',
+    },
+  })
+}
 

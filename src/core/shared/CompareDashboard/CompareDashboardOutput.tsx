@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Dimensions, Text } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
-import styles from './CompareDashboard.styles'
+import createStyles from './CompareDashboard.styles'
 import { BarGroup, LineDataPoint } from '@/components/BarChartWithLines'
 import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
@@ -10,6 +10,8 @@ import dayjs from 'dayjs'
 import { getCompareProductOutput } from '@/core/redux/domains/production-output'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { RootState } from '@/core/redux/store'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 
 const localStyles = StyleSheet.create({
   chartContainer: {
@@ -51,6 +53,10 @@ interface CompareDashboardProps {
 
 const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDisableDate }: CompareDashboardProps) => {
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
@@ -70,7 +76,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#A78BFA',
+        backgroundColor: palette.compareLine,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: -5,
@@ -165,7 +171,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
       <Text style={styles.headerDashboard}>So sánh sản lượng theo ngày</Text>
       <DateRangePicker
         labelFrom="Ngày so sánh"
-        labelTo="Ngày mục tiêu"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}
@@ -197,7 +203,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
               customDataPoint2={customDataPoint}
               // lineData={lineData}
               lineData2={lineData2Converted}
-              lineColor2="#A78BFA"
+              lineColor2={palette.compareLine}
               lineDataPointsShift2={0}
               scrollToEnd
             />

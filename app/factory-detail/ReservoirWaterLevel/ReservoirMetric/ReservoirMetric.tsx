@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { px } from '@/core/utils/scale'
-import { styles } from './ReservoirMetric.styles'
+import { styles } from '@/features/factory-detail/ReservoirWaterLevel/ReservoirMetric/ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
 import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 

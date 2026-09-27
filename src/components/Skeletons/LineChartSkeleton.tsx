@@ -9,13 +9,19 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
+import { useAppTheme } from '@/core/hooks/use-app-theme';
+import { createThemePalette } from '@/core/constants/themePalette';
 
 const CHART_HEIGHT = 180;
-const BASE_COLOR = '#3A3F47';
-const HIGHLIGHT_COLOR = '#6F8196';
 const DURATION = 2200;
 
 export const LineChartSkeleton = () => {
+  const isDark = useAppTheme() === 'dark';
+  const styles = createStyles(isDark);
+  const palette = createThemePalette(isDark);
+  const BASE_COLOR = palette.skeletonBase;
+  const HIGHLIGHT_COLOR = palette.skeletonHighlight;
+
   const translateX = useSharedValue(-320);
 
   useEffect(() => {
@@ -79,12 +85,13 @@ export const LineChartSkeleton = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: CHART_HEIGHT,
-    backgroundColor: '#1F2329',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-});
+const createStyles = (isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      height: CHART_HEIGHT,
+      backgroundColor: isDark ? '#1F2329' : '#F3F4F6',
+      borderRadius: 12,
+      overflow: 'hidden',
+    },
+  })

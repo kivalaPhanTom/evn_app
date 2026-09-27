@@ -8,7 +8,8 @@ const SECTION_CONTAINER_PADDING = px.h(30)
 // Chiều rộng bên trong SectionContainer (sau khi trừ padding) = TAB_WIDTH
 const TAB_WIDTH = SCREEN_WIDTH - SECTION_CONTAINER_PADDING * 2 - TAB_BAR_BORDER_WIDTH * 2
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) =>
+  StyleSheet.create({
   container: {
     marginBottom: px.v(16),
     paddingHorizontal: 0,
@@ -17,9 +18,9 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     borderRadius: 12,
     borderWidth: TAB_BAR_BORDER_WIDTH,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
-    backgroundColor: 'rgba(26, 35, 50, 0.5)',
+    backgroundColor: isDark ? 'rgba(26, 35, 50, 0.5)' : '#FFFFFF',
     width: TAB_WIDTH + TAB_BAR_BORDER_WIDTH * 2,
     alignSelf: 'center',
     position: 'relative',
@@ -58,9 +59,9 @@ const styles = StyleSheet.create({
   textContainerActive: {
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: 'rgba(100, 200, 255, 0.8)', // Light blue border like in image
-    backgroundColor: 'rgba(30, 50, 80, 0.6)', // Dark blue background
-    shadowColor: 'rgba(100, 200, 255, 0.5)', // Glowing effect
+    borderColor: isDark ? 'rgba(100, 200, 255, 0.8)' : 'rgba(37, 99, 235, 0.6)',
+    backgroundColor: isDark ? 'rgba(30, 50, 80, 0.6)' : '#DBEAFE',
+    shadowColor: isDark ? 'rgba(100, 200, 255, 0.5)' : 'rgba(37, 99, 235, 0.25)', // Glowing effect
     shadowOffset: {
       width: 0,
       height: 0,
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   tabText: {
-    color: '#9CA3AF',
+    color: isDark ? '#9CA3AF' : '#6B7280',
     fontSize: px.m(16),
     fontWeight: '500',
     textAlign: 'center',
@@ -108,13 +109,13 @@ const styles = StyleSheet.create({
     lineHeight: px.m(20),
   },
   tabTextActive: {
-    color: '#E5E7EB', // Light gray/off-white like in image
+    color: isDark ? '#E5E7EB' : '#1D4ED8',
     fontWeight: '700',
-    textShadowColor: 'rgba(100, 200, 255, 0.6)', // Glowing text effect
+    textShadowColor: isDark ? 'rgba(100, 200, 255, 0.6)' : 'rgba(37, 99, 235, 0.25)', // Glowing text effect
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 4,
   },
 })
 
-export default styles
+export default createStyles
 export { TAB_WIDTH, TAB_BAR_BORDER_WIDTH }

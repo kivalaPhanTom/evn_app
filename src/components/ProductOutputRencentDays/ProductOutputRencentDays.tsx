@@ -5,6 +5,7 @@ import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
@@ -30,6 +31,7 @@ interface LegendItemData {
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
+  const isDark = useAppTheme() === 'dark'
   const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
   //
@@ -64,7 +66,7 @@ function ProductOutputRencentDays(props: Props) {
     <AnimatedCardContainer >
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>A - 7 NGÀY GẦN NHẤT</Text>
+        <Text style={[styles.title, !isDark && { color: '#374151' }]}>A - 7 NGÀY GẦN NHẤT</Text>
         <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Chi tiết</Text>
           <Text style={styles.actionButtonIcon}>{'>'}</Text>
@@ -88,8 +90,11 @@ function ProductOutputRencentDays(props: Props) {
 
                   return (
                     <>
-                      <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                        <Text style={styles.selectText}>{selectedYear}</Text>
+                      <TouchableOpacity
+                        style={[styles.selectContainer, !isDark && { borderColor: 'rgba(0, 0, 0, 0.12)', backgroundColor: 'rgba(0, 0, 0, 0.04)' }]}
+                        onPress={() => setShowSelectModal(true)}
+                      >
+                        <Text style={[styles.selectText, !isDark && { color: '#111827' }]}>{selectedYear}</Text>
                       </TouchableOpacity>
 
                       <Modal
@@ -136,7 +141,7 @@ function ProductOutputRencentDays(props: Props) {
           </View>
         </View>
 
-        <View style={styles.separator} />
+        <View style={[styles.separator, !isDark && { backgroundColor: 'rgba(0, 0, 0, 0.08)' }]} />
 
         {/* Table Rows */}
         <View
@@ -162,9 +167,17 @@ function ProductOutputRencentDays(props: Props) {
                 const isWeekend =
                   day.dayOfWeek.toLowerCase() === 'thứ bảy' || day.dayOfWeek.toLowerCase() === 'chủ nhật'
                 return (
-                  <View key={index} style={styles.rowCard}>
+                  <View key={index} style={[styles.rowCard, !isDark && { backgroundColor: '#E5E7EB', borderColor: 'transparent' }]}>
                     <View style={styles.tableRow}>
-                      <Text style={[styles.cellText, styles.col1, styles.dateText, isWeekend && styles.weekendText]}>
+                      <Text
+                        style={[
+                          styles.cellText,
+                          styles.col1,
+                          styles.dateText,
+                          isWeekend && styles.weekendText,
+                          !isDark && { color: isWeekend ? '#eab308' : '#111827' },
+                        ]}
+                      >
                         {day.date}
                         {'\n'}
                         <Text style={styles.dayOfWeek}>{day.dayOfWeek}</Text>

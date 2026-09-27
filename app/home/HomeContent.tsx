@@ -14,6 +14,7 @@ import Hydrology from '@/features/home/components/Hydrology/Hydrology'
 import UnitMaintenanceSchedule from '@/features/home/components/UnitMaintenanceSchedule/UnitMaintenanceSchedule'
 import RevenueDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Revenue/Revenue'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import ProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/Profit'
 import { saveState } from '@/core/redux/domains/refresh'
 import { LazySection } from '@/components/LazySection/LazySection'
@@ -39,6 +40,8 @@ function HomeContent() {
   }>()
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const companyLocation = Array.isArray(location) ? location[0] : location
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -90,7 +93,7 @@ function HomeContent() {
       scrollEventThrottle={16}
     >
       <TwinkleStars
-        background={Colors.background}
+        background={isDark ? Colors.background : Colors.lightBackground}
         particleDensity={50}
         particleColor={Colors.textColor}
         minSize={0.5}
@@ -105,7 +108,9 @@ function HomeContent() {
           />
           <View style={styles.locationRow}>
             <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-            <Text style={styles.locationText}>{companyLocation ?? 'Đắk Lắk, Việt Nam'}</Text>
+            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>
+              {companyLocation ?? 'Đắk Lắk, Việt Nam'}{' '}
+            </Text>
           </View>
         </View>
         {checkModulePermission('CONG_SUAT') && <PowerSection />}
@@ -178,7 +183,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locationText: {
-    color: '#C7D6E1',
     fontSize: px.m(13),
   },
 })

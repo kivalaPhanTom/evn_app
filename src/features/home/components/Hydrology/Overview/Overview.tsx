@@ -19,6 +19,7 @@ import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface WaterLevelData {
   id: string
@@ -54,6 +55,8 @@ const WaterLevelCard: React.FC<{
   isLastTab?: boolean
   index: number
 }> = ({ data, isActive, onPress, isLastTab = false, index }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
   const MAX_TANK_HEIGHT = 700
@@ -177,10 +180,10 @@ const WaterLevelCard: React.FC<{
     >
       {isActive ? (
         <Shadow
-          distance={8}
-          startColor="rgba(0, 0, 0, 0.3)"
+          distance={isDark ? 8 : 5}
+          startColor={isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.10)'}
           endColor="rgba(0, 0, 0, 0.01)"
-          offset={[0, -4]}
+          offset={[0, isDark ? -4 : -2]}
           sides={{ top: true, start: true, end: true, bottom: false }}
           containerStyle={{
             marginRight: 0,
@@ -189,24 +192,24 @@ const WaterLevelCard: React.FC<{
           style={{
             flex: 1,
             zIndex: 1,
-            backgroundColor: '#1c056eff',
+            backgroundColor: isDark ? '#1c056eff' : '#BFDBFE',
             borderTopLeftRadius: px.h(12),
             borderTopRightRadius: px.h(12),
             overflow: 'hidden',
           }}
         >
           <View style={{ flex: 1 }}>
-            <Pressable
-              onPress={onPress}
-              style={[
-                {
-                  flex: 1,
-                  elevation: 0,
-                  backgroundColor: isActive ? '#1c056eff' : 'transparent',
-                  borderRadius: 0,
-                },
-              ]}
-            >
+              <Pressable
+                onPress={onPress}
+                style={[
+                  {
+                    flex: 1,
+                    elevation: 0,
+                    backgroundColor: isActive ? (isDark ? '#1c056eff' : '#BFDBFE') : 'transparent',
+                    borderRadius: 0,
+                  },
+                ]}
+              >
               <View style={styles.cardContent}>
                 <View style={styles.locationContainer}>
                   <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
@@ -225,7 +228,7 @@ const WaterLevelCard: React.FC<{
 
                 {containerWidth > 0 && (
                   <View style={{ flexDirection: 'row' }}>
-                    <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
                     <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
                       {waveAreaHeight > 0 && (
                         <View
@@ -329,7 +332,7 @@ const WaterLevelCard: React.FC<{
                         <View style={styles.dashedLine} />
                       </View>
                     </View>
-                    <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
                   </View>
                 )}
               </View>
@@ -344,7 +347,7 @@ const WaterLevelCard: React.FC<{
               {
                 flex: 1,
                 elevation: 0,
-                backgroundColor: 'transparent',
+                backgroundColor: isDark ? 'transparent' : '#FFFFFF',
                 borderRadius: 0,
               },
             ]}
@@ -367,7 +370,7 @@ const WaterLevelCard: React.FC<{
 
               {containerWidth > 0 && (
                 <View style={{ flexDirection: 'row' }}>
-                  <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
                   <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
                     {waveAreaHeight > 0 && (
                       <View
@@ -471,7 +474,7 @@ const WaterLevelCard: React.FC<{
                       <View style={styles.dashedLine} />
                     </View>
                   </View>
-                  <View style={{ width: 4, borderTopWidth: 2, borderColor: '#fff' }}></View>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
                 </View>
               )}
             </View>
@@ -494,6 +497,8 @@ const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
 }
 const Overview: React.FC = () => {
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const { hydrologyPlants, selectedOptionsValue } = useAppSelector((state: RootState) => state.hydrologySlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   // Chuyển đổi dữ liệu từ API sang format của component
@@ -587,7 +592,7 @@ const Overview: React.FC = () => {
           </View>
 
           {/* Skeleton cho detail container */}
-          <View style={styles.detailContainer}>
+        <View style={[styles.detailContainer, !isDark && { backgroundColor: '#BFDBFE' }]}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
               <LineChartSkeleton />
@@ -627,7 +632,7 @@ const Overview: React.FC = () => {
           ))}
         </View>
 
-        <View style={styles.detailContainer}>
+        <View style={[styles.detailContainer, !isDark && { backgroundColor: '#BFDBFE' }]}>
           {activeData && (
             <>
               <Text style={styles.detailText}>
@@ -638,7 +643,6 @@ const Overview: React.FC = () => {
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
-                bgColor={'#1c056eff'}
                 selectedOptionsValue={selectedOptionsValue}
               />
               <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />

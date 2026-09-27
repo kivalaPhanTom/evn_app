@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ScrollView, View } from 'react-native'
-import styles from './HydrologyFactDetail.styles'
+import styles from '@/features/factory-detail/HydrologyFactDetail/HydrologyFactDetail.styles'
 import WaterLevelByHours from './WaterLevelByHours/WaterLevelByHours'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getHydrographicChart, getInflowOutflow, getPowerStoreInLakeFactDetail } from '@/core/redux/domains/hydrology'

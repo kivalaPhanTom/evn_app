@@ -8,10 +8,11 @@ import {
   MaintenanceLevelCard,
   MaintenanceLevel,
 } from '@/components/MaintenanceLevelCard/MaintenanceLevelCard.component'
-import styles from './UnitMaintenanceDetails.styles'
+import createStyles from './UnitMaintenanceDetails.styles'
 import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import { generateYearList } from '@/core/utils/date'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const TABS = [
   { id: 'BTS', label: 'Buôn Tua Srah' },
@@ -42,6 +43,9 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
 function UnitMaintenanceDetails() {
   const { currentPlantId: currentPlantIdFromParams } = useLocalSearchParams<{ currentPlantId?: string | string[] }>()
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const { currentPlantDetail } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
   // Normalize currentPlantId from params (handle array case)

@@ -13,6 +13,7 @@ import { CircleLineIcon } from '@/components/ui/circle-line-icon'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 import { isEmpty } from '@/core/utils/utils'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
@@ -21,6 +22,8 @@ interface InflowOutflowProps {
 }
 
 const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const customDataPoint = () => (
     <View
       style={{
@@ -129,14 +132,14 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     areaChart={false}
                     hideDataPoints1={true}
                     hideDataPoints2={true}
-                    rulesColor="#E5E5EF"
+                    rulesColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
                     //customDataPoint={customDataPoint()}
                     //customDataPoint2={customDataPoint2()}
                     label1="Qvề: "
                     label2="Qxả: "
                     height={px.v(200)}
                     pointerConfig={true}
-                    xAxisColor="#E5E5EF"
+                    xAxisColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
                     scrollToEnd={true}
                   />
                 )}

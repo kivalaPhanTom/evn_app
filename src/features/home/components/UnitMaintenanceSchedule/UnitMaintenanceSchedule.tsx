@@ -5,22 +5,26 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 
 import { Image } from 'expo-image'
 import { icons } from '@/assets'
-import styles from './UnitMaintenanceSchedule.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.component'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import { t } from 'i18next'
+import createStyles from './UnitMaintenanceSchedule.styles'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getRepairSchedule } from '@/core/redux/domains/maintenance'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { generateYearList } from '@/core/utils/date'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function UnitMaintenanceSchedule() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
 
   const currentYear = new Date().getFullYear()
   const years = generateYearList(currentYear)
@@ -102,7 +106,7 @@ function UnitMaintenanceSchedule() {
       <Pressable onPress={onPressCard}>
         <View style={styles.infoContainer}>
           <View style={[styles.infoCard]}>
-            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>
+            <Text style={{ color: isDark ? 'rgba(255,255,255,0.5)' : '#475569', fontSize: 11, fontWeight: 600 }}>
               TỔNG HẠNG MỤC SỬA CHỮA
             </Text>
             <View style={styles.infoRow}>
@@ -110,14 +114,14 @@ function UnitMaintenanceSchedule() {
                 <BarSkeleton />
               ) : (
                 <>
-                  <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalCategory}</Text>
-                  <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
+                  <Text style={{ color: isDark ? '#FFFFFF' : '#1E3A8A', fontSize: 22 }}>{TotalCategory}</Text>
+                  <MaintenanceIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
                 </>
               )}
             </View>
           </View>
           <View style={styles.infoCard}>
-            <Text style={{ color: 'rgb(255,255,255, 0.5)', fontSize: 11, fontWeight: 600 }}>
+            <Text style={{ color: isDark ? 'rgba(255,255,255,0.5)' : '#475569', fontSize: 11, fontWeight: 600 }}>
               TỔNG NGÀY SỬA CHỮA THỰC TẾ
             </Text>
             <View style={styles.infoRow}>
@@ -125,8 +129,8 @@ function UnitMaintenanceSchedule() {
                 <BarSkeleton />
               ) : (
                 <>
-                  <Text style={{ color: 'rgb(255,255,255)', fontSize: 22 }}>{TotalActualDay}</Text>
-                  <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
+                  <Text style={{ color: isDark ? '#FFFFFF' : '#1E3A8A', fontSize: 22 }}>{TotalActualDay}</Text>
+                  <ScheduleIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
                 </>
               )}
             </View>

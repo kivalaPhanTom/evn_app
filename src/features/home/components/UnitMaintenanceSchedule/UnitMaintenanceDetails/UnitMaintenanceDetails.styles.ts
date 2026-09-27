@@ -1,8 +1,11 @@
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
+import { createThemePalette } from '@/core/constants/themePalette'
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => {
+  const p = createThemePalette(isDark)
+  return StyleSheet.create({
   contentContainer: {},
     selectContainer: {
       width: 60,
@@ -14,11 +17,11 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.12)',
-      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+      borderColor: p.borderStrong,
+      backgroundColor: p.inputBg,
     },
     selectText: {
-      color: '#e8eaed',
+      color: p.textPrimary,
       fontSize: 14,
       fontWeight: '600',
     },
@@ -32,10 +35,10 @@ const styles = StyleSheet.create({
     modalContent: {
       width: '50%',
       maxWidth: 360,
-      backgroundColor: 'rgba(20, 20, 20, 0.95)',
+      backgroundColor: p.modalBackground,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: p.divider,
       paddingVertical: 8,
     },
     selectOption: {
@@ -44,18 +47,19 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     selectOptionActive: {
-      backgroundColor: 'rgba(255, 255, 255, 0.06)',
+      backgroundColor: p.chipBg,
     },
     selectOptionText: {
-      color: '#e8eaed',
+      color: p.title,
       fontSize: px.f(20),
       fontWeight: '500',
       textAlign: 'center',
     },
     selectOptionTextActive: {
-      color: Colors.blue,
+      color: isDark ? Colors.blue : '#1D4ED8',
       fontWeight: '700',
     },
-})
+  })
+}
 
-export default styles
+export default createStyles

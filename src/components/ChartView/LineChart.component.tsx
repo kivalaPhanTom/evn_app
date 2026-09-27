@@ -1,5 +1,6 @@
 import { darkGradients, lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 import { GradientColors } from '@/core/types'
 import { isTablet, px } from '@/core/utils/scale'
 import React, { useEffect, useMemo, useRef } from 'react'
@@ -67,12 +68,12 @@ export const LineChart: React.FC<LineCharProps> = ({
   hideYAxisText = false,
   customDataPoint,
   customDataPoint2,
-  rulesColor = 'rgba(255,255,255, 0.1)',
+  rulesColor,
   label1,
   label2,
   label3,
   pointerConfig,
-  xAxisColor = 'rgba(255,255,255,0.05)',
+  xAxisColor,
   strokeDashArray2,
   strokedashArray1,
   spacing = 5,
@@ -86,6 +87,9 @@ export const LineChart: React.FC<LineCharProps> = ({
 }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const resolvedRulesColor = rulesColor ?? palette.gridRule
+  const resolvedXAxisColor = xAxisColor ?? palette.xAxis
   const fadeAnim = useRef(new Animated.Value(0)).current
 
   //const gradients = isDark ? darkGradients : lightGradients
@@ -187,7 +191,7 @@ export const LineChart: React.FC<LineCharProps> = ({
         showVerticalLines={false}
         hideYAxisText={hideYAxisText}
         yAxisColor="transparent"
-        {...(ruleTypes && { xAxisColor, rulesColor: rulesColor, dashGap: 10, dashWidth: 5 })}
+        {...(ruleTypes && { xAxisColor: resolvedXAxisColor, rulesColor: resolvedRulesColor, dashGap: 10, dashWidth: 5 })}
         noOfSections={noOfSections}
         rulesType={ruleTypes}
         initialSpacing={30}

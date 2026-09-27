@@ -1,7 +1,8 @@
 import { Colors } from '@/core/constants/colors';
 import { StyleSheet } from 'react-native'
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) =>
+  StyleSheet.create({
     card: {
         backgroundColor: '#fff',
         borderRadius: 16,
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     date: {
         fontSize: 12,
         fontWeight: '500',
-        color: Colors.grey,
+        color: isDark ? Colors.grey : '#6B7280',
     },
 
     title: {
         fontSize: 16,
         fontWeight: '600',
-        color: Colors.white,
+        color: isDark ? Colors.white : '#374151',
         marginBottom: 8,
         lineHeight: 22,
     },
@@ -84,10 +85,11 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
 
-    dateContainer: { 
+    dateContainer: {
         flexDirection: 'row',
         gap: 8,
         alignItems: 'center',
     }
 });
-export default styles;
+
+export default createStyles;

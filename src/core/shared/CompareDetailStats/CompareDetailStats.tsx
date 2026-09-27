@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import styles from './CompareDetailStats.styles'
+import createStyles from './CompareDetailStats.styles'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface StatItemProps {
   title: string
@@ -24,6 +25,9 @@ const StatItem: React.FC<StatItemProps> = ({
   unit = 'MWh',
   isLoading = false
 }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const calculatedDifference = difference ?? currentValue - compareValue
   const isPositive = calculatedDifference >= 0
 
@@ -152,6 +156,9 @@ interface CompareDetailStatsProps {
 }
 
 const CompareDetailStats: React.FC<CompareDetailStatsProps> = ({ summary, isLoading = false }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   return (
     <View style={styles.container}>
       <Text style={styles.title}>So sánh chi tiết</Text>

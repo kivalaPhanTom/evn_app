@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { View, Text, Dimensions } from 'react-native'
-import styles from './CompareDashboard.styles'
+import createStyles from './CompareDashboard.styles'
 import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import dayjs from 'dayjs'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 interface BarGroup {
   label: string
   items: {
@@ -33,6 +35,10 @@ const CompareDashboard = ({
   isLoading = false,
   scrollToEnd = false,
 }: CompareDashboardProps) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -62,7 +68,7 @@ const CompareDashboard = ({
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#A78BFA',
+        backgroundColor: palette.compareLine,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: -5,
@@ -100,7 +106,7 @@ const CompareDashboard = ({
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
       <DateRangePicker
         labelFrom="Ngày so sánh"
-        labelTo="Ngày mục tiêu"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}
@@ -122,7 +128,7 @@ const CompareDashboard = ({
             rulesType="dash"
             lineColor="transparent"
             lineData2={lineData2}
-            lineColor2="#A78BFA"
+            lineColor2={palette.compareLine}
             lineDataPointsShift2={lineDataPointsShift2}
             customDataPoint2={customDataPoint}
             scrollToEnd={scrollToEnd}
