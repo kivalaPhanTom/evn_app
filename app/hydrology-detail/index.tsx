@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import HydrologyDetail from '@/features/home/components/Hydrology/HydrologyDetail/HydrologyDetail'
-import { setCountRefesh } from '@/core/redux/slices/HydrologySlice'
+import { setCountRefesh } from '@/core/redux/domains/hydrology'
 import { useLocalSearchParams } from 'expo-router'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { textGradients } from '@/core/constants/gradients'
 
 const HydrologyDetailScreen: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { countRefesh } = useSelector((state: any) => state.hydrologySlice)
+  const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()
@@ -38,7 +42,7 @@ const HydrologyDetailScreen: React.FC = () => {
       scrollEventThrottle={16}
     >
       <TwinkleStars
-        background={Colors.background}
+        background={isDark ? Colors.background : Colors.lightBackground}
         particleDensity={50}
         particleColor={Colors.textColor}
         minSize={0.5}
@@ -47,12 +51,12 @@ const HydrologyDetailScreen: React.FC = () => {
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Thủy văn'}
-            colors={'#FFF'}
+            colors={textGradients.water}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={styles.locationText}>{'Công ty thủy điện Buôn Kuốp'}</Text>
+            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{'Công ty thủy điện Buôn Kuốp'}</Text>
           </View>
         </View>
         <HydrologyDetail scrollY={scrollY} currentPlantId={currentPlantId} />

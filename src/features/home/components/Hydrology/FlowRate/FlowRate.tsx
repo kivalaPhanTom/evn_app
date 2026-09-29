@@ -5,13 +5,14 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import { px } from '@/core/utils/scale'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
-import styles from './FlowRate.styles'
+import createStyles from './FlowRate.styles'
 import FlowMetricCard from '@/components/FlowMetricCard/FlowMetricCard.component'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Image } from 'expo-image'
 import { CircleLineIcon } from '@/components/ui/circle-line-icon'
 import CompareLegend from '@/core/shared/CompareLegend'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/core/redux/hooks'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface LegendItemData {
   type: 'box' | 'line'
@@ -29,21 +30,35 @@ interface FlowRateProps {
   showPointer?: boolean
 }
 
-const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff', unit, title, flowRateInfo = [], showPointer = false }) => {
+const FlowRate: React.FC<FlowRateProps> = ({
+  data,
+  data2,
+  currentColor = '#fff',
+  unit,
+  title,
+  flowRateInfo = [],
+  showPointer = false,
+}) => {
   // Nếu type = 'output', hiển thị đầy đủ 3 items
-  const filterByTime = useSelector((state: any) => state.hydrologySlice.filterByTime)
+  const filterByTime = useAppSelector((state: any) => state.hydrologySlice.filterByTime)
   const currentFilterTab = filterByTime?.currentFilterTab
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+  // Giu nguyen reference du lieu khi parent render vi ly do khong lien quan, vi du khi cuon doc.
+  const chartData = useMemo(() => data.map((item, index) => ({ ...item, id: index })), [data])
+  const comparisonChartData = useMemo(() => data2.map((item, index) => ({ ...item, id: index })), [data2])
   const legendItems: LegendItemData[] =
     currentFilterTab === 'year'
       ? []
       : currentFilterTab === 'month'
         ? [
             { type: 'line', label: 'Tháng mục tiêu', color: currentColor },
-            { type: 'line', label: 'Tháng so sánh', color: '#A78BFA' },
+            { type: 'line', label: 'Tháng so sánh', color: isDark ? '#A78BFA' : '#7C3AED' },
           ]
         : [
             { type: 'line', label: 'Ngày mục tiêu', color: currentColor },
-            { type: 'line', label: 'Ngày so sánh', color: '#A78BFA' },
+            { type: 'line', label: 'Ngày so sánh', color: isDark ? '#A78BFA' : '#7C3AED' },
           ]
 
   return (
@@ -56,11 +71,11 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
       </View>
       <View style={{ marginBottom: 20 }}>
         <LineChart
-          data={data.map((item, i:number) => ({ ...item, id: i }))}
-          data2={data2.map((item, i:number) => ({ ...item, id: i }))}
+          data={chartData}
+          data2={comparisonChartData}
           height={px(200)}
           color={currentColor}
-          color2="#A78BFA"
+          color2={isDark ? '#A78BFA' : '#7C3AED'}
           areaChart={false}
           strokeDashArray2={[12, 3]}
           scrollToEnd={true}
@@ -86,4 +101,5 @@ const FlowRate: React.FC<FlowRateProps> = ({ data, data2, currentColor = '#fff',
   )
 }
 
-export default FlowRate
+// Tranh ve lai bieu do khi bieu do thuy van khac hoac vi tri cuon thay doi.
+export default React.memo(FlowRate)

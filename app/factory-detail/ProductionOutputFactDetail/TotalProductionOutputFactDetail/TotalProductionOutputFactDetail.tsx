@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputOverviewFactDetail } from '@/core/redux/Actions/ProductOutputActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getProductOutputOverviewFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import TotalPower from '@/components/TotalPower/TotalPower'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
@@ -23,13 +23,13 @@ interface productOutputOverview {
 }
 function TotalProductionOutputFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPower, setTotalPower] = useState<number>(0)
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const timerCallback = useCallback(() => {
     if (activeTabIndex === keyTab) {
       dispatch(

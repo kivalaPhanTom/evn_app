@@ -1,27 +1,28 @@
 import { all } from 'redux-saga/effects'
-import { exampleSagaList } from './ExampleSaga'
-import { powerSagaList } from './PowerSagas'
-import { authenSagaList } from './AuthenSagas'
-import { productOutputSagaList } from './ProductOutputSaga'
-import { hydrologySagaList } from './HydrologySagas'
-import { revenueProfitSagaList } from './RevenueProfitSaga'
-import { repairScheduleSagaList } from './UnitMaintenanceScheduleSaga'
-import { modulesSagaList } from './ModulesSaga'
-import { techInfoSagaList } from './TechInfoSaga'
-import { documentSagaList } from './DocumentSaga'
-const sagasList = [
-  exampleSagaList(),
-  powerSagaList(),
-  productOutputSagaList(),
-  authenSagaList(),
-  hydrologySagaList(),
-  revenueProfitSagaList(),
-  repairScheduleSagaList(),
-  modulesSagaList(),
-  techInfoSagaList(),
-  documentSagaList()
-]
+import {
+  authenSagaList,
+  documentSagaList,
+  hydrologySagaList,
+  modulesSagaList,
+  powerSagaList,
+  productOutputSagaList,
+  repairScheduleSagaList,
+  revenueProfitSagaList,
+  techInfoSagaList,
+} from '../domains'
 
-export default function* () {
-  yield all(sagasList)
+export function* rootSaga() {
+  yield all([
+    authenSagaList(),
+    powerSagaList(),
+    productOutputSagaList(),
+    hydrologySagaList(),
+    revenueProfitSagaList(),
+    repairScheduleSagaList(),
+    modulesSagaList(),
+    techInfoSagaList(),
+    documentSagaList(),
+  ])
 }
+
+export default rootSaga

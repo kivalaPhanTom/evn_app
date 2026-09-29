@@ -3,10 +3,11 @@ import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
 import dayjs from 'dayjs'
-import styles from './RegulationWaterLevel.style'
-import { useDispatch, useSelector } from 'react-redux'
+import createStyles from './RegulationWaterLevel.style'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
-import { getOperateWaterLevel } from '@/core/redux/Actions/HydrologyActions'
+import { getOperateWaterLevel } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface RegulationWaterLevelProps {
   title?: string
@@ -20,8 +21,11 @@ interface TimeRangeData {
 }
 
 const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
-  const dispatch = useDispatch()
-  const { operateWaterLevel, countRefesh } = useSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+  const { operateWaterLevel, countRefesh } = useAppSelector((state: RootState) => state.hydrologySlice)
   const [selectedMonth, setSelectedMonth] = useState(dayjs())
 
   // Tạo dữ liệu mặc định khi không có dữ liệu từ API
@@ -92,6 +96,10 @@ const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
           selectedDate={selectedMonth}
           onConfirm={handleConfirm}
           onSelectCurrentMonth={handleSelectCurrentMonth}
+          iconColor={isDark ? '#fff' : '#6B7280'}
+          pickerLabelStyle={{ color: isDark ? '#FFFFFF' : '#6B7280' }}
+          selectedDateStyle={{ color: isDark ? '#FFFFFF' : '#374151' }}
+          pickerStyle={isDark ? undefined : { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.12)' }}
         />
 
         {/* Bảng dữ liệu */}

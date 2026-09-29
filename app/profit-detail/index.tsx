@@ -6,15 +6,17 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const ProfitDetailScreen: React.FC = () => {
+  const isDark = useAppTheme() === 'dark'
   const { plantName, plantId } = useLocalSearchParams<{
     plantName?: string
     plantId?: string
   }>()
 
   return (
-    <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết Lợi nhuận'}

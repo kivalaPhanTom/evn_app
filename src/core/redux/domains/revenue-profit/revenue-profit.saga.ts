@@ -1,0 +1,187 @@
+import { all, takeLatest, put, call } from 'redux-saga/effects'
+import { Service } from '@/core/service/revenueProfitService'
+import {
+  getProfit,
+  getRevenue,
+  getRevenuePowerPrices,
+  getRevenueTotalExpense,
+  getRevenueByPeriod,
+  getDailyAndCumulativeData,
+  getProfitFactDetail,
+  getRevenueFactDetail,
+  getProfitByPeriod,
+} from './revenue-profit.actions'
+import {
+  setProfitData,
+  setRevenueData,
+  setPowerPrices,
+  setLoading,
+  setRevenueCostSummary,
+  setRevenueByPeriod,
+  setDailyAndCumulativeData,
+  setProfitFactDetailData,
+  setRevenueFactDetailData,
+  setProfitByPeriod,
+} from './revenue-profit.slice'
+import { catchHandle } from '@/core/utils/utils'
+
+function* getProfitApiSaga(): Generator {
+  try {
+    yield put(setLoading({ isLoadingProfit: true }))
+    const res = yield call(Service.getProfitApi, '')
+    if (res.status === 200) {
+      yield put(setProfitData(res.data))
+    }
+    yield put(setLoading({ isLoadingProfit: false }))
+  } catch (error) {
+    catchHandle(error, 'getProfitApiSaga')
+    yield put(setLoading({ isLoadingProfit: false }))
+  }
+}
+
+function* getProfitFactDetailApiSaga(action: ReturnType<typeof getProfitFactDetail>): Generator {
+  try {
+    yield put(setLoading({ isLoadingProfit: true }))
+    const payload = action.payload
+    const { currentPlantId } = payload
+    const res = yield call(Service.getProfitApi, currentPlantId)
+    if (res.status === 200) {
+      yield put(setProfitFactDetailData(res.data))
+    }
+    yield put(setLoading({ isLoadingProfit: false }))
+  } catch (error) {
+    catchHandle(error, 'getProfitFactDetailApiSaga')
+    yield put(setLoading({ isLoadingProfit: false }))
+  }
+}
+
+function* getRevenueApiSaga(): Generator {
+  try {
+    yield put(setLoading({ isLoadingRevenue: true }))
+    const res = yield call(Service.getRevenueApi, '')
+    if (res.status === 200) {
+      yield put(setRevenueData(res.data))
+    }
+    yield put(setLoading({ isLoadingRevenue: false }))
+  } catch (error) {
+    catchHandle(error, 'getRevenueApiSaga')
+    yield put(setLoading({ isLoadingRevenue: false }))
+  }
+}
+
+function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDetail>): Generator {
+  try {
+    yield put(setLoading({ isLoadingRevenue: true }))
+    const payload = action.payload
+    const { currentPlantId } = payload
+    const res = yield call(Service.getRevenueApi, currentPlantId)
+    if (res.status === 200) {
+      yield put(setRevenueFactDetailData(res.data))
+    }
+    yield put(setLoading({ isLoadingRevenue: false }))
+  } catch (error) {
+    catchHandle(error, 'getRevenueFactDetailApiSaga')
+    yield put(setLoading({ isLoadingRevenue: false }))
+  }
+}
+
+function* getRevenuePowerPricesSaga(action: ReturnType<typeof getRevenuePowerPrices>): Generator {
+  try {
+    yield put(setLoading({ isLoadingPowerPrice: true }))
+    const payload = action.payload
+    const { currentPlantId, date } = payload
+    const res = yield call(Service.getRevenuePowerPricesApi, currentPlantId, date)
+    if (res.status === 200) {
+      yield put(setPowerPrices(res.data.Prices))
+    }
+    yield put(setLoading({ isLoadingPowerPrice: false }))
+  } catch (error) {
+    catchHandle(error, 'getRevenuePowerPricesSaga')
+    yield put(setLoading({ isLoadingPowerPrice: false }))
+  }
+}
+
+function* getRevenueTotalExpenseSaga(action: ReturnType<typeof getRevenueTotalExpense>): Generator {
+  try {
+    yield put(setLoading({ isLoadingRevenueCostSummary: true }))
+    const { date } = action.payload
+    const res = yield call(Service.getRevenueTotalExpensesApi, date)
+    if (res.status === 200) {
+      yield put(setRevenueCostSummary({
+        MarketRevenue: res.data.MarketRevenue,
+        ContractRevenue: res.data.ContractRevenue,
+        TotalCost: res.data.TotalCost,
+      }))
+    }
+    yield put(setLoading({ isLoadingRevenueCostSummary: false }))
+  } catch (error) {
+    catchHandle(error, 'getRevenueTotalExpenseSaga')
+    yield put(setLoading({ isLoadingRevenueCostSummary: false }))
+  }
+}
+
+function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>): Generator {
+  try {
+    yield put(setLoading({ isLoadingRevenueByPeriod: true }))
+    const { startDate, endDate, type } = action.payload
+    const res = yield call(Service.getRevenueByPeriodApi, startDate, endDate, type)
+    if (res.status === 200) {
+      yield put(setRevenueByPeriod(res.data))
+    }
+    yield put(setLoading({ isLoadingRevenueByPeriod: false }))
+  } catch (error) {
+    catchHandle(error, 'getRevenueByPeriodSaga')
+    yield put(setLoading({ isLoadingRevenueByPeriod: false }))
+  }
+}
+
+function* getProfitByPeriodSaga(action: ReturnType<typeof getProfitByPeriod>): Generator {
+  try {
+    yield put(setLoading({ isLoadingProfitByPeriod: true }))
+    const { startDate, endDate, currentPlantId } = action.payload
+    const res = yield call(Service.getProfitByPeriodApi, startDate, endDate, currentPlantId)
+    if (res.status === 200) {
+      yield put(setProfitByPeriod(res.data))
+    }
+    yield put(setLoading({ isLoadingProfitByPeriod: false }))
+  } catch (error) {
+    catchHandle(error, 'getProfitByPeriodSaga')
+    yield put(setLoading({ isLoadingProfitByPeriod: false }))
+  }
+}
+
+function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCumulativeData>): Generator {
+  try {
+    const { currentPlantId, date } = action.payload
+    const res = yield call(Service.getDailyAndCumulativeApi, currentPlantId, date)
+    if (res.status === 200) {
+      yield put(setDailyAndCumulativeData(res.data))
+    }
+  } catch (error) {
+    catchHandle(error, 'getDailyAndCumulativeDataSaga')
+  }
+}
+
+function* getProfitApi() { yield takeLatest(getProfit, getProfitApiSaga) }
+function* getRevenueApi() { yield takeLatest(getRevenue, getRevenueApiSaga) }
+function* getRevenuePowerPricesApi() { yield takeLatest(getRevenuePowerPrices, getRevenuePowerPricesSaga) }
+function* getRevenueTotalExpenseApi() { yield takeLatest(getRevenueTotalExpense, getRevenueTotalExpenseSaga) }
+function* getProfitFactDetailApi() { yield takeLatest(getProfitFactDetail, getProfitFactDetailApiSaga) }
+function* getRevenueFactDetailApi() { yield takeLatest(getRevenueFactDetail, getRevenueFactDetailApiSaga) }
+function* getRevenueByPeriodApi() { yield takeLatest(getRevenueByPeriod, getRevenueByPeriodSaga) }
+function* getDailyAndCumulativeDataApi() { yield takeLatest(getDailyAndCumulativeData, getDailyAndCumulativeDataSaga) }
+function* getProfitByPeriodApi() { yield takeLatest(getProfitByPeriod, getProfitByPeriodSaga) }
+
+export function* revenueProfitSagaList() {
+  yield all([
+    getProfitApi(),
+    getProfitFactDetailApi(),
+    getRevenueFactDetailApi(),
+    getRevenueApi(),
+    getRevenuePowerPricesApi(),
+    getRevenueTotalExpenseApi(),
+    getRevenueByPeriodApi(),
+    getDailyAndCumulativeDataApi(),
+    getProfitByPeriodApi(),
+  ])
+}

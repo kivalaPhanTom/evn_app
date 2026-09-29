@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProductOutputByHoursFactDetail } from '@/core/redux/Actions/ProductOutputActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getProductOutputByHoursFactDetail } from '@/core/redux/domains/production-output'
 import { RootState } from '@/core/redux/store'
 import { View } from 'react-native'
 interface Props {
@@ -20,15 +20,15 @@ interface productOutputByHours {
 
 function ProductionOutputByHoursFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)
   const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
   const [listValueByHours, setListValueByHours] = useState<{ label: string; value: number }[]>([])
-  const { productOutputByHours } = useSelector((state: RootState) => state.productOutputSlice)
+  const { productOutputByHours } = useAppSelector((state: RootState) => state.productOutputSlice)
   const setLoading = (value: boolean) => {
     setIsLoading(value)
   }

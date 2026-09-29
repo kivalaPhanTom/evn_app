@@ -58,9 +58,7 @@ const VersionChecker: React.FC = () => {
   const openStore = async () => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android'
 
-    const link = payload?.storeUrl?.find(
-      item => item.platform === platform
-    )?.url
+    const link = payload?.storeUrl?.[platform]
 
     if (!link) return
 

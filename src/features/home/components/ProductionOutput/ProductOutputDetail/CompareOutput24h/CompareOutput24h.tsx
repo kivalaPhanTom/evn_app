@@ -1,19 +1,23 @@
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
-import styles from './CompareOutput24h.styles'
+import createStyles from './CompareOutput24h.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { useRouter } from 'expo-router'
 import CompareDetailStats from '@/core/shared/CompareDetailStats'
 import CompareLegend from '@/core/shared/CompareLegend'
 import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashboardOutput'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from "@/core/redux/store";
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props;
-  const dispatch = useDispatch()
-  const {isLoadingCompareProductOutput} = useSelector((state: RootState) => state.productOutputSlice)
-  const compareProductOutput = useSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
+  const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+  const {isLoadingCompareProductOutput} = useAppSelector((state: RootState) => state.productOutputSlice)
+  const compareProductOutput = useAppSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
   const { Unit = '', BarChartData, compareLineChartData, Summary, ContractData } = compareProductOutput
  
   return (

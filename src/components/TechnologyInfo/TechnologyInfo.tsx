@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import { BarGroup } from '@/core/types'
 import BarSkeleton from '../Skeletons/BarSkeleton'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 
 type InfoItem = {
@@ -32,6 +33,9 @@ function TechnologyInfo(props: Props) {
     const [firstLoading, setFirstLoading] = useState(true)
     const [expanded, setExpanded] = useState(false)
     const { data, isLoading } = props
+    const scheme = useAppTheme()
+    const isDark = scheme === 'dark'
+    const styles = createStyles(isDark)
     const hasMoreThanVisible = data.length > VISIBLE_LINES_COLLAPSED
     const displayData = expanded || !hasMoreThanVisible ? data : data.slice(0, VISIBLE_LINES_COLLAPSED)
     useEffect(() => {
@@ -79,7 +83,7 @@ function TechnologyInfo(props: Props) {
                                     <Ionicons
                                         name={expanded ? 'chevron-up' : 'chevron-down'}
                                         size={24}
-                                        color="rgba(255,255,255,0.7)"
+                                        color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.45)'}
                                     />
                                 </TouchableOpacity>
                             )}
@@ -91,21 +95,22 @@ function TechnologyInfo(props: Props) {
 }
 
 export default TechnologyInfo
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) =>
+    StyleSheet.create({
     row: {
         flexDirection: "row",
         alignItems: "flex-start", // QUAN TRỌNG
         paddingVertical: 12,
     },
     label: {
-        color: "#d6d9ff",
+        color: isDark ? "#d6d9ff" : "#374151",
         fontSize: 14,
         flex: 1,              // chiếm 1 phần
         flexWrap: "wrap",     // cho phép xuống dòng
         paddingRight: 8,
     },
     value: {
-        color: "#ffffff",
+        color: isDark ? "#ffffff" : "#111827",
         fontSize: 14,
         fontWeight: "600",
         flex: 1,              // chiếm 1 phần
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: "rgba(255,255,255,0.15)",
+        backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.08)",
     },
     expandButton: {
         paddingVertical: 12,

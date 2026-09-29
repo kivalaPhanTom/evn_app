@@ -6,14 +6,16 @@ import { px } from '@/core/utils/scale'
 import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
-import { getPowerStoreInLake } from '@/core/redux/Actions/HydrologyActions'
+import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const PowerStoreInLake: React.FC = () => {
-  const dispatch = useDispatch()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { powerStoreInLake, isLoadingPowerStoreInLake } = useSelector((state: RootState) => state.hydrologySlice)
+  const dispatch = useAppDispatch()
+  const isDark = useAppTheme() === 'dark'
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
   const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
   const segments = powerStoreInLake?.segments ?? []
@@ -32,8 +34,8 @@ const PowerStoreInLake: React.FC = () => {
 
   return (
     <AnimatedCardContainer>
-      <View style={styles.pill}>
-        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Điện năng tích trữ trong hồ</Text>
+      <View style={[styles.pill, !isDark && { backgroundColor: 'rgba(0, 0, 0, 0.06)' }]}>
+        <Text style={[styles.pillText, { color: isDark ? '#E6ECF2' : '#374151' }]}>Điện năng tích trữ trong hồ</Text>
       </View>
 
       <View style={styles.mainRow}>

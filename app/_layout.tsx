@@ -30,13 +30,14 @@ export default function RootLayout() {
   useEffect(() => {
     void (async () => {
       try {
-        // const raw = await AsyncStorage.getItem(THEME_PREFERENCE_KEY)
-        // if (raw === 'light' || raw === 'dark' || raw === 'system') {
-        //   setPreferenceState(raw)
-        // }
-        setPreferenceState('dark') // default to dark
+        const raw = await AsyncStorage.getItem(THEME_PREFERENCE_KEY)
+        if (raw === 'light' || raw === 'dark' || raw === 'system') {
+          setPreferenceState(raw)
+        } else {
+          setPreferenceState('dark') // default to dark
+        }
       } catch {
-        /* ignore */
+        setPreferenceState('dark') // default to dark
       } finally {
         setLoaded(true)
       }
@@ -110,8 +111,18 @@ export default function RootLayout() {
                       <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity> */}
                     <TouchableOpacity style={styles.container} onPress={() => router.back()} delayPressIn={0} >
-                      <BlurView intensity={20} tint="light" style={styles.backButton}>
-                        <Ionicons name="chevron-back" size={24} color="white" />
+                      <BlurView
+                        intensity={effectiveScheme === 'dark' ? 20 : 40}
+                        tint={effectiveScheme === 'dark' ? 'light' : 'light'}
+                        style={[
+                          styles.backButton,
+                          effectiveScheme === 'light' && {
+                            borderColor: 'rgba(0, 0, 0, 0.15)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.55)',
+                          },
+                        ]}
+                      >
+                        <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? 'white' : '#374151'} />
                       </BlurView>
                     </TouchableOpacity>
                   </View>

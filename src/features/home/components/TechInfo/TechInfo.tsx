@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-// import { getTechInfo, getTechInfoDetail } from '../Actions/TechInfoActions'
-import { getTechInfo, getTechInfoDetail } from '@/core/redux/Actions/TechInfoActions'
+import { getTechInfo, getTechInfoDetail } from '@/core/redux/domains/technology'
 import { useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import TechnologyInfo from '@/components/TechnologyInfo/TechnologyInfo'
@@ -28,8 +27,8 @@ function getCurrentPlantId(activeTab: string): string {
     return result
 }
 function TechInfo() {
-    const dispatch = useDispatch()
-    const { isLoadingTechInfo, techInfo } = useSelector((state: RootState) => state.techInfoSlice)
+    const dispatch = useAppDispatch()
+    const { isLoadingTechInfo, techInfo } = useAppSelector((state: RootState) => state.techInfoSlice)
     const { currentPlantId } = useLocalSearchParams<{
         currentPlantId?: string
     }>()

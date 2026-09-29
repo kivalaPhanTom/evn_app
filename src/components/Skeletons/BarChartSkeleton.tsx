@@ -6,6 +6,8 @@ import {
   Easing,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppTheme } from "@/core/hooks/use-app-theme";
+import { createThemePalette } from "@/core/constants/themePalette";
 
 interface BarChartSkeletonProps {
   barCount?: number;
@@ -16,6 +18,9 @@ const BarChartSkeleton = ({
   barCount = 6,
   height = 160,
 }: BarChartSkeletonProps) => {
+  const scheme = useAppTheme();
+  const isDark = scheme === 'dark';
+  const styles = createStyles(isDark);
   const translateX = useRef(new Animated.Value(-200)).current;
 
   useEffect(() => {
@@ -62,9 +67,9 @@ const BarChartSkeleton = ({
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(255,255,255,0.10)",
-            "rgba(255,255,255,0.20)",
-            "rgba(255,255,255,0.10)",
+            isDark ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.35)",
+            isDark ? "rgba(255,255,255,0.20)" : "rgba(255,255,255,0.65)",
+            isDark ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.35)",
             "transparent",
           ]}
           locations={[0, 0.35, 0.5, 0.65, 1]}
@@ -77,43 +82,47 @@ const BarChartSkeleton = ({
   );
 };
 export default BarChartSkeleton;
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#0F1726",
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    overflow: "hidden",
-  },
 
-  grid: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "space-between",
-    paddingVertical: 16,
-  },
+const createStyles = (isDark: boolean) => {
+  const p = createThemePalette(isDark)
+  return StyleSheet.create({
+    container: {
+      backgroundColor: isDark ? '#0F1726' : '#ECEDEF',
+      borderRadius: 16,
+      paddingHorizontal: 12,
+      paddingVertical: 14,
+      overflow: 'hidden',
+    },
 
-  gridLine: {
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
+    grid: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'space-between',
+      paddingVertical: 16,
+    },
 
-  barRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    height: "100%",
-    gap: 14,
-  },
+    gridLine: {
+      height: 1,
+      backgroundColor: p.divider,
+    },
 
-  bar: {
-    width: 22,
-    borderRadius: 6,
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
+    barRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      height: '100%',
+      gap: 14,
+    },
 
-  shimmerWrap: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: "140%",
-  },
-});
+    bar: {
+      width: 22,
+      borderRadius: 6,
+      backgroundColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)',
+    },
+
+    shimmerWrap: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      width: '140%',
+    },
+  })
+};

@@ -2,16 +2,18 @@ import React, { FC, useEffect, useRef } from "react";
 import { View, StyleSheet, Animated, Easing, DimensionValue, StyleProp, ViewStyle } from "react-native";
 import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
-const BackgroundColor = "rgba(255,255,255,0.15)";
+import { useAppTheme } from "@/core/hooks/use-app-theme";
+import { createThemePalette } from "@/core/constants/themePalette";
 
 interface ShimmerProps {
     style?: StyleProp<ViewStyle>;
 }
 
 const Shimmer: FC<ShimmerProps> = ({ style }) => {
+    const colors = createThemePalette(useAppTheme() === 'dark');
     return (
         <ShimmerPlaceHolder
-            shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+            shimmerColors={[colors.skeletonBase, colors.skeletonHighlight, colors.skeletonBase]}
             duration={1400}
             LinearGradient={LinearGradient}
             style={[styles.skeletonBlock, style]}
@@ -32,37 +34,10 @@ function BarSkeleton({
     marginTop = 5,
     alignSelf
 }: BarSkeletonProps) {
-    // const opacity = useRef(new Animated.Value(0.4)).current;
-
-    // useEffect(() => {
-    //     opacity.setValue(0.7);
-
-    //     Animated.loop(
-    //         Animated.sequence([
-    //             Animated.timing(opacity, {
-    //                 toValue: 1,
-    //                 duration: 600,
-    //                 easing: Easing.inOut(Easing.quad),
-    //                 useNativeDriver: true,
-    //             }),
-    //             Animated.timing(opacity, {
-    //                 toValue: 0.4,
-    //                 duration: 600,
-    //                 easing: Easing.inOut(Easing.quad),
-    //                 useNativeDriver: true,
-    //             }),
-    //         ])
-    //     ).start();
-    // }, []);
-
-    // return (
-    //     <Animated.View style={[styles.bigBlock, { opacity }]} />
-    // );
     return (
         <View style={styles.row}>
             <View style={{ flex: 1, marginTop: marginTop }}>
                 <Shimmer
-                    // style={{ width: width, height: height, marginBottom: marginBottom }} 
                     style={[
                         {
                             width,
@@ -84,13 +59,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         width: '100%',
-        // marginTop: 15
     },
     bigBlock: {
         width: "95%",
         height: 50,
         borderRadius: 10,
-        backgroundColor: BackgroundColor,
     },
     skeletonBlock: {
         borderRadius: 7,

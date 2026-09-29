@@ -5,11 +5,12 @@ import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.
 
 import { Image } from 'expo-image'
 import { icons } from '@/assets'
-import styles from './MaintenanceCard.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { MaintenanceIcon } from '../ui/maintenance-icon'
 import { ScheduleIcon } from '../ui/schedule-icon'
 import { px } from '@/core/utils/scale'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import createStyles from './MaintenanceCard.styles'
 
 interface MaintenanceType {
   RCM: number
@@ -42,6 +43,9 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   plantCode,
 }) => {
   const router = useRouter()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
 
   const onPressCard = () => {
     router.navigate({ 
@@ -54,7 +58,7 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
     <TouchableOpacity style={styles.infoContainer} onPress={onPressCard} activeOpacity={0.8}>
       <View style={styles.infoCard}>
         <View style={styles.titleRow}>
-          <Text style={{ color: 'rgb(255,255,255)', fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
+          <Text style={{ color: isDark ? 'rgb(255,255,255)' : '#111827', fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
           <View
             style={[
               styles.statusBadge,
@@ -113,14 +117,14 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             </View>
             <View style={styles.maintenanceInfoContent}>
               <View style={styles.maintenanceInfoItem}>
-                <Text style={[styles.maintenanceInfoValue, { color: '#FFF' }]}>
+                <Text style={[styles.maintenanceInfoValue, { color: isDark ? '#FFF' : '#1E3A8A' }]}>
                   {mainternanceDurationData.Plan}
                 </Text>
                 <Text style={styles.maintenanceInfoLabel}>KẾ HOẠCH</Text>
               </View>
               <Text style={styles.maintenanceInfoDivider}>|</Text>
               <View style={styles.maintenanceInfoItem}>
-                <Text style={[styles.maintenanceInfoValue, { color: '#FFF' }]}>
+                <Text style={[styles.maintenanceInfoValue, { color: isDark ? '#FFF' : '#1E3A8A' }]}>
                   {mainternanceDurationData.Actual}
                 </Text>
                 <Text style={styles.maintenanceInfoLabel}>THỰC TẾ</Text>

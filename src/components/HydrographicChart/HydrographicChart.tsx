@@ -10,6 +10,7 @@ import { Text } from 'react-native';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
 import { Colors } from '@/core/constants/colors';
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton';
+import { useAppTheme } from '@/core/hooks/use-app-theme';
 
 interface ChartPoint {
   label: string;
@@ -53,6 +54,8 @@ const convertDateLabel = (dateString: string) => {
 }
 const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const { isLoading = false, data = [], referenceLevel = 0, bgColor, selectedOptionsValue = "" } = props
+  const scheme = useAppTheme();
+  const isDark = scheme === 'dark';
   const scrollRef = useRef<ScrollView>(null);
   const convertedData: { label: string; value: number }[] = data.map((item, index) => ({
     label: `${selectedOptionsValue === "7_DAYS" ? convertDateLabel(item.date) : index}`,
@@ -135,14 +138,14 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
         <View style={styles.container}>
           <View style={styles.legendContainer}>
             <View style={[styles.legendItem, { marginLeft: 8 }]}>
-              <Text style={styles.legendText}>Đơn vị:</Text>
-              <Text style={[styles.legendText, { marginLeft: 4 }]}>m</Text>
+              <Text style={[styles.legendText, !isDark && { color: '#374151' }]}>Đơn vị:</Text>
+              <Text style={[styles.legendText, { marginLeft: 4 }, !isDark && { color: '#374151' }]}>m</Text>
             </View>
             <View style={styles.legendItem}>
               <Svg height="2" width="30" style={styles.legendLine}>
                 <Line x1="0" y1="1" x2="24" y2="1" stroke={Colors.warningFull} strokeWidth="2" strokeDasharray="4, 3" />
               </Svg>
-              <Text style={styles.legendText}>Mực nước chết</Text>
+              <Text style={[styles.legendText, !isDark && { color: '#374151' }]}>Mực nước chết</Text>
             </View>
           </View>
 
@@ -154,7 +157,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                 width={Y_AXIS_WIDTH}
                 height={CHART_HEIGHT + PADDING_TOP + PADDING_BOTTOM + 100}
                 style={{
-                  backgroundColor: bgColor || '#1c056eff',
+                  backgroundColor: bgColor || (isDark ? '#1c056eff' : '#BFDBFE'),
                   ...styles.yAxis
                 }}
               >
@@ -171,7 +174,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       x={Y_AXIS_WIDTH - 4}
                       y={y + 4}
                       fontSize={10}
-                      fill="#9fa8da"
+                      fill={isDark ? '#9fa8da' : '#6b7280'}
                       textAnchor="end"
                     >
                       {formatYAxis(value, rangeY)}
@@ -216,7 +219,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                           y1={y}
                           x2={chartWidth}
                           y2={y}
-                          stroke="rgba(255,255,255,0.15)"
+                          stroke={isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.8)'}
                         />
                       );
                     })}
@@ -236,14 +239,14 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
 
                       return (
                         <React.Fragment key={i}>
-                          <Circle cx={x} cy={y} r={4} fill="#fff" />
+                          <Circle cx={x} cy={y} r={4} fill="#fff" stroke={isDark ? '#fff' : '#4da6ff'} strokeWidth={2} />
 
                           {/* value */}
                           <SvgText
                             x={x}
                             y={y - 8}
                             fontSize={10}
-                            fill="#fff"
+                            fill={isDark ? '#fff' : '#111827'}
                             textAnchor="middle"
                           >
                             {p.value}
@@ -254,7 +257,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                             x={x}
                             y={PADDING_TOP + CHART_HEIGHT + 20}
                             fontSize={10}
-                            fill="#9fa8da"
+                            fill={isDark ? '#9fa8da' : '#6b7280'}
                             textAnchor="middle"
                           >
                             {p.label}

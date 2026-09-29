@@ -1,26 +1,31 @@
 import React, { useEffect } from 'react'
 import {  Text, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
-import { getExistence } from '@/core/redux/Actions/DocumentActions'
-import styles from './ExistenceInfo.styles'
+import { getExistence } from '@/core/redux/domains/documents'
+import createStyles from './ExistenceInfo.styles'
 import { Badge } from '@/components/Badge/Badge.component'
 import { formatDate } from '@/core/utils/date'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import CalendarIcon from './CalendarIcon'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface ExistenceProps {
     currentPlantId?: string
 }
 
 const ExistenceInfo: React.FC<ExistenceProps> = (props) => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const { currentPlantId } = props
-    const { isLoadingExistence, existence } = useSelector((state: RootState) => state.documentSlice)
-    const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
+    const scheme = useAppTheme()
+    const isDark = scheme === 'dark'
+    const styles = createStyles(isDark)
+    const { isLoadingExistence, existence } = useAppSelector((state: RootState) => state.documentSlice)
+    const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
     useEffect(() => {
         console.log(currentPlantId);
+        if (!currentPlantId) return
         dispatch(getExistence({ currentPlantId }))
         console.log(existence);
     }, [dispatch, currentPlantId, countRefesh])
@@ -44,7 +49,7 @@ const ExistenceInfo: React.FC<ExistenceProps> = (props) => {
                     <View style={styles.topRow}>
                         <Badge status={problem.status} />
                         <View style={styles.dateContainer}>
-                            <CalendarIcon />
+                            <CalendarIcon color={isDark ? undefined : '#6B7280'} />
                             <Text style={styles.date}>{formattedDate}</Text>
                         </View>
                     </View>

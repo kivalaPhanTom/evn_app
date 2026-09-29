@@ -10,8 +10,8 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
-import { useDispatch, useSelector } from 'react-redux'
-import { getRevenueFactDetail } from '@/core/redux/Actions/RevenueProfitActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getRevenueFactDetail } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { BarGroup } from '@/core/types'
@@ -23,11 +23,11 @@ interface RevenueFactDetailProps {
 
 export default function RevenueDetail(props: RevenueFactDetailProps) {
   const { currentPlantId, keyTab } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const { revenueFactDetail, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
-  const { activeTabIndex } = useSelector((state: RootState) => state.powerSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { revenueFactDetail, isLoadingRevenue } = useAppSelector((state: RootState) => state.revenueProfitSlice)
+  const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
 
   const onPressCard = () => {
     router.navigate({

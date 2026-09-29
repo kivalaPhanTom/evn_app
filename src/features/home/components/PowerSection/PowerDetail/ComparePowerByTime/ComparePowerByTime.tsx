@@ -3,18 +3,18 @@ import { View, Text } from 'react-native'
 import styles from './ComparePowerByTime.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import CompareLegend from '@/core/shared/CompareLegend'
-import { useDispatch, useSelector } from 'react-redux'
-import { getComparePower } from '@/core/redux/Actions/PowerActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
 
 function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
-  const dispatch = useDispatch()
-  const comparePowerData = useSelector((state: any) => state.powerSlice.comparePower || {})
-  const { isLoadingComparePower } = useSelector((state: any) => state.powerSlice)
+  const dispatch = useAppDispatch()
+  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {})
+  const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [rangeCompare, setRangeCompare] = useState({
     from: dayjs().subtract(14, 'day'),
     to: dayjs().subtract(7, 'day'),

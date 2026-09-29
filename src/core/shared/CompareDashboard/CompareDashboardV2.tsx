@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, Dimensions } from 'react-native'
-import styles from './CompareDashboard.styles'
+import createStyles from './CompareDashboard.styles'
 import { px } from '@/core/utils/scale'
 import BarChart from '@/components/BarChart/BarChart.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
@@ -8,6 +8,8 @@ import dayjs from 'dayjs'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 interface BarGroup {
   label: string
   items: {
@@ -39,6 +41,10 @@ const CompareDashboardV2 = ({
   isLoading = false,
   scrollToEnd = false,
 }: CompareDashboardProps) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
   const barsToShow = 6
@@ -67,7 +73,7 @@ const CompareDashboardV2 = ({
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#A78BFA',
+        backgroundColor: palette.compareLine,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: -5,
@@ -89,7 +95,7 @@ const CompareDashboardV2 = ({
     <View>
       <View>
         <Text style={styles.chartCompareByTime}>Ngày so sánh</Text>
-        <DateRangePicker
+        <DateRangePicker
           format={'DD/MM/YYYY'}
           value={rangeCompare}
           onChange={onChangeDateRangeCompare}
@@ -100,7 +106,7 @@ const CompareDashboardV2 = ({
       </View>
       <View>
         <Text style={styles.chartCompareByTime}>Ngày mục tiêu</Text>
-        <DateRangePicker
+        <DateRangePicker
           format={'DD/MM/YYYY'}
           value={rangeTarget}
           onChange={onChangeDateRangeTarget}
@@ -118,7 +124,7 @@ const CompareDashboardV2 = ({
             data2={lineData2}
             height={px(200)}
             color={'#4975B3'}
-            color2="#A78BFA"
+            color2={palette.compareLine}
             areaChart={false}
             hideYAxisText={true}
             scrollToEnd={true}

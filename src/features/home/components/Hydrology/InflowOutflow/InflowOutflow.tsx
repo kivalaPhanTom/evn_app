@@ -10,9 +10,10 @@ import FlowMetricCard from '@/components/FlowMetricCard/FlowMetricCard.component
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { Image } from 'expo-image'
 import { CircleLineIcon } from '@/components/ui/circle-line-icon'
-import { useDispatch, useSelector } from 'react-redux'
-import { getInflowOutflow } from '@/core/redux/Actions/HydrologyActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 import { isEmpty } from '@/core/utils/utils'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 
@@ -21,6 +22,8 @@ interface InflowOutflowProps {
 }
 
 const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const customDataPoint = () => (
     <View
       style={{
@@ -48,9 +51,9 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
     />
   )
 
-  const dispatch = useDispatch()
-  const { isLoadingInflowOutflow } = useSelector((state: any) => state.hydrologySlice)
-  const inflowOutflowData = useSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
+  const dispatch = useAppDispatch()
+  const { isLoadingInflowOutflow } = useAppSelector((state: any) => state.hydrologySlice)
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]
@@ -129,14 +132,14 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     areaChart={false}
                     hideDataPoints1={true}
                     hideDataPoints2={true}
-                    rulesColor="#E5E5EF"
+                    rulesColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
                     //customDataPoint={customDataPoint()}
                     //customDataPoint2={customDataPoint2()}
                     label1="Qvề: "
                     label2="Qxả: "
                     height={px.v(200)}
                     pointerConfig={true}
-                    xAxisColor="#E5E5EF"
+                    xAxisColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
                     scrollToEnd={true}
                   />
                 )}

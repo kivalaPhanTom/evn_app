@@ -5,9 +5,12 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Document } from '@/core/model/Document';
-import styles from './Documents.styles';
+import { Colors } from '@/core/constants/colors';
+import createStyles from './Documents.styles';
 import DocumentIcon from './DocumentIcon';
+import { useAppTheme } from '@/core/hooks/use-app-theme';
 
 interface Props {
   doc: Document;
@@ -15,6 +18,9 @@ interface Props {
 }
 
 const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
+  const scheme = useAppTheme();
+  const isDark = scheme === 'dark';
+  const styles = createStyles(isDark);
   const expiryDate = new Date(doc.deadline);
 
   const formatDate = (date: Date) => {
@@ -40,15 +46,19 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
             styles.icon,
             !doc.isValid ? styles.iconExpired : styles.iconNormal,
             doc.isUpcomingDue && styles.iconUpcomingDue,
+            doc.isValid && !doc.isUpcomingDue && styles.docIconChip,
           ]}
         >
-          <Text style={styles.iconText}><DocumentIcon /></Text>
+          <DocumentIcon
+            size={18}
+            color={doc.isUpcomingDue ? Colors.warningFull : !doc.isValid ? '#dc2626' : isDark ? '#60A5FA' : '#2563EB'}
+          />
         </View>
 
         <View style={styles.textWrap}>
           <Text
             style={[
-              styles.title,
+              styles.docName,
               !doc.isValid && styles.expiredTitle,
               doc.isUpcomingDue && styles.upComingDueTitle,
             ]}
@@ -56,31 +66,30 @@ const DocumentRow: React.FC<Props> = ({ doc, onPress }) => {
           >
             {doc.name}
           </Text>
-          {/* 
-          <Text style={styles.category}>{doc.category}</Text> */}
+
+          <View style={styles.dateLine}>
+            <Ionicons name="calendar-outline" size={12} color="#6b7280" />
+            <Text style={styles.dateText}>
+              {`hiệu lực đến: ${formatDate(expiryDate)}`}
+            </Text>
+            {!doc.isValid && (
+              <Text style={[styles.statusLabel, styles.expiredLabel]}>Hết hiệu lực</Text>
+            )}
+            {doc.isUpcomingDue && (
+              <Text style={[styles.statusLabel, styles.upcomingDueLabel]}>Sắp hết hiệu lực</Text>
+            )}
+          </View>
         </View>
       </View>
 
-      {/* Right */}
-      <View style={styles.right}>
-        <Text
-          style={[
-            styles.date,
-            !doc.isValid && styles.expiredDate,
-            doc.isUpcomingDue && styles.upComingDueDate,
-          ]}
-        >
-          {formatDate(expiryDate)}
-        </Text>
-
-        {!doc.isValid && (
-          <Text style={styles.expiredLabel}>Hết hiệu lực</Text>
-        )}
-
-        {doc.isUpcomingDue && (
-          <Text style={styles.upcomingDueLabel}>Sắp hết hiệu lực</Text>
-        )}
-      </View>
+      {/* Right: eye button opens document */}
+      <Pressable
+        onPress={() => onPress(doc)}
+        hitSlop={8}
+        style={styles.eyeButton}
+      >
+        <Ionicons name="eye" size={18} color="#FFFFFF" />
+      </Pressable>
     </Pressable>
   );
 };

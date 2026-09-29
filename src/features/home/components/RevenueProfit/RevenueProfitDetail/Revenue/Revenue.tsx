@@ -10,17 +10,17 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import { Colors } from '@/core/constants/colors'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
-import { useDispatch, useSelector } from 'react-redux'
-import { getRevenue } from '@/core/redux/Actions/RevenueProfitActions'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { getRevenue } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { BarGroup } from '@/core/types'
 
 export default function RevenueDetail() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const { countRefesh } = useSelector((state: any) => state.homeSlice)
-  const { revenue, isLoadingRevenue } = useSelector((state: RootState) => state.revenueProfitSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { revenue, isLoadingRevenue } = useAppSelector((state: RootState) => state.revenueProfitSlice)
 
   const onPressCard = () => {
     router.navigate({ pathname: '/revenue-detail' })
@@ -162,8 +162,8 @@ export default function RevenueDetail() {
         >
           <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
           <View>
-            {revenue.Breakdown.map((plant, idx) => {
-              const dataPlant: { label: string; value: number }[] = plant.Sparkline.map((item) => ({
+            {revenue.Breakdown.map((plant: { Sparkline: number[]; Color: string; PlantName: string; Value: number; Unit: string; ChangeValue: number }, idx: number) => {
+              const dataPlant: { label: string; value: number }[] = plant.Sparkline.map((item: number) => ({
                 value: item,
                 label: '',
               }))

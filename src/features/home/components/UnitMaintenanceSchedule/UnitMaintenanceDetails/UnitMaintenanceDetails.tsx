@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
@@ -8,10 +8,11 @@ import {
   MaintenanceLevelCard,
   MaintenanceLevel,
 } from '@/components/MaintenanceLevelCard/MaintenanceLevelCard.component'
-import styles from './UnitMaintenanceDetails.styles'
-import { getDetailRepairSchedule } from '@/core/redux/Actions/UnitMaintenanceScheduleActions'
+import createStyles from './UnitMaintenanceDetails.styles'
+import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import { generateYearList } from '@/core/utils/date'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const TABS = [
   { id: 'BTS', label: 'Buôn Tua Srah' },
@@ -41,8 +42,11 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
 
 function UnitMaintenanceDetails() {
   const { currentPlantId: currentPlantIdFromParams } = useLocalSearchParams<{ currentPlantId?: string | string[] }>()
-  const dispatch = useDispatch()
-  const { currentPlantDetail } = useSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+  const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+  const { currentPlantDetail } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
   // Normalize currentPlantId from params (handle array case)
   const currentPlantId = Array.isArray(currentPlantIdFromParams)

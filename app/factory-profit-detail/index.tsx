@@ -3,19 +3,21 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import FactoryProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/Profit/FactoryProfitDetail/FactoryProfitDetail'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
-import { setCountRefesh } from '@/core/redux/slices/RevenueProfitSlice'
+import { setCountRefesh } from '@/core/redux/domains/revenue-profit'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const FactoryProfitDetailScreen: React.FC = () => {
+  const isDark = useAppTheme() === 'dark'
   const { companyName } = useLocalSearchParams<{
     companyName?: string | string[]
   }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const { countRefesh } = useSelector((state: any) => state.revenueProfitSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.revenueProfitSlice)
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const onRefresh = async () => {
     setRefreshing(true);
@@ -32,7 +34,7 @@ const FactoryProfitDetailScreen: React.FC = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+      <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Lợi nhuận'}

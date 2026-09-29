@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { View, Text, TouchableOpacity, Modal } from 'react-native'
 import { px } from '@/core/utils/scale'
 import styles from './ProductOutputRencentDays.styles'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import CompareLegend from '@/core/shared/CompareLegend'
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
@@ -30,24 +31,22 @@ interface LegendItemData {
 }
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
+  const isDark = useAppTheme() === 'dark'
   const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
   //
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
   const unit = 'tr.KWh'
-  const dataActual = productionData.map((item) => ({
-    value: item.actual,
-    label: item.date,
-  }))
-  const contractData = productionData.map((item) => ({
-    value: item.contract,
-    label: item.date,
-  }))
-  const samePeriodData = productionData.map((item) => ({
-    value: item.samePeriod ?? 0,
-    label: item.date,
-  }))
-  const lineChartData = dataActual
+  const { dataActual, contractData, samePeriodData } = useMemo(() => {
+    // API tra ve hom nay truoc. Tao ban sao dao nguoc chi cho bieu do de qua khu o trai, hom nay o phai.
+    const chronologicalData = [...productionData].reverse()
+
+    return {
+      dataActual: chronologicalData.map((item) => ({ value: item.actual, label: item.date })),
+      contractData: chronologicalData.map((item) => ({ value: item.contract, label: item.date })),
+      samePeriodData: chronologicalData.map((item) => ({ value: item.samePeriod ?? 0, label: item.date })),
+    }
+  }, [productionData])
 
   useEffect(() => {
     setFirstLoading(true)
@@ -67,7 +66,7 @@ function ProductOutputRencentDays(props: Props) {
     <AnimatedCardContainer >
       <View style={styles.content}>
         {/* Title */}
-        <Text style={styles.title}>A - 7 NGÀY GẦN NHẤT</Text>
+        <Text style={[styles.title, !isDark && { color: '#374151' }]}>A - 7 NGÀY GẦN NHẤT</Text>
         <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Chi tiết</Text>
           <Text style={styles.actionButtonIcon}>{'>'}</Text>
@@ -91,8 +90,11 @@ function ProductOutputRencentDays(props: Props) {
 
                   return (
                     <>
-                      <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                        <Text style={styles.selectText}>{selectedYear}</Text>
+                      <TouchableOpacity
+                        style={[styles.selectContainer, !isDark && { borderColor: 'rgba(0, 0, 0, 0.12)', backgroundColor: 'rgba(0, 0, 0, 0.04)' }]}
+                        onPress={() => setShowSelectModal(true)}
+                      >
+                        <Text style={[styles.selectText, !isDark && { color: '#111827' }]}>{selectedYear}</Text>
                       </TouchableOpacity>
 
                       <Modal
@@ -139,7 +141,7 @@ function ProductOutputRencentDays(props: Props) {
           </View>
         </View>
 
-        <View style={styles.separator} />
+        <View style={[styles.separator, !isDark && { backgroundColor: 'rgba(0, 0, 0, 0.08)' }]} />
 
         {/* Table Rows */}
         <View
@@ -165,9 +167,17 @@ function ProductOutputRencentDays(props: Props) {
                 const isWeekend =
                   day.dayOfWeek.toLowerCase() === 'thứ bảy' || day.dayOfWeek.toLowerCase() === 'chủ nhật'
                 return (
-                  <View key={index} style={styles.rowCard}>
+                  <View key={index} style={[styles.rowCard, !isDark && { backgroundColor: '#E5E7EB', borderColor: 'transparent' }]}>
                     <View style={styles.tableRow}>
-                      <Text style={[styles.cellText, styles.col1, styles.dateText, isWeekend && styles.weekendText]}>
+                      <Text
+                        style={[
+                          styles.cellText,
+                          styles.col1,
+                          styles.dateText,
+                          isWeekend && styles.weekendText,
+                          !isDark && { color: isWeekend ? '#eab308' : '#111827' },
+                        ]}
+                      >
                         {day.date}
                         {'\n'}
                         <Text style={styles.dayOfWeek}>{day.dayOfWeek}</Text>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -13,15 +13,17 @@ import HydrologyFactDetail from './HydrologyFactDetail/HydrologyFactDetail'
 import FactoryMaintenanceSchedule from './FactoryMaintenanceSchedule/FactoryMaintenanceSchedule'
 import RevenueDetail from './RevenueProfitFactDetail/Revenue'
 import ProfitDetail from './RevenueProfitFactDetail/Profit'
-import { saveState } from '@/core/redux/slices/FactoryDetailSlice'
+import { saveState } from '@/core/redux/domains/refresh'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { t } from 'i18next'
 import { useRouter } from 'expo-router'
 import { LazySection } from '@/components/LazySection/LazySection'
 import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
-import { setSelectedOptionsValueFactDetail } from '@/core/redux/slices/HydrologySlice'
+import { setSelectedOptionsValueFactDetail } from '@/core/redux/domains/hydrology'
 import { RootState } from '@/core/redux/store'
+import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface factoryDetailProps {
   companyName: string;
@@ -36,12 +38,14 @@ interface moduleItem {
 }
 
 function FactoryDetail(props: factoryDetailProps) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { companyName, location, currentPlantId, keyTab } = props;
-  const { selectedOptionsValueFactDetail } = useSelector((state: RootState) => state.hydrologySlice) 
-  const { countRefesh } = useSelector((state: any) => state.factoryDetailSlice)
-  const { modules } = useSelector((state: any) => state.moduleSlice)
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
   const router = useRouter();
@@ -104,7 +108,7 @@ function FactoryDetail(props: factoryDetailProps) {
       scrollEventThrottle={16}
     >
       <View style={{ flex: 1 }} collapsable={false}>
-        <TwinkleStars background="#000033" particleDensity={50} particleColor="#FFFFFF" minSize={0.5} maxSize={2}>
+        <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
           <View style={styles.header}>
             <GradientText
               text={companyName}
@@ -114,7 +118,7 @@ function FactoryDetail(props: factoryDetailProps) {
             />
             <View style={styles.locationRow}>
               <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={{ marginRight: px.h(6) }} />
-              <Text style={styles.locationText}>{location}</Text>
+              <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{location}</Text>
             </View>
           </View>
 

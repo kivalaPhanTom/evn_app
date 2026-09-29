@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/core/redux/hooks'
 import { formatNumber } from '@/core/utils/utils'
 interface Props { }
 
@@ -10,7 +10,7 @@ function SectionBox({ children, style }: any) {
 }
 
 export default function PowerPrices(props: Props) {
-    const { powerPriceDetail } = useSelector((state: any) => state.revenueProfitSlice)
+    const { powerPriceDetail } = useAppSelector((state: any) => state.revenueProfitSlice)
     const data = {
         powerPrices: [
             {
