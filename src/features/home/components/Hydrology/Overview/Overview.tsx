@@ -166,6 +166,7 @@ const WaterLevelCard: React.FC<{
         styles.card,
         isActive && styles.cardActive,
         isActive && {
+          backgroundColor: isDark ? '#1c056eff' : '#BFDBFE',
           borderTopLeftRadius: px.h(12),
           borderTopRightRadius: px.h(12),
           // Bỏ overflow: 'hidden' để shadow không bị cắt
@@ -180,12 +181,16 @@ const WaterLevelCard: React.FC<{
     >
       {isActive ? (
         <Shadow
-          distance={isDark ? 8 : 5}
-          startColor={isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.10)'}
-          endColor="rgba(0, 0, 0, 0.01)"
-          offset={[0, isDark ? -4 : -2]}
+          distance={isDark ? 10 : 8}
+          startColor={isDark ? 'rgba(8, 5, 32, 0.20)' : 'rgba(30, 64, 110, 0.07)'}
+          endColor={isDark ? 'rgba(8, 5, 32, 0)' : 'rgba(30, 64, 110, 0)'}
+          offset={[0, -1]}
+          paintInside={false}
           sides={{ top: true, start: true, end: true, bottom: false }}
+          corners={{ topStart: true, topEnd: true, bottomStart: false, bottomEnd: false }}
+          stretch
           containerStyle={{
+            flex: 1,
             marginRight: 0,
             marginLeft: isLastTab ? 0 : 0, // Sử dụng isLastTab để kiểm tra Shadow có tự động tạo margin
           }}

@@ -103,6 +103,9 @@ export const styles = StyleSheet.create({
   },
   detailContainer: {
     padding: px.h(12),
+    // Overlap one physical pixel to hide rounding seams between the tab and detail backgrounds.
+    marginTop: -StyleSheet.hairlineWidth,
+    paddingTop: px.h(12) + StyleSheet.hairlineWidth,
     backgroundColor: '#1c056eff',
     borderBottomLeftRadius: px.h(8),
     borderBottomRightRadius: px.h(8),
