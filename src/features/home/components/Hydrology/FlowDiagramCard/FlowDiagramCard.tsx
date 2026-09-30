@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const BLUE_BG = "rgba(59, 130, 246, 0.10)";     // nền xanh nhạt
 const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
@@ -19,6 +20,9 @@ interface flowDiagramCardProps {
 function FlowDiagramCard(props: flowDiagramCardProps) {
     const { dateStr, currentPlantId, oneYearAgo} = props
     const dispatch = useAppDispatch();
+    const scheme = useAppTheme()
+    const isDark = scheme === 'dark'
+    const styles = createStyles(isDark)
     const { countRefesh, isLoadingFlowChart } = useAppSelector((state: any) => state.hydrologySlice)
     const { flowChart, flowChartSummary } = useAppSelector((state: any) => state.hydrologySlice)
     useEffect(() => {
@@ -73,7 +77,7 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
         </AnimatedCardContainer>
     )
 }
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
     flowDiagramDetail: {
         width: '97%',
         marginLeft: "auto",
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        color: '#e8eaed',
+        color: isDark ? '#e8eaed' : '#374151',
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 4,
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     ck: {
         textAlign: 'center',
         marginTop: 10,
-        color: "#b7b7b7",      // màu xám nhạt giống hình
+        color: isDark ? "#b7b7b7" : '#6B7280',      // màu xám nhạt giống hình
         fontStyle: "italic",   // chữ nghiêng
         fontSize: 14,
     },
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
     },
     line: {
         height: 1,
-        backgroundColor: "rgba(255,255,255,0.1)",
+        backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)",
         marginBottom: 15,
     },
     traffic: {
@@ -134,7 +138,7 @@ const styles = StyleSheet.create({
     },
 
     titleSection: {
-        color: "rgba(255,255,255,0.7)",
+        color: isDark ? "rgba(255,255,255,0.7)" : '#475569',
         fontSize: 12,
         fontWeight: "600",
         marginBottom: 6,
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     },
     unit: {
         fontSize: 12,
-        color: "rgba(255,255,255,0.6)",
+        color: isDark ? "rgba(255,255,255,0.6)" : '#6B7280',
     },
 })
 export default FlowDiagramCard

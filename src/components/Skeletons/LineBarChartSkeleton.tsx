@@ -15,14 +15,18 @@ import Svg, {
   Mask,
   Rect,
 } from 'react-native-svg';
+import { useAppTheme } from '@/core/hooks/use-app-theme';
+import { createThemePalette } from '@/core/constants/themePalette';
 
 /* ================= CONFIG ================= */
 
-const SHIMMER_BASE_COLOR = '#3A3F47';
-const SHIMMER_HIGHLIGHT_COLOR = '#6F8196';
-
 const DURATION = 2500;
 const BAR_WIDTH = 35;
+
+const getColors = (isDark: boolean) => {
+  const p = createThemePalette(isDark);
+  return { base: p.skeletonBase, highlight: p.skeletonHighlight };
+};
 
 /* ================= SHIMMER BAR ================= */
 
@@ -32,7 +36,11 @@ interface ShimmerBlockProps {
   barHeight?: number;
 }
 
-const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth}) => {
+const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth }) => {
+  const scheme = useAppTheme();
+  const isDark = scheme === 'dark';
+  const { base, highlight } = getColors(isDark);
+
   const translateX = useSharedValue(-barWidth);
   useEffect(() => {
     translateX.value = withRepeat(
@@ -50,25 +58,19 @@ const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth}) => {
   }));
 
   return (
-    <View style={[styles.blockContainer, style]}>
+    <View style={[styles.blockContainer, style, { backgroundColor: base }]}>
       {/* nền */}
       <View
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: SHIMMER_BASE_COLOR },
+          { backgroundColor: base },
         ]}
       />
 
       {/* shimmer */}
       <Animated.View style={[StyleSheet.absoluteFill, animatedStyle]}>
         <LinearGradient
-          colors={[
-            SHIMMER_BASE_COLOR,
-            SHIMMER_BASE_COLOR,
-            SHIMMER_HIGHLIGHT_COLOR,
-            SHIMMER_BASE_COLOR,
-            SHIMMER_BASE_COLOR,
-          ]}
+          colors={[base, base, highlight, base, base]}
           locations={[0, 0.42, 0.5, 0.58, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -89,7 +91,11 @@ interface ShimmerLineChartProps {
   height: number;
 }
 
-const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width, height = 200}) => {
+const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width, height = 200 }) => {
+  const scheme = useAppTheme();
+  const isDark = scheme === 'dark';
+  const { base } = getColors(isDark);
+
   const points = [
     { x: 0, y: 160 },
     { x: width * 0.2, y: 150 },
@@ -108,15 +114,15 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width, height = 200
   }, [width]);
 
   return (
-    <View style={{...styles.lineChartContainer, height:height}}>
+    <View style={{ ...styles.lineChartContainer, height: height }}>
       <Svg width={width} height={height}>
         <Mask id="lineMask">
           <Path d={pathData} fill="none" stroke="#fff" strokeWidth={3} />
         </Mask>
 
         <SvgLinearGradient id="lineBase" x1="0%" y1="0%" x2="100%" y2="0%">
-          <Stop offset="0%" stopColor={SHIMMER_BASE_COLOR} />
-          <Stop offset="100%" stopColor={SHIMMER_BASE_COLOR} />
+          <Stop offset="0%" stopColor={base} />
+          <Stop offset="100%" stopColor={base} />
         </SvgLinearGradient>
 
         <Rect
@@ -133,22 +139,22 @@ const ShimmerLineChart: React.FC<ShimmerLineChartProps> = ({ width, height = 200
 };
 
 /* ================= MAIN ================= */
-interface LineBarChartSkeletonProps{
-  isShowLine?:boolean
+interface LineBarChartSkeletonProps {
+  isShowLine?: boolean
   height?: number
 }
-const LineBarChartSkeleton: React.FC<LineBarChartSkeletonProps>  = (props) => {
-  const {isShowLine = true, height = 200} = props
+const LineBarChartSkeleton: React.FC<LineBarChartSkeletonProps> = (props) => {
+  const { isShowLine = true, height = 200 } = props
   const [chartWidth, setChartWidth] = useState(0);
   const barHeights: `${number}%`[] = ['25%', '35%', '60%', '45%', '75%', '90%'];
 
   return (
     <View style={styles.container}>
       <View
-        style={{...styles.chartFrame, height}}
+        style={{ ...styles.chartFrame, height }}
         onLayout={(e) => setChartWidth(e.nativeEvent.layout.width)}
       >
-        {chartWidth > 0 && isShowLine && <ShimmerLineChart width={chartWidth} height = {height}/>}
+        {chartWidth > 0 && isShowLine && <ShimmerLineChart width={chartWidth} height={height} />}
 
         <View style={styles.barContainer}>
           {barHeights.map((height, index) => (
@@ -174,11 +180,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // backgroundColor: '#1F2329',
     padding: 20,
   },
   chartFrame: {
-    // height: CHART_HEIGHT,
     width: '100%',
     position: 'relative',
   },
@@ -187,7 +191,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    // height: CHART_HEIGHT,
     zIndex: 1,
   },
   barContainer: {
@@ -204,7 +207,6 @@ const styles = StyleSheet.create({
   },
   blockContainer: {
     overflow: 'hidden',
-    backgroundColor: SHIMMER_BASE_COLOR,
   },
 });
 

@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\"",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -49,7 +50,7 @@
     "react-native-blob-util": "^0.24.7",
     "react-native-device-info": "^14.1.1",
     "react-native-gesture-handler": "^2.30.0",
-    "react-native-gifted-charts": "^1.4.64",
+    "react-native-gifted-charts": "1.4.64",
     "react-native-localize": "^3.5.4",
     "react-native-pager-view": "6.9.1",
     "react-native-pdf": "^7.0.3",
@@ -78,6 +79,7 @@
     "eslint-config-expo": "~10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "patch-package": "^8.0.1",
     "prettier": "^3.6.2",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.46.1"

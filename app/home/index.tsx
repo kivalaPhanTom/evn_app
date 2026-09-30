@@ -8,9 +8,12 @@ import FactoryDetail from 'app/factory-detail'
 import HomeContent from './HomeContent'
 import BlankPageSkeleton from '@/components/Skeletons/BlankPageSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function HomeNewScreen() {
   const dispatch = useAppDispatch();
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const { detail } = useAppSelector((state: RootState) => state.powerSlice)
   const activeTab = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
   const onSetActiveTab = (index: number) => {
@@ -18,7 +21,7 @@ function HomeNewScreen() {
   }
   return (
     <PagerView
-      style={{ flex: 1, backgroundColor:Colors.background }}
+      style={{ flex: 1, backgroundColor: isDark ? Colors.background : Colors.lightBackground }}
       initialPage={0}
       onPageSelected={(e) => onSetActiveTab(e.nativeEvent.position)}
       orientation="horizontal"

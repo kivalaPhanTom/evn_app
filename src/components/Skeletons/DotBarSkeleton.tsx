@@ -2,6 +2,8 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppTheme } from "@/core/hooks/use-app-theme";
+import { createThemePalette } from "@/core/constants/themePalette";
 
 interface Props {
   width1?: string | number;
@@ -14,13 +16,18 @@ export const DotBarSkeleton: React.FC<Props> = ({
   width2 = "60%",
   width3 = "70%",
 }) => {
+  const isDark = useAppTheme() === 'dark';
+  const styles = createStyles(isDark);
+  const colors = createThemePalette(isDark);
+  const shimmerColors = [colors.skeletonBase, colors.skeletonHighlight, colors.skeletonBase] as const;
+
   return (
     <View style={styles.rowContainer}>
       {/* DOT + LINE ROW 1 */}
       <View style={styles.row}>
         <View style={styles.dot} />
         <ShimmerPlaceHolder
-          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          shimmerColors={[...shimmerColors]}
           LinearGradient={LinearGradient}
           style={[styles.line, { width: width1 }]}
         />
@@ -30,7 +37,7 @@ export const DotBarSkeleton: React.FC<Props> = ({
       <View style={styles.row}>
         <View style={styles.dot} />
         <ShimmerPlaceHolder
-          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          shimmerColors={[...shimmerColors]}
           LinearGradient={LinearGradient}
           style={[styles.line, { width: width2 }]}
         />
@@ -40,7 +47,7 @@ export const DotBarSkeleton: React.FC<Props> = ({
       <View style={styles.row}>
         <View style={styles.dot} />
         <ShimmerPlaceHolder
-          shimmerColors={["#3A3F47", "#575E68", "#3A3F47"]}
+          shimmerColors={[...shimmerColors]}
           LinearGradient={LinearGradient}
           style={[styles.line, { width: width3 }]}
         />
@@ -50,30 +57,32 @@ export const DotBarSkeleton: React.FC<Props> = ({
 };
 export default DotBarSkeleton
 
-const styles = StyleSheet.create({
-  rowContainer: {
-    // backgroundColor: "#1F242C",  // nền tối giống hình bạn
-    paddingVertical: 10,
-    gap: 10,
-  },
+const createStyles = (isDark: boolean) => {
+  const p = createThemePalette(isDark)
+  return StyleSheet.create({
+    rowContainer: {
+      paddingVertical: 10,
+      gap: 10,
+    },
 
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
 
-  dot: {
-    width: 16,
-    height: 16,
-    borderRadius: 999,
-    backgroundColor: "#2D333C", // màu dot giống hình
-  },
+    dot: {
+      width: 16,
+      height: 16,
+      borderRadius: 999,
+      backgroundColor: p.skeletonBase,
+    },
 
-  line: {
-    height: 16,
-    borderRadius: 999,
-    backgroundColor: "#2D333C",
-    overflow: "hidden",
-  },
-});
+    line: {
+      height: 16,
+      borderRadius: 999,
+      backgroundColor: p.skeletonBase,
+      overflow: 'hidden',
+    },
+  })
+}

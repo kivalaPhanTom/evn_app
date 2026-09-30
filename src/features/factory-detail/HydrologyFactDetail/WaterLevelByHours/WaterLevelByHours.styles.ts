@@ -11,5 +11,8 @@ const styles = StyleSheet.create({
     fontSize: px.m(18),
     fontWeight: '600',
   },
+  chartPanel: {
+    marginTop: 8,
+  },
 })
 export default styles

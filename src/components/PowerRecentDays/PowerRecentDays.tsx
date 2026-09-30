@@ -13,6 +13,7 @@ import SquareSkelenton from '@/components/Skeletons/SquareSkelenton'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 interface PowerByDays {
   value: number
   date: string
@@ -25,6 +26,7 @@ interface Props {
 
 function ValueCard({ day }: { day: PowerByDays }) {
   const opacity = useSharedValue(1)
+  const isDark = useAppTheme() === 'dark'
   const isToday = day.date === 'Hôm nay'
   const isWeekend = day.dayOfWeek === 'Thứ Bảy' || day.dayOfWeek === 'Chủ Nhật'
   const labelColor = isWeekend ? '#eab308' : '#8b92a0'
@@ -45,7 +47,7 @@ function ValueCard({ day }: { day: PowerByDays }) {
   const blinkStyle = useAnimatedStyle(() => ({ opacity: opacity.value }))
 
   return (
-    <View style={styles.valueCard}>
+    <View style={[styles.valueCard, !isDark && { backgroundColor: '#E5E7EB', borderColor: 'transparent' }]}>
       <View style={styles.valueItem}>
         <Text allowFontScaling={false} style={styles.powerValue}>
           {day.value}
@@ -78,6 +80,7 @@ function ValueCard({ day }: { day: PowerByDays }) {
 function PowerRecentDays(props: Props) {
   const { isLoading, powerData } = props
   const [firstLoading, setFirstLoading] = useState(true)
+  const isDark = useAppTheme() === 'dark'
   const scrollViewRef = useRef<ScrollView | null>(null)
 
   const unit = 'MW'
@@ -103,7 +106,7 @@ function PowerRecentDays(props: Props) {
     <AnimatedCardContainer>
       <View>
         <View style={styles.content}>
-          <Text style={styles.title}>P - 7 NGÀY GẦN NHẤT</Text>
+          <Text style={[styles.title, !isDark && { color: '#374151' }]}>P - 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
           <ScrollView ref={scrollViewRef} horizontal onContentSizeChange={handleContentSizeChange} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>

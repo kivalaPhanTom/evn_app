@@ -4,10 +4,11 @@ import { useRouter } from 'expo-router'
 import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg'
-import { styles } from './ReservoirInfo.styles'
+import createStyles from '@/features/factory-detail/ReservoirWaterLevel/ReservoirInfo/ReservoirInfo.styles'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface ReservoirData {
   currentLevel: number
@@ -25,6 +26,9 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const { currentPlantId } = props
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const [containerWidth, setContainerWidth] = useState(0)
   const containerHeight = px.v(140)
 

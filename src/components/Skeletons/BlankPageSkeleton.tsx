@@ -1,8 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Animated } from 'react-native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 /** Full-page blank skeleton used for lazy section placeholders. */
 export default function BlankPageSkeleton() {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const progress = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -28,11 +32,15 @@ export default function BlankPageSkeleton() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  block: { backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12 },
-  large: { height: 200, marginBottom: 16 },
-  medium: { height: 120 },
-  row: { flexDirection: 'row', gap: 16, marginBottom: 16 },
-  small: { flex: 1, height: 90 },
-})
+const createStyles = (isDark: boolean) =>
+  StyleSheet.create({
+    container: { flex: 1, padding: 16 },
+    block: {
+      backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+      borderRadius: 12,
+    },
+    large: { height: 200, marginBottom: 16 },
+    medium: { height: 120 },
+    row: { flexDirection: 'row', gap: 16, marginBottom: 16 },
+    small: { flex: 1, height: 90 },
+  })

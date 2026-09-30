@@ -13,6 +13,7 @@ import { typography } from '@/core/constants/typography'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 interface Props { }
 
 const data = {
@@ -65,6 +66,7 @@ function getCurrentPlantId(activeTab: string): string {
   return result
 }
 export default function RevenueDetail(props: Props) {
+  const isDark = useAppTheme() === 'dark'
   const dispatch = useAppDispatch()
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
@@ -126,7 +128,7 @@ export default function RevenueDetail(props: Props) {
   }
   return (
     <TwinkleStars
-      background={Colors.background}
+      background={isDark ? Colors.background : Colors.lightBackground}
       particleDensity={50}
       particleColor={Colors.textColor}
       minSize={0.5}

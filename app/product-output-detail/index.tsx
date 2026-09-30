@@ -9,10 +9,14 @@ import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import ProductOutputDetail from '@/features/home/components/ProductionOutput/ProductOutputDetail/ProductOutputDetail'
 import { saveState } from '@/core/redux/domains/refresh'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { textGradients } from '@/core/constants/gradients'
 
 const ProductOutputDetailScreen: React.FC = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const [scrollY, setScrollY] = useState(0);
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -40,16 +44,16 @@ const ProductOutputDetailScreen: React.FC = () => {
       onScroll={onScroll}
       scrollEventThrottle={16}
     >
-      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+      <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết sản lượng'}
-            colors={'#FFF'}
+            colors={textGradients.water}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={styles.locationText}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
+            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{currentPlantId ? t(currentPlantId) : t('companyName')}</Text>
           </View>
         </View>
         <ProductOutputDetail currentPlantId={currentPlantId} isCheckDisableDate={false} />

@@ -8,8 +8,10 @@ import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
 import { setCountRefesh } from '@/core/redux/domains/revenue-profit'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const FactoryProfitDetailScreen: React.FC = () => {
+  const isDark = useAppTheme() === 'dark'
   const { companyName } = useLocalSearchParams<{
     companyName?: string | string[]
   }>()
@@ -32,7 +34,7 @@ const FactoryProfitDetailScreen: React.FC = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <TwinkleStars background={Colors.background} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+      <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Lợi nhuận'}

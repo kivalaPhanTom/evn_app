@@ -3,10 +3,11 @@ import { View, Text } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
 import { ScheduleIcon } from '@/components/ui/schedule-icon'
-import styles from './FactoryMaintenanceInfo.styles'
+import createStyles from '@/features/factory-detail/FactoryMaintenanceSchedule/FactoryMaintenanceInfo/FactoryMaintenanceInfo.styles'
 import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface FactoryMaintenanceInfoProps {
   currentPlantId?: string
@@ -16,6 +17,9 @@ interface FactoryMaintenanceInfoProps {
 function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
   const { currentPlantId, selectedYear } = props
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const { currentPlantDetail, isDetailRepairScheduleLoading } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [firstLoading, setFirstLoading] = useState(true)
@@ -71,7 +75,7 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
               </View>
             </View>
             <View style={styles.iconContainer}>
-              <MaintenanceIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
+              <MaintenanceIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
             </View>
           </>
         }
@@ -97,7 +101,7 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
             </View>
 
             <View style={styles.iconContainer}>
-              <ScheduleIcon color="#22D3EE" opacity="0.2" width="35" height="35" />
+              <ScheduleIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
             </View>
           </>
         }

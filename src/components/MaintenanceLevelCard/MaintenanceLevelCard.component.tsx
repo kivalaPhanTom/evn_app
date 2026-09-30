@@ -3,7 +3,8 @@ import { Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Shadow } from 'react-native-shadow-2'
 import { px } from '@/core/utils/scale'
-import styles from './MaintenanceLevelCard.styles'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import createStyles from './MaintenanceLevelCard.styles'
 
 export type MaintenanceLevel = 'major' | 'rcm'
 
@@ -50,13 +51,6 @@ const getLevelConfig = (level: MaintenanceLevel) => {
 
 const MONTHS = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12']
 
-const renderInfoRow = (label: string, value: string | number, valueStyle?: any) => (
-  <View style={styles.infoRowItem}>
-    <Text style={styles.infoLabel}>{label}</Text>
-    <Text style={[styles.infoValue, valueStyle]}>{value}</Text>
-  </View>
-)
-
 export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
   title,
   level,
@@ -64,6 +58,17 @@ export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
   actual,
   timeline,
 }) => {
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+
+  const renderInfoRow = (label: string, value: string | number, valueStyle?: any) => (
+    <View style={styles.infoRowItem}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={[styles.infoValue, valueStyle]}>{value}</Text>
+    </View>
+  )
+
   const config = getLevelConfig(level)
   const getActualDaysStyle = () => {
     if (actual.days === null) return undefined
@@ -110,7 +115,7 @@ export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
       <View style={styles.sectionsContainer}>
         <View style={[styles.section, styles.plannedSection]}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="calendar-outline" size={16} color="#FFF" />
+            <Ionicons name="calendar-outline" size={16} color={isDark ? '#FFF' : '#475569'} />
             <Text style={styles.sectionTitle}>KẾ HOẠCH</Text>
           </View>
           <View style={styles.infoColumn}>
@@ -122,7 +127,7 @@ export const MaintenanceLevelCard: React.FC<MaintenanceLevelCardProps> = ({
 
         <View style={[styles.section, styles.actualSection]}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="time-outline" size={16} color="#FFF" />
+            <Ionicons name="time-outline" size={16} color={isDark ? '#FFF' : '#475569'} />
             <Text style={styles.sectionTitle}>THỰC TẾ</Text>
           </View>
           <View style={styles.infoColumn}>

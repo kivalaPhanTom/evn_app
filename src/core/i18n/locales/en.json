@@ -27,7 +27,8 @@
   "common": {
     "ok": "OK",
     "cancel": "Cancel",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "backgroundColor": "Background color"
   },
 
   "auth": {

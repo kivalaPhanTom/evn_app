@@ -11,7 +11,8 @@ import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.compon
 import MonthPickerCustom from '@/components/MonthPickerCustom/MonthPickerCustom.component'
 import { setFilterByTime } from '@/core/redux/domains/hydrology'
 import { px } from '@/core/utils/scale'
-import styles from './FilterByTime.styles'
+import createStyles from './FilterByTime.styles'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface FilterByTimeProps {
   date: string
@@ -37,6 +38,9 @@ const colStyle = {
 const FilterByTime: React.FC<FilterByTimeProps> = () => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const contentAnim = useRef(new Animated.Value(1)).current
 
   const filterByTime = useAppSelector((state: any) => state.hydrologySlice.filterByTime)
@@ -100,8 +104,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
       {title ? <Text style={styles.chartCompareByTime}>{title}</Text> : null}
       <DateRangePicker
         labelFrom={labelFrom}
-        labelTo={labelTo}
-        labelColor="#fff"
+        labelTo={labelTo}
         format="DD/MM/YYYY"
         value={filterByTime[keyRange]}
         onChange={updateDateRange(keyRange)}
@@ -132,10 +135,11 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
     <MonthPickerCustom
       selectedDate={dayjs(filterByTime[keyRange][field])}
       containerStyle={{ flexDirection: 'column', alignItems: 'flex-start' }}
-      pickerStyle={{ width: '100%' }}
-      selectedDateStyle={{ fontSize: px.f(20) }}
+      pickerStyle={{ width: '100%', ...(isDark ? {} : { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.12)' }) }}
+      selectedDateStyle={{ fontSize: px.f(20), color: isDark ? '#FFFFFF' : '#374151' }}
       label={label}
-      pickerLabelStyle={{ fontSize: 12 }}
+      pickerLabelStyle={{ fontSize: 12, color: isDark ? '#FFFFFF' : '#6B7280' }}
+      iconColor={isDark ? '#fff' : '#6B7280'}
       formatMonth={(date) => date.format(format)}
       onConfirm={updatePeriodRange({
         key: keyRange,

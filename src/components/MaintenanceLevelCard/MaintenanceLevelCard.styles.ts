@@ -1,14 +1,17 @@
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
+import { createThemePalette } from '@/core/constants/themePalette'
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => {
+  const p = createThemePalette(isDark)
+  return StyleSheet.create({
   card: {
     borderRadius: 12,
     padding: px(16),
     marginBottom: px(20),
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#FFFFFF',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: p.divider,
   },
   header: {
     flexDirection: 'row',
@@ -17,7 +20,7 @@ const styles = StyleSheet.create({
     marginBottom: px(16),
   },
   title: {
-    color: '#FFF',
+    color: p.title,
     fontSize: px(16),
     fontWeight: 'bold',
     flex: 1,
@@ -47,12 +50,12 @@ const styles = StyleSheet.create({
     gap: px(6),
   },
   sectionTitle: {
-    color: '#FFF',
+    color: p.textLabel,
     fontSize: px(14),
     fontWeight: '600',
   },
   plannedSection: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: p.inputBg,
     borderRadius: px(8),
     padding: px(12),
   },
@@ -69,11 +72,11 @@ const styles = StyleSheet.create({
     marginBottom: px(4),
   },
   infoLabel: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: p.textSecondary,
     fontSize: px(12),
   },
   infoValue: {
-    color: '#FFF',
+    color: p.textPrimary,
     fontSize: px(14),
     fontWeight: '500',
   },
@@ -109,20 +112,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: px(12),
     borderRadius: px(4),
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: p.inputBg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: p.divider,
   },
   timelineLabel: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: p.textSecondary,
     fontSize: px(10),
     fontWeight: '500',
   },
   timelineLabelActive: {
-    color: '#FFF',
+    color: p.textPrimary,
     fontWeight: 'bold',
   },
-})
+  })
+}
 
-export default styles
-
+export default createStyles

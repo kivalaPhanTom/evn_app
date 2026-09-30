@@ -17,6 +17,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
 import { Toast } from 'toastify-react-native'
 interface CumulativeSummaryItem {
   label: string
@@ -27,6 +29,10 @@ interface CumulativeSummaryItem {
 
 export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = createStyles(isDark)
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
@@ -182,13 +188,25 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       </View>
 
       {tab === 'day' ? (
-        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
+        <DateRangePicker
+          format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
       ) : (
         <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between' }}>
           <MonthPickerCustom
             selectedDate={dayjs(range.from)}
             containerStyle={{ width: px(190) }}
             label={tab === 'year' ? 'Từ năm:' : 'Từ tháng:'}
+            iconColor={isDark ? '#fff' : '#6B7280'}
+            labelColor={isDark ? '#fff' : '#6B7280'}
+            pickerStyle={
+              isDark
+                ? undefined
+                : {
+                    borderColor: 'rgba(0,0,0,0.12)',
+                    backgroundColor: 'rgba(0,0,0,0.04)',
+                  }
+            }
+            selectedDateStyle={isDark ? undefined : { color: '#374151' }}
             formatMonth={(date) => (tab === 'year' ? `${date.format('YYYY')}` : `${date.format('MM/YYYY')}`)}
             onConfirm={(date) => {
               const picked = dayjs(date)
@@ -214,6 +232,17 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
           <MonthPickerCustom
             selectedDate={dayjs(range.to)}
             label={tab === 'year' ? 'Đến năm:' : 'Đến tháng:'}
+            iconColor={isDark ? '#fff' : '#6B7280'}
+            labelColor={isDark ? '#fff' : '#6B7280'}
+            pickerStyle={
+              isDark
+                ? undefined
+                : {
+                    borderColor: 'rgba(0,0,0,0.12)',
+                    backgroundColor: 'rgba(0,0,0,0.04)',
+                  }
+            }
+            selectedDateStyle={isDark ? undefined : { color: '#374151' }}
             formatMonth={(date) => (tab === 'year' ? `${date.format('YYYY')}` : `${date.format('MM/YYYY')}`)}
             containerStyle={{ width: px(190) }}
             onConfirm={(date) => {
@@ -269,7 +298,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
                   <Text style={styles.cardValue}>
                     {item.value} <Text style={styles.cardUnit}>{item.unit}</Text>
                   </Text>
-                  <Text style={styles.cardTitle}>{item.periodLabel}</Text>
+                  <Text style={styles.cardSubLabel}>{item.periodLabel}</Text>
                 </>
             }
           </View>
@@ -279,7 +308,9 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => {
+  const palette = createThemePalette(isDark)
+  return StyleSheet.create({
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -289,7 +320,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: px.f(24),
     fontWeight: 'bold',
-    color: '#fff',
+    color: palette.title,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -302,7 +333,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor: isDark ? 'rgba(255, 255, 255, 0.5)' : '#9CA3AF',
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
@@ -313,31 +344,37 @@ const styles = StyleSheet.create({
     borderColor: '#60a5fa',
   },
   checkboxLabel: {
-    color: '#fff',
+    color: palette.title,
     fontSize: px.f(14),
   },
   cumulativeCard: {
-    backgroundColor: '#1e2838',
+    backgroundColor: isDark ? '#1e2838' : '#ECEDEF',
     borderRadius: 12,
     marginTop: 8,
     paddingHorizontal: 12,
     paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     width: '49%',
   },
   cardTitle: {
-    color: '#8b92a0',
+    color: isDark ? '#8b92a0' : '#4B5563',
     fontSize: 12,
+    fontWeight: '600',
     textTransform: 'uppercase',
   },
   cardValue: {
-    color: '#ffffff',
+    color: isDark ? '#ffffff' : '#111827',
     fontSize: 24,
     fontWeight: '700',
   },
   cardUnit: {
-    fontSize: 16,
-    fontWeight: '300',
+    fontSize: 14,
+    fontWeight: '400',
+    color: isDark ? '#ffffff' : '#4B5563',
   },
-})
+  cardSubLabel: {
+    color: isDark ? '#8b92a0' : '#6B7280',
+    fontSize: 12,
+    marginTop: 2,
+  },
+  })
+}

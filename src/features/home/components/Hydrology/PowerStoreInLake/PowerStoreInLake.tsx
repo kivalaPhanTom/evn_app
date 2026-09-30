@@ -9,9 +9,11 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getPowerStoreInLake } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 const PowerStoreInLake: React.FC = () => {
   const dispatch = useAppDispatch()
+  const isDark = useAppTheme() === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
   const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
@@ -32,8 +34,8 @@ const PowerStoreInLake: React.FC = () => {
 
   return (
     <AnimatedCardContainer>
-      <View style={styles.pill}>
-        <Text style={[styles.pillText, { color: '#E6ECF2' }]}>Điện năng tích trữ trong hồ</Text>
+      <View style={[styles.pill, !isDark && { backgroundColor: 'rgba(0, 0, 0, 0.06)' }]}>
+        <Text style={[styles.pillText, { color: isDark ? '#E6ECF2' : '#374151' }]}>Điện năng tích trữ trong hồ</Text>
       </View>
 
       <View style={styles.mainRow}>

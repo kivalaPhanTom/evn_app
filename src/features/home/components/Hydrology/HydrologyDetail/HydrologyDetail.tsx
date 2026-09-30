@@ -19,6 +19,7 @@ import {
 import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
 import FilterByTime from '../FilterByTime/FilterByTime'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface HydrologyDetailProps {
   currentPlantId?: string
@@ -54,6 +55,8 @@ function prepareChartData(data: any[] | undefined, currentFilterTab: string, cur
 function HydrologyDetail(props: HydrologyDetailProps) {
   const { currentPlantId, scrollY = 0 } = props
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
   const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
@@ -184,11 +187,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       unit: upstreamData?.unit,
       flowRateInfo: [
         { label: 'Hiện tại', value: upstreamData?.currentValue, color: '#0EA5E9' },
-        { label: 'Cao nhất', value: upstreamData?.maxValue, color: '#fff' },
-        { label: 'Thấp nhất', value: upstreamData?.minValue, color: '#fff' },
+        { label: 'Cao nhất', value: upstreamData?.maxValue, color: isDark ? '#fff' : '#1E3A8A' },
+        { label: 'Thấp nhất', value: upstreamData?.minValue, color: isDark ? '#fff' : '#1E3A8A' },
       ],
     }),
-    [upstreamData, filterByTime.currentFilterTab, currentHour],
+    [upstreamData, filterByTime.currentFilterTab, currentHour, isDark],
   )
 
   const convertedInflowData = useMemo(
@@ -202,11 +205,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       unit: inflow?.unit,
       flowRateInfo: [
         { label: 'Hiện tại', value: inflow?.currentValue, color: '#3B82F6' },
-        { label: 'Cao nhất', value: inflow?.maxValue, color: '#fff' },
-        { label: 'TB ngày', value: inflow?.avgValue, color: '#fff' },
+        { label: 'Cao nhất', value: inflow?.maxValue, color: isDark ? '#fff' : '#1E3A8A' },
+        { label: 'TB ngày', value: inflow?.avgValue, color: isDark ? '#fff' : '#1E3A8A' },
       ],
     }),
-    [inflow, filterByTime.currentFilterTab, currentHour],
+    [inflow, filterByTime.currentFilterTab, currentHour, isDark],
   )
 
   const convertedOutflowData = useMemo(
@@ -220,11 +223,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       unit: outflow?.unit,
       flowRateInfo: [
         { label: 'Hiện tại', value: outflow?.currentValue, color: '#F59E0B' },
-        { label: 'Cao nhất', value: outflow?.maxValue, color: '#fff' },
-        { label: 'TB ngày', value: outflow?.avgValue, color: '#fff' },
+        { label: 'Cao nhất', value: outflow?.maxValue, color: isDark ? '#fff' : '#1E3A8A' },
+        { label: 'TB ngày', value: outflow?.avgValue, color: isDark ? '#fff' : '#1E3A8A' },
       ],
     }),
-    [outflow, filterByTime.currentFilterTab, currentHour],
+    [outflow, filterByTime.currentFilterTab, currentHour, isDark],
   )
 
   const convertedTurbineflowData = useMemo(
@@ -238,11 +241,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       unit: turbineflow?.unit,
       flowRateInfo: [
         { label: 'Hiện tại', value: turbineflow?.currentValue, color: '#10B981' },
-        { label: 'Cao nhất', value: turbineflow?.maxValue, color: '#fff' },
-        { label: 'TB ngày', value: turbineflow?.avgValue, color: '#fff' },
+        { label: 'Cao nhất', value: turbineflow?.maxValue, color: isDark ? '#fff' : '#1E3A8A' },
+        { label: 'TB ngày', value: turbineflow?.avgValue, color: isDark ? '#fff' : '#1E3A8A' },
       ],
     }),
-    [turbineflow, filterByTime.currentFilterTab, currentHour],
+    [turbineflow, filterByTime.currentFilterTab, currentHour, isDark],
   )
 
   return (
@@ -257,9 +260,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
             value={selectedDate}
             onChange={setSelectedDate}
             format="DD/MM/YYYY"
-            textColor="#fff"
-            borderColor="rgba(255,255,255,0.15)"
-            backgroundColor="rgba(26, 35, 50, 0.6)"
+            textColor={isDark ? '#fff' : '#374151'}
+            borderColor={isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)'}
+            backgroundColor={isDark ? 'rgba(26, 35, 50, 0.6)' : '#FFFFFF'}
           />
         </View>
         {/* flow diagram here */}

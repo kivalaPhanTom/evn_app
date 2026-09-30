@@ -3,9 +3,10 @@ import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import styles from './GeneralInformation.style'
+import createStyles from './GeneralInformation.style'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getHydrologyPlantsInfo } from '@/core/redux/domains/hydrology'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface GeneralInformationProps {
   date: string
@@ -25,6 +26,9 @@ interface InfoCardData {
 const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInformationProps) => {
   const { date, currentPlantId } = props
   const dispatch = useAppDispatch()
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
   const { hydrologyPlantsInfo, countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
   useEffect(() => {
     dispatch(getHydrologyPlantsInfo({ plantId: currentPlantId, date: date }))
