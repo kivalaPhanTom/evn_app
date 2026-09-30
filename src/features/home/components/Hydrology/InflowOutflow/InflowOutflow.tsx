@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -85,7 +86,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="về"
                     value={inflow?.value}
                     unit={inflow?.unit}
-                    color="#00DF73"
+                    color={isDark ? '#00DF73' : light.inflow}
                     icon="↑"
                   />
                   <FlowMetricCard
@@ -93,7 +94,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="cm"
                     value={outflow?.value}
                     unit={outflow?.unit}
-                    color="#FF0000"
+                    color={isDark ? '#FF0000' : light.outflow}
                     icon="↓"
                   />
                   <FlowMetricCard
@@ -101,7 +102,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="xt"
                     value={xtflow?.value}
                     unit={xtflow?.unit}
-                    color="#FF0000"
+                    color={isDark ? '#FF0000' : light.outflow}
                     icon="↓"
                   />
                 </>
@@ -110,10 +111,10 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
           </View>
           {!isLoadingInflowOutflow && (
             <View style={styles.notePanel}>
-              <CircleLineIcon color="#00DF73" />
-              <Text style={styles.noteText}>Qvề</Text>
-              <CircleLineIcon color="#FB923C" />
-              <Text style={styles.noteText}>Qxả (Qcm + Qxt)</Text>
+              <CircleLineIcon color={isDark ? '#00DF73' : light.inflow} />
+              <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qvề</Text>
+              <CircleLineIcon color={isDark ? '#FB923C' : light.outflow} />
+              <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qxả (Qcm + Qxt)</Text>
             </View>
           )}
 
@@ -126,20 +127,20 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                   <LineChart
                     data={qIn}
                     data2={qOut}
-                    color="#00DF73"
-                    color2="#FB923C"
+                    color={isDark ? '#00DF73' : light.inflow}
+                    color2={isDark ? '#FB923C' : light.outflow}
                     ruleTypes="solid"
                     areaChart={false}
                     hideDataPoints1={true}
                     hideDataPoints2={true}
-                    rulesColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                    rulesColor={isDark ? '#E5E5EF' : light.grid}
                     //customDataPoint={customDataPoint()}
                     //customDataPoint2={customDataPoint2()}
                     label1="Qvề: "
                     label2="Qxả: "
                     height={px.v(200)}
                     pointerConfig={true}
-                    xAxisColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                    xAxisColor={isDark ? '#E5E5EF' : light.grid}
                     scrollToEnd={true}
                   />
                 )}

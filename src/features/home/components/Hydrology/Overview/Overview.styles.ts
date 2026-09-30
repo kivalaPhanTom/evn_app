@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
   },
   referenceLine: {
     position: 'absolute',
-    left: px.h(8),
+    left: px.h(4),
     right: px.h(8),
     flexDirection: 'row',
     alignItems: 'center',
