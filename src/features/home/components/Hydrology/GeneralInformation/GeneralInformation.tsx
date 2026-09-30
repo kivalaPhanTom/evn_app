@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -46,7 +47,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = (props: GeneralInf
   })
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
       <View style={styles.container}>
         <Text style={styles.title}>Thông tin chung</Text>
 

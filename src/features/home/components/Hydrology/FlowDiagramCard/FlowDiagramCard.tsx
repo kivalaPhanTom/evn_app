@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { View, Text } from 'react-native'
@@ -34,7 +35,7 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
     }, [dateStr, currentPlantId, countRefesh])
 
     return (
-        <AnimatedCardContainer>
+        <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
             <View style={styles.content}>
                 <View style={styles.header}>
                     <Text style={styles.title}>{"Sơ đồ dòng chảy"}</Text>
@@ -90,7 +91,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        color: isDark ? '#e8eaed' : '#374151',
+        color: isDark ? '#e8eaed' : light.text,
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 4,
@@ -98,7 +99,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     ck: {
         textAlign: 'center',
         marginTop: 10,
-        color: isDark ? "#b7b7b7" : '#6B7280',      // màu xám nhạt giống hình
+        color: isDark ? "#b7b7b7" : light.muted,      // màu xám nhạt giống hình
         fontStyle: "italic",   // chữ nghiêng
         fontSize: 14,
     },
@@ -107,7 +108,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     },
     line: {
         height: 1,
-        backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)",
+        backgroundColor: isDark ? "rgba(255,255,255,0.1)" : light.border,
         marginBottom: 15,
     },
     traffic: {
@@ -127,18 +128,18 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
 
     // BOX XANH
     inboundTraffic: {
-        backgroundColor: BLUE_BG,
-        borderColor: BLUE_BORDER,
+        backgroundColor: isDark ? BLUE_BG : light.inflowTint,
+        borderColor: isDark ? BLUE_BORDER : light.border,
     },
 
     // BOX ĐỎ
     dischargeFlow: {
-        backgroundColor: RED_BG,
-        borderColor: RED_BORDER,
+        backgroundColor: isDark ? RED_BG : light.outflowTint,
+        borderColor: isDark ? RED_BORDER : light.border,
     },
 
     titleSection: {
-        color: isDark ? "rgba(255,255,255,0.7)" : '#475569',
+        color: isDark ? "rgba(255,255,255,0.7)" : light.muted,
         fontSize: 12,
         fontWeight: "600",
         marginBottom: 6,
@@ -146,18 +147,18 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     },
 
     valueBlue: {
-        color: "#3B82F6",
+        color: isDark ? '#3B82F6' : light.inflow,
         fontSize: 20,
         fontWeight: "700",
     },
     valueRed: {
-        color: "#EF4444",
+        color: isDark ? '#EF4444' : light.outflow,
         fontSize: 20,
         fontWeight: "700",
     },
     unit: {
         fontSize: 12,
-        color: isDark ? "rgba(255,255,255,0.6)" : '#6B7280',
+        color: isDark ? "rgba(255,255,255,0.6)" : light.muted,
     },
 })
 export default FlowDiagramCard

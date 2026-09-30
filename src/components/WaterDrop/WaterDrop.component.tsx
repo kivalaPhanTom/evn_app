@@ -11,6 +11,7 @@ interface Props {
   vbWidth?: number
   vbHeight?: number
   isShowPercent?: boolean
+  colors?: { top: string; bottom: string; border: string; background: string; text: string }
 }
 
 export default function WaterDrop({
@@ -20,7 +21,8 @@ export default function WaterDrop({
   width = 50,
   vbWidth = 24,
   vbHeight = 24,
-  isShowPercent = true
+  isShowPercent = true,
+  colors,
 }: Props) {
   const isHigh = percent >= 50
   const critical = percent < 20
@@ -122,9 +124,9 @@ export default function WaterDrop({
   }
   wavePath += ` L${vbWidth} ${vbHeight} Z`
 
-  const fillColor1 = isHigh ? '#1fb7ff' : Colors.warningZero
-  const fillColor2 = isHigh ? '#0099ff' : Colors.warningHalf
-  const borderColor = isHigh ? '#0099ff' : Colors.warningFull
+  const fillColor1 = colors?.top ?? (isHigh ? '#1fb7ff' : Colors.warningZero)
+  const fillColor2 = colors?.bottom ?? (isHigh ? '#0099ff' : Colors.warningHalf)
+  const borderColor = colors?.border ?? (isHigh ? '#0099ff' : Colors.warningFull)
   const dropPath = 'M12.58,2.19a1,1,0,0,0-1.16,0C11.12,2.4,4,7.56,4,14a8,8,0,0,0,16,0C20,7.56,12.88,2.4,12.58,2.19Z'
 
   return (
@@ -147,7 +149,7 @@ export default function WaterDrop({
         <Path
           d={dropPath}
           transform={`translate(${vbWidth / 2} ${vbHeight / 2}) scale(1) translate(${-vbWidth / 2} ${-vbHeight / 2})`}
-          fill="#e8f8ff"
+          fill={colors?.background ?? '#e8f8ff'}
           stroke={borderColor}
           strokeWidth={1.5}
         />
@@ -159,7 +161,7 @@ export default function WaterDrop({
         style={[
           styles.percentText,
           {
-            color: isHigh ? '#0369A1' : Colors.red,
+            color: colors?.text ?? (isHigh ? '#0369A1' : Colors.red),
             top: Math.max(12, height * (fontSize < 10 ? 0.45 : 0.4)),
             fontSize: fontSize,
           },

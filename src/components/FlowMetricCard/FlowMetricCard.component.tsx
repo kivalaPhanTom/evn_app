@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
@@ -19,9 +20,9 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
       style={{
         padding: isDark ? 12 : 8,
         borderRadius: 12,
-        //borderWidth: 1,
-        //borderColor: '#OD1253',
-        backgroundColor: isDark ? '#00054A' : '#3B82F6',
+        borderWidth: isDark ? 0 : 1,
+        borderColor: light.border,
+        backgroundColor: isDark ? '#00054A' : light.surface,
         width: 100,
         height: 100,
         justifyContent: 'center',
@@ -32,7 +33,7 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
         style={[
           styles.title,
           !isDark && {
-            backgroundColor: '#FFFFFF',
+            backgroundColor: light.subtle,
             borderRadius: 999,
             paddingHorizontal: 10,
             paddingVertical: 2,
@@ -45,7 +46,7 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
         </Text>
         <Text
           allowFontScaling={false}
-          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? '#8082A5' : '#111827' }}
+          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? '#8082A5' : light.text }}
         >
           {label}
           {label1 && (
@@ -55,12 +56,12 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
           )}
         </Text>
       </View>
-      <Text allowFontScaling={false} style={{ fontSize: 28, fontWeight: 'bold', color: isDark ? '#CCCDDB' : '#FFFFFF' }}>
+      <Text allowFontScaling={false} style={{ fontSize: 28, fontWeight: 'bold', color: isDark ? '#CCCDDB' : light.text }}>
         {value}
       </Text>
       <Text
         allowFontScaling={false}
-        style={{ fontSize: 14, fontWeight: 'bold', color: isDark ? '#CCCDDB' : 'rgba(255,255,255,0.85)' }}
+        style={{ fontSize: 14, fontWeight: 'bold', color: isDark ? '#CCCDDB' : light.muted }}
       >
         {unit}
       </Text>
