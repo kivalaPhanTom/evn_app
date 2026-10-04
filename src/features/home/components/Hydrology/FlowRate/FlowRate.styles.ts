@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import { StyleSheet } from 'react-native'
 
 const createStyles = (isDark: boolean) =>
@@ -5,7 +6,7 @@ const createStyles = (isDark: boolean) =>
     title: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: isDark ? '#FFFFFF' : '#374151',
+      color: isDark ? '#FFFFFF' : light.text,
     },
     container: {
       flexDirection: 'row',
@@ -19,13 +20,13 @@ const createStyles = (isDark: boolean) =>
       paddingVertical: 12,
       paddingHorizontal: 4,
       width: 105,
-      backgroundColor: isDark ? 'rgba(255,255,255, 0.03)' : 'rgba(0,0,0,0.04)',
+      backgroundColor: isDark ? 'rgba(255,255,255, 0.03)' : light.subtle,
       borderRadius: 8,
       gap: 4,
     },
     itemLabel: {
       fontSize: 12,
-      color: isDark ? '#93959F' : '#6B7280',
+      color: isDark ? '#93959F' : light.muted,
     },
     itemValue: {
       fontSize: 16,
@@ -35,10 +36,10 @@ const createStyles = (isDark: boolean) =>
       marginTop: 20,
       paddingTop: 16,
       borderTopWidth: 1,
-      borderTopColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.08)',
+      borderTopColor: isDark ? 'rgba(255, 255, 255, 0.05)' : light.border,
     },
     legendText: {
-      color: isDark ? '#7a8596' : '#6B7280',
+      color: isDark ? '#7a8596' : light.muted,
       fontSize: 12,
       textAlign: 'center',
       fontStyle: 'italic',

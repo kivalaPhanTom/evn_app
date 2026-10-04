@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { View, Text, StyleSheet, Animated, Pressable, Easing } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -166,6 +167,7 @@ const WaterLevelCard: React.FC<{
         styles.card,
         isActive && styles.cardActive,
         isActive && {
+          backgroundColor: isDark ? '#1c056eff' : light.background,
           borderTopLeftRadius: px.h(12),
           borderTopRightRadius: px.h(12),
           // Bỏ overflow: 'hidden' để shadow không bị cắt
@@ -180,19 +182,23 @@ const WaterLevelCard: React.FC<{
     >
       {isActive ? (
         <Shadow
-          distance={isDark ? 8 : 5}
-          startColor={isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.10)'}
-          endColor="rgba(0, 0, 0, 0.01)"
-          offset={[0, isDark ? -4 : -2]}
+          distance={isDark ? 10 : 8}
+          startColor={isDark ? 'rgba(8, 5, 32, 0.20)' : 'rgba(30, 64, 110, 0.07)'}
+          endColor={isDark ? 'rgba(8, 5, 32, 0)' : 'rgba(30, 64, 110, 0)'}
+          offset={[0, -1]}
+          paintInside={false}
           sides={{ top: true, start: true, end: true, bottom: false }}
+          corners={{ topStart: true, topEnd: true, bottomStart: false, bottomEnd: false }}
+          stretch
           containerStyle={{
+            flex: 1,
             marginRight: 0,
             marginLeft: isLastTab ? 0 : 0, // Sử dụng isLastTab để kiểm tra Shadow có tự động tạo margin
           }}
           style={{
             flex: 1,
             zIndex: 1,
-            backgroundColor: isDark ? '#1c056eff' : '#BFDBFE',
+            backgroundColor: isDark ? '#1c056eff' : light.background,
             borderTopLeftRadius: px.h(12),
             borderTopRightRadius: px.h(12),
             overflow: 'hidden',
@@ -205,22 +211,22 @@ const WaterLevelCard: React.FC<{
                   {
                     flex: 1,
                     elevation: 0,
-                    backgroundColor: isActive ? (isDark ? '#1c056eff' : '#BFDBFE') : 'transparent',
+                    backgroundColor: isActive ? (isDark ? '#1c056eff' : light.background) : 'transparent',
                     borderRadius: 0,
                   },
                 ]}
               >
               <View style={styles.cardContent}>
                 <View style={styles.locationContainer}>
-                  <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
-                  <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
+                  <Text style={[styles.locationName, { color: isDark ? data.color : light.plants[index % light.plants.length] }]}>{data.name}</Text>
+                  <View style={[styles.locationUnderline, { backgroundColor: isDark ? data.color : light.plants[index % light.plants.length] }]} />
                 </View>
 
                 <View style={styles.levelContainer}>
-                  <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
+                  <Text style={[styles.currentLevel, !isDark && { color: isLowWaterLevel ? light.danger : light.water }]} numberOfLines={1} adjustsFontSizeToFit>
                     {data.currentLevel}
                   </Text>
-                  <Text style={styles.maxLevel} numberOfLines={1}>
+                  <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
                     {' '}
                     / {data.maxLevel}
                   </Text>
@@ -228,8 +234,8 @@ const WaterLevelCard: React.FC<{
 
                 {containerWidth > 0 && (
                   <View style={{ flexDirection: 'row' }}>
-                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
-                    <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : light.border }}></View>
+                    <View style={[styles.waterContainer, !isDark && { borderColor: light.border }, { height: containerHeight, width: containerWidth - 8 }]}>
                       {waveAreaHeight > 0 && (
                         <View
                           style={{
@@ -253,7 +259,7 @@ const WaterLevelCard: React.FC<{
                               {wavePath2 && (
                                 <Path
                                   d={wavePath2}
-                                  fill={isLowWaterLevel ? Colors.warningHalf : '#3AB7FF'}
+                                  fill={isLowWaterLevel ? (isDark ? Colors.warningHalf : light.warningMid) : (isDark ? '#3AB7FF' : light.waterMid)}
                                   opacity={0.48}
                                 />
                               )}
@@ -271,27 +277,27 @@ const WaterLevelCard: React.FC<{
                                 {isLowWaterLevel ? (
                                   <>
                                     <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                      <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                      <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                      <Stop offset="0%" stopColor={isDark ? Colors.warningZero : light.warningTop} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={isDark ? Colors.warningHalf : light.warningMid} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={isDark ? Colors.warningFull : light.warningBottom} stopOpacity="1" />
                                     </LinearGradient>
                                     <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                      <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                      <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                      <Stop offset="0%" stopColor={isDark ? Colors.warningZero : light.warningTop} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={isDark ? Colors.warningHalf : light.warningMid} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={isDark ? Colors.warningFull : light.warningBottom} stopOpacity="1" />
                                     </LinearGradient>
                                   </>
                                 ) : (
                                   <>
                                     <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                      <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                      <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                      <Stop offset="0%" stopColor={isDark ? '#7DF0FF' : light.waterTop} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={isDark ? '#3AB7FF' : light.waterMid} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={isDark ? '#1E90FF' : light.waterBottom} stopOpacity="1" />
                                     </LinearGradient>
                                     <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                      <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                      <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                      <Stop offset="0%" stopColor={isDark ? '#7DF0FF' : light.waterTop} stopOpacity="0.8" />
+                                      <Stop offset="50%" stopColor={isDark ? '#3AB7FF' : light.waterMid} stopOpacity="0.9" />
+                                      <Stop offset="100%" stopColor={isDark ? '#1E90FF' : light.waterBottom} stopOpacity="1" />
                                     </LinearGradient>
                                   </>
                                 )}
@@ -313,8 +319,8 @@ const WaterLevelCard: React.FC<{
                           },
                         ]}
                       >
-                        <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                        <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}</Text>
+                        <View style={[styles.dashedLine, { borderTopColor: isDark ? '#00DF73' : light.inflow }]} />
+                        <Text style={[styles.referenceText, { color: isDark ? '#00DF73' : light.inflow }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                       </View>
 
                       {/* Reference line */}
@@ -328,11 +334,11 @@ const WaterLevelCard: React.FC<{
                           },
                         ]}
                       >
-                        <Text style={styles.referenceText}>{data.referenceLevel}</Text>
-                        <View style={styles.dashedLine} />
+                        <Text style={[styles.referenceText, !isDark && { color: light.warning, backgroundColor: 'transparent' }]}>{data.referenceLevel}</Text>
+                        <View style={[styles.dashedLine, !isDark && { borderTopColor: light.warning }]} />
                       </View>
                     </View>
-                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
+                    <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : light.border }}></View>
                   </View>
                 )}
               </View>
@@ -347,22 +353,22 @@ const WaterLevelCard: React.FC<{
               {
                 flex: 1,
                 elevation: 0,
-                backgroundColor: isDark ? 'transparent' : '#FFFFFF',
+                backgroundColor: isDark ? 'transparent' : light.surface,
                 borderRadius: 0,
               },
             ]}
           >
             <View style={styles.cardContent}>
               <View style={styles.locationContainer}>
-                <Text style={[styles.locationName, { color: data.color }]}>{data.name}</Text>
-                <View style={[styles.locationUnderline, { backgroundColor: data.color }]} />
+                <Text style={[styles.locationName, { color: isDark ? data.color : light.plants[index % light.plants.length] }]}>{data.name}</Text>
+                <View style={[styles.locationUnderline, { backgroundColor: isDark ? data.color : light.plants[index % light.plants.length] }]} />
               </View>
 
               <View style={styles.levelContainer}>
-                <Text style={styles.currentLevel} numberOfLines={1} adjustsFontSizeToFit>
+                <Text style={[styles.currentLevel, !isDark && { color: isLowWaterLevel ? light.danger : light.water }]} numberOfLines={1} adjustsFontSizeToFit>
                   {data.currentLevel}
                 </Text>
-                <Text style={styles.maxLevel} numberOfLines={1}>
+                <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
                   {' '}
                   / {data.maxLevel}
                 </Text>
@@ -370,8 +376,8 @@ const WaterLevelCard: React.FC<{
 
               {containerWidth > 0 && (
                 <View style={{ flexDirection: 'row' }}>
-                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
-                  <View style={[styles.waterContainer, { height: containerHeight, width: containerWidth - 8 }]}>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : light.border }}></View>
+                  <View style={[styles.waterContainer, !isDark && { borderColor: light.border }, { height: containerHeight, width: containerWidth - 8 }]}>
                     {waveAreaHeight > 0 && (
                       <View
                         style={{
@@ -395,7 +401,7 @@ const WaterLevelCard: React.FC<{
                             {wavePath2 && (
                               <Path
                                 d={wavePath2}
-                                fill={isLowWaterLevel ? Colors.warningHalf : '#3AB7FF'}
+                                fill={isLowWaterLevel ? (isDark ? Colors.warningHalf : light.warningMid) : (isDark ? '#3AB7FF' : light.waterMid)}
                                 opacity={0.48}
                               />
                             )}
@@ -413,27 +419,27 @@ const WaterLevelCard: React.FC<{
                               {isLowWaterLevel ? (
                                 <>
                                   <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={isDark ? Colors.warningZero : light.warningTop} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={isDark ? Colors.warningHalf : light.warningMid} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={isDark ? Colors.warningFull : light.warningBottom} stopOpacity="1" />
                                   </LinearGradient>
                                   <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor={Colors.warningZero} stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor={Colors.warningHalf} stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor={Colors.warningFull} stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={isDark ? Colors.warningZero : light.warningTop} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={isDark ? Colors.warningHalf : light.warningMid} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={isDark ? Colors.warningFull : light.warningBottom} stopOpacity="1" />
                                   </LinearGradient>
                                 </>
                               ) : (
                                 <>
                                   <LinearGradient id={`waterGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={isDark ? '#7DF0FF' : light.waterTop} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={isDark ? '#3AB7FF' : light.waterMid} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={isDark ? '#1E90FF' : light.waterBottom} stopOpacity="1" />
                                   </LinearGradient>
                                   <LinearGradient id={`waveGrad-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <Stop offset="0%" stopColor="#7DF0FF" stopOpacity="0.8" />
-                                    <Stop offset="50%" stopColor="#3AB7FF" stopOpacity="0.9" />
-                                    <Stop offset="100%" stopColor="#1E90FF" stopOpacity="1" />
+                                    <Stop offset="0%" stopColor={isDark ? '#7DF0FF' : light.waterTop} stopOpacity="0.8" />
+                                    <Stop offset="50%" stopColor={isDark ? '#3AB7FF' : light.waterMid} stopOpacity="0.9" />
+                                    <Stop offset="100%" stopColor={isDark ? '#1E90FF' : light.waterBottom} stopOpacity="1" />
                                   </LinearGradient>
                                 </>
                               )}
@@ -455,8 +461,8 @@ const WaterLevelCard: React.FC<{
                         },
                       ]}
                     >
-                      <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                      <Text style={[styles.referenceText, { color: '#00DF73' }]}>{data.maxLevel}</Text>
+                      <View style={[styles.dashedLine, { borderTopColor: isDark ? '#00DF73' : light.inflow }]} />
+                      <Text style={[styles.referenceText, { color: isDark ? '#00DF73' : light.inflow }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                     </View>
 
                     {/* Reference line */}
@@ -470,11 +476,11 @@ const WaterLevelCard: React.FC<{
                         },
                       ]}
                     >
-                      <Text style={styles.referenceText}>{data.referenceLevel}</Text>
-                      <View style={styles.dashedLine} />
+                      <Text style={[styles.referenceText, !isDark && { color: light.warning, backgroundColor: 'transparent' }]}>{data.referenceLevel}</Text>
+                      <View style={[styles.dashedLine, !isDark && { borderTopColor: light.warning }]} />
                     </View>
                   </View>
-                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : '#E5E7EB' }}></View>
+                  <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? '#fff' : light.border }}></View>
                 </View>
               )}
             </View>
@@ -592,7 +598,7 @@ const Overview: React.FC = () => {
           </View>
 
           {/* Skeleton cho detail container */}
-        <View style={[styles.detailContainer, !isDark && { backgroundColor: '#BFDBFE' }]}>
+        <View style={[styles.detailContainer, !isDark && { backgroundColor: light.background }]}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
               <LineChartSkeleton />
@@ -632,7 +638,7 @@ const Overview: React.FC = () => {
           ))}
         </View>
 
-        <View style={[styles.detailContainer, !isDark && { backgroundColor: '#BFDBFE' }]}>
+        <View style={[styles.detailContainer, !isDark && { backgroundColor: light.background }]}>
           {activeData && (
             <>
               <Text style={styles.detailText}>

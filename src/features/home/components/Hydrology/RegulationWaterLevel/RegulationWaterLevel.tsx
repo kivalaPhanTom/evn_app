@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useState, useEffect, useMemo } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -87,7 +88,7 @@ const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
   }
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
       <View style={styles.container}>
         <Text style={styles.title}>Khoảng MNQT theo thời gian</Text>
 
@@ -96,10 +97,10 @@ const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
           selectedDate={selectedMonth}
           onConfirm={handleConfirm}
           onSelectCurrentMonth={handleSelectCurrentMonth}
-          iconColor={isDark ? '#fff' : '#6B7280'}
-          pickerLabelStyle={{ color: isDark ? '#FFFFFF' : '#6B7280' }}
-          selectedDateStyle={{ color: isDark ? '#FFFFFF' : '#374151' }}
-          pickerStyle={isDark ? undefined : { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.12)' }}
+          iconColor={isDark ? '#fff' : light.muted}
+          pickerLabelStyle={{ color: isDark ? '#FFFFFF' : light.muted }}
+          selectedDateStyle={{ color: isDark ? '#FFFFFF' : light.text }}
+          pickerStyle={isDark ? undefined : { backgroundColor: light.subtle, borderColor: light.border }}
         />
 
         {/* Bảng dữ liệu */}

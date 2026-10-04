@@ -1,3 +1,5 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import React, { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native'
 import Svg, { Defs, LinearGradient, Stop, Rect, Text as SvgText, Circle, G, Path } from 'react-native-svg'
@@ -79,6 +81,7 @@ interface flowDiagramProps {
 
 export default function FlowDiagram(props: flowDiagramProps) {
 	const { data, isLoading = false } = props
+	const isDark = useAppTheme() === 'dark'
 	const [firstLoading, setFirstLoading] = useState(true)
 	// Animation values
 	const animValue = useRef(new Animated.Value(0)).current
@@ -180,37 +183,37 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								{/* Main box with subtle glow */}
 								<G>
 									{/* Glowing border */}
-									<Rect x={mainX} y={mainY} rx={Math.round(16 * SCALE)} ry={Math.round(16 * SCALE)} width={MAIN_W} height={MAIN_H} fill="#101423" stroke="#22C5FF" strokeOpacity={0.4} strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
+									<Rect x={mainX} y={mainY} rx={Math.round(16 * SCALE)} ry={Math.round(16 * SCALE)} width={MAIN_W} height={MAIN_H} fill={isDark ? '#101423' : light.background} stroke={isDark ? '#22C5FF' : light.water} strokeOpacity={0.4} strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
 									{/* Title */}
-									<SvgText x={mainX + MAIN_W / 2} y={mainY + Math.round(28 * SCALE)} fontSize={Math.round(18 * SCALE)} fill="#22C5FF" fontWeight="700" textAnchor="middle">HỒ THỦY ĐIỆN</SvgText>
+									<SvgText x={mainX + MAIN_W / 2} y={mainY + Math.round(28 * SCALE)} fontSize={Math.round(18 * SCALE)} fill={isDark ? '#22C5FF' : light.water} fontWeight="700" textAnchor="middle">HỒ THỦY ĐIỆN</SvgText>
 									{/* Subtitle */}
-									<SvgText x={mainX + MAIN_W / 2} y={mainY + Math.round(46 * SCALE)} fontSize={Math.round(11 * SCALE)} fill="#C0C4CC" textAnchor="middle">{data.mntl.code}</SvgText>
+									<SvgText x={mainX + MAIN_W / 2} y={mainY + Math.round(46 * SCALE)} fontSize={Math.round(11 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">{data.mntl.code}</SvgText>
 									{/* Divider */}
 									<Path
 										d={`M ${mainX + Math.round(24 * SCALE)} ${mainY + Math.round(54 * SCALE)} L ${mainX + MAIN_W - Math.round(24 * SCALE)} ${mainY + Math.round(54 * SCALE)}`}
-										stroke="#3A3F4A"
+										stroke={isDark ? '#3A3F4A' : light.border}
 										strokeWidth={Math.max(1, Math.round(1 * SCALE))}
 										strokeLinecap="round"
 									/>
 									{/* HT column */}
-									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(74 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">HT</SvgText>
-									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(94 * SCALE)} fontSize={Math.round(22 * SCALE)} fill="#22C5FF" fontWeight="700" textAnchor="middle">{data.mntl.value.current}</SvgText>
-									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(110 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.mntl.unit}</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(74 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">HT</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(94 * SCALE)} fontSize={Math.round(22 * SCALE)} fill={isDark ? '#22C5FF' : light.water} fontWeight="700" textAnchor="middle">{data.mntl.value.current}</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.28} y={mainY + Math.round(110 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.mntl.unit}</SvgText>
 									{/* CK column */}
-									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(74 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">CK</SvgText>
-									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(94 * SCALE)} fontSize={Math.round(22 * SCALE)} fill="#C0C4CC" fontWeight="700" textAnchor="middle">{data.mntl.value.period}</SvgText>
-									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(110 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.mntl.unit}</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(74 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">CK</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(94 * SCALE)} fontSize={Math.round(22 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} fontWeight="700" textAnchor="middle">{data.mntl.value.period}</SvgText>
+									<SvgText x={mainX + MAIN_W * 0.72} y={mainY + Math.round(110 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.mntl.unit}</SvgText>
 									{/* Indicator circles */}
-									<Circle cx={mainX + MAIN_W / 2} cy={mainY - Math.round(8 * SCALE)} r={Math.round(4 * SCALE)} fill="#22C5FF" opacity={0.8} />
-									<Circle cx={mainX - Math.round(8 * SCALE)} cy={mainY + MAIN_H / 2} r={Math.round(4 * SCALE)} fill="#ef4444" opacity={0.8} />
-									<Circle cx={mainX + MAIN_W + Math.round(8 * SCALE)} cy={mainY + MAIN_H / 2} r={Math.round(4 * SCALE)} fill="#ef4444" opacity={0.8} />
-									<Circle cx={mainX + MAIN_W / 2} cy={mainY + MAIN_H + Math.round(8 * SCALE)} r={Math.round(4 * SCALE)} fill="#00E676" opacity={0.8} />
+									<Circle cx={mainX + MAIN_W / 2} cy={mainY - Math.round(8 * SCALE)} r={Math.round(4 * SCALE)} fill={isDark ? '#22C5FF' : light.water} opacity={0.8} />
+									<Circle cx={mainX - Math.round(8 * SCALE)} cy={mainY + MAIN_H / 2} r={Math.round(4 * SCALE)} fill={isDark ? '#ef4444' : light.outflow} opacity={0.8} />
+									<Circle cx={mainX + MAIN_W + Math.round(8 * SCALE)} cy={mainY + MAIN_H / 2} r={Math.round(4 * SCALE)} fill={isDark ? '#ef4444' : light.outflow} opacity={0.8} />
+									<Circle cx={mainX + MAIN_W / 2} cy={mainY + MAIN_H + Math.round(8 * SCALE)} r={Math.round(4 * SCALE)} fill={isDark ? '#00E676' : light.outflow} opacity={0.8} />
 								</G>
 
 								{/* Vertical pipe from Qve to Hồ Thủy Điện - màu xanh dương (dày + bo) */}
 								<Path
 									d={`M ${CENTER_X} ${topY + TOP_H + Math.round(30 * SCALE)} L ${CENTER_X} ${mainY + Math.round(3 * SCALE)}`}
-									stroke="#3ea8d6"
+									stroke={isDark ? '#3ea8d6' : light.inflow}
 									strokeWidth={MAIN_PIPE_STROKE}
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -229,8 +232,8 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										ry={Math.round(22 * SCALE)}
 										width={TOP_W}
 										height={TOP_H + Math.round(32 * SCALE)}
-										fill="#0F1115"
-										stroke="#3ea8d655"
+										fill={isDark ? '#0F1115' : light.surface}
+										stroke={isDark ? '#3ea8d655' : light.border}
 										strokeWidth={Math.max(1, Math.round(2 * SCALE))}
 									/>
 
@@ -240,7 +243,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										y={topY + Math.round(22 * SCALE)}
 										fontSize={Math.round(16 * SCALE)}
 										fontWeight="700"
-										fill="#6A8CFF"
+										fill={isDark ? '#6A8CFF' : light.inflow}
 										textAnchor="middle"
 									>
 										{data.qve.code}
@@ -250,7 +253,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 									<Path
 										d={`M ${topX + Math.round(12 * SCALE)} ${topY + Math.round(32 * SCALE)} 
             L ${topX + TOP_W - Math.round(12 * SCALE)} ${topY + Math.round(32 * SCALE)}`}
-										stroke="#3A3F4A"
+										stroke={isDark ? '#3A3F4A' : light.border}
 										strokeWidth={Math.max(1, Math.round(1 * SCALE))}
 										strokeLinecap="round"
 									/>
@@ -260,7 +263,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.28}
 										y={topY + Math.round(52 * SCALE)}
 										fontSize={Math.round(12 * SCALE)}
-										fill="#C0C4CC"
+										fill={isDark ? '#C0C4CC' : light.text}
 										textAnchor="middle"
 									>
 										HT
@@ -270,7 +273,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.28}
 										y={topY + Math.round(74 * SCALE)}
 										fontSize={Math.round(26 * SCALE)}
-										fill="#6A8CFF"
+										fill={isDark ? '#6A8CFF' : light.inflow}
 										fontWeight="700"
 										textAnchor="middle"
 									>
@@ -281,7 +284,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.28}
 										y={topY + Math.round(92 * SCALE)}
 										fontSize={Math.round(12 * SCALE)}
-										fill="#C0C4CC88"
+										fill={isDark ? '#C0C4CC88' : light.muted}
 										textAnchor="middle"
 									>
 										{data.qve.unit}
@@ -292,7 +295,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.72}
 										y={topY + Math.round(52 * SCALE)}
 										fontSize={Math.round(12 * SCALE)}
-										fill="#C0C4CC"
+										fill={isDark ? '#C0C4CC' : light.text}
 										textAnchor="middle"
 									>
 										CK
@@ -302,7 +305,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.72}
 										y={topY + Math.round(74 * SCALE)}
 										fontSize={Math.round(26 * SCALE)}
-										fill="#ffffff"
+										fill={isDark ? '#ffffff' : light.text}
 										fontWeight="700"
 										textAnchor="middle"
 									>
@@ -313,7 +316,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 										x={topX + TOP_W * 0.72}
 										y={topY + Math.round(92 * SCALE)}
 										fontSize={Math.round(12 * SCALE)}
-										fill="#C0C4CC88"
+										fill={isDark ? '#C0C4CC88' : light.muted}
 										textAnchor="middle"
 									>
 										{data.qve.unit}
@@ -324,7 +327,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								<G>
 									<Path
 										d={makeElbowPath(mainX, lineStartY, leftLineEndX, verticalLineEndY, 'left')}
-										stroke="#ef4444"
+										stroke={isDark ? '#ef4444' : light.outflow}
 										strokeWidth={ELBOW_STROKE}
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -338,7 +341,7 @@ export default function FlowDiagram(props: flowDiagramProps) {
 								<G>
 									<Path
 										d={makeElbowPath(mainX + MAIN_W, lineStartY, rightLineEndX, verticalLineEndY, 'right')}
-										stroke="#ef4444"
+										stroke={isDark ? '#ef4444' : light.outflow}
 										strokeWidth={ELBOW_STROKE}
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -350,59 +353,59 @@ export default function FlowDiagram(props: flowDiagramProps) {
 
 								{/* Left side box (Qtf) - nằm dưới và căn giữa đường line */}
 								<G>
-									<Rect x={leftBoxX} y={leftBoxY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={SIDE_W} height={TOP_H + Math.round(32 * SCALE)} fill="#0a0a10" stroke="#ef4444" strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
+									<Rect x={leftBoxX} y={leftBoxY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={SIDE_W} height={TOP_H + Math.round(32 * SCALE)} fill={isDark ? '#0a0a10' : light.surface} stroke={isDark ? '#ef4444' : light.outflow} strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
 									{/* Title */}
 									<SvgText x={leftBoxX + SIDE_W / 2} y={leftBoxY + Math.round(24 * SCALE)}
 										fontSize={Math.max(10, Math.round(14 * SCALE))}
-										fill="#ef4444" fontWeight="700" textAnchor="middle">{data.qxmt.code}</SvgText>
+										fill={isDark ? '#ef4444' : light.outflow} fontWeight="700" textAnchor="middle">{data.qxmt.code}</SvgText>
 									{/* Divider */}
 									<Path
 										d={`M ${leftBoxX + Math.round(10 * SCALE)} ${leftBoxY + Math.round(32 * SCALE)} L ${leftBoxX + SIDE_W - Math.round(10 * SCALE)} ${leftBoxY + Math.round(32 * SCALE)}`}
-										stroke="#ffffff"
+										stroke={isDark ? '#ffffff' : light.border}
 										strokeOpacity={0.3}
 										strokeWidth={1}
 										strokeLinecap="round"
 									/>
 									{/* HT COLUMN */}
 									<SvgText x={leftBoxX + SIDE_W * 0.28} y={leftBoxY + Math.round(52 * SCALE)}
-										fontSize={Math.round(12 * SCALE)} fill="#ffffff" textAnchor="middle">HT</SvgText>
+										fontSize={Math.round(12 * SCALE)} fill={isDark ? '#ffffff' : light.text} textAnchor="middle">HT</SvgText>
 									<SvgText x={leftBoxX + SIDE_W * 0.28} y={leftBoxY + Math.round(74 * SCALE)}
 										fontSize={Math.round(26 * SCALE)} fontWeight="700"
-										fill="#ef4444" textAnchor="middle">{data.qxmt.value.current}</SvgText>
+										fill={isDark ? '#ef4444' : light.outflow} textAnchor="middle">{data.qxmt.value.current}</SvgText>
 									<SvgText x={leftBoxX + SIDE_W * 0.28} y={leftBoxY + Math.round(92 * SCALE)}
-										fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qxmt.unit}</SvgText>
+										fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qxmt.unit}</SvgText>
 									{/* CK COLUMN */}
 									<SvgText x={leftBoxX + SIDE_W * 0.72} y={leftBoxY + Math.round(52 * SCALE)}
-										fontSize={Math.round(12 * SCALE)} fill="#ffffff" textAnchor="middle">CK</SvgText>
+										fontSize={Math.round(12 * SCALE)} fill={isDark ? '#ffffff' : light.text} textAnchor="middle">CK</SvgText>
 									<SvgText x={leftBoxX + SIDE_W * 0.72} y={leftBoxY + Math.round(74 * SCALE)}
 										fontSize={Math.round(26 * SCALE)} fontWeight="700"
-										fill="#ffffff" textAnchor="middle">{data.qxmt.value.period}</SvgText>
+										fill={isDark ? '#ffffff' : light.text} textAnchor="middle">{data.qxmt.value.period}</SvgText>
 									<SvgText x={leftBoxX + SIDE_W * 0.72} y={leftBoxY + Math.round(92 * SCALE)}
-										fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qxmt.unit}</SvgText>
+										fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qxmt.unit}</SvgText>
 								</G>
 
 								{/* Right side box (Qxt) - nằm dưới và căn giữa đường line */}
 								<G>
-									<Rect x={rightBoxX} y={rightBoxY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={SIDE_W} height={TOP_H + Math.round(32 * SCALE)} fill="#0a0a10" stroke="#FFD600" strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
-									<SvgText x={rightBoxX + SIDE_W / 2} y={rightBoxY + Math.round(22 * SCALE)} fontSize={Math.round(16 * SCALE)} fill="#ef4444" fontWeight="700" textAnchor="middle">{data.qxt.code}</SvgText>
+									<Rect x={rightBoxX} y={rightBoxY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={SIDE_W} height={TOP_H + Math.round(32 * SCALE)} fill={isDark ? '#0a0a10' : light.surface} stroke={isDark ? '#FFD600' : light.outflow} strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
+									<SvgText x={rightBoxX + SIDE_W / 2} y={rightBoxY + Math.round(22 * SCALE)} fontSize={Math.round(16 * SCALE)} fill={isDark ? '#ef4444' : light.outflow} fontWeight="700" textAnchor="middle">{data.qxt.code}</SvgText>
 									<Path
 										d={`M ${rightBoxX + Math.round(12 * SCALE)} ${rightBoxY + Math.round(32 * SCALE)} L ${rightBoxX + SIDE_W - Math.round(12 * SCALE)} ${rightBoxY + Math.round(32 * SCALE)}`}
-										stroke="#3A3F4A"
+										stroke={isDark ? '#3A3F4A' : light.border}
 										strokeWidth={Math.max(1, Math.round(1 * SCALE))}
 										strokeLinecap="round"
 									/>
-									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">HT</SvgText>
-									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill="#ef4444" fontWeight="700" textAnchor="middle">{data.qxt.value.current}</SvgText>
-									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qxt.unit}</SvgText>
-									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">CK</SvgText>
-									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill="#ffffff" fontWeight="700" textAnchor="middle">{data.qxt.value.period}</SvgText>
-									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qxt.unit}</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">HT</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill={isDark ? '#ef4444' : light.outflow} fontWeight="700" textAnchor="middle">{data.qxt.value.current}</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.28} y={rightBoxY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qxt.unit}</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">CK</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill={isDark ? '#ffffff' : light.text} fontWeight="700" textAnchor="middle">{data.qxt.value.period}</SvgText>
+									<SvgText x={rightBoxX + SIDE_W * 0.72} y={rightBoxY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qxt.unit}</SvgText>
 								</G>
 
 								{/* Vertical pipe from Hồ Thủy Điện to Qcm - màu xanh lá (dày + bo) */}
 								<Path
 									d={`M ${CENTER_X} ${mainY + MAIN_H} L ${CENTER_X} ${bottomY}`}
-									stroke="#00E676"
+									stroke={isDark ? '#00E676' : light.outflow}
 									strokeWidth={MAIN_PIPE_STROKE}
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -413,23 +416,23 @@ export default function FlowDiagram(props: flowDiagramProps) {
 
 								{/* Bottom node (Qcem) */}
 								<G>
-									<Rect x={bottomX} y={bottomY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={BOTTOM_W} height={TOP_H + Math.round(32 * SCALE)} fill="#0a0a10" stroke="#00E676" strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
-									<SvgText x={bottomX + BOTTOM_W / 2} y={bottomY + Math.round(22 * SCALE)} fontSize={Math.round(16 * SCALE)} fill="#00E676" fontWeight="700" textAnchor="middle">{data.qcm.code}</SvgText>
+									<Rect x={bottomX} y={bottomY} rx={Math.round(14 * SCALE)} ry={Math.round(14 * SCALE)} width={BOTTOM_W} height={TOP_H + Math.round(32 * SCALE)} fill={isDark ? '#0a0a10' : light.surface} stroke={isDark ? '#00E676' : light.outflow} strokeWidth={Math.max(1, Math.round(3 * SCALE))} />
+									<SvgText x={bottomX + BOTTOM_W / 2} y={bottomY + Math.round(22 * SCALE)} fontSize={Math.round(16 * SCALE)} fill={isDark ? '#00E676' : light.outflow} fontWeight="700" textAnchor="middle">{data.qcm.code}</SvgText>
 									{/* Divider */}
 									<Path
 										d={`M ${bottomX + Math.round(12 * SCALE)} ${bottomY + Math.round(32 * SCALE)} L ${bottomX + BOTTOM_W - Math.round(12 * SCALE)} ${bottomY + Math.round(32 * SCALE)}`}
-										stroke="#3A3F4A"
+										stroke={isDark ? '#3A3F4A' : light.border}
 										strokeWidth={Math.max(1, Math.round(1 * SCALE))}
 										strokeLinecap="round"
 									/>
 									{/* HT column */}
-									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">HT</SvgText>
-									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill="#00E676" fontWeight="700" textAnchor="middle">{data.qcm.value.current}</SvgText>
-									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qcm.unit}</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">HT</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill={isDark ? '#00E676' : light.outflow} fontWeight="700" textAnchor="middle">{data.qcm.value.current}</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.28} y={bottomY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qcm.unit}</SvgText>
 									{/* CK column */}
-									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC" textAnchor="middle">CK</SvgText>
-									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill="#C0C4CC" fontWeight="700" textAnchor="middle">{data.qcm.value.period}</SvgText>
-									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill="#C0C4CC88" textAnchor="middle">{data.qcm.unit}</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(52 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} textAnchor="middle">CK</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(74 * SCALE)} fontSize={Math.round(26 * SCALE)} fill={isDark ? '#C0C4CC' : light.text} fontWeight="700" textAnchor="middle">{data.qcm.value.period}</SvgText>
+									<SvgText x={bottomX + BOTTOM_W * 0.72} y={bottomY + Math.round(92 * SCALE)} fontSize={Math.round(12 * SCALE)} fill={isDark ? '#C0C4CC88' : light.muted} textAnchor="middle">{data.qcm.unit}</SvgText>
 								</G>
 							</G>
 						</Svg>

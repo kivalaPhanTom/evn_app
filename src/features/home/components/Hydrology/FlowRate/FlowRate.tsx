@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useMemo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -54,15 +55,15 @@ const FlowRate: React.FC<FlowRateProps> = ({
       : currentFilterTab === 'month'
         ? [
             { type: 'line', label: 'Tháng mục tiêu', color: currentColor },
-            { type: 'line', label: 'Tháng so sánh', color: isDark ? '#A78BFA' : '#7C3AED' },
+            { type: 'line', label: 'Tháng so sánh', color: isDark ? '#A78BFA' : light.comparison },
           ]
         : [
             { type: 'line', label: 'Ngày mục tiêu', color: currentColor },
-            { type: 'line', label: 'Ngày so sánh', color: isDark ? '#A78BFA' : '#7C3AED' },
+            { type: 'line', label: 'Ngày so sánh', color: isDark ? '#A78BFA' : light.comparison },
           ]
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
       <View>
         <Text style={styles.title}>{title}</Text>
       </View>
@@ -75,8 +76,10 @@ const FlowRate: React.FC<FlowRateProps> = ({
           data2={comparisonChartData}
           height={px(200)}
           color={currentColor}
-          color2={isDark ? '#A78BFA' : '#7C3AED'}
+          color2={isDark ? '#A78BFA' : light.comparison}
           areaChart={false}
+          rulesColor={isDark ? undefined : light.grid}
+          xAxisColor={isDark ? undefined : light.border}
           strokeDashArray2={[12, 3]}
           scrollToEnd={true}
           pointerConfig={showPointer}

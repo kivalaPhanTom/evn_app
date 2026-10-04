@@ -1,3 +1,4 @@
+import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
 import React, { useRef, useState } from 'react'
 import { View, Text, Animated } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -135,11 +136,11 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
     <MonthPickerCustom
       selectedDate={dayjs(filterByTime[keyRange][field])}
       containerStyle={{ flexDirection: 'column', alignItems: 'flex-start' }}
-      pickerStyle={{ width: '100%', ...(isDark ? {} : { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.12)' }) }}
-      selectedDateStyle={{ fontSize: px.f(20), color: isDark ? '#FFFFFF' : '#374151' }}
+      pickerStyle={{ width: '100%', ...(isDark ? {} : { backgroundColor: light.subtle, borderColor: light.border }) }}
+      selectedDateStyle={{ fontSize: px.f(20), color: isDark ? '#FFFFFF' : light.text }}
       label={label}
-      pickerLabelStyle={{ fontSize: 12, color: isDark ? '#FFFFFF' : '#6B7280' }}
-      iconColor={isDark ? '#fff' : '#6B7280'}
+      pickerLabelStyle={{ fontSize: 12, color: isDark ? '#FFFFFF' : light.muted }}
+      iconColor={isDark ? '#fff' : light.muted}
       formatMonth={(date) => date.format(format)}
       onConfirm={updatePeriodRange({
         key: keyRange,
@@ -274,7 +275,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
   }
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
       <View style={styles.container}>
         <Text style={styles.title}>Bộ lọc thời gian</Text>
 
