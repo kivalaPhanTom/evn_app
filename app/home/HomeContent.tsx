@@ -22,6 +22,8 @@ import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
 import DocumentSection from '@/features/home/components/Legal/Documents'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
+import ClipboardListIcon from '@/components/icons/ClipboardListIcon'
+import { useThemePalette } from '@/core/constants/themePalette'
 
 interface moduleItem {
   code: string
@@ -42,6 +44,7 @@ function HomeContent() {
   const companyLocation = Array.isArray(location) ? location[0] : location
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
+  const p = useThemePalette()
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -100,6 +103,7 @@ function HomeContent() {
         maxSize={2}
       >
         <View style={styles.header}>
+          <ClipboardListIcon size={px.f(32)} color={p.valueAccent} style={styles.checklistIcon} />
           <GradientText
             text={companyTitle ?? t('companyName')}
             colors={textGradients.water}
@@ -176,6 +180,11 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  checklistIcon: {
+    position: 'absolute',
+    left: px.h(16),
+    top: px.v(2),
   },
   locationRow: {
     marginTop: px.v(6),
