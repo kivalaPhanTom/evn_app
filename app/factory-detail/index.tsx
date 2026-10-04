@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
-import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
+import { Animated, ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { textGradients } from '@/core/constants/gradients'
@@ -71,11 +71,14 @@ function FactoryDetail(props: factoryDetailProps) {
     })
   }
 
-  const [scrollY, setScrollY] = useState(0);
-
-  const onScroll = (e: any) => {
-    setScrollY(e.nativeEvent.contentOffset.y);
-  };
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [shouldLoadProductionOutputFactDetail, setShouldLoadProductionOutputFactDetail] = useState(false);
+  const [shouldLoadHydrology, setShouldLoadHydrology] = useState(false);
+  const [shouldLoadRevenue, setShouldLoadRevenue] = useState(false);
+  const [shouldLoadProfit, setShouldLoadProfit] = useState(false);
+  const [shouldLoadMaintenance, setShouldLoadMaintenance] = useState(false);
+  const [shouldLoadTechInfo, setShouldLoadTechInfo] = useState(false);
+  const [shouldLoadExistence, setShouldLoadExistence] = useState(false);
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false;
@@ -85,14 +88,28 @@ function FactoryDetail(props: factoryDetailProps) {
   };
 
   const preloadOffset = 300; // px before entering viewport
+  const thresholds = useRef({
+    production: 200 - preloadOffset,
+    hydrology: 600 - preloadOffset,
+    revenue: 1000 - preloadOffset,
+    profit: 1400 - preloadOffset,
+    maintenance: 1800 - preloadOffset,
+    techInfo: 2200 - preloadOffset,
+    existence: 2600 - preloadOffset,
+  }).current;
 
-  const shouldLoadProductionOutputFactDetail = scrollY >= 200 - preloadOffset;
-  const shouldLoadHydrology = scrollY >= 600 - preloadOffset;
-  const shouldLoadRevenue = scrollY >= 1000 - preloadOffset;
-  const shouldLoadProfit = scrollY >= 1400 - preloadOffset;
-  const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset;
-  const shouldLoadTechInfo = scrollY >= 2200 - preloadOffset;
-  const shouldLoadExistence = scrollY >= 2600 - preloadOffset;
+  useEffect(() => {
+    const id = scrollY.addListener(({ value }) => {
+      if (value >= thresholds.production) setShouldLoadProductionOutputFactDetail(true);
+      if (value >= thresholds.hydrology) setShouldLoadHydrology(true);
+      if (value >= thresholds.revenue) setShouldLoadRevenue(true);
+      if (value >= thresholds.profit) setShouldLoadProfit(true);
+      if (value >= thresholds.maintenance) setShouldLoadMaintenance(true);
+      if (value >= thresholds.techInfo) setShouldLoadTechInfo(true);
+      if (value >= thresholds.existence) setShouldLoadExistence(true);
+    });
+    return () => scrollY.removeListener(id);
+  }, [scrollY, thresholds]);
   const options = [
     { label: "Theo giờ", value: "HOURS" },
     { label: "Theo 7 ngày gần nhất", value: "7_DAYS" }
@@ -107,7 +124,10 @@ function FactoryDetail(props: factoryDetailProps) {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-      onScroll={onScroll}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false },
+      )}
       scrollEventThrottle={16}
     >
       <View style={{ flex: 1 }} collapsable={false}>

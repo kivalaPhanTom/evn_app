@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager } from 'react-native'
+import { Animated, ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { textGradients } from '@/core/constants/gradients'
@@ -64,23 +64,45 @@ function HomeContent() {
       setReady(true)
     })
   }, [])
-  const [scrollY, setScrollY] = useState(0)
 
-  const onScroll = (e: any) => {
-    setScrollY(e.nativeEvent.contentOffset.y)
-  }
+  const scrollY = useRef(new Animated.Value(0)).current
+  const [shouldLoadProduction, setShouldLoadProduction] = useState(false)
+  const [shouldLoadHydrology, setShouldLoadHydrology] = useState(false)
+  const [shouldLoadRevenue, setShouldLoadRevenue] = useState(false)
+  const [shouldLoadProfit, setShouldLoadProfit] = useState(false)
+  const [shouldLoadMaintenance, setShouldLoadMaintenance] = useState(false)
+  const [shouldLoadMap, setShouldLoadMap] = useState(false)
+  const [shouldLoadTechInfo, setShouldLoadTechInfo] = useState(false)
+  const [shouldLoadDocuments, setShouldLoadDocuments] = useState(false)
+  const [shouldLoadExistence, setShouldLoadExistence] = useState(false)
 
   const preloadOffset = 300 // px before entering viewport
+  const thresholds = useRef({
+    production: 200 - preloadOffset,
+    hydrology: 600 - preloadOffset,
+    revenue: 1000 - preloadOffset,
+    profit: 1400 - preloadOffset,
+    maintenance: 1800 - preloadOffset,
+    map: 2200 - preloadOffset,
+    techInfo: 2600 - preloadOffset,
+    documents: 3000 - preloadOffset,
+    existence: 3400 - preloadOffset,
+  }).current
 
-  const shouldLoadProduction = scrollY >= 200 - preloadOffset
-  const shouldLoadHydrology = scrollY >= 600 - preloadOffset
-  const shouldLoadRevenue = scrollY >= 1000 - preloadOffset
-  const shouldLoadProfit = scrollY >= 1400 - preloadOffset
-  const shouldLoadMaintenance = scrollY >= 1800 - preloadOffset
-  const shouldLoadMap = scrollY >= 2200 - preloadOffset
-  const shouldLoadTechInfo = scrollY >= 2600 - preloadOffset
-  const shouldLoadDocuments = scrollY >= 3000 - preloadOffset
-  const shouldLoadExistence = scrollY >= 3400 - preloadOffset
+  useEffect(() => {
+    const id = scrollY.addListener(({ value }) => {
+      if (value >= thresholds.production) setShouldLoadProduction(true)
+      if (value >= thresholds.hydrology) setShouldLoadHydrology(true)
+      if (value >= thresholds.revenue) setShouldLoadRevenue(true)
+      if (value >= thresholds.profit) setShouldLoadProfit(true)
+      if (value >= thresholds.maintenance) setShouldLoadMaintenance(true)
+      if (value >= thresholds.map) setShouldLoadMap(true)
+      if (value >= thresholds.techInfo) setShouldLoadTechInfo(true)
+      if (value >= thresholds.documents) setShouldLoadDocuments(true)
+      if (value >= thresholds.existence) setShouldLoadExistence(true)
+    })
+    return () => scrollY.removeListener(id)
+  }, [scrollY, thresholds])
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false
@@ -92,7 +114,10 @@ function HomeContent() {
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      onScroll={onScroll}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false },
+      )}
       scrollEventThrottle={16}
     >
       <TwinkleStars

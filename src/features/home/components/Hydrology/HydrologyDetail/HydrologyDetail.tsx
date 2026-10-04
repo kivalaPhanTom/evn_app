@@ -1,6 +1,6 @@
 import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
-import React, { useEffect, useMemo, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Animated, ScrollView, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import GeneralInformation from '../GeneralInformation/GeneralInformation'
 import RegulationWaterLevel from '../RegulationWaterLevel/RegulationWaterLevel'
@@ -24,7 +24,7 @@ import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface HydrologyDetailProps {
   currentPlantId?: string
-  scrollY?: number
+  scrollY?: Animated.Value
 }
 
 function getCurrentPlantId(activeTab: string): string {
@@ -54,7 +54,7 @@ function prepareChartData(data: any[] | undefined, currentFilterTab: string, cur
 }
 
 function HydrologyDetail(props: HydrologyDetailProps) {
-  const { currentPlantId, scrollY = 0 } = props
+  const { currentPlantId, scrollY } = props
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -62,6 +62,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
+  const [shouldLoadGeneralInfo, setShouldLoadGeneralInfo] = useState(false)
+  const [shouldLoadUpstreamChart, setShouldLoadUpstreamChart] = useState(false)
+  const [shouldLoadInflowChart, setShouldLoadInflowChart] = useState(false)
+  const [shouldLoadTurbineflowChart, setShouldLoadTurbineflowChart] = useState(false)
+  const [shouldLoadOutflowChart, setShouldLoadOutflowChart] = useState(false)
 
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
@@ -170,12 +175,25 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   ])
 
   const preloadOffset = 300 // px before entering viewport
+  const thresholds = useRef({
+    generalInfo: 200 - preloadOffset,
+    upstreamChart: 600 - preloadOffset,
+    inflowChart: 1000 - preloadOffset,
+    turbineflowChart: 1400 - preloadOffset,
+    outflowChart: 1800 - preloadOffset,
+  }).current
 
-  const shouldLoadGeneralInfo = scrollY >= 200 - preloadOffset
-  const shouldLoadUpstreamChart = scrollY >= 600 - preloadOffset
-  const shouldLoadInflowChart = scrollY >= 1000 - preloadOffset
-  const shouldLoadTurbineflowChart = scrollY >= 1400 - preloadOffset
-  const shouldLoadOutflowChart = scrollY >= 1800 - preloadOffset
+  useEffect(() => {
+    if (!scrollY) return
+    const id = scrollY.addListener(({ value }) => {
+      if (value >= thresholds.generalInfo) setShouldLoadGeneralInfo(true)
+      if (value >= thresholds.upstreamChart) setShouldLoadUpstreamChart(true)
+      if (value >= thresholds.inflowChart) setShouldLoadInflowChart(true)
+      if (value >= thresholds.turbineflowChart) setShouldLoadTurbineflowChart(true)
+      if (value >= thresholds.outflowChart) setShouldLoadOutflowChart(true)
+    })
+    return () => scrollY.removeListener(id)
+  }, [scrollY, thresholds])
 
   // Keep unaffected chart props stable when another hydrology response changes.
   const convertedUpstreamData = useMemo(
