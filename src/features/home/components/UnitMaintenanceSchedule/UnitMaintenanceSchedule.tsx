@@ -187,4 +187,4 @@ function UnitMaintenanceSchedule() {
   )
 }
 
-export default UnitMaintenanceSchedule
+export default React.memo(UnitMaintenanceSchedule)

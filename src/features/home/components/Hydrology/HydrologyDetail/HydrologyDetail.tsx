@@ -370,4 +370,4 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   )
 }
 
-export default HydrologyDetail
+export default React.memo(HydrologyDetail)

@@ -79,7 +79,7 @@ interface flowDiagramProps {
 	}
 }
 
-export default function FlowDiagram(props: flowDiagramProps) {
+function FlowDiagram(props: flowDiagramProps) {
 	const { data, isLoading = false } = props
 	const isDark = useAppTheme() === 'dark'
 	const [firstLoading, setFirstLoading] = useState(true)
@@ -619,3 +619,5 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent',
 	},
 })
+
+export default React.memo(FlowDiagram)

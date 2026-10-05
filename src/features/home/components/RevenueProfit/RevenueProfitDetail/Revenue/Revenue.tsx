@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
@@ -16,33 +16,38 @@ import { RootState } from '@/core/redux/store'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { BarGroup } from '@/core/types'
 
-export default function RevenueDetail() {
+function RevenueDetail() {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { revenue, isLoadingRevenue } = useAppSelector((state: RootState) => state.revenueProfitSlice)
 
-  const onPressCard = () => {
+  const onPressCard = useCallback(() => {
     router.navigate({ pathname: '/revenue-detail' })
-  }
+  }, [router])
 
   useEffect(() => {
-    // Dispatch actions to fetch data if needed
     dispatch(getRevenue())
   }, [countRefesh])
 
-  const data: { label: string; value: number }[] = revenue.Chart.Data.map(
-    (item: { Contract: number; Date: string }) => ({
-      value: item.Contract,
-      label: item.Date?.split('-')[2] ?? '',
-    }),
+  const data = useMemo<{ label: string; value: number }[]>(
+    () => revenue.Chart.Data.map(
+      (item: { Contract: number; Date: string }) => ({
+        value: item.Contract,
+        label: item.Date?.split('-')[2] ?? '',
+      }),
+    ),
+    [revenue.Chart.Data],
   )
 
-  const data2: { label: string; value: number }[] = revenue.Chart.Data.map(
-    (item: { Actual: number; Date: string }) => ({
-      value: item.Actual,
-      label: item.Date?.split('-')[2] ?? '',
-    }),
+  const data2 = useMemo<{ label: string; value: number }[]>(
+    () => revenue.Chart.Data.map(
+      (item: { Actual: number; Date: string }) => ({
+        value: item.Actual,
+        label: item.Date?.split('-')[2] ?? '',
+      }),
+    ),
+    [revenue.Chart.Data],
   )
 
   const today = new Date()
@@ -332,3 +337,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 })
+
+export default React.memo(RevenueDetail)

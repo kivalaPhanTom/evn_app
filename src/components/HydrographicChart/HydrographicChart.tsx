@@ -379,7 +379,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   );
 };
 
-export default HydrographicChart;
+export default React.memo(HydrographicChart);
 
 const styles = StyleSheet.create({
   wrapper: {

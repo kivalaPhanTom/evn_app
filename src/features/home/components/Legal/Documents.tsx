@@ -96,4 +96,4 @@ function DocumentSection() {
     )
 }
 
-export default DocumentSection
+export default React.memo(DocumentSection)

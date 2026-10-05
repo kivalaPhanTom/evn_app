@@ -59,8 +59,14 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]
   const xtflow = isEmptyData ? {} : inflowOutflowData?.cards[2]
-  const qIn = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))
-  const qOut = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))
+  const qIn = useMemo(
+    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))),
+    [isEmptyData, inflowOutflowData.qIn],
+  )
+  const qOut = useMemo(
+    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))),
+    [isEmptyData, inflowOutflowData.qOut],
+  )
 
   useEffect(() => {
     // Dispatch action to fetch inflow/outflow data
@@ -153,4 +159,4 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   )
 }
 
-export default InflowOutflow
+export default React.memo(InflowOutflow)

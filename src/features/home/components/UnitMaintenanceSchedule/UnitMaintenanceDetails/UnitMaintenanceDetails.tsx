@@ -204,4 +204,4 @@ function UnitMaintenanceDetails() {
   )
 }
 
-export default UnitMaintenanceDetails
+export default React.memo(UnitMaintenanceDetails)
