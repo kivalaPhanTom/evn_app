@@ -7,11 +7,12 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
+import { shallowEqual } from 'react-redux'
 
 function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
   const dispatch = useAppDispatch()
-  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {})
+  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {}, shallowEqual)
   const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)

@@ -17,6 +17,7 @@ import { isEmpty } from '@/core/utils/utils'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { shallowEqual } from 'react-redux'
 
 interface InflowOutflowProps {
   hydroElectricId: string
@@ -54,7 +55,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
 
   const dispatch = useAppDispatch()
   const { isLoadingInflowOutflow } = useAppSelector((state: any) => state.hydrologySlice)
-  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {}, shallowEqual)
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]

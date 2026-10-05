@@ -9,6 +9,7 @@ import CompareDashboardOutput from '@/core/shared/CompareDashboard/CompareDashbo
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from "@/core/redux/store";
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props;
@@ -17,7 +18,7 @@ function ProductOutputRencentDays(props: { currentPlantId?: string, isCheckDisab
   const isDark = scheme === 'dark'
   const styles = createStyles(isDark)
   const {isLoadingCompareProductOutput} = useAppSelector((state: RootState) => state.productOutputSlice)
-  const compareProductOutput = useAppSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {})
+  const compareProductOutput = useAppSelector((state: RootState) => state.productOutputSlice.compareProductOutput || {}, shallowEqual)
   const { Unit = '', BarChartData, compareLineChartData, Summary, ContractData } = compareProductOutput
  
   return (

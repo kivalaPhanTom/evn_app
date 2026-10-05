@@ -5,6 +5,7 @@ import { px } from '@/core/utils/scale'
 import { styles } from '@/features/factory-detail/ReservoirWaterLevel/ReservoirMetric/ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
 import { getInflowOutflow } from '@/core/redux/domains/hydrology'
+import { shallowEqual } from 'react-redux'
 
 interface ReservoirFlowCardProps {
   label: string // "Qvề" hoặc "Qxa"
@@ -133,7 +134,7 @@ function mapInflowOutflowToReservoirMetric(apiData: {
 function ReservoirMetric(props: { currentPlantId: string }) {
   const { currentPlantId } = props
   const dispatch = useAppDispatch()
-  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {})
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {}, shallowEqual)
   const hasApiData = inflowOutflowData?.cards?.length >= 3
   const data = hasApiData
     ? mapInflowOutflowToReservoirMetric(inflowOutflowData)

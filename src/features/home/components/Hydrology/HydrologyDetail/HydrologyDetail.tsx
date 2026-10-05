@@ -21,6 +21,7 @@ import { formatDate } from '@/core/utils/date'
 import { LazySection } from '@/components/LazySection/LazySection'
 import FilterByTime from '../FilterByTime/FilterByTime'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 interface HydrologyDetailProps {
   currentPlantId?: string
@@ -59,7 +60,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
-  const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice, shallowEqual)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
   const [shouldLoadGeneralInfo, setShouldLoadGeneralInfo] = useState(false)
@@ -79,10 +80,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
     }
   })
 
-  const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {})
-  const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {})
-  const outflow = useAppSelector((state: any) => state.hydrologySlice.outflow || {})
-  const turbineflow = useAppSelector((state: any) => state.hydrologySlice.turbineflow || {})
+  const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {}, shallowEqual)
+  const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {}, shallowEqual)
+  const outflow = useAppSelector((state: any) => state.hydrologySlice.outflow || {}, shallowEqual)
+  const turbineflow = useAppSelector((state: any) => state.hydrologySlice.turbineflow || {}, shallowEqual)
   const currentHour = new Date().getHours()
 
   useEffect(() => {

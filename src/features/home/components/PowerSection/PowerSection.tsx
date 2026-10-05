@@ -10,17 +10,20 @@ import { getPowerOverivew, getPowerByTime, getPowerByDays } from '@/core/redux/d
 import TotalPower from '@/components/TotalPower/TotalPower'
 import PowerRecentDays from '@/components/PowerRecentDays/PowerRecentDays'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
+import { shallowEqual } from 'react-redux'
 
 function PowerSection() {
   const router = useRouter()
-  const { average, total, detail, isLoadingOverview } = useAppSelector((state: RootState) => state.powerSlice)
-  const { currentDate, currentPower, currentTime, avgPower, HourlyPowerList, offeredPower, offeredPowerList, unit } =
-    useAppSelector((state: any) => state.powerSlice.powerByTime)
-  const { isLoadingByHours } = useAppSelector((state: any) => state.powerSlice)
   const {
+    average,
+    total,
+    detail,
+    isLoadingOverview,
+    powerByTime: { currentDate, currentPower, currentTime, avgPower, HourlyPowerList, offeredPower, offeredPowerList, unit },
+    isLoadingByHours,
     powerByDays: { powerData },
     isLoadingNearCurrentDays,
-  } = useAppSelector((state: RootState) => state.powerSlice)
+  } = useAppSelector((state: RootState) => state.powerSlice, shallowEqual)
   const dispatch = useAppDispatch()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
 
