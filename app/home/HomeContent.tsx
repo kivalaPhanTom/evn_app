@@ -22,7 +22,7 @@ import UriWebView from '@/components/UriWebView'
 import TechInfo from '@/features/home/components/TechInfo/TechInfo'
 import DocumentSection from '@/features/home/components/Legal/Documents'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
-import ClipboardListIcon from '@/components/icons/ClipboardListIcon'
+import ReportIcon from '@/components/icons/ReportIcon'
 import { useThemePalette } from '@/core/constants/themePalette'
 
 interface moduleItem {
@@ -103,7 +103,7 @@ function HomeContent() {
         maxSize={2}
       >
         <View style={styles.header}>
-          <ClipboardListIcon size={px.f(32)} color={p.valueAccent} style={styles.checklistIcon} />
+          <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
           <GradientText
             text={companyTitle ?? t('companyName')}
             colors={textGradients.water}

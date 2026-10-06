@@ -25,7 +25,7 @@ import { RootState } from '@/core/redux/store'
 import { Colors } from '@/core/constants/colors'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { useThemePalette } from '@/core/constants/themePalette'
-import ClipboardListIcon from '@/components/icons/ClipboardListIcon'
+import ReportIcon from '@/components/icons/ReportIcon'
 
 interface factoryDetailProps {
   companyName: string;
@@ -113,7 +113,7 @@ function FactoryDetail(props: factoryDetailProps) {
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
           <View style={styles.header}>
-            <ClipboardListIcon size={px.f(32)} color={p.valueAccent} style={styles.checklistIcon} />
+            <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
               colors={textGradients.water}
