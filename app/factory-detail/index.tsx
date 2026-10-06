@@ -24,6 +24,8 @@ import { setSelectedOptionsValueFactDetail } from '@/core/redux/domains/hydrolog
 import { RootState } from '@/core/redux/store'
 import { Colors } from '@/core/constants/colors'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { useThemePalette } from '@/core/constants/themePalette'
+import ReportIcon from '@/components/icons/ReportIcon'
 
 interface factoryDetailProps {
   companyName: string;
@@ -43,6 +45,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const { companyName, location, currentPlantId, keyTab } = props;
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
+  const p = useThemePalette()
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
@@ -110,6 +113,7 @@ function FactoryDetail(props: factoryDetailProps) {
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
           <View style={styles.header}>
+            <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
               colors={textGradients.water}
@@ -201,6 +205,11 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  checklistIcon: {
+    position: 'absolute',
+    left: px.h(16),
+    top: px.v(2),
   },
   locationRow: {
     marginTop: px.v(6),
