@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
-import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
+import { Animated, ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { Colors } from '@/core/constants/colors'
@@ -31,14 +31,14 @@ const HydrologyDetailScreen: React.FC = () => {
       )
     }, 80)
   }
-  const [scrollY, setScrollY] = useState(0);
-  const onScroll = (e: any) => {
-    setScrollY(e.nativeEvent.contentOffset.y);
-  };
+  const scrollY = useRef(new Animated.Value(0)).current;
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      onScroll={onScroll}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false },
+      )}
       scrollEventThrottle={16}
     >
       <TwinkleStars

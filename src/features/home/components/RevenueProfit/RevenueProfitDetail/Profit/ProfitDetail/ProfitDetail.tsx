@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProfit, getDailyAndCumulativeData, getProfitByPeriod } from '@/core/redux/domains/revenue-profit'
@@ -32,7 +32,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
     to: dayjs().subtract(1, 'day'),
   })
 
-  const onChangeDateRage = (newRange: { from: any; to: any }) => {
+  const onChangeDateRage = useCallback((newRange: { from: any; to: any }) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
     if (fromDate.isAfter(toDate)) {
@@ -40,7 +40,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
       return
     }
     setRange(newRange)
-  }
+  }, [])
   useEffect(() => {
     dispatch(getProfit())
   }, [dispatch])
@@ -69,21 +69,27 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const lineStyle = { marginVertical: 10 }
 
   const profitData = profitByPeriod?.Data || []
-  const values: { label: string; value: number }[] = profitData?.map((item: { Value: number; Date: string }) => ({
-    label: item.Date.substring(0, 5), // Lấy ngày từ chuỗi "DD/MM/YYYY"
-    value: Number(item.Value),
-  }))
-  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
-    label,
-    items: [
-      {
-        value,
-        frontColor: value < 0 ? Colors.red : Colors.green,
-        showValuesOnTop: true,
-        showPrefix: value > 0,
-      },
-    ],
-  }))
+  const values = useMemo<{ label: string; value: number }[]>(
+    () => profitData?.map((item: { Value: number; Date: string }) => ({
+      label: item.Date.substring(0, 5),
+      value: Number(item.Value),
+    })),
+    [profitData],
+  )
+  const rawBarGroups = useMemo<BarGroup[]>(
+    () => values.map(({ label, value }: { label: string; value: number }) => ({
+      label,
+      items: [
+        {
+          value,
+          frontColor: value < 0 ? Colors.red : Colors.green,
+          showValuesOnTop: true,
+          showPrefix: value > 0,
+        },
+      ],
+    })),
+    [values],
+  )
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -184,4 +190,4 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   )
 }
 
-export default ProfitDetail
+export default React.memo(ProfitDetail)

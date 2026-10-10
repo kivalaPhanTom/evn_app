@@ -54,6 +54,8 @@ export interface ThemePalette {
   icon: string
   /** Icon đậm (KẾ HOẠCH/THỰC TẾ...) */
   iconStrong: string
+  /** Icon file biểu đồ ở header */
+  fileChartIcon: string
   /** Chữ disabled trong lịch */
   disabledText: string
 }
@@ -79,6 +81,7 @@ const dark: ThemePalette = {
   skeletonHighlight: '#6F8196',
   icon: '#fff',
   iconStrong: '#fff',
+  fileChartIcon: '#FFFFFF',
   disabledText: '#555',
 }
 
@@ -103,6 +106,7 @@ const light: ThemePalette = {
   skeletonHighlight: '#F8FAFC',
   icon: '#6B7280',
   iconStrong: '#475569',
+  fileChartIcon: '#144378',
   disabledText: '#D1D5DB',
 }
 

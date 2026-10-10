@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import CompareDashboardV2 from '@/core/shared/CompareDashboard/CompareDashboardV2'
 import { getProductOutputCompareChart } from '@/core/redux/domains/production-output'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
@@ -18,6 +19,7 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
   const styles = createStyles(isDark)
   const productOutputCompareChartData = useAppSelector(
     (state: any) => state.productOutputSlice.productOutputCompareChart || {},
+    shallowEqual,
   )
   const { isLoadingProductOutputCompareChart } = useAppSelector((state: any) => state.productOutputSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)

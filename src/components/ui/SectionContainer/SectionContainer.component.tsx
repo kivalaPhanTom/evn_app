@@ -338,4 +338,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default SectionContainer
+export default React.memo(SectionContainer)

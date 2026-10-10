@@ -21,6 +21,7 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 interface WaterLevelData {
   id: string
@@ -223,7 +224,7 @@ const WaterLevelCard: React.FC<{
                 </View>
 
                 <View style={styles.levelContainer}>
-                  <Text style={[styles.currentLevel, !isDark && { color: isLowWaterLevel ? light.danger : light.water }]} numberOfLines={1} adjustsFontSizeToFit>
+                  <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
                     {data.currentLevel}
                   </Text>
                   <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
@@ -319,8 +320,8 @@ const WaterLevelCard: React.FC<{
                           },
                         ]}
                       >
-                        <View style={[styles.dashedLine, { borderTopColor: isDark ? '#00DF73' : light.inflow }]} />
-                        <Text style={[styles.referenceText, { color: isDark ? '#00DF73' : light.inflow }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
+                        <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
+                        <Text style={[styles.referenceText, { color: '#00DF73' }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                       </View>
 
                       {/* Reference line */}
@@ -365,7 +366,7 @@ const WaterLevelCard: React.FC<{
               </View>
 
               <View style={styles.levelContainer}>
-                <Text style={[styles.currentLevel, !isDark && { color: isLowWaterLevel ? light.danger : light.water }]} numberOfLines={1} adjustsFontSizeToFit>
+                <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
                   {data.currentLevel}
                 </Text>
                 <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
@@ -461,8 +462,8 @@ const WaterLevelCard: React.FC<{
                         },
                       ]}
                     >
-                      <View style={[styles.dashedLine, { borderTopColor: isDark ? '#00DF73' : light.inflow }]} />
-                      <Text style={[styles.referenceText, { color: isDark ? '#00DF73' : light.inflow }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
+                      <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
+                      <Text style={[styles.referenceText, { color: '#00DF73' }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                     </View>
 
                     {/* Reference line */}
@@ -505,7 +506,10 @@ const Overview: React.FC = () => {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
-  const { hydrologyPlants, selectedOptionsValue } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants, selectedOptionsValue, hydrologyCharData, isLoadingHydrologyChart } = useAppSelector(
+    (state: RootState) => state.hydrologySlice,
+    shallowEqual,
+  )
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
@@ -525,7 +529,6 @@ const Overview: React.FC = () => {
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
-  const { hydrologyCharData, isLoadingHydrologyChart } = useAppSelector((state: any) => state.hydrologySlice)
 
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
@@ -660,4 +663,4 @@ const Overview: React.FC = () => {
   )
 }
 
-export default Overview
+export default React.memo(Overview)
