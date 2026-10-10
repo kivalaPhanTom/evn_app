@@ -1,19 +1,10 @@
-import { px } from "@/core/utils/scale";
-import { StyleSheet } from "react-native";
+import { px } from '@/core/utils/scale'
+import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  pill: {
-    paddingHorizontal: px.h(14),
-    paddingVertical: px.v(6),
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: px.h(8),
-    alignSelf: 'flex-start',
-    marginHorizontal: 'auto',
-  },
-  pillText: {
-    textAlign: 'center',
-    fontSize: px.m(18),
-    fontWeight: '600',
+  title: {
+    fontSize: px.m(19),
+    fontWeight: '500',
   },
   mainRow: {
     flexDirection: 'row',
@@ -26,17 +17,21 @@ export const styles = StyleSheet.create({
   },
   slash: {
     fontSize: px.f(25),
-    fontWeight: '600',
+    fontWeight: '400',
     marginHorizontal: px.h(6),
   },
   refValue: {
     fontSize: px.f(35),
-    fontWeight: '600',
+    fontWeight: '400',
+  },
+  refUnit: {
+    fontSize: px.f(20),
+    fontWeight: '400',
   },
   firstSkeleton: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  }
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
 })

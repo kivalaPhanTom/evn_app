@@ -20,6 +20,7 @@ interface Props {
   showPercent?: boolean
   legendGap?: number
   legendRowGap?: number
+  legendAlign?: 'left' | 'center'
   valueDecimals?: number
 }
 
@@ -34,10 +35,11 @@ const StackedBar: React.FC<Props> = ({
   showPercent = false,
   legendGap = px.h(16),
   legendRowGap = px.v(6),
+  legendAlign = 'left',
   valueDecimals = 1,
 }) => {
   const isDark = useAppTheme() === 'dark'
-  const filtered = useMemo(() => items.filter(i => i.value > 0), [items])
+  const filtered = useMemo(() => items.filter((i) => i.value > 0), [items])
   const sum = useMemo(() => filtered.reduce((a, b) => a + b.value, 0), [filtered])
   const total = totalOverride ?? sum
   const mv = maxValue ?? sum
@@ -45,7 +47,13 @@ const StackedBar: React.FC<Props> = ({
   return (
     <View style={style}>
       {/* Stacked bar */}
-      <View style={[styles.barContainer, { height, borderRadius: radius, backgroundColor: isDark ? '#ffffff10' : 'rgba(0, 0, 0, 0.05)' }, barStyle]}>
+      <View
+        style={[
+          styles.barContainer,
+          { height, borderRadius: radius, backgroundColor: isDark ? '#ffffff10' : 'rgba(0, 0, 0, 0.05)' },
+          barStyle,
+        ]}
+      >
         {filtered.map((it, idx) => {
           const flex = total > 0 ? it.value / total : 0
           const isFirst = idx === 0
@@ -77,6 +85,7 @@ const StackedBar: React.FC<Props> = ({
         style={{
           flexDirection: 'row',
           flexWrap: 'wrap',
+          justifyContent: legendAlign === 'center' ? 'center' : 'flex-start',
           marginTop: px.v(8),
         }}
       >
@@ -88,7 +97,7 @@ const StackedBar: React.FC<Props> = ({
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginRight: legendGap,
+                marginRight: idx < items.length - 1 ? legendGap : 0,
                 marginBottom: legendRowGap,
               }}
             >
@@ -101,8 +110,8 @@ const StackedBar: React.FC<Props> = ({
                   marginRight: px.h(6),
                 }}
               />
-              <Text style={[styles.labelText, !isDark && { color: '#6B7280' }]}>{it.label} </Text>
-              <Text style={[styles.valueText, !isDark && { color: '#111827' }]}>
+              <Text style={[styles.labelText, !isDark && { color: '#1F2937' }]}>{it.label} </Text>
+              <Text style={[styles.valueText, !isDark && { color: '#1F2937' }]}>
                 {it.value.toFixed(valueDecimals)}
                 {showPercent ? ` (${percent.toFixed(1)}%)` : ''}
               </Text>
