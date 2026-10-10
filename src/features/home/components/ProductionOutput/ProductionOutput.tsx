@@ -10,6 +10,7 @@ import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDa
 import TotalPower from '@/components/TotalPower/TotalPower'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
+import { shallowEqual } from 'react-redux'
 
 function ProductionOutput() {
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
@@ -17,10 +18,12 @@ function ProductionOutput() {
   const dispatch = useAppDispatch()
   const {
     productOutputOverview: { totalPower, averagePower, powerSources },
-    isLoadingOverview
-  } = useAppSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByHours, isLoadingByHours } = useAppSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useAppSelector((state: RootState) => state.productOutputSlice)
+    isLoadingOverview,
+    productOutputByHours,
+    isLoadingByHours,
+    productOutputByDays: { productionData },
+    isLoadingNearCurrentDays,
+  } = useAppSelector((state: RootState) => state.productOutputSlice, shallowEqual)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
 
   useAlignedHourlyTimer(() => {

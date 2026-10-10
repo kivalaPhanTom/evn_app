@@ -17,16 +17,11 @@ const ProductOutputDetailScreen: React.FC = () => {
   const { t } = useTranslation()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
-  const [scrollY, setScrollY] = useState(0);
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;
   }>();
-
-  const onScroll = (e: any) => {
-    setScrollY(e.nativeEvent.contentOffset.y);
-  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -43,7 +38,6 @@ const ProductOutputDetailScreen: React.FC = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-      onScroll={onScroll}
       scrollEventThrottle={16}
     >
       <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>

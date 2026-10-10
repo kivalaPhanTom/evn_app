@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Text, View, Pressable, TouchableOpacity, Modal } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { FlatList, ListRenderItem, Modal, Pressable, Text, TouchableOpacity, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 
-import { Image } from 'expo-image'
-import { icons } from '@/assets'
-import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.component'
-import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
-import { ScheduleIcon } from '@/components/ui/schedule-icon'
 import { t } from 'i18next'
 import createStyles from './UnitMaintenanceSchedule.styles'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -17,6 +11,66 @@ import { getRepairSchedule } from '@/core/redux/domains/maintenance'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { generateYearList } from '@/core/utils/date'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { MaintenanceCard } from '@/components/MaintenanceCard/MaintenanceCard.component'
+import { MaintenanceIcon } from '@/components/ui/maintenance-icon'
+import { ScheduleIcon } from '@/components/ui/schedule-icon'
+import type { RepairScheduleState } from '@/core/redux/domains/maintenance/maintenance.slice'
+
+type MaintenanceDetail = RepairScheduleState['Details'][number]
+
+interface YearPickerProps {
+  selectedYear: number
+  onChange: (year: number) => void
+  styles: ReturnType<typeof createStyles>
+}
+
+const YearPicker: React.FC<YearPickerProps> = ({ selectedYear, onChange, styles }) => {
+  const [showSelectModal, setShowSelectModal] = useState(false)
+  const currentYear = new Date().getFullYear()
+  const years = useMemo(() => generateYearList(currentYear), [currentYear])
+
+  return (
+    <>
+      <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
+        <Text allowFontScaling={false} style={styles.selectText}>
+          {selectedYear}
+        </Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={showSelectModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSelectModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowSelectModal(false)}
+        >
+          <View style={styles.modalContent}>
+            {years.map((year) => (
+              <TouchableOpacity
+                key={year}
+                style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
+                onPress={() => {
+                  onChange(year)
+                  setShowSelectModal(false)
+                }}
+              >
+                <Text
+                  style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
+                >
+                  {year}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  )
+}
 
 function UnitMaintenanceSchedule() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
@@ -26,16 +80,12 @@ function UnitMaintenanceSchedule() {
   const isDark = scheme === 'dark'
   const styles = createStyles(isDark)
 
-  const currentYear = new Date().getFullYear()
-  const years = generateYearList(currentYear)
-
-  const onPressCard = () => {
-    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
-  }
   const [firstLoading, setFirstLoading] = useState(true)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
-  const { isRepairerScheduleLoading, TotalActualDay, TotalCategory, TotalMajorCategory, TotalRCMCategory, Details } =
-    useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
+  const { isRepairerScheduleLoading, TotalActualDay, TotalCategory, Details } = useAppSelector(
+    (state: RootState) => state.unitMaintenanceScheduleSlice,
+  )
+
   useEffect(() => {
     setFirstLoading(true)
   }, [])
@@ -45,63 +95,36 @@ function UnitMaintenanceSchedule() {
       setFirstLoading(false)
     }
   }, [isRepairerScheduleLoading])
+
   useEffect(() => {
-    // Dispatch action to fetch repair schedule data
     dispatch(getRepairSchedule({ year: selectedYear }))
   }, [dispatch, countRefesh, selectedYear])
+
+  const onPressCard = useCallback(() => {
+    router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })
+  }, [router])
+
+  const renderItem: ListRenderItem<MaintenanceDetail> = useCallback(
+    ({ item, index }) => (
+      <MaintenanceCard
+        title={item.PlantName}
+        status={item.Status}
+        typeCount={item?.Category?.Total || 0}
+        maintenanceTypeData={item.Category}
+        mainternanceDurationData={item.Day}
+        plantCode={item.PlantCode}
+        key={index}
+      />
+    ),
+    [],
+  )
+
+  const keyExtractor = useCallback((item: MaintenanceDetail, index: number) => `${item.PlantCode}-${index}`, [])
 
   return (
     <SectionContainer title={t('repairMaintenance') + ' ' + selectedYear}>
       <View style={{ alignItems: 'flex-end' }}>
-        {(() => {
-          const YearPicker: React.FC = () => {
-            const [showSelectModal, setShowSelectModal] = useState(false)
-
-            return (
-              <>
-                <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                  <Text allowFontScaling={false} style={styles.selectText}>
-                    {selectedYear}
-                  </Text>
-                </TouchableOpacity>
-
-                <Modal
-                  visible={showSelectModal}
-                  transparent
-                  animationType="fade"
-                  onRequestClose={() => setShowSelectModal(false)}
-                >
-                  <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPress={() => setShowSelectModal(false)}
-                  >
-                    <View style={styles.modalContent}>
-                      {years.map((year) => (
-                        <TouchableOpacity
-                          key={year}
-                          style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
-                          onPress={() => {
-                            setSelectedYear(year)
-                            setShowSelectModal(false)
-                          }}
-                        >
-                          <Text
-                            style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
-                          >
-                            {year}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </TouchableOpacity>
-                </Modal>
-              </>
-            )
-          }
-
-          return <YearPicker />
-        })()}
+        <YearPicker selectedYear={selectedYear} onChange={setSelectedYear} styles={styles} />
       </View>
       <Pressable onPress={onPressCard}>
         <View style={styles.infoContainer}>
@@ -148,23 +171,20 @@ function UnitMaintenanceSchedule() {
             <BarSkeleton width={'75%'} />
           </>
         ) : (
-          <>
-            {Details?.map((item, idex) => (
-              <MaintenanceCard
-                title={item.PlantName}
-                status={item.Status}
-                typeCount={item?.Category?.Total || 0}
-                maintenanceTypeData={item.Category}
-                mainternanceDurationData={item.Day}
-                plantCode={item.PlantCode}
-                key={idex}
-              />
-            ))}
-          </>
+          <FlatList
+            data={Details ?? []}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            removeClippedSubviews
+            initialNumToRender={4}
+            windowSize={5}
+            maxToRenderPerBatch={3}
+            scrollEnabled={false}
+          />
         )}
       </View>
     </SectionContainer>
   )
 }
 
-export default UnitMaintenanceSchedule
+export default React.memo(UnitMaintenanceSchedule)

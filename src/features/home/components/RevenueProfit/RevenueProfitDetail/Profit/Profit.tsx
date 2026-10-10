@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import { px } from '@/core/utils/scale'
@@ -15,7 +15,7 @@ import { getProfit } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import { LineChart } from '@/components/ChartView/LineChart.component'
 
-export default function ProfitDetail() {
+function ProfitDetail() {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const { profit, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
@@ -25,23 +25,29 @@ export default function ProfitDetail() {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
-  // console.log('profit data in ProfitDetail ewew:', profit.Cumulative.Week)
-  const values: { label: string; value: number }[] = profit.Chart.Data.map((item: { value: number }) => ({
-    label: '',
-    value: Number(item.value),
-  }))
 
-  const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
-    label,
-    items: [
-      {
-        value,
-        frontColor: value < 0 ? Colors.red : Colors.green,
-        showValuesOnTop: true,
-        showPrefix: value > 0,
-      },
-    ],
-  }))
+  const values = useMemo<{ label: string; value: number }[]>(
+    () => profit.Chart.Data.map((item: { value: number }) => ({
+      label: '',
+      value: Number(item.value),
+    })),
+    [profit.Chart.Data],
+  )
+
+  const rawBarGroups = useMemo<BarGroup[]>(
+    () => values.map(({ label, value }: { label: string; value: number }) => ({
+      label,
+      items: [
+        {
+          value,
+          frontColor: value < 0 ? Colors.red : Colors.green,
+          showValuesOnTop: true,
+          showPrefix: value > 0,
+        },
+      ],
+    })),
+    [values],
+  )
 
   useEffect(() => {
     dispatch(getProfit())
@@ -56,24 +62,37 @@ export default function ProfitDetail() {
   endDate.setDate(today.getDate() - 1) //
   const prevDate = new Date(endDate)
   prevDate.setDate(prevDate.getDate() - 1)
-  const xAxisLabels = values.map((_, idx) => {
-    const d = new Date(endDate)
-    d.setDate(endDate.getDate() - (values.length - 1 - idx))
-    return formatDay(d)
-  })
+  const xAxisLabels = useMemo(
+    () => values.map((_, idx) => {
+      const d = new Date(endDate)
+      d.setDate(endDate.getDate() - (values.length - 1 - idx))
+      return formatDay(d)
+    }),
+    [values],
+  )
   const unit = "tỷ VNĐ";
 
   // Collect negative days for warning cards
-  const negativeDays = values
-    .map((v, idx) => {
-      const d = new Date(endDate)
-      d.setDate(endDate.getDate() - (values.length - 1 - idx))
-      return { dateStr: formatDayWithMonth(d), value: v.value }
-    })
-    .filter((x) => x.value < 0)
-  const onPressCard = () => {
+  const negativeDays = useMemo(
+    () => values
+      .map((v, idx) => {
+        const d = new Date(endDate)
+        d.setDate(endDate.getDate() - (values.length - 1 - idx))
+        return { dateStr: formatDayWithMonth(d), value: v.value }
+      })
+      .filter((x) => x.value < 0),
+    [values],
+  )
+  const onPressCard = useCallback(() => {
     router.navigate({ pathname: '/factory-profit-detail' as any })
-  }
+  }, [router])
+
+  const onPressPlant = useCallback((plantName: string, plantId: string) => {
+    router.navigate({
+      pathname: '/profit-detail' as any,
+      params: { plantName, plantId },
+    })
+  }, [router])
 
   return (
     <SectionContainer
@@ -205,15 +224,7 @@ export default function ProfitDetail() {
               return (
                 <TouchableOpacity
                   key={idx}
-                  onPress={() => {
-                    router.navigate({
-                      pathname: '/profit-detail' as any,
-                      params: {
-                        plantName: plant.PlantName,
-                        plantId: plant.PlantCode || idx.toString(),
-                      },
-                    })
-                  }}
+                  onPress={() => onPressPlant(plant.PlantName, plant.PlantCode || idx.toString())}
                   style={[styles.revenueCard, { backgroundColor: '#1e2838' }]}
                 >
                   <View>
@@ -386,3 +397,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 })
+
+export default React.memo(ProfitDetail)

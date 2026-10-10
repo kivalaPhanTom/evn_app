@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { dashboardCommonStyles } from '@/core/styles/sharedStyles'
@@ -38,9 +38,9 @@ const rawBarGroups: BarGroup[] = [
 function RevenueProfit() {
   const router = useRouter()
 
-  const onPressCard = () => {
+  const onPressCard = useCallback(() => {
     router.navigate({ pathname: '/revenue-profit-detail' as any })
-  }
+  }, [router])
   return (
     <SectionContainer
       title="Doanh thu/ Lợi nhuận"

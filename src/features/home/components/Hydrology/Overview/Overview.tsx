@@ -21,6 +21,7 @@ import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { Colors } from '@/core/constants/colors'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 interface WaterLevelData {
   id: string
@@ -505,7 +506,10 @@ const Overview: React.FC = () => {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
-  const { hydrologyPlants, selectedOptionsValue } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyPlants, selectedOptionsValue, hydrologyCharData, isLoadingHydrologyChart } = useAppSelector(
+    (state: RootState) => state.hydrologySlice,
+    shallowEqual,
+  )
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
@@ -525,7 +529,6 @@ const Overview: React.FC = () => {
   }, [hydrologyPlants?.plantsData])
 
   const [activeTab, setActiveTab] = useState<string>('')
-  const { hydrologyCharData, isLoadingHydrologyChart } = useAppSelector((state: any) => state.hydrologySlice)
 
   useEffect(() => {
     dispatch(getHydrologyPlantsParam({}))
@@ -660,4 +663,4 @@ const Overview: React.FC = () => {
   )
 }
 
-export default Overview
+export default React.memo(Overview)
