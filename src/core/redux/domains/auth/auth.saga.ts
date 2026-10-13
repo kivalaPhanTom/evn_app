@@ -20,7 +20,8 @@ function* getTokenSaga(action: any): Generator {
     if (res.status === 200) {
       const access_token = res.data.access_token
       const expires_in = res.data.expires_in
-      yield call(setAuthToken, access_token, expires_in)
+      const refresh_token = res.data.refresh_token
+      yield call(setAuthToken, access_token, expires_in, refresh_token)
       yield call(setUsernameToAsyncStorage, username)
       yield put(loginSucceeded())
       Toast.success('Đăng nhập thành công!')

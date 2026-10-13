@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from '@/core/redux/hooks'
 import { useRouter } from 'expo-router'
-import { setAuthToken, clearAuthToken } from '../service/api.service';
+import { setAuthToken, clearAuthToken, scheduleTokenRefresh, refreshAccessToken, getRefreshToken } from '../service/api.service';
 import { getModules } from '@/core/redux/domains/modules'
 import { loginSucceeded, logout as logoutAction } from '@/core/redux/domains/auth'
 interface AuthContextProps {
@@ -36,8 +36,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setAuthToken(token);
           setIsAuthenticated(true);
            getModulesData()
+          scheduleTokenRefresh();
         } else {
-          await logout();
+          const refreshToken = await getRefreshToken();
+          if (refreshToken) {
+            try {
+              await refreshAccessToken();
+              setIsAuthenticated(true);
+              void getModulesData();
+            } catch {
+              await logout();
+            }
+          } else {
+            await logout();
+          }
         }
       } else {
         setIsAuthenticated(false);
