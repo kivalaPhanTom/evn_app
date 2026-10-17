@@ -1,3 +1,4 @@
+import { hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
   },
   noteText: {
     fontSize: 16,
-    color: '#615E83',
+    color: dark.chart.noteText,
     marginRight: 15,
     marginLeft: -5,
   },
