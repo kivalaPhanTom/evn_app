@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
@@ -22,7 +22,7 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
         borderRadius: 12,
         borderWidth: isDark ? 0 : 1,
         borderColor: light.border,
-        backgroundColor: isDark ? '#00054A' : light.surface,
+        backgroundColor: isDark ? dark.surface : light.surface,
         width: 100,
         height: 100,
         justifyContent: 'center',
@@ -46,7 +46,7 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
         </Text>
         <Text
           allowFontScaling={false}
-          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? '#8082A5' : light.text }}
+          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? dark.subtleText : light.subtleText }}
         >
           {label}
           {label1 && (
@@ -56,12 +56,12 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
           )}
         </Text>
       </View>
-      <Text allowFontScaling={false} style={{ fontSize: 28, fontWeight: 'bold', color: isDark ? '#CCCDDB' : light.text }}>
+      <Text allowFontScaling={false} style={{ fontSize: 28, fontWeight: 'bold', color: isDark ? dark.chart.metricValue : light.text }}>
         {value}
       </Text>
       <Text
         allowFontScaling={false}
-        style={{ fontSize: 14, fontWeight: 'bold', color: isDark ? '#CCCDDB' : light.muted }}
+        style={{ fontSize: 14, fontWeight: 'bold', color: isDark ? dark.chart.metricValue : light.muted }}
       >
         {unit}
       </Text>

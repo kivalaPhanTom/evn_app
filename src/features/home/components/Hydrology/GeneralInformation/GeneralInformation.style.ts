@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import { StyleSheet } from 'react-native'
 import { px } from '@/core/utils/scale'
 
@@ -8,7 +8,7 @@ const createStyles = (isDark: boolean) =>
     title: {
       fontSize: px.f(24),
       fontWeight: 'bold',
-      color: isDark ? '#FFFFFF' : light.text,
+      color: isDark ? dark.text : light.text,
       marginBottom: px.v(20),
     },
     gridContainer: {
@@ -21,12 +21,12 @@ const createStyles = (isDark: boolean) =>
     },
     card: {
       flex: 1,
-      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+      backgroundColor: isDark ? dark.subtle : '#FFFFFF',
       borderRadius: px.h(12),
       padding: px.h(16),
       paddingVertical: px.v(16),
       borderWidth: 1,
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : light.border,
+      borderColor: isDark ? dark.detail.border : light.border,
       position: 'relative',
       minHeight: px.v(100),
     },
@@ -42,7 +42,7 @@ const createStyles = (isDark: boolean) =>
     },
     cardLabel: {
       fontSize: px.f(16),
-      color: isDark ? 'rgba(255, 255, 255, 0.7)' : light.muted,
+      color: isDark ? dark.muted : light.muted,
       marginBottom: px.v(8),
       fontWeight: '500',
     },
@@ -54,11 +54,11 @@ const createStyles = (isDark: boolean) =>
     cardValue: {
       fontSize: px.f(26),
       fontWeight: 'bold',
-      color: isDark ? '#FFFFFF' : light.text,
+      color: isDark ? dark.text : light.text,
     },
     cardUnit: {
       fontSize: px.f(16),
-      color: isDark ? 'rgba(255, 255, 255, 0.7)' : light.muted,
+      color: isDark ? dark.muted : light.muted,
       fontWeight: '500',
     },
   })

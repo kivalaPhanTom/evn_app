@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import { StyleSheet } from 'react-native'
 import { px } from '@/core/utils/scale'
 
@@ -7,32 +7,32 @@ const createStyles = (isDark: boolean) =>
     title: {
       fontSize: px.f(24),
       fontWeight: 'bold',
-      color: isDark ? '#FFFFFF' : light.text,
+      color: isDark ? dark.text : light.text,
       marginBottom: px.v(16),
     },
     container: {},
     tableContainer: {
       borderWidth: 1,
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : light.border,
+      borderColor: isDark ? dark.border : light.border,
       borderRadius: px.h(8),
       overflow: 'hidden',
     },
     tableHeader: {
       flexDirection: 'row',
-      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : light.subtle,
+      backgroundColor: isDark ? dark.subtle : light.subtleDetail,
       borderBottomWidth: 1,
-      borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.15)' : light.border,
+      borderBottomColor: isDark ? dark.border : light.border,
     },
     tableHeaderCell: {
       paddingVertical: px.v(12),
       paddingHorizontal: px.h(12),
       borderRightWidth: 1,
-      borderRightColor: isDark ? 'rgba(255, 255, 255, 0.15)' : light.border,
+      borderRightColor: isDark ? dark.border : light.border,
     },
     tableHeaderText: {
       fontSize: px.f(20),
       fontWeight: 'bold',
-      color: isDark ? '#FFFFFF' : light.text,
+      color: isDark ? dark.text : light.text,
       marginBottom: px.v(8),
       textAlign: 'center',
     },
@@ -42,7 +42,7 @@ const createStyles = (isDark: boolean) =>
     },
     tableSubHeaderText: {
       fontSize: px.f(14),
-      color: isDark ? 'rgba(255, 255, 255, 0.7)' : light.muted,
+      color: isDark ? dark.muted : light.muted,
       fontWeight: '500',
     },
     timeColumn: {
@@ -55,7 +55,7 @@ const createStyles = (isDark: boolean) =>
     tableRow: {
       flexDirection: 'row',
       borderBottomWidth: 1,
-      borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.1)' : light.border,
+      borderBottomColor: isDark ? dark.detail.border : light.border,
     },
     tableRowLast: {
       borderBottomWidth: 0,
@@ -64,14 +64,14 @@ const createStyles = (isDark: boolean) =>
       paddingVertical: px.v(12),
       paddingHorizontal: px.h(12),
       borderRightWidth: 1,
-      borderRightColor: isDark ? 'rgba(255, 255, 255, 0.15)' : light.border,
+      borderRightColor: isDark ? dark.border : light.border,
       flexDirection: 'row',
       justifyContent: 'space-around',
       alignItems: 'center',
     },
     tableCellText: {
       fontSize: px.f(16),
-      color: isDark ? '#FFFFFF' : light.text,
+      color: isDark ? dark.text : light.text,
       textAlign: 'center',
     },
   })

@@ -1,3 +1,4 @@
+import { hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
@@ -59,19 +60,19 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   currentLevel: {
-    color: '#00C853', // Màu xanh lá
+    color: dark.overview.currentLevel, // Màu xanh lá
     fontSize: px.m(18),
     fontWeight: '700',
   },
   maxLevel: {
-    color: '#9AA6B6', // Màu xám
+    color: dark.overview.maxLevel, // Màu xám
     fontSize: px.m(12),
     fontWeight: '500',
   },
   waterContainer: {
     position: 'relative',
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: dark.text,
     borderTopWidth: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
@@ -87,11 +88,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     borderTopWidth: 1,
-    borderTopColor: '#F6FF00', // Màu vàng
+    borderTopColor: dark.overview.reference, // Màu vàng
     borderStyle: 'dashed' as const,
   },
   referenceText: {
-    color: '#F6FF00', // Màu vàng
+    color: dark.overview.reference, // Màu vàng
     fontSize: px.m(10),
     fontWeight: '600',
     marginRight: px.h(6),
@@ -106,12 +107,12 @@ export const styles = StyleSheet.create({
     // Overlap one physical pixel to hide rounding seams between the tab and detail backgrounds.
     marginTop: -StyleSheet.hairlineWidth,
     paddingTop: px.h(12) + StyleSheet.hairlineWidth,
-    backgroundColor: '#1c056eff',
+    backgroundColor: dark.background,
     borderBottomLeftRadius: px.h(8),
     borderBottomRightRadius: px.h(8),
   },
   detailText: {
-    color: '#C7D6E1',
+    color: dark.overview.detailText,
     fontSize: px.m(14),
     textAlign: 'center',
   },

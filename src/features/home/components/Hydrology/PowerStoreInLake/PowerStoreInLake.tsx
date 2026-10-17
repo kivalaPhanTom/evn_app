@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -17,15 +17,15 @@ const PowerStoreInLake: React.FC = () => {
   const isDark = useAppTheme() === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const accent = '#00DF73'
-  const muted = isDark ? '#9AA6B6' : '#1F2937'
+  const accent = isDark ? dark.inflow : '#00DF73'
+  const muted = isDark ? dark.storage.muted : '#1F2937'
   const colorMap: Record<string, string> = {
-    BTS: isDark ? '#F59E0B' : '#FB923C',
-    BK: isDark ? '#00B3A4' : '#14B8A6',
-    SP3: isDark ? '#00D9FF' : '#00C0E8',
+    BTS: isDark ? dark.storage.plants[0] : '#FB923C',
+    BK: isDark ? dark.storage.plants[1] : '#14B8A6',
+    SP3: isDark ? dark.storage.plants[2] : '#00C0E8',
   }
   const fallbackColors = isDark
-    ? ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
+    ? dark.storage.plants
     : ['#FB923C', '#14B8A6', '#00C0E8', '#7056A8', '#EF4444']
   const segments = powerStoreInLake?.segments ?? []
   const data: StackedItem[] = segments
@@ -43,7 +43,7 @@ const PowerStoreInLake: React.FC = () => {
 
   return (
     <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
-      <Text allowFontScaling={false} style={[styles.title, { color: isDark ? '#E6ECF2' : '#1F2937' }]}>
+      <Text allowFontScaling={false} style={[styles.title, { color: isDark ? dark.storage.title : '#1F2937' }]}>
         Điện năng tích trữ trong hồ
       </Text>
 
