@@ -15,19 +15,19 @@ const createStyles = (isDark: boolean) =>
     },
     infoContainer: {
       flexDirection: 'row',
-      marginBottom: px(20),
+      marginBottom: px(25),
       gap: px(10),
       paddingHorizontal: px(4), // small safe padding
     },
     infoCard: {
-      flex: 1,          // 🔑 share available width
-      minWidth: 0,      // 🔑 prevents overflow on Android
+      flex: 1, // 🔑 share available width
+      minWidth: 0, // 🔑 prevents overflow on Android
       borderRadius: 12,
       padding: 16,
       backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#FFFFFF',
       borderWidth: 1,
       borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-      ...(isDark ? {} : { elevation: 3 }),
+      boxShadow: isDark ? '0px 2px 4px rgba(0, 0, 0, 0.3)' : '0px 0px 6px 0px rgba(0, 0, 0, 0.25)',
     },
     maintenanceInfoContainer: {
       flexDirection: 'row',
@@ -35,8 +35,8 @@ const createStyles = (isDark: boolean) =>
       marginTop: px(15),
     },
     maintenanceInfoRow: {
-      flex: 1,        // 🔑 split width evenly
-      minWidth: 0,    // 🔑 prevent Android flex overflow
+      flex: 1, // 🔑 split width evenly
+      minWidth: 0, // 🔑 prevent Android flex overflow
       flexDirection: 'column',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
@@ -44,8 +44,6 @@ const createStyles = (isDark: boolean) =>
       borderRadius: px(12),
       padding: px(12),
       backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'transparent',
-      borderWidth: 1,
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.12)',
     },
     maintenanceInfoHeader: {
       flexDirection: 'row',
@@ -77,8 +75,9 @@ const createStyles = (isDark: boolean) =>
     },
     maintenanceInfoLabel: {
       color: '#64748B',
-      fontSize: px(11),
+      fontSize: px(10),
       fontWeight: '500',
+      textAlign: 'center',
     },
     maintenanceInfoDivider: {
       color: '#63728A',

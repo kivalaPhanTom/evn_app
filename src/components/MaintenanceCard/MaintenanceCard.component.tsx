@@ -48,9 +48,9 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
   const styles = createStyles(isDark)
 
   const onPressCard = () => {
-    router.navigate({ 
+    router.navigate({
       pathname: '/unit-maintenance-schedule-detail' as any,
-      params: { currentPlantId: plantCode }
+      params: { currentPlantId: plantCode },
     })
   }
 
@@ -58,7 +58,9 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
     <TouchableOpacity style={styles.infoContainer} onPress={onPressCard} activeOpacity={0.8}>
       <View style={styles.infoCard}>
         <View style={styles.titleRow}>
-          <Text style={{ color: isDark ? 'rgb(255,255,255)' : '#111827', fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
+          <Text style={{ color: isDark ? 'rgb(255,255,255)' : '#111827', fontSize: 20, fontWeight: 'bold' }}>
+            {title}
+          </Text>
           <View
             style={[
               styles.statusBadge,
@@ -90,23 +92,19 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
           <View style={styles.maintenanceInfoRow}>
             <View style={styles.maintenanceInfoHeader}>
               <MaintenanceIcon opacity="1" width={px(16).toString()} height={px(16).toString()} />
-              <Text style={styles.maintenanceInfoHeaderText}>
-                {`Hạng mục sửa chữa (${typeCount})`}
-              </Text>
+              <Text style={styles.maintenanceInfoHeaderText}>{`Hạng mục sửa chữa (${typeCount})`}</Text>
             </View>
             <View style={styles.maintenanceInfoContent}>
               <View style={styles.maintenanceInfoItem}>
                 <Text style={[styles.maintenanceInfoValue, { color: '#34D399' }]}>
-                  {maintenanceTypeData.RCM ?? ((maintenanceTypeData.Minor ?? 0) + (maintenanceTypeData.Medium ?? 0))}
+                  {maintenanceTypeData.RCM ?? (maintenanceTypeData.Minor ?? 0) + (maintenanceTypeData.Medium ?? 0)}
                 </Text>
-                <Text style={styles.maintenanceInfoLabel}>RCM</Text>
+                <Text style={styles.maintenanceInfoLabel} numberOfLines={1} adjustsFontSizeToFit>RCM</Text>
               </View>
               <Text style={styles.maintenanceInfoDivider}>|</Text>
               <View style={styles.maintenanceInfoItem}>
-                <Text style={[styles.maintenanceInfoValue, { color: '#FB7185' }]}>
-                  {maintenanceTypeData.Major}
-                </Text>
-                <Text style={styles.maintenanceInfoLabel}>ĐẠI TU</Text>
+                <Text style={[styles.maintenanceInfoValue, { color: '#FB7185' }]}>{maintenanceTypeData.Major}</Text>
+                <Text style={styles.maintenanceInfoLabel} numberOfLines={1} adjustsFontSizeToFit>ĐẠI TU</Text>
               </View>
             </View>
           </View>
@@ -120,14 +118,14 @@ export const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
                 <Text style={[styles.maintenanceInfoValue, { color: isDark ? '#FFF' : '#1E3A8A' }]}>
                   {mainternanceDurationData.Plan}
                 </Text>
-                <Text style={styles.maintenanceInfoLabel}>KẾ HOẠCH</Text>
+                <Text style={styles.maintenanceInfoLabel} numberOfLines={1} adjustsFontSizeToFit>KẾ HOẠCH</Text>
               </View>
               <Text style={styles.maintenanceInfoDivider}>|</Text>
               <View style={styles.maintenanceInfoItem}>
                 <Text style={[styles.maintenanceInfoValue, { color: isDark ? '#FFF' : '#1E3A8A' }]}>
                   {mainternanceDurationData.Actual}
                 </Text>
-                <Text style={styles.maintenanceInfoLabel}>THỰC TẾ</Text>
+                <Text style={styles.maintenanceInfoLabel} numberOfLines={1} adjustsFontSizeToFit>THỰC TẾ</Text>
               </View>
             </View>
           </View>

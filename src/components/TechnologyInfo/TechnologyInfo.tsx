@@ -16,114 +16,117 @@ import { BarGroup } from '@/core/types'
 import BarSkeleton from '../Skeletons/BarSkeleton'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
-
 type InfoItem = {
-    label: string;
-    value: string;
-};
+  label: string
+  value: string
+}
 
 interface Props {
-    data: InfoItem[];
-    isLoading: boolean;
+  data: InfoItem[]
+  isLoading: boolean
 }
 
 const VISIBLE_LINES_COLLAPSED = 6
 
 function TechnologyInfo(props: Props) {
-    const [firstLoading, setFirstLoading] = useState(true)
-    const [expanded, setExpanded] = useState(false)
-    const { data, isLoading } = props
-    const scheme = useAppTheme()
-    const isDark = scheme === 'dark'
-    const styles = createStyles(isDark)
-    const hasMoreThanVisible = data.length > VISIBLE_LINES_COLLAPSED
-    const displayData = expanded || !hasMoreThanVisible ? data : data.slice(0, VISIBLE_LINES_COLLAPSED)
-    useEffect(() => {
-        setFirstLoading(true)
-    }, [])
+  const [firstLoading, setFirstLoading] = useState(true)
+  const [expanded, setExpanded] = useState(false)
+  const { data, isLoading } = props
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const styles = createStyles(isDark)
+  const hasMoreThanVisible = data.length > VISIBLE_LINES_COLLAPSED
+  const displayData = expanded || !hasMoreThanVisible ? data : data.slice(0, VISIBLE_LINES_COLLAPSED)
+  useEffect(() => {
+    setFirstLoading(true)
+  }, [])
 
-    useEffect(() => {
-        if (!isLoading) {
-            setFirstLoading(false)
-        }
-    }, [isLoading])
-    return (
-        <AnimatedCardContainer>
-            <View>
-                {
-                    firstLoading || isLoading ?
-                        <>
-                            <BarSkeleton width={'100%'} height={30} />
-                            <BarSkeleton width={'100%'} height={30} />
-                            <BarSkeleton width={'100%'} height={30} />
-                            <BarSkeleton width={'100%'} height={30} />
-                            <BarSkeleton width={'100%'} height={30} />
-                            <BarSkeleton width={'100%'} height={30} />
-                        </> :
-                        <>
-                            {displayData.map((item, index) => (
-                                <View key={index}>
-                                    <View style={styles.row}>
-                                        <Text style={styles.label} numberOfLines={0}>
-                                            {item.label}
-                                        </Text>
-                                        <Text style={styles.value} numberOfLines={0}>
-                                            {item.value}
-                                        </Text>
-                                    </View>
-                                    {index < displayData.length - 1 && <View style={styles.divider} />}
-                                </View>
-                            ))}
-                            {hasMoreThanVisible && (
-                                <TouchableOpacity
-                                    style={styles.expandButton}
-                                    onPress={() => setExpanded((prev) => !prev)}
-                                    activeOpacity={0.7}
-                                >
-                                    <Ionicons
-                                        name={expanded ? 'chevron-up' : 'chevron-down'}
-                                        size={24}
-                                        color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.45)'}
-                                    />
-                                </TouchableOpacity>
-                            )}
-                        </>
-                }
-            </View>
-        </AnimatedCardContainer >
-    )
+  useEffect(() => {
+    if (!isLoading) {
+      setFirstLoading(false)
+    }
+  }, [isLoading])
+  return (
+    <AnimatedCardContainer style={styles.infoContainer}>
+      <View>
+        {firstLoading || isLoading ? (
+          <>
+            <BarSkeleton width={'100%'} height={30} />
+            <BarSkeleton width={'100%'} height={30} />
+            <BarSkeleton width={'100%'} height={30} />
+            <BarSkeleton width={'100%'} height={30} />
+            <BarSkeleton width={'100%'} height={30} />
+            <BarSkeleton width={'100%'} height={30} />
+          </>
+        ) : (
+          <>
+            {displayData.map((item, index) => (
+              <View key={index}>
+                <View style={styles.row}>
+                  <Text style={styles.label} numberOfLines={0}>
+                    {item.label}
+                  </Text>
+                  <Text style={styles.value} numberOfLines={0}>
+                    {item.value}
+                  </Text>
+                </View>
+                {index < displayData.length - 1 && <View style={styles.divider} />}
+              </View>
+            ))}
+            {hasMoreThanVisible && (
+              <TouchableOpacity
+                style={styles.expandButton}
+                onPress={() => setExpanded((prev) => !prev)}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={expanded ? 'chevron-up' : 'chevron-down'}
+                  size={24}
+                  color={isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.45)'}
+                />
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+      </View>
+    </AnimatedCardContainer>
+  )
 }
 
 export default TechnologyInfo
 const createStyles = (isDark: boolean) =>
-    StyleSheet.create({
+  StyleSheet.create({
     row: {
-        flexDirection: "row",
-        alignItems: "flex-start", // QUAN TRỌNG
-        paddingVertical: 12,
+      flexDirection: 'row',
+      alignItems: 'flex-start', // QUAN TRỌNG
+      paddingVertical: 12,
     },
     label: {
-        color: isDark ? "#d6d9ff" : "#374151",
-        fontSize: 14,
-        flex: 1,              // chiếm 1 phần
-        flexWrap: "wrap",     // cho phép xuống dòng
-        paddingRight: 8,
+      color: isDark ? '#d6d9ff' : '#374151',
+      fontSize: 14,
+      flex: 1, // chiếm 1 phần
+      flexWrap: 'wrap', // cho phép xuống dòng
+      paddingRight: 8,
     },
     value: {
-        color: isDark ? "#ffffff" : "#111827",
-        fontSize: 14,
-        fontWeight: "600",
-        flex: 1,              // chiếm 1 phần
-        flexWrap: "wrap",     // cho phép xuống dòng
-        textAlign: "right",   // giữ align phải
+      color: isDark ? '#ffffff' : '#111827',
+      fontSize: 14,
+      fontWeight: '600',
+      flex: 1, // chiếm 1 phần
+      flexWrap: 'wrap', // cho phép xuống dòng
+      textAlign: 'right', // giữ align phải
     },
     divider: {
-        height: 1,
-        backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.08)",
+      height: 1,
+      backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
     },
     expandButton: {
-        paddingVertical: 12,
-        alignItems: "center",
-        justifyContent: "center",
+      paddingVertical: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-})
+    infoContainer: {
+      backdropFilter: 'blur(100px)',
+      boxShadow: isDark ? '0px 2px 4px rgba(0, 0, 0, 0.3)' : '0px 0px 50px -25px rgba(0, 0, 0, 0.5)',
+    },
+  })
