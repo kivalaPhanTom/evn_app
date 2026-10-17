@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { View, Text } from 'react-native'
@@ -8,11 +8,7 @@ import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
-const BLUE_BG = "rgba(59, 130, 246, 0.10)";     // nền xanh nhạt
-const BLUE_BORDER = "rgba(59, 130, 246, 0.45)";
 
-const RED_BG = "rgba(239, 68, 68, 0.10)";        // nền đỏ nhạt
-const RED_BORDER = "rgba(239, 68, 68, 0.45)";
 interface flowDiagramCardProps {
     dateStr: string
     currentPlantId: string
@@ -91,7 +87,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        color: isDark ? '#e8eaed' : light.text,
+        color: isDark ? dark.diagram.title : light.text,
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 4,
@@ -99,7 +95,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     ck: {
         textAlign: 'center',
         marginTop: 10,
-        color: isDark ? "#b7b7b7" : light.muted,      // màu xám nhạt giống hình
+        color: isDark ? dark.diagram.caption : light.muted,      // màu xám nhạt giống hình
         fontStyle: "italic",   // chữ nghiêng
         fontSize: 14,
     },
@@ -108,7 +104,7 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     },
     line: {
         height: 1,
-        backgroundColor: isDark ? "rgba(255,255,255,0.1)" : light.border,
+        backgroundColor: isDark ? dark.detail.border : light.border,
         marginBottom: 15,
     },
     traffic: {
@@ -128,18 +124,18 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
 
     // BOX XANH
     inboundTraffic: {
-        backgroundColor: isDark ? BLUE_BG : light.inflowTint,
-        borderColor: isDark ? BLUE_BORDER : light.border,
+        backgroundColor: isDark ? dark.inflowTint : light.inflowTint,
+        borderColor: isDark ? dark.diagram.summaryInflowBorder : light.border,
     },
 
     // BOX ĐỎ
     dischargeFlow: {
-        backgroundColor: isDark ? RED_BG : light.outflowTint,
-        borderColor: isDark ? RED_BORDER : light.border,
+        backgroundColor: isDark ? dark.outflowTint : light.outflowTint,
+        borderColor: isDark ? dark.diagram.summaryOutflowBorder : light.border,
     },
 
     titleSection: {
-        color: isDark ? "rgba(255,255,255,0.7)" : light.muted,
+        color: isDark ? dark.muted : light.muted,
         fontSize: 12,
         fontWeight: "600",
         marginBottom: 6,
@@ -147,18 +143,18 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     },
 
     valueBlue: {
-        color: isDark ? '#3B82F6' : light.inflow,
+        color: isDark ? dark.diagram.summaryInflow : light.inflow,
         fontSize: 20,
         fontWeight: "700",
     },
     valueRed: {
-        color: isDark ? '#EF4444' : light.outflow,
+        color: isDark ? dark.diagram.summaryOutflow : light.outflow,
         fontSize: 20,
         fontWeight: "700",
     },
     unit: {
         fontSize: 12,
-        color: isDark ? "rgba(255,255,255,0.6)" : light.muted,
+        color: isDark ? dark.diagram.unit : light.muted,
     },
 })
 export default FlowDiagramCard
