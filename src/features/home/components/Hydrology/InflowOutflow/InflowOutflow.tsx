@@ -120,7 +120,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
             <View style={styles.notePanel}>
               <CircleLineIcon color={isDark ? '#00DF73' : light.inflow} />
               <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qvề</Text>
-              <CircleLineIcon color={isDark ? '#FB923C' : light.outflow} />
+              <CircleLineIcon color={isDark ? '#FB923C' : light.warning} />
               <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qxả (Qcm + Qxt)</Text>
             </View>
           )}
@@ -135,7 +135,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     data={qIn}
                     data2={qOut}
                     color={isDark ? '#00DF73' : light.inflow}
-                    color2={isDark ? '#FB923C' : light.outflow}
+                    color2={isDark ? '#FB923C' : light.warning}
                     ruleTypes="solid"
                     areaChart={false}
                     hideDataPoints1={true}

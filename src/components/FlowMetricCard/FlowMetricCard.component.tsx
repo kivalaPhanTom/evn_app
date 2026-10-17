@@ -46,7 +46,7 @@ export default function FlowMetricCard({ label, label1, value, unit, color = '#2
         </Text>
         <Text
           allowFontScaling={false}
-          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? '#8082A5' : light.text }}
+          style={{ fontSize: isDark ? 24 : 14, fontWeight: 'bold', color: isDark ? '#8082A5' : light.subtleText }}
         >
           {label}
           {label1 && (
