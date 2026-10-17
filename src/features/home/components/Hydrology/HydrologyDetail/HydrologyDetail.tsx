@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Animated, ScrollView, View } from 'react-native'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -203,12 +203,12 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       activeTab: activeTab,
       data: prepareChartData(upstreamData?.todayUpstream, filterByTime.currentFilterTab, currentHour),
       data2: prepareChartData(upstreamData?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
-      currentColor: isDark ? '#0EA5E9' : light.water,
+      currentColor: isDark ? dark.detail.upstream : light.water,
       unit: upstreamData?.unit,
       flowRateInfo: [
-        { label: 'Hiện tại', value: upstreamData?.currentValue, color: isDark ? '#0EA5E9' : light.water },
-        { label: 'Cao nhất', value: upstreamData?.maxValue, color: isDark ? '#fff' : light.text },
-        { label: 'Thấp nhất', value: upstreamData?.minValue, color: isDark ? '#fff' : light.text },
+        { label: 'Hiện tại', value: upstreamData?.currentValue, color: isDark ? dark.detail.upstream : light.water },
+        { label: 'Cao nhất', value: upstreamData?.maxValue, color: isDark ? dark.text : light.text },
+        { label: 'Thấp nhất', value: upstreamData?.minValue, color: isDark ? dark.text : light.text },
       ],
     }),
     [upstreamData, filterByTime.currentFilterTab, currentHour, isDark],
@@ -221,12 +221,12 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       // data2: inflow?.samePeriodInflow ? getFromPastToCurrentData(inflow?.samePeriodInflow) : [], // api v1 dùng todayInflow và samePeriodInflow
       data: prepareChartData(inflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
       data2: prepareChartData(inflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
-      currentColor: isDark ? '#3B82F6' : light.inflow,
+      currentColor: isDark ? dark.detail.inflow : light.detail.inflow,
       unit: inflow?.unit,
       flowRateInfo: [
-        { label: 'Hiện tại', value: inflow?.currentValue, color: isDark ? '#3B82F6' : light.inflow },
-        { label: 'Cao nhất', value: inflow?.maxValue, color: isDark ? '#fff' : light.text },
-        { label: 'TB ngày', value: inflow?.avgValue, color: isDark ? '#fff' : light.text },
+        { label: 'Hiện tại', value: inflow?.currentValue, color: isDark ? dark.detail.inflow : light.detail.inflow },
+        { label: 'Cao nhất', value: inflow?.maxValue, color: isDark ? dark.text : light.text },
+        { label: 'TB ngày', value: inflow?.avgValue, color: isDark ? dark.text : light.text },
       ],
     }),
     [inflow, filterByTime.currentFilterTab, currentHour, isDark],
@@ -239,12 +239,12 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       // data2: outflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(outflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
       data: prepareChartData(outflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
       data2: prepareChartData(outflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
-      currentColor: isDark ? '#F59E0B' : light.outflow,
+      currentColor: isDark ? dark.detail.outflow : light.detail.outflow,
       unit: outflow?.unit,
       flowRateInfo: [
-        { label: 'Hiện tại', value: outflow?.currentValue, color: isDark ? '#F59E0B' : light.outflow },
-        { label: 'Cao nhất', value: outflow?.maxValue, color: isDark ? '#fff' : light.text },
-        { label: 'TB ngày', value: outflow?.avgValue, color: isDark ? '#fff' : light.text },
+        { label: 'Hiện tại', value: outflow?.currentValue, color: isDark ? dark.detail.outflow : light.detail.outflow },
+        { label: 'Cao nhất', value: outflow?.maxValue, color: isDark ? dark.text : light.text },
+        { label: 'TB ngày', value: outflow?.avgValue, color: isDark ? dark.text : light.text },
       ],
     }),
     [outflow, filterByTime.currentFilterTab, currentHour, isDark],
@@ -257,12 +257,12 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       // data2: turbineflow?.samePeriodTurbinflowData ? getFromPastToCurrentData(turbineflow?.samePeriodTurbinflowData) : [],   // api v1 dùng turbinflowData và samePeriodTurbinflowData
       data: prepareChartData(turbineflow?.todayUpstream, filterByTime.currentFilterTab, currentHour),
       data2: prepareChartData(turbineflow?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
-      currentColor: isDark ? '#10B981' : light.outflow,
+      currentColor: isDark ? dark.detail.turbine : light.detail.turbine,
       unit: turbineflow?.unit,
       flowRateInfo: [
-        { label: 'Hiện tại', value: turbineflow?.currentValue, color: isDark ? '#10B981' : light.outflow },
-        { label: 'Cao nhất', value: turbineflow?.maxValue, color: isDark ? '#fff' : light.text },
-        { label: 'TB ngày', value: turbineflow?.avgValue, color: isDark ? '#fff' : light.text },
+        { label: 'Hiện tại', value: turbineflow?.currentValue, color: isDark ? dark.detail.turbine : light.detail.turbine },
+        { label: 'Cao nhất', value: turbineflow?.maxValue, color: isDark ? dark.text : light.text },
+        { label: 'TB ngày', value: turbineflow?.avgValue, color: isDark ? dark.text : light.text },
       ],
     }),
     [turbineflow, filterByTime.currentFilterTab, currentHour, isDark],
@@ -280,9 +280,9 @@ function HydrologyDetail(props: HydrologyDetailProps) {
             value={selectedDate}
             onChange={setSelectedDate}
             format="DD/MM/YYYY"
-            textColor={isDark ? '#fff' : light.text}
-            borderColor={isDark ? 'rgba(255,255,255,0.15)' : light.border}
-            backgroundColor={isDark ? 'rgba(26, 35, 50, 0.6)' : '#FFFFFF'}
+            textColor={isDark ? dark.text : light.text}
+            borderColor={isDark ? dark.border : light.border}
+            backgroundColor={isDark ? dark.detail.dateBackground : '#FFFFFF'}
           />
         </View>
         {/* flow diagram here */}

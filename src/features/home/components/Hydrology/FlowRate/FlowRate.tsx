@@ -1,4 +1,4 @@
-import { hydrologyLight as light } from '@/core/constants/hydrologyPalette'
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useMemo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -55,11 +55,11 @@ const FlowRate: React.FC<FlowRateProps> = ({
       : currentFilterTab === 'month'
         ? [
             { type: 'line', label: 'Tháng mục tiêu', color: currentColor },
-            { type: 'line', label: 'Tháng so sánh', color: isDark ? '#A78BFA' : light.comparison },
+            { type: 'line', label: 'Tháng so sánh', color: isDark ? dark.comparison : light.comparison },
           ]
         : [
             { type: 'line', label: 'Ngày mục tiêu', color: currentColor },
-            { type: 'line', label: 'Ngày so sánh', color: isDark ? '#A78BFA' : light.comparison },
+            { type: 'line', label: 'Ngày so sánh', color: isDark ? dark.comparison : light.comparison },
           ]
 
   return (
@@ -76,7 +76,7 @@ const FlowRate: React.FC<FlowRateProps> = ({
           data2={comparisonChartData}
           height={px(200)}
           color={currentColor}
-          color2={isDark ? '#A78BFA' : light.comparison}
+          color2={isDark ? dark.comparison : light.comparison}
           areaChart={false}
           rulesColor={isDark ? undefined : light.grid}
           xAxisColor={isDark ? undefined : light.border}
