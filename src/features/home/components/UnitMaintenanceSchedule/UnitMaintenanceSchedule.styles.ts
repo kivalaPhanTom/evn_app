@@ -11,13 +11,12 @@ const createStyles = (isDark: boolean) =>
       paddingHorizontal: px(4), // small safe padding
     },
     infoCard: {
-      flex: 1,          // 🔑 share available width
-      minWidth: 0,      // 🔑 prevents overflow on Android
+      flex: 1, // 🔑 share available width
+      minWidth: 0, // 🔑 prevents overflow on Android
       borderRadius: 12,
       padding: 16,
-      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#E5E7EB',
-      borderWidth: 1,
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#FFFFFF',
+      boxShadow: isDark ? '0px 2px 4px rgba(0, 0, 0, 0.3)' : '0px 0px 6px 0px rgba(0, 0, 0, 0.25)',
     },
     infoRow: {
       flexDirection: 'row',

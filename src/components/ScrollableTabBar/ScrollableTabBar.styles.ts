@@ -10,112 +10,112 @@ const TAB_WIDTH = SCREEN_WIDTH - SECTION_CONTAINER_PADDING * 2 - TAB_BAR_BORDER_
 
 const createStyles = (isDark: boolean) =>
   StyleSheet.create({
-  container: {
-    marginBottom: px.v(16),
-    paddingHorizontal: 0,
-    position: 'relative',
-  },
-  tabBarContainer: {
-    borderRadius: 12,
-    borderWidth: TAB_BAR_BORDER_WIDTH,
-    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-    overflow: 'hidden',
-    backgroundColor: isDark ? 'rgba(26, 35, 50, 0.5)' : '#FFFFFF',
-    width: TAB_WIDTH + TAB_BAR_BORDER_WIDTH * 2,
-    alignSelf: 'center',
-    position: 'relative',
-  },
-  scrollView: {
-    paddingHorizontal: 0,
-    width: '100%',
-  },
-  scrollContent: {
-    paddingRight: 0,
-  },
-  tab: {
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  tabFirst: {},
-  tabLast: {},
-  tabContent: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 0,
-    borderRightWidth: 0,
-    width: '100%',
-  },
-  textContainer: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: px.h(16),
-    paddingVertical: px.v(8),
-  },
-  textContainerActive: {
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: isDark ? 'rgba(100, 200, 255, 0.8)' : 'rgba(37, 99, 235, 0.6)',
-    backgroundColor: isDark ? 'rgba(30, 50, 80, 0.6)' : '#DBEAFE',
-    shadowColor: isDark ? 'rgba(100, 200, 255, 0.5)' : 'rgba(37, 99, 235, 0.25)', // Glowing effect
-    shadowOffset: {
-      width: 0,
-      height: 0,
+    container: {
+      marginBottom: px.v(16),
+      paddingHorizontal: 0,
+      position: 'relative',
     },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    // elevation: 5, // For Android
-    width: '50%',
-  },
-  tabContentFirst: {
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
-  },
-  tabContentLast: {
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
-    borderRightWidth: 0,
-  },
-  tabContentActive: {
-    position: 'relative',
-  },
-  shadowGradientLeft: {
-    position: 'absolute',
-    left: TAB_BAR_BORDER_WIDTH,
-    top: TAB_BAR_BORDER_WIDTH,
-    bottom: TAB_BAR_BORDER_WIDTH,
-    width: 50,
-    zIndex: 10,
-  },
-  shadowGradientRight: {
-    position: 'absolute',
-    right: TAB_BAR_BORDER_WIDTH,
-    top: TAB_BAR_BORDER_WIDTH,
-    bottom: TAB_BAR_BORDER_WIDTH,
-    width: 50,
-    zIndex: 10,
-  },
-  tabText: {
-    color: isDark ? '#9CA3AF' : '#6B7280',
-    fontSize: px.m(16),
-    fontWeight: '500',
-    textAlign: 'center',
-    includeFontPadding: false,
-    textAlignVertical: 'center',
-    lineHeight: px.m(20),
-  },
-  tabTextActive: {
-    color: isDark ? '#E5E7EB' : '#1D4ED8',
-    fontWeight: '700',
-    textShadowColor: isDark ? 'rgba(100, 200, 255, 0.6)' : 'rgba(37, 99, 235, 0.25)', // Glowing text effect
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 4,
-  },
-})
+    tabBarContainer: {
+      borderRadius: 12,
+      borderWidth: TAB_BAR_BORDER_WIDTH,
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(143, 179, 215, 1)',
+      overflow: 'hidden',
+      backgroundColor: isDark ? 'rgba(26, 35, 50, 0.5)' : 'rgba(218, 237, 255, 0.43)',
+      width: TAB_WIDTH + TAB_BAR_BORDER_WIDTH * 2,
+      alignSelf: 'center',
+      position: 'relative',
+    },
+    scrollView: {
+      paddingHorizontal: 0,
+      width: '100%',
+    },
+    scrollContent: {
+      paddingRight: 0,
+    },
+    tab: {
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
+    tabFirst: {},
+    tabLast: {},
+    tabContent: {
+      flex: 1,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 0,
+      borderRightWidth: 0,
+      width: '100%',
+    },
+    textContainer: {
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: px.h(16),
+      paddingVertical: px.v(8),
+    },
+    textContainerActive: {
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: isDark ? 'rgba(100, 200, 255, 0.8)' : 'rgba(6, 122, 255, 1)',
+      backgroundColor: isDark ? 'rgba(30, 50, 80, 0.6)' : 'rgba(6, 122, 255, 1)',
+      shadowColor: isDark ? 'rgba(100, 200, 255, 0.5)' : 'rgba(37, 99, 235, 0.25)', // Glowing effect
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 1,
+      shadowRadius: 8,
+      // elevation: 5, // For Android
+      width: '50%',
+    },
+    tabContentFirst: {
+      borderTopLeftRadius: 12,
+      borderBottomLeftRadius: 12,
+    },
+    tabContentLast: {
+      borderTopRightRadius: 12,
+      borderBottomRightRadius: 12,
+      borderRightWidth: 0,
+    },
+    tabContentActive: {
+      position: 'relative',
+    },
+    shadowGradientLeft: {
+      position: 'absolute',
+      left: TAB_BAR_BORDER_WIDTH,
+      top: TAB_BAR_BORDER_WIDTH,
+      bottom: TAB_BAR_BORDER_WIDTH,
+      width: 50,
+      zIndex: 10,
+    },
+    shadowGradientRight: {
+      position: 'absolute',
+      right: TAB_BAR_BORDER_WIDTH,
+      top: TAB_BAR_BORDER_WIDTH,
+      bottom: TAB_BAR_BORDER_WIDTH,
+      width: 50,
+      zIndex: 10,
+    },
+    tabText: {
+      color: isDark ? '#9CA3AF' : '#6B7280',
+      fontSize: px.m(16),
+      fontWeight: '500',
+      textAlign: 'center',
+      includeFontPadding: false,
+      textAlignVertical: 'center',
+      lineHeight: px.m(20),
+    },
+    tabTextActive: {
+      color: isDark ? '#E5E7EB' : 'rgba(255, 255, 255, 1)',
+      fontWeight: '700',
+      textShadowColor: isDark ? 'rgba(100, 200, 255, 0.6)' : 'rgba(37, 99, 235, 0.25)', // Glowing text effect
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 4,
+    },
+  })
 
 export default createStyles
 export { TAB_WIDTH, TAB_BAR_BORDER_WIDTH }

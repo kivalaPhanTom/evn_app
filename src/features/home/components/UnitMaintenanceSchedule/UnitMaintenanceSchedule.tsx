@@ -43,11 +43,7 @@ const YearPicker: React.FC<YearPickerProps> = ({ selectedYear, onChange, styles 
         animationType="fade"
         onRequestClose={() => setShowSelectModal(false)}
       >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowSelectModal(false)}
-        >
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowSelectModal(false)}>
           <View style={styles.modalContent}>
             {years.map((year) => (
               <TouchableOpacity
@@ -58,9 +54,7 @@ const YearPicker: React.FC<YearPickerProps> = ({ selectedYear, onChange, styles 
                   setShowSelectModal(false)
                 }}
               >
-                <Text
-                  style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
-                >
+                <Text style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}>
                   {year}
                 </Text>
               </TouchableOpacity>
@@ -138,7 +132,7 @@ function UnitMaintenanceSchedule() {
               ) : (
                 <>
                   <Text style={{ color: isDark ? '#FFFFFF' : '#1E3A8A', fontSize: 22 }}>{TotalCategory}</Text>
-                  <MaintenanceIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
+                  <MaintenanceIcon color="#0891B2" opacity="1" width="35" height="35" />
                 </>
               )}
             </View>
@@ -153,7 +147,7 @@ function UnitMaintenanceSchedule() {
               ) : (
                 <>
                   <Text style={{ color: isDark ? '#FFFFFF' : '#1E3A8A', fontSize: 22 }}>{TotalActualDay}</Text>
-                  <ScheduleIcon color="#22D3EE" opacity={isDark ? '0.2' : '1'} width="35" height="35" />
+                  <ScheduleIcon color="#0891B2" opacity="1" width="35" height="35" />
                 </>
               )}
             </View>
