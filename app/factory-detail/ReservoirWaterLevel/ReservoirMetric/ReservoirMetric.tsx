@@ -1,8 +1,10 @@
+import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { px } from '@/core/utils/scale'
-import { styles } from '@/features/factory-detail/ReservoirWaterLevel/ReservoirMetric/ReservoirMetric.styles'
+import { createStyles } from '@/features/factory-detail/ReservoirWaterLevel/ReservoirMetric/ReservoirMetric.styles'
 import GradientCard from '@/components/GradientCard/GradientCard.component'
 import { getInflowOutflow } from '@/core/redux/domains/hydrology'
 import { shallowEqual } from 'react-redux'
@@ -15,7 +17,7 @@ interface ReservoirFlowCardProps {
   icon: string // "↓" hoặc "↑"
   previousValue: number // giá trị cùng kỳ
   samePeriodUnit: string // đơn vị cùng kỳ
-  gradientColors: [string, string] // màu gradient cho background
+  gradientColors: readonly [string, string] // màu gradient cho background
 }
 
 const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
@@ -28,6 +30,8 @@ const ReservoirFlowCard: React.FC<ReservoirFlowCardProps> = ({
   samePeriodUnit,
   gradientColors,
 }) => {
+  const isDark = useAppTheme() === 'dark'
+  const styles = createStyles(isDark)
   return (
     <GradientCard colors={gradientColors} locations={[0, 1]} angle={132.12} style={styles.card}>
       {/* Header với icon tròn và label */}
@@ -133,6 +137,9 @@ function mapInflowOutflowToReservoirMetric(apiData: {
 
 function ReservoirMetric(props: { currentPlantId: string }) {
   const { currentPlantId } = props
+  const isDark = useAppTheme() === 'dark'
+  const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirMetric
+  const styles = createStyles(isDark)
   const dispatch = useAppDispatch()
   const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {}, shallowEqual)
   const hasApiData = inflowOutflowData?.cards?.length >= 3
@@ -152,31 +159,31 @@ function ReservoirMetric(props: { currentPlantId: string }) {
         label="Qvề"
         value={data.inflow.value}
         unit={data.inflow.unit}
-        color="#00DF73"
+        color={colors.inflow.accent}
         icon="↓"
         previousValue={data.inflow.previousValue}
         samePeriodUnit={data.inflow.samePeriodUnit}
-        gradientColors={['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)']}
+        gradientColors={colors.inflow.backgroundGradient}
       />
       <ReservoirFlowCard
         label="Qcm"
         value={data.outflow.value}
         unit={data.outflow.unit}
-        color="#FB923C"
+        color={colors.turbine.accent}
         icon="↑"
         previousValue={data.outflow.previousValue}
         samePeriodUnit={data.outflow.samePeriodUnit}
-        gradientColors={['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)']}
+        gradientColors={colors.turbine.backgroundGradient}
       />
       <ReservoirFlowCard
         label="Qxt"
         value={data.xtflow.value}
         unit={data.xtflow.unit}
-        color="#FB923C"
+        color={colors.spillway.accent}
         icon="↑"
         previousValue={data.xtflow.previousValue}
         samePeriodUnit={data.xtflow.samePeriodUnit}
-        gradientColors={['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)']}
+        gradientColors={colors.spillway.backgroundGradient}
       />
     </View>
   )
