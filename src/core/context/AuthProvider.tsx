@@ -3,8 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from '@/core/redux/hooks'
 import { useRouter } from 'expo-router'
 import { setAuthToken, clearAuthToken } from '../service/api.service';
-import { getModules } from '@/core/redux/domains/modules'
 import { loginSucceeded, logout as logoutAction } from '@/core/redux/domains/auth'
+import { clearCompanyPlant } from '@/core/redux/domains/company-plant'
+import { clearCompaniesCacheSession } from '@/core/service/companiesCache'
 interface AuthContextProps {
   isAuthenticated: boolean;
   loading: boolean;
@@ -20,11 +21,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(true);
 
-  const getModulesData = async () => {
-    dispatch(loginSucceeded())
-    dispatch(getModules())
-  }
-
   useEffect(() => {
     const checkToken = async () => {
       setLoading(true);
@@ -35,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (Date.now() < expiresAt) {
           setAuthToken(token);
           setIsAuthenticated(true);
-           getModulesData()
+          dispatch(loginSucceeded())
         } else {
           await logout();
         }
@@ -54,8 +50,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     clearAuthToken();
+    await clearCompaniesCacheSession();
     setIsAuthenticated(false);
     dispatch(logoutAction());
+    dispatch(clearCompanyPlant());
   };
 
   return (

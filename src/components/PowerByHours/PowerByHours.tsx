@@ -6,7 +6,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { LineChart } from '@/components/ChartView/LineChart.component'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import { Colors } from 'toastify-react-native/config/theme'
+import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
@@ -44,6 +44,7 @@ function PowerByHours(props: Props) {
   const title = 'P theo giờ'
   const subtitle = 'Hôm nay, ' + currentDate
   const isDark = useAppTheme() === 'dark'
+  const averageValueColor = isDark ? Colors.orange : Colors.vividOrange
   const hourlyData = HourlyPowerList
     ? HourlyPowerList.map((d: any) => ({ ...d }))?.filter(
         (item) => Number(item.label?.slice(0, -1)) <= Number(currentTime?.slice(0, -1)),
@@ -75,8 +76,8 @@ function PowerByHours(props: Props) {
           <View style={styles.headerTop}>
             <Text style={styles.subtitle}>{subtitle}</Text>
             <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-              <Text style={styles.actionButtonText}>Chi tiết</Text>
-              <Text style={styles.actionButtonIcon}>{'>'}</Text>
+              <Text style={[styles.actionButtonText, !isDark && { color: '#4E8DF9' }]}>Chi tiết</Text>
+              <Text style={[styles.actionButtonIcon, !isDark && { color: '#4E8DF9' }]}>{'>'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -107,8 +108,8 @@ function PowerByHours(props: Props) {
               <BarSkeleton width={95} height={28} />
             ) : (
               <>
-                <Text style={styles.statValueAverage}>
-                  {offeredPower >= 0  ? offeredPower: '--' } {unit}
+                <Text style={[styles.statValueAverage, { color: averageValueColor }]}>
+                  {offeredPower >= 0 ? offeredPower : '--'} {unit}
                 </Text>
               </>
             )}
@@ -121,7 +122,7 @@ function PowerByHours(props: Props) {
             <LineChart
               data={currentOfferedPowerList}
               data2={hourlyData}
-              color={Colors.orange}
+              color={averageValueColor}
               color2={Colors.blue}
               hideDataPoints2={false}
               hideYAxisText={true}
