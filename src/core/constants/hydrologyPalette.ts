@@ -110,6 +110,10 @@ export const hydrologyLight = {
       backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
     },
   },
+  waterLevelByHours: {
+    title: '#374151',
+    chartBackground: '#fff',
+  },
 } as const
 
 // Dark-mode colors. Component-specific groups preserve the existing shades.
@@ -255,5 +259,9 @@ export const hydrologyDark = {
       accent: '#FB923C',
       backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
     },
+  },
+  waterLevelByHours: {
+    title: '#E6ECF2',
+    chartBackground: '#000033',
   },
 } as const
