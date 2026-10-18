@@ -1,3 +1,4 @@
+import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -24,6 +25,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
+  const colors = (isDark ? hydrologyDark : hydrologyLight).inflowOutflow
   const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
@@ -34,33 +36,33 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   const card = (
     <AnimatedCardContainer style={isDark ? undefined : { elevation: 0, shadowOpacity: 0, shadowRadius: 0 }}>
       <View style={styles.headerRow}>
-            <Text style={[styles.pillText, { color: isDark ? '#E6ECF2' : '#374151' }]}>Lưu lượng theo giờ</Text>
+            <Text style={[styles.pillText, { color: colors.title }]}>Lưu lượng theo giờ</Text>
             <View style={styles.notePanel}>
-              <CircleLineIcon color="#00DF73" />
-              <Text style={styles.noteText}>Qvề</Text>
-              <CircleLineIcon color="#FB923C" />
-              <Text style={styles.noteText}>Qxả</Text>
+              <CircleLineIcon color={colors.inflow} />
+              <Text style={[styles.noteText, { color: colors.noteText }]}>Qvề</Text>
+              <CircleLineIcon color={colors.outflow} />
+              <Text style={[styles.noteText, { color: colors.noteText }]}>Qxả</Text>
             </View>
           </View>
-          <View style={[styles.chartPanel, !isDark && { backgroundColor: '#BFDBFE', borderRadius: 12 }]}>
+          <View style={[styles.chartPanel, { backgroundColor: colors.chartBackground }, !isDark && { borderRadius: 12 }]}>
             {qIn.length > 0 && qOut.length > 0 && (
               <LineChart
                 data={qIn}
                 data2={qOut}
-                color="#00DF73"
-                color2="#FB923C"
+                color={colors.inflow}
+                color2={colors.outflow}
                 ruleTypes="solid"
                 areaChart={false}
                 hideDataPoints1={true}
                 hideDataPoints2={true}
-                rulesColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                rulesColor={colors.grid}
                 //customDataPoint={customDataPoint()}
                 //customDataPoint2={customDataPoint2()}
                 label1="Qvề: "
                 label2="Qxả: "
                 height={px.v(150)}
                 pointerConfig={true}
-                xAxisColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                xAxisColor={colors.axis}
                 scrollToEnd={true}
               />
             )}
@@ -71,7 +73,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   return isDark ? (
     <>{!isEmptyData && card}</>
   ) : (
-    <Shadow distance={5} startColor="rgba(0, 0, 0, 0.10)" offset={[0, -2]} stretch>
+    <Shadow distance={5} startColor={colors.shadow} offset={[0, -2]} stretch>
       {!isEmptyData && card}
     </Shadow>
   )

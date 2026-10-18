@@ -1,7 +1,10 @@
+import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
-export const styles = StyleSheet.create({
+export const createStyles = (isDark: boolean) => {
+  const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirMetric
+  return StyleSheet.create({
   container: {
     flexDirection: 'row',
     gap: px.h(16),
@@ -13,7 +16,7 @@ export const styles = StyleSheet.create({
     borderRadius: px.h(12),
     alignItems: 'flex-start',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: colors.border,
     overflow: 'hidden',
   },
   header: {
@@ -31,12 +34,12 @@ export const styles = StyleSheet.create({
     marginRight: px.h(8),
   },
   iconText: {
-    color: '#FFFFFF',
+    color: colors.iconText,
     fontSize: px.m(16),
     fontWeight: 'bold',
   },
   label: {
-    color: '#FFFFFF',
+    color: colors.label,
     fontSize: px.m(16),
     fontWeight: '600',
   },
@@ -46,7 +49,7 @@ export const styles = StyleSheet.create({
     marginBottom: px.v(4),
   },
   unit: {
-    color: '#FFFFFF',
+    color: colors.unit,
     fontSize: px.m(14),
     fontWeight: '400',
     marginBottom: px.v(8),
@@ -55,7 +58,7 @@ export const styles = StyleSheet.create({
   divider: {
     width: '100%',
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: colors.divider,
     marginBottom: px.v(8),
   },
   samePeriodContainer: {
@@ -64,16 +67,16 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   samePeriodLabel: {
-    color: '#FFFFFF',
+    color: colors.samePeriodLabel,
     fontSize: px.m(12),
     fontWeight: '400',
     opacity: 0.7,
   },
   previousValue: {
-    color: '#FFFFFF',
+    color: colors.previousValue,
     fontSize: px.m(12),
     fontWeight: '600',
     opacity: 1,
   },
 })
-
+}
