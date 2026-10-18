@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from './Sagas/RootSaga'
 import authenReducer from './domains/auth'
+import companyPlantReducer from './domains/company-plant'
 import documentReducer from './domains/documents'
 import hydrologyReducer from './domains/hydrology'
 import moduleReducer from './domains/modules'
@@ -25,6 +26,7 @@ export const store = configureStore({
     documentSlice: documentReducer,
     moduleSlice: moduleReducer,
     authenSlice: authenReducer,
+    companyPlantSlice: companyPlantReducer,
     refreshSlice: refreshReducer,
   },
   middleware: (getDefaultMiddleware) =>
