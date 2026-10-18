@@ -114,6 +114,16 @@ export const hydrologyLight = {
     title: '#374151',
     chartBackground: '#fff',
   },
+  inflowOutflow: {
+    title: '#374151',
+    noteText: '#615E83',
+    inflow: '#00DF73',
+    outflow: '#FB923C',
+    chartBackground: '#fff',
+    grid: '#BFDBFE',
+    axis: '#BFDBFE',
+    shadow: 'rgba(255, 255, 255, 0.10)',
+  },
 } as const
 
 // Dark-mode colors. Component-specific groups preserve the existing shades.
@@ -263,5 +273,15 @@ export const hydrologyDark = {
   waterLevelByHours: {
     title: '#E6ECF2',
     chartBackground: '#000033',
+  },
+  inflowOutflow: {
+    title: '#E6ECF2',
+    noteText: '#615E83',
+    inflow: '#00DF73',
+    outflow: '#FB923C',
+    chartBackground: 'transparent',
+    grid: '#E5E5EF',
+    axis: '#E5E5EF',
+    shadow: 'rgba(0, 0, 0, 0.10)',
   },
 } as const
