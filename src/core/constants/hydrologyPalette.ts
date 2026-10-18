@@ -89,6 +89,27 @@ export const hydrologyLight = {
     lowWaterMid: '#FF4757',
     lowWaterBottom: '#E92D3D',
   },
+  reservoirMetric: {
+    border: 'rgba(255, 255, 255, 0.1)',
+    iconText: '#FFFFFF',
+    label: '#1F2937',
+    unit: '#1F2937',
+    divider: 'rgba(255, 255, 255, 0.2)',
+    samePeriodLabel: '#1F2937',
+    previousValue: '#1F2937',
+    inflow: {
+      accent: '#00df73',
+      backgroundGradient: ['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'],
+    },
+    turbine: {
+      accent: '#FB923C',
+      backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
+    },
+    spillway: {
+      accent: '#FB923C',
+      backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
+    },
+  },
 } as const
 
 // Dark-mode colors. Component-specific groups preserve the existing shades.
@@ -213,5 +234,26 @@ export const hydrologyDark = {
     lowWaterTop: '#FF6B6B',
     lowWaterMid: '#FF4757',
     lowWaterBottom: '#E92D3D',
+  },
+  reservoirMetric: {
+    border: 'rgba(255, 255, 255, 0.1)',
+    iconText: '#FFFFFF',
+    label: '#FFFFFF',
+    unit: '#FFFFFF',
+    divider: 'rgba(255, 255, 255, 0.2)',
+    samePeriodLabel: '#FFFFFF',
+    previousValue: '#FFFFFF',
+    inflow: {
+      accent: '#00DF73',
+      backgroundGradient: ['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'],
+    },
+    turbine: {
+      accent: '#FB923C',
+      backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
+    },
+    spillway: {
+      accent: '#FB923C',
+      backgroundGradient: ['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'],
+    },
   },
 } as const
