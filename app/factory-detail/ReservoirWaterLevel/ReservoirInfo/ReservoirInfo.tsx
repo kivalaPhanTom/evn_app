@@ -1,3 +1,4 @@
+import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { View, Text, Animated, Easing } from 'react-native'
 import { useRouter } from 'expo-router'
@@ -28,6 +29,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
+  const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirInfo
   const styles = createStyles(isDark)
   const [containerWidth, setContainerWidth] = useState(0)
   const containerHeight = px.v(140)
@@ -150,7 +152,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
 
   return (
     <LinearGradient
-      colors={['rgba(34, 211, 238, 0.12)', 'rgba(59, 130, 246, 0.08)', 'rgba(99, 102, 241, 0.1)']}
+      colors={colors.backgroundGradient}
       locations={[0, 0.5, 1]}
       start={{ x: startX, y: startY }}
       end={{ x: endX, y: endY }}
@@ -199,12 +201,12 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                             <SvgLinearGradient id="waveGrad-reservoir-back" x1="0%" y1="0%" x2="0%" y2="100%">
                               <Stop
                                 offset="0%"
-                                stopColor={isLowWaterLevel ? '#FF8A8A' : '#8CF4FF'}
+                                stopColor={isLowWaterLevel ? colors.lowWaterBackTop : colors.waterBackTop}
                                 stopOpacity="0.55"
                               />
                               <Stop
                                 offset="100%"
-                                stopColor={isLowWaterLevel ? '#FF4757' : '#3AB7FF'}
+                                stopColor={isLowWaterLevel ? colors.lowWaterBackBottom : colors.waterBackBottom}
                                 stopOpacity="0.7"
                               />
                             </SvgLinearGradient>
@@ -224,17 +226,17 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                             <SvgLinearGradient id="waveGrad-reservoir-front" x1="0%" y1="0%" x2="0%" y2="100%">
                               <Stop
                                 offset="0%"
-                                stopColor={isLowWaterLevel ? '#FF6B6B' : '#7DF0FF'}
+                                stopColor={isLowWaterLevel ? colors.lowWaterTop : colors.waterTop}
                                 stopOpacity="0.78"
                               />
                               <Stop
                                 offset="55%"
-                                stopColor={isLowWaterLevel ? '#FF4757' : '#3AB7FF'}
+                                stopColor={isLowWaterLevel ? colors.lowWaterMid : colors.waterMid}
                                 stopOpacity="0.88"
                               />
                               <Stop
                                 offset="100%"
-                                stopColor={isLowWaterLevel ? '#E92D3D' : '#1E90FF'}
+                                stopColor={isLowWaterLevel ? colors.lowWaterBottom : colors.waterBottom}
                                 stopOpacity="0.96"
                               />
                             </SvgLinearGradient>
@@ -273,8 +275,8 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                       },
                     ]}
                   >
-                    <View style={[styles.dashedLine, { borderTopColor: '#00DF73' }]} />
-                    <Text style={[styles.referenceText, { color: '#00DF73', marginRight: 6, marginLeft: 0 }]}>
+                    <View style={[styles.dashedLine, { borderTopColor: colors.maxLevelLine }]} />
+                    <Text style={[styles.referenceText, { color: colors.maxLevelLine, marginRight: 6, marginLeft: 0 }]}>
                       {data?.maxLevel}
                     </Text>
                   </View>
