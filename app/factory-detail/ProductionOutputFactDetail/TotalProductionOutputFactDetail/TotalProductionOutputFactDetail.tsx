@@ -72,6 +72,7 @@ function TotalProductionOutputFactDetail(props: Props) {
       detail={powerSources}
       isLoading={isLoading}
       unit="tr.KWh"
+      type="product-output"
     />
   )
 }

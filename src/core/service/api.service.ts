@@ -58,7 +58,7 @@ export function setAuthToken(token: string | null, expiresIn?: number) {
   }
 }
 export function setUsernameToAsyncStorage(username: string) {
-  AsyncStorage.setItem('USERNAME', username)
+  return AsyncStorage.setItem('USERNAME', username).catch(() => {})
 }
 export function removeUsernameToAsyncStorage(username: string) {
   AsyncStorage.removeItem('USERNAME')
