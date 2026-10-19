@@ -1,4 +1,5 @@
 export { authenSagaList } from './auth'
+export { companyPlantSagaList } from './company-plant'
 export { documentSagaList } from './documents'
 export { hydrologySagaList } from './hydrology'
 export { modulesSagaList } from './modules'

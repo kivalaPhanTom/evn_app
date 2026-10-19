@@ -1,9 +1,10 @@
-import { Colors } from '@/core/constants/colors'
+import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 import { px } from '@/core/utils/scale'
 import { StyleSheet } from 'react-native'
 
-const createStyles = (isDark: boolean) =>
-  StyleSheet.create({
+const createStyles = (isDark: boolean) => {
+  const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirInfo
+  return StyleSheet.create({
   wrapper: {
     width: '100%',
     marginBottom: px.v(16),
@@ -19,17 +20,17 @@ const createStyles = (isDark: boolean) =>
     paddingVertical: px.v(16),
   },
   title: {
-    color: '#22D3EE',
+    color: colors.title,
     fontSize: px.m(18),
     fontWeight: '600',
     // textTransform: 'uppercase',
   },
   locationName: {
-    color: isDark ? '#9CA3AF' : '#6B7280',
+    color: colors.locationText,
     fontSize: px.m(14),
     fontWeight: '600',
     textTransform: 'uppercase',
-    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: colors.locationBackground,
     borderRadius: px.h(16),
     paddingHorizontal: px.h(12),
     paddingVertical: px.v(4),
@@ -51,10 +52,10 @@ const createStyles = (isDark: boolean) =>
   waterContainer: {
     position: 'relative',
     borderWidth: 2,
-    borderColor: isDark ? '#fff' : '#E5E7EB',
+    borderColor: colors.gaugeBorder,
     borderTopWidth: 0,
     overflow: 'hidden',
-    backgroundColor: 'transparent',
+    backgroundColor: colors.gaugeBackground,
     // borderTopLeftRadius: px.h(8),
     // borderTopRightRadius: px.h(8),
     borderBottomLeftRadius: px.h(12),
@@ -71,24 +72,24 @@ const createStyles = (isDark: boolean) =>
     flex: 1,
     height: 1,
     borderTopWidth: 1,
-    borderTopColor: Colors.warningFull,
+    borderTopColor: colors.reference,
     borderStyle: 'dashed' as const,
   },
   referenceText: {
-    color: Colors.warningFull,
+    color: colors.reference,
     fontSize: px.m(10),
     fontWeight: '600',
     marginLeft: px.h(6),
-    backgroundColor: 'transparent',
+    backgroundColor: colors.referenceBackground,
     paddingHorizontal: px.h(6),
     paddingVertical: px.v(2),
     borderRadius: px.h(4),
   },
   percentageText: {
-    color: '#FFFFFF',
+    color: colors.percentageText,
     fontSize: px.m(18),
     fontWeight: '700',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowColor: colors.percentageShadow,
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
@@ -100,13 +101,13 @@ const createStyles = (isDark: boolean) =>
     marginBottom: px.v(20),
   },
   currentLevel: {
-    color: '#3AB7FF',
+    color: colors.currentLevel,
     fontSize: px.m(32),
     fontWeight: '700',
     lineHeight: px.m(38),
   },
   maxLevel: {
-    color: isDark ? '#FFFFFF' : '#6B7280',
+    color: colors.maxLevelText,
     fontSize: px.m(16),
     fontWeight: '400',
     marginTop: px.v(4),
@@ -117,23 +118,25 @@ const createStyles = (isDark: boolean) =>
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: px.v(12),
-    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: colors.infoBackground,
     borderRadius: px.h(8),
     paddingHorizontal: px.h(12),
     paddingVertical: px.v(10),
   },
   infoLabel: {
-    color: isDark ? '#FFFFFF' : '#475569',
+    color: colors.infoLabel,
     fontSize: px.m(14),
     fontWeight: '400',
     opacity: 0.8,
   },
   infoValue: {
-    color: isDark ? '#FFFFFF' : '#111827',
+    color: colors.infoValue,
     fontSize: px.m(14),
     fontWeight: '600',
   },
 })
+
+}
 
 export default createStyles
 
