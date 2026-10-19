@@ -3,8 +3,17 @@ import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const BASE_URL =
-  Constants.expoConfig?.extra?.API_BASE_URL ??
-  'https://mygenco3-api.genco3.com/'
+  getApiBaseUrl()
+
+function getApiBaseUrl(): string {
+  const configured = Constants.expoConfig?.extra?.API_BASE_URL
+  // Guard against misconfigured values (e.g. quoted/empty) that would produce
+  // scheme-less URLs and fail every request with NSURLErrorBadURL.
+  if (typeof configured === 'string' && /^https?:\/\//i.test(configured)) {
+    return configured
+  }
+  return 'https://mygenco3-api.genco3.com/'
+}
 
 let authToken: string | null = null
 
