@@ -17,12 +17,5 @@ export default ({ config }) => ({
     ...config.extra, // giữ các giá trị từ app.json
     API_BASE_URL: normalizeApiBaseUrl(process.env.API_BASE_URL),
   },
-  plugins: [
-    'expo-font',
-    'expo-image',
-    'expo-localization',
-    'expo-status-bar',
-    'expo-web-browser',
-    './plugins/withSceneManifest.js',
-  ],
+  plugins: ['expo-font', 'expo-localization', 'expo-web-browser', './plugins/withSceneManifest.js'],
 })
