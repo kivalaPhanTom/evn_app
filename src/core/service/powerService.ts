@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api } from '../constants/vars'
+import { prefix_api, prefix_api_v2 } from '../constants/vars'
 
 export const Service = {
   getPowerOverviewApi,
@@ -11,14 +11,16 @@ export const Service = {
   getPowerByDaysFactDetailApi,
 }
 export const servicePattern = {
-  getPowerOverview: `${prefix_api}/overview`,
+  getPowerOverview: `${prefix_api_v2}/overview`,
   getPowerByTime: `${prefix_api}/power_by_time_v2`,
   getPowerByDays: `${prefix_api}/Recent_days`,
   getComparePower: `${prefix_api}/ComparePower`,
 }
 
-function getPowerOverviewApi() {
-  return api.get(`${servicePattern.getPowerOverview}`)
+function getPowerOverviewApi(companyId: string = '') {
+  return api.get(`${servicePattern.getPowerOverview}`,
+    { params: { companyId: companyId } }
+  )
 }
 
 function getPowerByTimeApi() {

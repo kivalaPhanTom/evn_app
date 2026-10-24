@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-export const getPowerOverivew = createAction('GET_POWER_OVERVIEW')
+export const getPowerOverivew = createAction<{ companyId?: string | null }>('GET_POWER_OVERVIEW')
 export const getPowerByTime = createAction('GET_POWER_BY_TIME')
 export const getPowerByDays = createAction<number>('GET_POWER_BY_DAYS')
 export const getComparePower = createAction<{ tagetDate: string; compareDate: string; currentPlantId: string }>(

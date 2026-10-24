@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api } from '../constants/vars'
+import { prefix_api, prefix_api_v2 } from '../constants/vars'
 import { ProductCummulativeOutputParams } from '../model/productOutput.request'
 import dayjs from 'dayjs'
 import { current } from '@reduxjs/toolkit'
@@ -17,10 +17,10 @@ export const Service = {
 }
 export const servicePattern = {
   getProductOutputByHours: `${prefix_api}/ProductByHours`,
-  getProductOutputOverview: `${prefix_api}/ProductOutputOverview`,
-  getProductOutputByDays: `${prefix_api}/Product_Recent_Days`,
+  getProductOutputOverview: `${prefix_api_v2}/ProductOutputOverview`,
+  getProductOutputByDays: `${prefix_api_v2}/Product_Recent_Days`,
   getProductCummulativeOutput: `${prefix_api}/ProductCummulativeOutput`,
-  getCompareProductOutput: `${prefix_api}/CompareProductOutput`,
+  getCompareProductOutput: `${prefix_api_v2}/CompareProductOutput`,
   getProductOutputCompareChart: `${prefix_api}/ProductOutput_compare_chart`,
 }
 
@@ -32,13 +32,18 @@ function getProductOutputByHoursApi() {
   })
 }
 
-function getProductOutputOverviewApi() {
-  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { currentPlantId: '' } })
+function getProductOutputOverviewApi(companyId: string = '') {
+  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { companyId: companyId, currentPlantId: '' } })
 }
 
-function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1) {
+function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1, companyId: string = '') {
+  console.log("samePeriodDD:",samePeriod)
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { nString: dayNumber, samePeriod: samePeriod },
+    params: {
+      nString: dayNumber,
+      samePeriod: samePeriod,
+      companyId: companyId
+    },
   })
 }
 
@@ -54,19 +59,21 @@ function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) 
   })
 }
 
-function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string) {
+function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string, companyId: string = '') {
+  console.log('companyIdDDD',companyId)
   return api.get(`${servicePattern.getCompareProductOutput}`, {
     params: {
       tagetDate: tagetDate,
       compareDate: compareDate,
       currentPlantId: currentPlantId,
+      companyId: companyId
     },
   })
 }
 
-function getProductOutputOverviewFactDetailApi(factoryId: string = '') {
+function getProductOutputOverviewFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputOverview}`, {
-    params: { currentPlantId: factoryId },
+    params: { currentPlantId: factoryId, companyId: companyId },
   })
 }
 
@@ -78,9 +85,9 @@ function getProductOutputByHoursFactDetailApi(factoryId: string = '') {
   })
 }
 
-function getProductOutputByDaysFactDetailApi(factoryId: string = '') {
+function getProductOutputByDaysFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { currentPlantId: factoryId },
+    params: { currentPlantId: factoryId, companyId: companyId },
   })
 }
 

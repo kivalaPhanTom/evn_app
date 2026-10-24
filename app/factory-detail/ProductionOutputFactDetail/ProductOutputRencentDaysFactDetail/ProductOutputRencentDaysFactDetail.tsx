@@ -20,6 +20,7 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
   const dispatch = useAppDispatch()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [productionData, setProductionData] = useState<productionData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
@@ -29,11 +30,12 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
     if (activeTabIndex === keyTab) {
       dispatch(getProductOutputByDaysFactDetail({
         factoryId: currentPlantId,
+        companyId: companyId,
         getDataFromApi: getDataFromApi,
         setLoading: setLoading
       }))
     }
-  }, [activeTabIndex, countRefesh])
+  }, [activeTabIndex, countRefesh, companyId])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)
