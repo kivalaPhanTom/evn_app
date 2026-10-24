@@ -101,10 +101,11 @@ const productOutputSlice = createSlice({
       state.productOutputByDays.productionData = action.payload
     },
     setProductCummulativeOutput: (state, action) => {
-      state.productCummulativeOutput.barGroups = action.payload.BarChartData
-      state.productCummulativeOutput.byLabel = action.payload.ByLabel
-      state.productCummulativeOutput.summary = action.payload.Summary
-      state.productCummulativeOutput.unit = action.payload.Unit
+      const d = action.payload
+      state.productCummulativeOutput.barGroups = d?.BarChartData ?? []
+      state.productCummulativeOutput.byLabel = d?.ByLabel ?? []
+      state.productCummulativeOutput.summary = d?.Summary ?? {}
+      state.productCummulativeOutput.unit = d?.Unit ?? ''
     },
     setCompareProductOutput: (state, action) => {
       state.compareProductOutput = action.payload

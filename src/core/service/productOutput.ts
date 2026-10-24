@@ -19,7 +19,7 @@ export const servicePattern = {
   getProductOutputByHours: `${prefix_api}/ProductByHours`,
   getProductOutputOverview: `${prefix_api_v2}/ProductOutputOverview`,
   getProductOutputByDays: `${prefix_api_v2}/Product_Recent_Days`,
-  getProductCummulativeOutput: `${prefix_api}/ProductCummulativeOutput`,
+  getProductCummulativeOutput: `${prefix_api_v2}/ProductCummulativeOutput`,
   getCompareProductOutput: `${prefix_api_v2}/CompareProductOutput`,
   getProductOutputCompareChart: `${prefix_api_v2}/ProductOutput_compare_chart`,
 }
@@ -48,19 +48,21 @@ function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = n
 }
 
 function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) {
+   console.log('currentPlantIdHHHH:', params?.currentPlantId)
+  console.log('companyIdHHHH:', params?.companyId)
   return api.get(`${servicePattern.getProductCummulativeOutput}`, {
     params: {
       type: params.type,
       from: params.from,
       to: params.to,
       currentPlantId: params.currentPlantId || '',
+      companyId: params.companyId || '',
       ...(params.startEndOnly && { startEndOnly: true }),
     },
   })
 }
 
 function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string, companyId: string = '') {
-  console.log('companyIdDDD', companyId)
   return api.get(`${servicePattern.getCompareProductOutput}`, {
     params: {
       tagetDate: tagetDate,
@@ -99,8 +101,6 @@ function getProductOutputCompareChartApi(
   currentPlantId: string = '',
   companyId: string = '',
 ) {
-  console.log('currentPlantIdHHHH:', currentPlantId)
-  console.log('companyIdHHHH:', companyId)
   return api.get(`${servicePattern.getProductOutputCompareChart}`, {
     params: {
       currentFromDate: currentFromDate,

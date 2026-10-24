@@ -76,7 +76,7 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
     const params = action.payload
     const res = yield call(Service.getProductCummulativeOutputApi, params)
     if (res.status === 200) {
-      yield put(setProductCummulativeOutput(res.data))
+      yield put(setProductCummulativeOutput(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingProductCummulativeOutput: false }))
   } catch (error) {
