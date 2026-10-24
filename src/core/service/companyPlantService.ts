@@ -29,9 +29,7 @@ export interface Plant {
   regulationType: 'hourly' | 'daily'
 }
 
-interface PlantsResponse {
-  data: { plants: Plant[] }
-}
+type PlantsResponse = Plant[] | { plants: Plant[] } | { data: { plants: Plant[] } }
 
 // Chuyển sang false khi backend triển khai hai endpoint này.
 const useMockApi = false
@@ -184,7 +182,7 @@ async function getPlantsApi(companyId: string) {
   if (typeof companyId !== 'string' || !companyId.trim()) {
     throw new Error('INVALID_PARAM: companyId không hợp lệ')
   }
-  if (useMockApi === false) {
+  if (useMockApi) {
     // if (!mockCompanies.some((company) => company.companyId === companyId)) {
     //   throw new Error('COMPANY_NOT_FOUND')
     // }
