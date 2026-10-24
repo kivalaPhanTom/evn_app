@@ -167,6 +167,7 @@ function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductO
       compareFromDate: string
       compareToDate: string
       currentPlantId: string
+      companyId?: string | null
     }
     const res = yield call(
       Service.getProductOutputCompareChartApi,
@@ -175,6 +176,7 @@ function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductO
       payload.compareFromDate,
       payload.compareToDate,
       payload.currentPlantId,
+      payload.companyId || '',
     )
     if (res.status === 200) {
       yield put(setProductOutputCompareChart(res.data))

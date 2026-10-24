@@ -38,8 +38,13 @@ function getComparePowerApi(tagetDate: string = '', compareDate: string = '', cu
   return api.get(url)
 }
 
-function getPowerOverviewFactDetailApi(factoryId: string = '') {
-  return api.get(`${servicePattern.getPowerOverview}?currentPlantId=${factoryId}`)
+function getPowerOverviewFactDetailApi(factoryId: string = '', companyId: string = '') {
+  return api.get(`${servicePattern.getPowerOverview}`, {
+    params: {
+      currentPlantId: factoryId,
+      companyId: companyId,
+    },
+  })
 }
 function getPowerByTimeFactDetailApi(factoryId: string = '') {
   return api.get(`${servicePattern.getPowerByTime}?currentPlantId=${factoryId}`)

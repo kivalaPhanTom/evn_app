@@ -36,9 +36,9 @@ function* getPowerOverviewSaga(action: ReturnType<typeof getPowerOverivew>): Gen
 function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOverivewFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId)
+    const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
       getDataFromApi(res.data)
     }

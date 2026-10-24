@@ -33,4 +33,5 @@ export const getProductOutputCompareChart = createAction<{
   compareFromDate: string
   compareToDate: string
   currentPlantId: string
+  companyId?: string | null
 }>('GET_PRODUCT_OUTPUT_COMPARE_CHART')
