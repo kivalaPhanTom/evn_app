@@ -38,7 +38,6 @@ function getProductOutputOverviewApi(companyId: string = '') {
 }
 
 function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1, companyId: string = '') {
-  console.log("samePeriodDD:", samePeriod)
   return api.get(`${servicePattern.getProductOutputByDays}`, {
     params: {
       nString: dayNumber,
@@ -49,8 +48,6 @@ function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = n
 }
 
 function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) {
-   console.log('currentPlantIdHHHH:', params?.currentPlantId)
-  console.log('companyIdHHHH:', params?.companyId)
   return api.get(`${servicePattern.getProductCummulativeOutput}`, {
     params: {
       type: params.type,
