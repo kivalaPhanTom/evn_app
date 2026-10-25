@@ -144,9 +144,9 @@ function* getProductOutputByHoursFactDetailSaga(
 function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProductOutputByDaysFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, companyId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, samePeriod, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputByDaysFactDetailApi, factoryId, companyId || '')
+    const res = yield call(Service.getProductOutputByDaysFactDetailApi, factoryId, companyId || '', samePeriod || new Date().getFullYear() - 1)
     if (res.status === 200) {
       const raw = res.data?.data
       const list = Array.isArray(raw) ? raw : raw?.detail

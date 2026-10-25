@@ -86,9 +86,9 @@ function getProductOutputByHoursFactDetailApi(factoryId: string = '', companyId:
   })
 }
 
-function getProductOutputByDaysFactDetailApi(factoryId: string = '', companyId: string = '') {
+function getProductOutputByDaysFactDetailApi(factoryId: string = '', companyId: string = '', samePeriod: number = new Date().getFullYear() - 1) {
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { currentPlantId: factoryId, companyId: companyId },
+    params: { currentPlantId: factoryId, companyId: companyId, samePeriod: samePeriod },
   })
 }
 

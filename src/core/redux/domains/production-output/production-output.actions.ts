@@ -25,6 +25,7 @@ export const getProductOutputByHoursFactDetail = createAction<{
 export const getProductOutputByDaysFactDetail = createAction<{
   factoryId: string
   companyId?: string | null
+  samePeriod?: number
   getDataFromApi: any
   setLoading: any
 }>('GET_PRODUCT_OUTPUT_BY_DAYS_FACT_DETAIL')

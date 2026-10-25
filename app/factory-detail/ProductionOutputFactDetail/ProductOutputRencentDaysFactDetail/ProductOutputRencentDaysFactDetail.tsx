@@ -31,11 +31,12 @@ function ProductOutputRencentDaysFactDetail(props: Props) {
       dispatch(getProductOutputByDaysFactDetail({
         factoryId: currentPlantId,
         companyId: companyId,
+        samePeriod: selectedYear,
         getDataFromApi: getDataFromApi,
         setLoading: setLoading
       }))
     }
-  }, [activeTabIndex, countRefesh, companyId])
+  }, [activeTabIndex, countRefesh, companyId, selectedYear])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)
