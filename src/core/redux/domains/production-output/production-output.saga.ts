@@ -22,12 +22,13 @@ import {
 } from './production-output.slice'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getProductOutputByHoursSaga(): Generator {
+function* getProductOutputByHoursSaga(action: ReturnType<typeof getProductOutputByHours>): Generator {
   try {
     yield put(setLoading({ isLoadingByHours: true }))
-    const res = yield call(Service.getProductOutputByHoursApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getProductOutputByHoursApi, companyId)
     if (res.status === 200) {
-      yield put(setProductOutputByHours(res.data))
+      yield put(setProductOutputByHours(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
@@ -127,11 +128,11 @@ function* getProductOutputByHoursFactDetailSaga(
 ): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId)
+    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      getDataFromApi(res.data)
+      getDataFromApi(res.data?.data ?? res.data)
     }
     setLoading(false)
   } catch (error) {

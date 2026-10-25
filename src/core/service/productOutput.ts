@@ -16,7 +16,7 @@ export const Service = {
   getProductOutputCompareChartApi,
 }
 export const servicePattern = {
-  getProductOutputByHours: `${prefix_api}/ProductByHours`,
+  getProductOutputByHours: `${prefix_api_v2}/ProductByHours`,
   getProductOutputOverview: `${prefix_api_v2}/ProductOutputOverview`,
   getProductOutputByDays: `${prefix_api_v2}/Product_Recent_Days`,
   getProductCummulativeOutput: `${prefix_api_v2}/ProductCummulativeOutput`,
@@ -24,10 +24,11 @@ export const servicePattern = {
   getProductOutputCompareChart: `${prefix_api_v2}/ProductOutput_compare_chart`,
 }
 
-function getProductOutputByHoursApi() {
+function getProductOutputByHoursApi(companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       date: dayjs().format('DD/MM/YYYY'),
+      companyId: companyId
     },
   })
 }
@@ -79,10 +80,11 @@ function getProductOutputOverviewFactDetailApi(factoryId: string = '', companyId
   })
 }
 
-function getProductOutputByHoursFactDetailApi(factoryId: string = '') {
+function getProductOutputByHoursFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       currentPlantId: factoryId,
+      companyId: companyId,
     },
   })
 }

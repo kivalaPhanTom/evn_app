@@ -29,10 +29,10 @@ function ProductionOutput() {
   useAlignedHourlyTimer(() => {
     dispatch(getProductOutputOverview({ companyId }))
   })
-
+ 
   useEffect(() => {
     dispatch(getProductOutputOverview({ companyId }))
-    dispatch(getProductOutputByHours())
+    dispatch(getProductOutputByHours({ companyId }))
     dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear, companyId}))
   }, [countRefesh, companyId])
 

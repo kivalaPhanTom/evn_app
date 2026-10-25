@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 import type { ProductCummulativeOutputParams } from '@/core/model/productOutput.request'
 
-export const getProductOutputByHours = createAction('GET_PRODUCT_BY_HOURS')
+export const getProductOutputByHours = createAction<{ companyId?: string | null }>('GET_PRODUCT_BY_HOURS')
 export const getProductOutputOverview = createAction<{ companyId?: string | null }>('GET_PRODUCT_OUTPUT_OVERVIEW')
 export const getProductOutputByDays = createAction<{ n: number; samePeriodYear: number; companyId?: string | null }>(
   'GET_PRODUCT_OUTPUT_BY_DAYS',
@@ -18,6 +18,7 @@ export const getProductOutputOverviewFactDetail = createAction<{
 }>('GET_PRODUCT_OUTPUT_OVERVIEW_FACT_DETAIL')
 export const getProductOutputByHoursFactDetail = createAction<{
   factoryId: string
+  companyId?: string | null
   getDataFromApi: any
   setLoading: any
 }>('GET_PRODUCT_BY_HOURS_FACT_DETAIL')
