@@ -24,6 +24,7 @@ function ProductionOutputByHoursFactDetail(props: Props) {
   const router = useRouter()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [contractPowerValue, setContractPowerValue] = useState<number>(0)
   const [currentPowerValue, setCurrentPowerValue] = useState<number>(0)
@@ -38,12 +39,13 @@ function ProductionOutputByHoursFactDetail(props: Props) {
       dispatch(
         getProductOutputByHoursFactDetail({
           factoryId: currentPlantId,
+          companyId: companyId,
           getDataFromApi: getDataFromApi,
           setLoading: setLoading,
         }),
       )
     }
-  }, [activeTabIndex, countRefesh])
+  }, [activeTabIndex, countRefesh, companyId])
 
   const getDataFromApi = (data: productOutputByHours) => {
     setContractPowerValue(data.contractPowerValue)

@@ -62,6 +62,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
     to: dayjs(),
   })
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { isLoadingCompareProductOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
   const barColor = '#2563EB'
   const screenWidth = Dimensions.get('window').width
@@ -148,9 +149,10 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
         tagetDate: range.to.format('DD/MM/YYYY'),
         compareDate: range.from.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId: companyId,
       }),
     )
-  }, [dispatch, countRefesh])
+  }, [dispatch, countRefesh, companyId])
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     setRange(newRange)
@@ -162,6 +164,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
         tagetDate: fromDate.format('DD/MM/YYYY'),
         compareDate: toDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId: companyId,
       }),
     )
   }
@@ -171,7 +174,7 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
       <Text style={styles.headerDashboard}>So sánh sản lượng theo ngày</Text>
       <DateRangePicker
         labelFrom="Ngày so sánh"
-        labelTo="Ngày mục tiêu"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}

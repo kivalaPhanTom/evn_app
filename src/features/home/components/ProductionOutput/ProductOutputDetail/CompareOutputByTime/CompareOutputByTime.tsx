@@ -31,6 +31,7 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
     from: dayjs().subtract(7, 'day'),
     to: dayjs(),
   })
+  const { selectedCompanyId: companyId } = useAppSelector((state: any) => state.companyPlantSlice)
   useEffect(() => {
     dispatch(
       getProductOutputCompareChart({
@@ -39,9 +40,10 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
         compareFromDate: rangeCompare.from.format('DD/MM/YYYY'),
         compareToDate: rangeCompare.to.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId: companyId,
       }),
     )
-  }, [countRefesh])
+  }, [countRefesh, companyId])
 
   const onChangeDateRangeCompare = (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => {
     // Đảm bảo kiểu dayjs
@@ -62,6 +64,7 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
         compareFromDate: fromDate.format('DD/MM/YYYY'),
         compareToDate: toDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId: companyId,
       }),
     )
   }
@@ -86,6 +89,7 @@ function CompareOutputByTime(props: { currentPlantId?: string; isCheckDisableDat
         compareFromDate: rangeCompare.from.format('DD/MM/YYYY'),
         compareToDate: rangeCompare.to.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId: companyId,
       }),
     )
   }

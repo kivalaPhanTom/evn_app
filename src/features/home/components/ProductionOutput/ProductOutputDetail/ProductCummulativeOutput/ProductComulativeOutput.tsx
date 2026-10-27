@@ -35,6 +35,7 @@ function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const styles = createStyles(isDark)
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()
@@ -66,7 +67,6 @@ function ProductCumulativeOutput(props: { currentPlantId?: string }) {
     return { from: now, to: now }
   }
   const [range, setRange] = useState(getDefaultRange('day'))
-  console.log(range);
 
   const contentAnim = useRef(new Animated.Value(1)).current
 
@@ -80,9 +80,10 @@ function ProductCumulativeOutput(props: { currentPlantId?: string }) {
       getProductCummulativeOutput({
         ...params,
         currentPlantId: props.currentPlantId || '',
+        companyId: companyId,
       }),
     )
-  }, [dispatch, props.currentPlantId])
+  }, [dispatch, props.currentPlantId, companyId])
 
   useEffect(() => {
     fetchProductCummulativeOutput({
@@ -92,7 +93,7 @@ function ProductCumulativeOutput(props: { currentPlantId?: string }) {
       startEndOnly: comparePeriodEnabled || undefined,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countRefesh])
+  }, [countRefesh, companyId])
 
   const summary = productCummulativeOutput?.summary ?? {}
   const orderedKeys = ['Max', 'Min', 'Average', 'Total'] as const
