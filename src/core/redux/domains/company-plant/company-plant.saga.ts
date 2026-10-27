@@ -29,8 +29,22 @@ function* getPlantsSaga(action: ReturnType<typeof getPlants>): Generator {
     yield put(saveModuleState([]))
     yield put(getModules({ companyId: action.payload, username }))
     const response: Awaited<ReturnType<typeof Service.getPlantsApi>> = yield call(Service.getPlantsApi, action.payload)
+    // console.log(
+    //   '[GetPlants][response]\n' + JSON.stringify({ companyId: action.payload, status: response.status, data: response.data }, null, 2),
+    // )
     if (response.status !== 200) throw new Error('Không tải được danh sách nhà máy.')
-    yield put(plantsLoaded(response.data.data.plants))
+    const body = response.data
+    const plantList = Array.isArray(body) ? body : body && ('plants' in body ? body.plants : body.data?.plants)
+    if (!Array.isArray(plantList)) {
+      throw new Error('INVALID_RESPONSE: GetPlants không trả về danh sách nhà máy hợp lệ.')
+    }
+    yield put(plantsLoaded(plantList))
+    const plants: RootState['companyPlantSlice']['plants'] = yield select(
+      (state: RootState) => state.companyPlantSlice.plants,
+    )
+    // console.log(
+    //   '[GetPlants][Redux: companyPlantSlice.plants]\n' + JSON.stringify({ companyId: action.payload, plants }, null, 2),
+    // )
     // Dữ liệu nhà máy chỉ được trả về Redux, chưa dùng để thay các luồng hiện tại.
     const companies: Company[] = yield select((state: RootState) => state.companyPlantSlice.companies)
     const company = companies.find((item) => item.companyId === action.payload)
