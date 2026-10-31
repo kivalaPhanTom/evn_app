@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects'
 import {
   authenSagaList,
+  companyPlantSagaList,
   documentSagaList,
   hydrologySagaList,
   modulesSagaList,
@@ -14,6 +15,7 @@ import {
 export function* rootSaga() {
   yield all([
     authenSagaList(),
+    companyPlantSagaList(),
     powerSagaList(),
     productOutputSagaList(),
     hydrologySagaList(),

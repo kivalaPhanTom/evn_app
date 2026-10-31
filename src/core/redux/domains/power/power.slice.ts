@@ -17,6 +17,7 @@ interface PowerByDays {
 interface powerOverviewState {
   average: number
   total: number
+  unit: string
   detail: PowerDetail[]
   isLoadingOverview: boolean
   isLoadingByHours: boolean
@@ -45,6 +46,7 @@ interface powerOverviewState {
 const initialState: powerOverviewState = {
   average: 0,
   total: 0,
+  unit: '',
   detail: [],
   isLoadingOverview: false,
   isLoadingByHours: false,
@@ -83,9 +85,11 @@ const powerSlice = createSlice({
       state.activeTabIndex = action.payload
     },
     setPowerOverview: (state, action) => {
-      state.average = action.payload.average
-      state.total = action.payload.total
-      state.detail = action.payload.detail
+      const d = action.payload
+      state.average = d?.average ?? 0
+      state.total = d?.total ?? 0
+      state.unit = d?.unit ?? ''
+      state.detail = d?.details ?? d?.detail ?? []
     },
     setPowerByTime: (state, action) => {
       state.powerByTime = action.payload

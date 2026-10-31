@@ -1,12 +1,12 @@
 import { api } from './api.service'
-import { prefix_api } from '../constants/vars'
+import { prefix_api_v2 } from '../constants/vars'
 
 export const Service = {
-    getModulesApi,
+  getModulesApi,
 }
 export const servicePattern = {
-  getModules: `${prefix_api}/Get_Modules`,
+  getModules: `${prefix_api_v2}/Get_Modules`,
 }
-function getModulesApi() {
-  return api.get(`${servicePattern.getModules}`)
+function getModulesApi(companyId: string, username: string) {
+  return api.get(`${servicePattern.getModules}`, { params: { companyId, username } })
 }

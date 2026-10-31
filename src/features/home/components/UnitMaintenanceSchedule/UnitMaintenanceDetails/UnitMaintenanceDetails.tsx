@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { FlatList, ListRenderItem, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -26,7 +26,6 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
   if (lowerType.includes('major') || lowerType.includes('đại')) {
     return 'major'
   }
-  // Map 'RCM' or any other value (medium, minor, etc.) to 'rcm'
   if (
     lowerType.includes('rcm') ||
     lowerType.includes('medium') ||
@@ -36,8 +35,77 @@ const mapTypeToLevel = (type: string): MaintenanceLevel => {
   ) {
     return 'rcm'
   }
-  // Default to rcm if unknown
   return 'rcm'
+}
+
+type MaintenanceItem = {
+  title: string
+  level: MaintenanceLevel
+  planned: {
+    days: number
+    startDate: string
+    endDate: string
+  }
+  actual: {
+    days: number | null
+    startDate: string | null
+    endDate: string | null
+  }
+  timeline: {
+    activeMonths: number[]
+  }
+}
+
+interface YearPickerProps {
+  selectedYear: number
+  onChange: (year: number) => void
+  styles: ReturnType<typeof createStyles>
+}
+
+const YearPicker: React.FC<YearPickerProps> = ({ selectedYear, onChange, styles }) => {
+  const [showSelectModal, setShowSelectModal] = useState(false)
+  const currentYear = new Date().getFullYear()
+  const years = useMemo(() => generateYearList(currentYear), [currentYear])
+
+  return (
+    <>
+      <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
+        <Text style={styles.selectText}>{selectedYear}</Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={showSelectModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSelectModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowSelectModal(false)}
+        >
+          <View style={styles.modalContent}>
+            {years.map((year) => (
+              <TouchableOpacity
+                key={year}
+                style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
+                onPress={() => {
+                  onChange(year)
+                  setShowSelectModal(false)
+                }}
+              >
+                <Text
+                  style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
+                >
+                  {year}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  )
 }
 
 function UnitMaintenanceDetails() {
@@ -48,37 +116,27 @@ function UnitMaintenanceDetails() {
   const styles = createStyles(isDark)
   const { currentPlantDetail } = useAppSelector((state: RootState) => state.unitMaintenanceScheduleSlice)
 
-  // Normalize currentPlantId from params (handle array case)
   const currentPlantId = Array.isArray(currentPlantIdFromParams)
     ? currentPlantIdFromParams[0]
     : currentPlantIdFromParams
 
-  // Use currentPlantId from params, or fallback to PlantCode from Redux, or first tab
   const effectivePlantId = currentPlantId || currentPlantDetail?.PlantCode || TABS[0]?.id || ''
   const [activeTab, setActiveTab] = useState<string>(effectivePlantId)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
-  const currentYear = new Date().getFullYear()
-  const years = generateYearList(currentYear)
-
   useEffect(() => {
-    // Update activeTab when effectivePlantId changes
     if (effectivePlantId) {
       setActiveTab(effectivePlantId)
     }
   }, [effectivePlantId])
 
   useEffect(() => {
-    // Call API if we have a valid currentPlantId from params
     if (activeTab) {
       dispatch(getDetailRepairSchedule({ currentPlantId: activeTab, year: selectedYear ?? new Date().getFullYear() }))
     }
-    // Note: If no currentPlantId, component will use data from Redux state
-    // if it was already fetched by another component
   }, [activeTab, dispatch, selectedYear])
 
-  // Map API data to component format
-  const maintenanceItems = useMemo(() => {
+  const maintenanceItems = useMemo<MaintenanceItem[]>(() => {
     if (!currentPlantDetail?.Items || currentPlantDetail.Items.length === 0) {
       return []
     }
@@ -102,73 +160,43 @@ function UnitMaintenanceDetails() {
     }))
   }, [currentPlantDetail])
 
+  const renderItem: ListRenderItem<MaintenanceItem> = useCallback(
+    ({ item }) => (
+      <MaintenanceLevelCard
+        title={item.title}
+        level={item.level}
+        planned={item.planned}
+        actual={item.actual}
+        timeline={item.timeline}
+      />
+    ),
+    [],
+  )
+
+  const keyExtractor = useCallback((item: MaintenanceItem, index: number) => `${item.title}-${index}`, [])
+
   return (
     <ScrollView>
       <ScrollableTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       <SectionContainer title="Chi tiết hạng mục bảo dưỡng">
         <View style={{ alignItems: 'flex-end' }}>
-          {(() => {
-            const YearPicker: React.FC = () => {
-              const [showSelectModal, setShowSelectModal] = useState(false)
-
-              return (
-                <>
-                  <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-                    <Text style={styles.selectText}>{selectedYear}</Text>
-                  </TouchableOpacity>
-
-                  <Modal
-                    visible={showSelectModal}
-                    transparent
-                    animationType="fade"
-                    onRequestClose={() => setShowSelectModal(false)}
-                  >
-                    <TouchableOpacity
-                      style={styles.modalOverlay}
-                      activeOpacity={1}
-                      onPress={() => setShowSelectModal(false)}
-                    >
-                      <View style={styles.modalContent}>
-                        {years.map((year) => (
-                          <TouchableOpacity
-                            key={year}
-                            style={[styles.selectOption, selectedYear === year && styles.selectOptionActive]}
-                            onPress={() => {
-                              setSelectedYear(year)
-                              setShowSelectModal(false)
-                            }}
-                          >
-                            <Text
-                              style={[styles.selectOptionText, selectedYear === year && styles.selectOptionTextActive]}
-                            >
-                              {year}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </TouchableOpacity>
-                  </Modal>
-                </>
-              )
-            }
-
-            return <YearPicker />
-          })()}
+          <YearPicker selectedYear={selectedYear} onChange={setSelectedYear} styles={styles} />
         </View>
         <View style={styles.contentContainer}>
           {maintenanceItems.length > 0 ? (
-            maintenanceItems.map((item, index) => (
-              <MaintenanceLevelCard
-                key={`${item.title}-${index}`}
-                title={item.title}
-                level={item.level}
-                planned={item.planned}
-                actual={item.actual}
-                timeline={item.timeline}
-              />
-            ))
+            <FlatList
+              data={maintenanceItems}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              removeClippedSubviews
+              initialNumToRender={6}
+              windowSize={7}
+              maxToRenderPerBatch={4}
+              updateCellsBatchingPeriod={50}
+              scrollEnabled={false}
+            />
           ) : (
-            <View style={{ padding: 20, alignItems: 'center' }}>{/* Optional: Add loading or empty state */}</View>
+            <View style={{ padding: 20, alignItems: 'center' }} />
           )}
         </View>
       </SectionContainer>
@@ -176,4 +204,4 @@ function UnitMaintenanceDetails() {
   )
 }
 
-export default UnitMaintenanceDetails
+export default React.memo(UnitMaintenanceDetails)

@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getComparePower } from '@/core/redux/domains/power'
 import dayjs from 'dayjs'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { shallowEqual } from 'react-redux'
 
 function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: boolean }) {
   const { currentPlantId, isCheckDisableDate } = props
@@ -17,7 +18,7 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const styles = createStyles(isDark)
-  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {})
+  const comparePowerData = useAppSelector((state: any) => state.powerSlice.comparePower || {}, shallowEqual)
   const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)

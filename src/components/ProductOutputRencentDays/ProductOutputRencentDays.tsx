@@ -29,11 +29,13 @@ interface LegendItemData {
   color?: string
   label: string
 }
+
 function ProductOutputRencentDays(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
   const isDark = useAppTheme() === 'dark'
   const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
+  const actualGreenColor = isDark ? Colors.green : Colors.actualGreen
   //
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
   const unit = 'tr.KWh'
@@ -58,7 +60,7 @@ function ProductOutputRencentDays(props: Props) {
     }
   }, [isLoading])
   const legendItems: LegendItemData[] = [
-    { type: 'line', label: 'Thực tế', color: Colors.green },
+    { type: 'line', label: 'Thực tế', color: actualGreenColor },
     { type: 'line', label: 'Hợp đồng', color: '#eab308' },
     { type: 'line', label: 'Cùng kỳ', color: '#7a8596' },
   ]
@@ -68,8 +70,8 @@ function ProductOutputRencentDays(props: Props) {
         {/* Title */}
         <Text style={[styles.title, !isDark && { color: '#374151' }]}>A - 7 NGÀY GẦN NHẤT</Text>
         <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Chi tiết</Text>
-          <Text style={styles.actionButtonIcon}>{'>'}</Text>
+          <Text style={[styles.actionButtonText, !isDark && { color: '#4E8DF9' }]}>Chi tiết</Text>
+          <Text style={[styles.actionButtonIcon, !isDark && { color: '#4E8DF9' }]}>{'>'}</Text>
         </TouchableOpacity>
         {/* Table Header */}
         <View style={styles.tableHeader}>
@@ -163,7 +165,7 @@ function ProductOutputRencentDays(props: Props) {
             <>
               {productionData.map((day, index) => {
                 const isAboveContract = day.actual >= day.contract
-                const actualColor = isAboveContract ? Colors.green : Colors.red
+                const actualColor = isAboveContract ? actualGreenColor : Colors.red
                 const isWeekend =
                   day.dayOfWeek.toLowerCase() === 'thứ bảy' || day.dayOfWeek.toLowerCase() === 'chủ nhật'
                 return (
@@ -180,7 +182,18 @@ function ProductOutputRencentDays(props: Props) {
                       >
                         {day.date}
                         {'\n'}
-                        <Text style={styles.dayOfWeek}>{day.dayOfWeek}</Text>
+                        <Text
+                          style={[
+                            styles.dayOfWeek,
+                            !isDark &&
+                              (day.date === 'Hôm nay' || day.date === 'Hôm qua') && {
+                                color: Colors.darkText,
+                                opacity: 1,
+                              },
+                          ]}
+                        >
+                          {day.dayOfWeek}
+                        </Text>
                       </Text>
                       <View style={styles.col2}>
                         <Text style={[styles.cellText, styles.valueText, { color: actualColor }]}>
@@ -216,7 +229,7 @@ function ProductOutputRencentDays(props: Props) {
               data={dataActual}
               data2={contractData}
               data3={samePeriodData}
-              color={Colors.green}
+              color={actualGreenColor}
               color2={'#eab308'}
               color3={'#7a8596'}
               areaChart={false}

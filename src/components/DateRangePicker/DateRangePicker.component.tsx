@@ -223,7 +223,10 @@ export default function DateRangePicker({
         const today = dayjs()
         const base = focused === 'from' ? value.from : value.to
         let newDate = dayjs(base).month(monthIndex).startOf('month')
-        if (!noRangeConstraint) {
+
+        // Chi gioi han moc toi (to) khong duoc truoc moc tu (from).
+        // Mốc from phai duoc phep lui ve cac thang/nam trong qua khu.
+        if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
           const minDate = dayjs(value.from).startOf('month')
           if (newDate.isBefore(minDate, 'month')) {
             newDate = minDate
@@ -240,7 +243,8 @@ export default function DateRangePicker({
         const base = focused === 'from' ? value.from : value.to
         let d = dayjs(base).year(year)
         let newDate = chooseMode === 'year' ? d.startOf('year') : d.startOf('month')
-        if (!noRangeConstraint) {
+        // Khong so sanh from moi voi chinh value.from cu; chi clamp khi dang chon to.
+        if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
           const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
 
           if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {

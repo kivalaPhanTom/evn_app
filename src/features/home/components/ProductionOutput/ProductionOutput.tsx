@@ -10,35 +10,38 @@ import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDa
 import TotalPower from '@/components/TotalPower/TotalPower'
 import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
+import { shallowEqual } from 'react-redux'
 
 function ProductionOutput() {
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const router = useRouter()
   const dispatch = useAppDispatch()
   const {
-    productOutputOverview: { totalPower, averagePower, powerSources },
-    isLoadingOverview
-  } = useAppSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByHours, isLoadingByHours } = useAppSelector((state: RootState) => state.productOutputSlice)
-  const { productOutputByDays: { productionData }, isLoadingNearCurrentDays } = useAppSelector((state: RootState) => state.productOutputSlice)
+    productOutputOverview: { totalPower, averagePower, powerSources, unit },
+    isLoadingOverview,
+    productOutputByHours,
+    isLoadingByHours,
+    productOutputByDays: { productionData },
+    isLoadingNearCurrentDays,
+  } = useAppSelector((state: RootState) => state.productOutputSlice, shallowEqual)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1)
-
   useAlignedHourlyTimer(() => {
-    dispatch(getProductOutputOverview())
+    dispatch(getProductOutputOverview({ companyId }))
   })
-
+ 
   useEffect(() => {
-    dispatch(getProductOutputOverview())
-    dispatch(getProductOutputByHours())
-    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear}))
-  }, [countRefesh])
+    dispatch(getProductOutputOverview({ companyId }))
+    dispatch(getProductOutputByHours({ companyId }))
+    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear, companyId}))
+  }, [countRefesh, companyId])
 
   const onPressCard = () => {
     router.navigate({ pathname: '/product-output-detail' })
   }
   useEffect(() => {
-    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear}))
-  }, [countRefesh, selectedYear])
+    dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear, companyId}))
+  }, [countRefesh, selectedYear, companyId])
   
   return (
     <SectionContainer title="Sản lượng (A)">
@@ -49,8 +52,8 @@ function ProductionOutput() {
           total={totalPower}
           detail={powerSources}
           isLoading={isLoadingOverview}
-          unit="tr.KWh"
-          type='production'
+          unit={unit}
+          type="product-output"
         />
       </View>
       {/* <View style={styles.section}>

@@ -106,7 +106,7 @@ const CompareDashboard = ({
       <Text style={styles.chartTitle}>So sánh công suất theo ngày</Text>
       <DateRangePicker
         labelFrom="Ngày so sánh"
-        labelTo="Ngày mục tiêu"
+        labelTo="Ngày mục tiêu"
         format={'DD/MM/YYYY'}
         value={range}
         onChange={onChangeDateRage}

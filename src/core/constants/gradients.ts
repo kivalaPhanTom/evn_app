@@ -14,6 +14,7 @@ export const lightGradients = {
   red: ['#fb7185', '#fda4af'] as GradientColors,
   orange: ['#fb923c', '#fdba74'] as GradientColors,
   purple: ['#c084fc', '#a78bfa'] as GradientColors,
+  darkBlue: ['#2563EB', '#1E40AF'] as GradientColors,
 }
 
 export const darkGradients = {

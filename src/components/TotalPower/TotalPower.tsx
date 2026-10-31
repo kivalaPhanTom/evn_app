@@ -15,6 +15,7 @@ import GradientText from '@/components/GradientText/GradientText.component'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import DotBarSkeleton from '@/components/Skeletons/DotBarSkeleton'
 import { Colors } from '@/core/constants/colors'
+import { lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { Image } from 'expo-image'
 
@@ -31,9 +32,14 @@ interface Props {
   detail: PowerDetail[]
   title?: string
   unit: string
-  type?: 'power' | 'production'
+  type?: 'power' | 'product-output'
 }
 const ROTATION_DURATION = 3000
+const lightSourceColors: Record<string, string> = {
+  BTS: Colors.vividOrange,
+  BK: Colors.turquoise,
+  SP3: Colors.cyan,
+}
 
 function TotalPower(props: Props) {
   const [firstLoading, setFirstLoading] = useState(true)
@@ -67,6 +73,14 @@ function TotalPower(props: Props) {
   }))
 
   const isDark = useAppTheme() === 'dark'
+  const getSourceColor = (code: string, color?: string | null) =>
+    (color && color.startsWith('#') ? color : null) || lightSourceColors[code?.trim()] || '#8b92a0'
+  const totalColors =
+    !isDark && type === 'power'
+      ? lightGradients.darkBlue
+      : !isDark && type === 'product-output'
+        ? Colors.actualGreen
+        : Colors.blue
 
   return (
     <AnimatedCardContainer>
@@ -94,7 +108,7 @@ function TotalPower(props: Props) {
           ) : (
             <>
               {/* <Text style={styles.title}>{title}</Text> */}
-              <GradientText text={total} fontSize={px.f(60)} colors={Colors.blue} allowFontScaling={false} />
+              <GradientText text={total} fontSize={px.f(60)} colors={totalColors} allowFontScaling={false} />
             </>
           )}
 
@@ -121,13 +135,28 @@ function TotalPower(props: Props) {
               {detail.map((source, index) => (
                 <View key={index} style={styles.sourceItem}>
                   <View style={styles.sourceInfo}>
-                    <View style={[styles.dot, { backgroundColor: source.color }]} />
+                    <View style={[styles.dot, { backgroundColor: getSourceColor(source.code, source.color) }]} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                      <Text style={[styles.sourceName, !isDark && { color: '#8b92a0', fontWeight: '700' }]}>
+                      <Text
+                        style={[
+                          styles.sourceName,
+                          { color: getSourceColor(source.code, source.color) },
+                          !isDark && { fontWeight: '700' },
+                        ]}
+                      >
                         {source.code}
                         {/* {source.name} <Text style={styles.sourceCode}>({source.code})</Text> */}
                       </Text>
-                      <Text style={[styles.sourcePower, { color: source.color }]}>{source.value}</Text>
+                      <Text
+                        style={[
+                          styles.sourcePower,
+                          {
+                            color: getSourceColor(source.code, source.color),
+                          },
+                        ]}
+                      >
+                        {source.value}
+                      </Text>
                     </View>
                   </View>
                   {/* <Text style={[styles.sourcePower, { color: source.color }]}>

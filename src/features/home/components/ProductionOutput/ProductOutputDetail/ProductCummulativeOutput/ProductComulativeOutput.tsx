@@ -13,7 +13,7 @@ import { TabType } from '@/core/types'
 import { px } from '@/core/utils/scale'
 import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -27,7 +27,7 @@ interface CumulativeSummaryItem {
   periodLabel: string
 }
 
-export default function ProductCumulativeOutput(props: { currentPlantId?: string }) {
+function ProductCumulativeOutput(props: { currentPlantId?: string }) {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -35,6 +35,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
   const styles = createStyles(isDark)
   const { productCummulativeOutput, isLoadingProductCummulativeOutput } = useAppSelector((state: RootState) => state.productOutputSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
   const [comparePeriodEnabled, setComparePeriodEnabled] = useState(false)
   const { t } = useTranslation()
@@ -66,11 +67,10 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
     return { from: now, to: now }
   }
   const [range, setRange] = useState(getDefaultRange('day'))
-  console.log(range);
 
   const contentAnim = useRef(new Animated.Value(1)).current
 
-  const fetchProductCummulativeOutput = (params: {
+  const fetchProductCummulativeOutput = useCallback((params: {
     type: string
     from: string
     to: string
@@ -80,9 +80,10 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       getProductCummulativeOutput({
         ...params,
         currentPlantId: props.currentPlantId || '',
+        companyId: companyId,
       }),
     )
-  }
+  }, [dispatch, props.currentPlantId, companyId])
 
   useEffect(() => {
     fetchProductCummulativeOutput({
@@ -92,7 +93,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       startEndOnly: comparePeriodEnabled || undefined,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countRefesh])
+  }, [countRefesh, companyId])
 
   const summary = productCummulativeOutput?.summary ?? {}
   const orderedKeys = ['Max', 'Min', 'Average', 'Total'] as const
@@ -116,7 +117,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
     }),
   )
 
-  const onChangeDateRage = (newRange: { from: any; to: any }) => {
+  const onChangeDateRage = useCallback((newRange: { from: any; to: any }) => {
     const fromDate = dayjs(newRange.from)
     const toDate = dayjs(newRange.to)
     if (fromDate.isAfter(toDate)) {
@@ -130,9 +131,9 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       to: toDate.format('DD/MM/YYYY'),
       startEndOnly: comparePeriodEnabled || undefined,
     })
-  }
+  }, [tab, comparePeriodEnabled, fetchProductCummulativeOutput])
 
-  const onTabChange = (newTab: TabType) => {
+  const onTabChange = useCallback((newTab: TabType) => {
     setTab(newTab)
 
     const newRange = getDefaultRange(newTab)
@@ -146,9 +147,9 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       to: newRange.to.format('DD/MM/YYYY'),
       startEndOnly: comparePeriodEnabled || undefined,
     })
-  }
+  }, [range.from, range.to, comparePeriodEnabled, fetchProductCummulativeOutput])
 
-  const onToggleComparePeriod = () => {
+  const onToggleComparePeriod = useCallback(() => {
     const newValue = !comparePeriodEnabled
     setComparePeriodEnabled(newValue)
     fetchProductCummulativeOutput({
@@ -157,7 +158,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       to: dayjs(range.to).format('DD/MM/YYYY'),
       startEndOnly: newValue || undefined,
     })
-  }
+  }, [tab, range.from, range.to, comparePeriodEnabled, fetchProductCummulativeOutput])
 
   return (
     <AnimatedCardContainer>
@@ -188,7 +189,7 @@ export default function ProductCumulativeOutput(props: { currentPlantId?: string
       </View>
 
       {tab === 'day' ? (
-        <DateRangePicker
+        <DateRangePicker
           format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
       ) : (
         <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -378,3 +379,5 @@ const createStyles = (isDark: boolean) => {
   },
   })
 }
+
+export default React.memo(ProductCumulativeOutput)

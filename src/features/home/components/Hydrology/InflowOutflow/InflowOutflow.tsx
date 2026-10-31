@@ -1,3 +1,4 @@
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useEffect, useMemo } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -16,6 +17,7 @@ import { isEmpty } from '@/core/utils/utils'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
+import { shallowEqual } from 'react-redux'
 
 interface InflowOutflowProps {
   hydroElectricId: string
@@ -30,8 +32,8 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#00DF73',
-        borderColor: '#FFF',
+        backgroundColor: isDark ? dark.inflow : '#00DF73',
+        borderColor: isDark ? dark.text : '#FFF',
         borderWidth: 2,
         transform: [{ translateX: -6 }, { translateY: -6 }],
       }}
@@ -44,8 +46,8 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
         width: 6,
         height: 6,
         borderRadius: 3,
-        backgroundColor: '#FB923C',
-        borderColor: '#FFF',
+        backgroundColor: isDark ? dark.chart.outflow : '#FB923C',
+        borderColor: isDark ? dark.text : '#FFF',
         borderWidth: 2,
       }}
     />
@@ -53,13 +55,19 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
 
   const dispatch = useAppDispatch()
   const { isLoadingInflowOutflow } = useAppSelector((state: any) => state.hydrologySlice)
-  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {})
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {}, shallowEqual)
   const isEmptyData = Object.keys(inflowOutflowData).length === 0
   const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
   const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]
   const xtflow = isEmptyData ? {} : inflowOutflowData?.cards[2]
-  const qIn = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))
-  const qOut = isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))
+  const qIn = useMemo(
+    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))),
+    [isEmptyData, inflowOutflowData.qIn],
+  )
+  const qOut = useMemo(
+    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))),
+    [isEmptyData, inflowOutflowData.qOut],
+  )
 
   useEffect(() => {
     // Dispatch action to fetch inflow/outflow data
@@ -85,7 +93,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="về"
                     value={inflow?.value}
                     unit={inflow?.unit}
-                    color="#00DF73"
+                    color={isDark ? dark.inflow : light.inflow}
                     icon="↑"
                   />
                   <FlowMetricCard
@@ -93,7 +101,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="cm"
                     value={outflow?.value}
                     unit={outflow?.unit}
-                    color="#FF0000"
+                    color={isDark ? dark.outflow : light.outflow}
                     icon="↓"
                   />
                   <FlowMetricCard
@@ -101,7 +109,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                     label1="xt"
                     value={xtflow?.value}
                     unit={xtflow?.unit}
-                    color="#FF0000"
+                    color={isDark ? dark.outflow : light.outflow}
                     icon="↓"
                   />
                 </>
@@ -110,10 +118,10 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
           </View>
           {!isLoadingInflowOutflow && (
             <View style={styles.notePanel}>
-              <CircleLineIcon color="#00DF73" />
-              <Text style={styles.noteText}>Qvề</Text>
-              <CircleLineIcon color="#FB923C" />
-              <Text style={styles.noteText}>Qxả (Qcm + Qxt)</Text>
+              <CircleLineIcon color={isDark ? dark.inflow : light.inflow} />
+              <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qvề</Text>
+              <CircleLineIcon color={isDark ? dark.chart.outflow : light.warning} />
+              <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qxả (Qcm + Qxt)</Text>
             </View>
           )}
 
@@ -126,20 +134,20 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                   <LineChart
                     data={qIn}
                     data2={qOut}
-                    color="#00DF73"
-                    color2="#FB923C"
+                    color={isDark ? dark.inflow : light.inflow}
+                    color2={isDark ? dark.chart.outflow : light.warning}
                     ruleTypes="solid"
                     areaChart={false}
                     hideDataPoints1={true}
                     hideDataPoints2={true}
-                    rulesColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                    rulesColor={isDark ? dark.chart.flowGrid : light.grid}
                     //customDataPoint={customDataPoint()}
                     //customDataPoint2={customDataPoint2()}
                     label1="Qvề: "
                     label2="Qxả: "
                     height={px.v(200)}
                     pointerConfig={true}
-                    xAxisColor={isDark ? '#E5E5EF' : 'rgba(255,255,255,0.8)'}
+                    xAxisColor={isDark ? dark.chart.flowGrid : light.grid}
                     scrollToEnd={true}
                   />
                 )}
@@ -152,4 +160,4 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   )
 }
 
-export default InflowOutflow
+export default React.memo(InflowOutflow)

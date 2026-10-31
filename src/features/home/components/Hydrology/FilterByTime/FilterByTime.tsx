@@ -1,3 +1,4 @@
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useRef, useState } from 'react'
 import { View, Text, Animated } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -104,7 +105,12 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
       {title ? <Text style={styles.chartCompareByTime}>{title}</Text> : null}
       <DateRangePicker
         labelFrom={labelFrom}
-        labelTo={labelTo}
+        labelTo={labelTo}
+
+
+
+
+
         format="DD/MM/YYYY"
         value={filterByTime[keyRange]}
         onChange={updateDateRange(keyRange)}
@@ -135,11 +141,11 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
     <MonthPickerCustom
       selectedDate={dayjs(filterByTime[keyRange][field])}
       containerStyle={{ flexDirection: 'column', alignItems: 'flex-start' }}
-      pickerStyle={{ width: '100%', ...(isDark ? {} : { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.12)' }) }}
-      selectedDateStyle={{ fontSize: px.f(20), color: isDark ? '#FFFFFF' : '#374151' }}
+      pickerStyle={{ width: '100%', ...(isDark ? {} : { backgroundColor: light.subtleDetail, borderColor: light.border }) }}
+      selectedDateStyle={{ fontSize: px.f(20), color: isDark ? dark.text : light.text }}
       label={label}
-      pickerLabelStyle={{ fontSize: 12, color: isDark ? '#FFFFFF' : '#6B7280' }}
-      iconColor={isDark ? '#fff' : '#6B7280'}
+      pickerLabelStyle={{ fontSize: 12, color: isDark ? dark.text : light.muted }}
+      iconColor={isDark ? dark.text : light.muted}
       formatMonth={(date) => date.format(format)}
       onConfirm={updatePeriodRange({
         key: keyRange,
@@ -274,7 +280,7 @@ const FilterByTime: React.FC<FilterByTimeProps> = () => {
   }
 
   return (
-    <AnimatedCardContainer>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
       <View style={styles.container}>
         <Text style={styles.title}>Bộ lọc thời gian</Text>
 

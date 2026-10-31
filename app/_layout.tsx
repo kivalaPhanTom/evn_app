@@ -12,7 +12,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Host } from 'react-native-portalize';
+import { Host } from 'react-native-portalize'
 import ToastManager from 'toastify-react-native'
 import VersionChecker from '@/components/VersionChecker/VersionChecker'
 import { BlurView } from 'expo-blur'
@@ -52,13 +52,13 @@ export default function RootLayout() {
     }
     setPreferenceState(p)
   }
-  
+
   const toggle = () => {
     // simple toggle between dark and light (if currently system => switch to opposite of system)
     setPreferenceState((prev) => {
       const next = prev === 'system' ? (systemScheme === 'dark' ? 'light' : 'dark') : prev === 'dark' ? 'light' : 'dark'
       // persist
-      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => { })
+      AsyncStorage.setItem(THEME_PREFERENCE_KEY, next).catch(() => {})
       return next
     })
   }
@@ -72,7 +72,7 @@ export default function RootLayout() {
   if (!loaded) return null
 
   return (
-    <StoreProvider> 
+    <StoreProvider>
       <TranslationProvider>
         <ThemeToggleContext.Provider value={{ preference, setPreference, toggle }}>
           <ThemeProvider value={effectiveScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -80,29 +80,30 @@ export default function RootLayout() {
               <VersionChecker />
               <Host>
                 <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
-                <Stack
-                  initialRouteName="splash"
-                  screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
-                >
-                  <Stack.Screen name="splash" />
-                  <Stack.Screen name="login" />
-                  <Stack.Screen name="companies" />
-                  <Stack.Screen name="charts" />
-                  <Stack.Screen name="home/index" />
-                  <Stack.Screen name="product-output-detail/index" />
-                  <Stack.Screen name="product-power-detail/index" />
-                  <Stack.Screen name="hydrology-detail/index" />
-                  <Stack.Screen name="revenue-profit-detail/index" />
-                  <Stack.Screen name="unit-maintenance-schedule-detail/index" />
-                  <Stack.Screen name="revenue-detail/index" />
-                  <Stack.Screen name="profit-detail/index" />
-                  <Stack.Screen name="factory-profit-detail/index" />
-                  {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-                  <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-                </Stack>
-                {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
-                  <View style={[styles.backContainer, { bottom: insets.bottom + 10 }]} pointerEvents="box-none">
-                    {/* <TouchableOpacity
+                  <Stack
+                    initialRouteName="splash"
+                    screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
+                  >
+                    <Stack.Screen name="splash" />
+                    <Stack.Screen name="login" />
+                    {/* Avoid an iOS transition/gesture handoff blocking touches after login. */}
+                    <Stack.Screen name="companies" options={{ animation: 'none' }} />
+                    <Stack.Screen name="charts" />
+                    <Stack.Screen name="home/index" />
+                    <Stack.Screen name="product-output-detail/index" />
+                    <Stack.Screen name="product-power-detail/index" />
+                    <Stack.Screen name="hydrology-detail/index" />
+                    <Stack.Screen name="revenue-profit-detail/index" />
+                    <Stack.Screen name="unit-maintenance-schedule-detail/index" />
+                    <Stack.Screen name="revenue-detail/index" />
+                    <Stack.Screen name="profit-detail/index" />
+                    <Stack.Screen name="factory-profit-detail/index" />
+                    {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                    <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+                  </Stack>
+                  {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+                    <View style={[styles.backContainer, { bottom: insets.bottom + 10 }]} pointerEvents="box-none">
+                      {/* <TouchableOpacity
                       onPress={() => router.back()}
                       style={styles.backButton}
                       delayPressIn={0}
@@ -110,26 +111,36 @@ export default function RootLayout() {
                     >
                       <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity> */}
-                    <TouchableOpacity style={styles.container} onPress={() => router.back()} delayPressIn={0} >
-                      <BlurView
-                        intensity={effectiveScheme === 'dark' ? 20 : 40}
-                        tint={effectiveScheme === 'dark' ? 'light' : 'light'}
-                        style={[
-                          styles.backButton,
-                          effectiveScheme === 'light' && {
-                            borderColor: 'rgba(0, 0, 0, 0.15)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.55)',
-                          },
-                        ]}
-                      >
-                        <Ionicons name="chevron-back" size={24} color={effectiveScheme === 'dark' ? 'white' : '#374151'} />
-                      </BlurView>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                <ToastManager theme={'dark'} position={'top'} animationStyle="fade" />
-                <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
-              </SafeAreaView>
+                      <TouchableOpacity style={styles.container} onPress={() => router.back()} delayPressIn={0}>
+                        <BlurView
+                          intensity={effectiveScheme === 'dark' ? 20 : 40}
+                          tint={effectiveScheme === 'dark' ? 'light' : 'light'}
+                          style={[
+                            styles.backButton,
+                            effectiveScheme === 'light' && {
+                              borderColor: 'rgba(0, 0, 0, 0.15)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.55)',
+                            },
+                          ]}
+                        >
+                          <Ionicons
+                            name="chevron-back"
+                            size={24}
+                            color={effectiveScheme === 'dark' ? 'white' : '#374151'}
+                          />
+                        </BlurView>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  <ToastManager
+                    duration={4000}
+                    theme={effectiveScheme}
+                    position={'top'}
+                    animationStyle="fade"
+                    useModal={false}
+                  />
+                  <StatusBar style={effectiveScheme === 'dark' ? 'light' : 'dark'} />
+                </SafeAreaView>
               </Host>
             </AuthProvider>
           </ThemeProvider>

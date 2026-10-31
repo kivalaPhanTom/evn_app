@@ -40,7 +40,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
   const handleMomentumScrollEnd = (event: any) => {
     const scrollX = event.nativeEvent.contentOffset.x
     const currentIndex = Math.round(scrollX / TAB_WIDTH)
-    
+
     if (currentIndex >= 0 && currentIndex < tabs.length) {
       const newActiveTab = tabs[currentIndex].id
       if (newActiveTab !== activeTab) {
@@ -70,10 +70,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
           snapToInterval={TAB_WIDTH}
           snapToAlignment="start"
           decelerationRate="fast"
-          contentContainerStyle={[
-            styles.scrollContent,
-            { width: TAB_WIDTH * tabs.length },
-          ]}
+          contentContainerStyle={[styles.scrollContent, { width: TAB_WIDTH * tabs.length }]}
           style={styles.scrollView}
           onScroll={handleScroll}
           onScrollBeginDrag={handleScrollBeginDrag}
@@ -86,7 +83,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
             const isActive = tab.id === activeTab
             const isFirst = index === 0
             const isLast = index === tabs.length - 1
-            
+
             return (
               <TouchableOpacity
                 key={tab.id}
@@ -119,7 +116,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
         </ScrollView>
         {/* Left shadow gradient - fixed position */}
         <LinearGradient
-          colors={isDark ? ['rgba(0, 0, 0, 0.4)', 'transparent'] : ['rgba(255, 255, 255, 0.9)', 'transparent']}
+          colors={isDark ? ['rgba(0, 0, 0, 0.4)', 'transparent'] : ['rgba(255, 255, 255, 0)', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.shadowGradientLeft}
@@ -127,7 +124,7 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
         />
         {/* Right shadow gradient - fixed position */}
         <LinearGradient
-          colors={isDark ? ['transparent', 'rgba(0, 0, 0, 0.4)'] : ['transparent', 'rgba(255, 255, 255, 0.9)']}
+          colors={isDark ? ['transparent', 'rgba(0, 0, 0, 0.4)'] : ['transparent', 'rgba(255, 255, 255, 0)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.shadowGradientRight}
@@ -137,4 +134,3 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
     </View>
   )
 }
-

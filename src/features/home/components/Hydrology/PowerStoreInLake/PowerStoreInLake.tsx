@@ -1,3 +1,4 @@
+import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
@@ -16,8 +17,16 @@ const PowerStoreInLake: React.FC = () => {
   const isDark = useAppTheme() === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const colorMap: Record<string, string> = { BTS: '#F59E0B', BK: '#00B3A4', SP3: '#00D9FF' }
-  const fallbackColors = ['#F59E0B', '#00B3A4', '#00D9FF', '#7C4DFF', '#FF5252']
+  const accent = isDark ? dark.inflow : '#00DF73'
+  const muted = isDark ? dark.storage.muted : '#1F2937'
+  const colorMap: Record<string, string> = {
+    BTS: isDark ? dark.storage.plants[0] : '#FB923C',
+    BK: isDark ? dark.storage.plants[1] : '#14B8A6',
+    SP3: isDark ? dark.storage.plants[2] : '#00C0E8',
+  }
+  const fallbackColors = isDark
+    ? dark.storage.plants
+    : ['#FB923C', '#14B8A6', '#00C0E8', '#7056A8', '#EF4444']
   const segments = powerStoreInLake?.segments ?? []
   const data: StackedItem[] = segments
     .slice()
@@ -33,10 +42,10 @@ const PowerStoreInLake: React.FC = () => {
   }, [countRefesh])
 
   return (
-    <AnimatedCardContainer>
-      <View style={[styles.pill, !isDark && { backgroundColor: 'rgba(0, 0, 0, 0.06)' }]}>
-        <Text style={[styles.pillText, { color: isDark ? '#E6ECF2' : '#374151' }]}>Điện năng tích trữ trong hồ</Text>
-      </View>
+    <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
+      <Text allowFontScaling={false} style={[styles.title, { color: isDark ? dark.storage.title : '#1F2937' }]}>
+        Điện năng tích trữ trong hồ
+      </Text>
 
       <View style={styles.mainRow}>
         {isLoadingPowerStoreInLake ? (
@@ -48,31 +57,42 @@ const PowerStoreInLake: React.FC = () => {
             <GradientText
               text={Number(powerStoreInLake?.currentCapacity ?? 0)}
               fontSize={px.f(52)}
-              colors={'#00C853'}
+              fontWeight="800"
+              colors={accent}
             />
             <Text
               allowFontScaling={false}
-              style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}
+              style={[styles.unit, { color: accent, marginLeft: px.h(6), fontSize: px.f(20) }]}
             >
               {powerStoreInLake?.unit ?? ''}
             </Text>
-            <Text allowFontScaling={false} style={[styles.slash, { color: '#9AA6B6' }]}>
+            <Text allowFontScaling={false} style={[styles.slash, { color: muted }]}>
               {' '}
               /{' '}
             </Text>
-            <Text allowFontScaling={false} style={[styles.refValue, { color: '#9AA6B6' }]}>
-              {powerStoreInLake?.previousCapacity ?? 0} {powerStoreInLake?.unit ?? ''}
+            <Text allowFontScaling={false} style={[styles.refValue, { color: muted }]}>
+              {powerStoreInLake?.previousCapacity ?? 0}{' '}
+              <Text allowFontScaling={false} style={styles.refUnit}>
+                {powerStoreInLake?.unit ?? ''}
+              </Text>
             </Text>
           </>
         )}
       </View>
 
       {/* Stacked bar */}
-      <View style={{ marginTop: px.v(10) }}>
+      <View style={{ marginTop: px.h(20) }}>
         {isLoadingPowerStoreInLake ? (
           <BarSkeleton width={'100%'} alignSelf="center" height={20} />
         ) : (
-          <StackedBar items={data} height={px.v(20)} legendGap={px.h(60)} showPercent={false} valueDecimals={1} />
+          <StackedBar
+            items={data}
+            height={px.h(16)}
+            legendGap={px.h(28)}
+            legendAlign="center"
+            showPercent={false}
+            valueDecimals={1}
+          />
         )}
       </View>
     </AnimatedCardContainer>
