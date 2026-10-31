@@ -51,6 +51,16 @@ interface Props {
   topLabelOffset?: number
 }
 
+// gifted-charts crash khi value là null/undefined (fallback item.stacks.reduce)
+const sanitizeLineData = (arr?: any[]) =>
+  Array.isArray(arr)
+    ? arr.map((item: any) => {
+        const raw = item && typeof item === 'object' ? item?.value : item
+        const num = Number(raw)
+        return { ...(item && typeof item === 'object' ? item : {}), value: Number.isFinite(num) ? num : 0 }
+      })
+    : []
+
 const BarChart: React.FC<Props> = ({
   data,
   height = px.v(180),
@@ -84,6 +94,9 @@ const BarChart: React.FC<Props> = ({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
+  const safeLineData1 = useMemo(() => sanitizeLineData(lineData1), [lineData1])
+  const safeLineData2 = useMemo(() => sanitizeLineData(lineData2), [lineData2])
+
   // Trạng thái nhóm đang được chọn
   const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null)
   const [selectedGroupItems, setSelectedGroupItems] = useState<BarPoint[] | null>(null)
@@ -109,15 +122,15 @@ const BarChart: React.FC<Props> = ({
     const barMax = allValues.length > 0 ? Math.max(0, ...allValues) : 0
 
     // Get max values from lineData1
-    const line1Max = lineData1 && lineData1.length > 0 ? Math.max(...lineData1.map((item) => item.value || 0)) : 0
+    const line1Max = safeLineData1.length > 0 ? Math.max(...safeLineData1.map((item) => item.value || 0)) : 0
 
     // Get max values from lineData2
-    const line2Max = lineData2 && lineData2.length > 0 ? Math.max(...lineData2.map((item) => item.value || 0)) : 0
+    const line2Max = safeLineData2.length > 0 ? Math.max(...safeLineData2.map((item) => item.value || 0)) : 0
 
     // Check barMax, line1Max, and line2Max
     const overallMax = Math.max(barMax, line1Max, line2Max)
     return overallMax > 0 ? Math.ceil(overallMax * 1.15) : 10
-  }, [allValues, lineData1, lineData2])
+  }, [allValues, safeLineData1, safeLineData2])
   const processed =
     useMemo(() => {
       try {
@@ -211,7 +224,7 @@ const BarChart: React.FC<Props> = ({
         console.error('Error in BarChart processed useMemo:', error)
         return []
       }
-    }, [data, barWidth, groupInnerSpacing, frontColor, lineData1, lineData2, paddedMax, height, topLabelOffset]) || []
+    }, [data, barWidth, groupInnerSpacing, frontColor, safeLineData1, safeLineData2, paddedMax, height, topLabelOffset]) || []
 
   // Tính toán vị trí overlay theo index nhóm
   const getGroupMetrics = (gIdx: number | null) => {
@@ -346,10 +359,10 @@ const BarChart: React.FC<Props> = ({
           initialSpacing={spacing}
           endSpacing={10}
           xAxisLabelTextStyle={{ color: isDark ? '#FFF' : '#6B7280', fontSize: px.m(11) }}
-          showLine={showLine || (lineData1 && lineData1.length > 0)}
-          lineData={lineData1 && lineData1.length > 0 ? lineData1 : undefined}
+          showLine={showLine || safeLineData1.length > 0}
+          lineData={safeLineData1.length > 0 ? safeLineData1 : undefined}
           lineConfig={
-            lineData1 && lineData1.length > 0
+            safeLineData1.length > 0
               ? customDataPoint1
                 ? {
                     isAnimated: true,
@@ -389,7 +402,7 @@ const BarChart: React.FC<Props> = ({
                     shiftY: lineDataPointsShift,
                   }
           }
-          lineData2={lineData2 && lineData2.length > 0 ? lineData2 : undefined}
+          lineData2={safeLineData2.length > 0 ? safeLineData2 : undefined}
           lineConfig2={
             customDataPoint2
               ? {
@@ -415,7 +428,7 @@ const BarChart: React.FC<Props> = ({
       ) : (
         <View style={{ height, justifyContent: 'center' }}>
           <LineBarChartSkeleton
-            isShowLine={showLine || (lineData1 && lineData1.length > 0) || (lineData2 && lineData2.length > 0)}
+            isShowLine={showLine || safeLineData1.length > 0 || safeLineData2.length > 0}
           />
         </View>
       )}
