@@ -18,6 +18,7 @@ function TotalPowerFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const dispatch = useAppDispatch()
   const [average, setAverage] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
@@ -38,6 +39,7 @@ function TotalPowerFactDetail(props: Props) {
       dispatch(
         getPowerOverivewFactDetail({
           factoryId: currentPlantId,
+          companyId: companyId,
           getDataFromApi: getDataFromApi,
           setLoading: setLoading,
         }),
@@ -50,12 +52,13 @@ function TotalPowerFactDetail(props: Props) {
       dispatch(
         getPowerOverivewFactDetail({
           factoryId: currentPlantId,
+          companyId: companyId,
           getDataFromApi: getDataFromApi,
           setLoading: setLoading,
         }),
       )
     }
-  }, [currentPlantId, activeTabIndex, countRefesh])
+  }, [currentPlantId, activeTabIndex, countRefesh, companyId])
 
   return (
     <TotalPower

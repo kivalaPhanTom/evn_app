@@ -22,12 +22,13 @@ import {
 } from './production-output.slice'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getProductOutputByHoursSaga(): Generator {
+function* getProductOutputByHoursSaga(action: ReturnType<typeof getProductOutputByHours>): Generator {
   try {
     yield put(setLoading({ isLoadingByHours: true }))
-    const res = yield call(Service.getProductOutputByHoursApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getProductOutputByHoursApi, companyId)
     if (res.status === 200) {
-      yield put(setProductOutputByHours(res.data))
+      yield put(setProductOutputByHours(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
@@ -36,10 +37,11 @@ function* getProductOutputByHoursSaga(): Generator {
   }
 }
 
-function* getProductOutputOverviewSaga(): Generator {
+function* getProductOutputOverviewSaga(action: ReturnType<typeof getProductOutputOverview>): Generator {
   try {
     yield put(setLoading({ isLoadingOverview: true }))
-    const res = yield call(Service.getProductOutputOverviewApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getProductOutputOverviewApi, companyId)
     if (res.status === 200) {
       yield put(setProductOutputOverview(res.data))
     }
@@ -55,9 +57,12 @@ function* getProductOutputByDaysSaga(action: ReturnType<typeof getProductOutputB
     yield put(setLoading({ isLoadingNearCurrentDays: true }))
     const n = action.payload?.n || 7
     const samePeriodYear = action.payload?.samePeriodYear || new Date().getFullYear() - 1
-    const res = yield call(Service.getProductOutputByDaysApi, n, samePeriodYear)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getProductOutputByDaysApi, n, samePeriodYear, companyId)
     if (res.status === 200) {
-      yield put(setProductOutputByDays(res.data))
+      const raw = res.data?.data
+      const list = Array.isArray(raw) ? raw : raw?.detail
+      yield put(setProductOutputByDays(list ?? []))
     }
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
@@ -72,7 +77,7 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
     const params = action.payload
     const res = yield call(Service.getProductCummulativeOutputApi, params)
     if (res.status === 200) {
-      yield put(setProductCummulativeOutput(res.data))
+      yield put(setProductCummulativeOutput(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingProductCummulativeOutput: false }))
   } catch (error) {
@@ -84,11 +89,12 @@ function* getProductCummulativeOutputSaga(action: ReturnType<typeof getProductCu
 function* getCompareProductOutputSaga(action: ReturnType<typeof getCompareProductOutput>): Generator {
   try {
     yield put(setLoading({ isLoadingCompareProductOutput: true }))
-    const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string }
+    const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string; companyId?: string | null }
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
     const currentPlantId = payload?.currentPlantId || ''
-    const res = yield call(Service.getCompareProductOutputApi, tagetDate, compareDate, currentPlantId)
+    const companyId = payload?.companyId || ''
+    const res = yield call(Service.getCompareProductOutputApi, tagetDate, compareDate, currentPlantId, companyId)
     if (res.status === 200) {
       yield put(setCompareProductOutput(res.data))
     }
@@ -104,11 +110,11 @@ function* getProductOutputOverviewFactDetailSaga(
 ): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputOverviewFactDetailApi, factoryId)
+    const res = yield call(Service.getProductOutputOverviewFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      getDataFromApi(res.data)
+      getDataFromApi(res.data.data)
     }
     setLoading(false)
   } catch (error) {
@@ -122,11 +128,11 @@ function* getProductOutputByHoursFactDetailSaga(
 ): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId)
+    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      getDataFromApi(res.data)
+      getDataFromApi(res.data?.data ?? res.data)
     }
     setLoading(false)
   } catch (error) {
@@ -138,11 +144,13 @@ function* getProductOutputByHoursFactDetailSaga(
 function* getProductOutputByDaysFactDetailSaga(action: ReturnType<typeof getProductOutputByDaysFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, samePeriod, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputByDaysFactDetailApi, factoryId)
+    const res = yield call(Service.getProductOutputByDaysFactDetailApi, factoryId, companyId || '', samePeriod || new Date().getFullYear() - 1)
     if (res.status === 200) {
-      getDataFromApi(res.data)
+      const raw = res.data?.data
+      const list = Array.isArray(raw) ? raw : raw?.detail
+      getDataFromApi(list ?? [])
     }
     setLoading(false)
   } catch (error) {
@@ -160,6 +168,7 @@ function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductO
       compareFromDate: string
       compareToDate: string
       currentPlantId: string
+      companyId?: string | null
     }
     const res = yield call(
       Service.getProductOutputCompareChartApi,
@@ -168,6 +177,7 @@ function* getProductOutputCompareChartSaga(action: ReturnType<typeof getProductO
       payload.compareFromDate,
       payload.compareToDate,
       payload.currentPlantId,
+      payload.companyId || '',
     )
     if (res.status === 200) {
       yield put(setProductOutputCompareChart(res.data))
