@@ -215,8 +215,9 @@ export default function DateRangePicker({
       onChange={(params) => {
         const today = dayjs()
         const d = dayjs(params.date)
-        // Clamp về hôm nay nếu chọn quá hôm nay
-        const safeDate = d.isAfter(today, 'day') ? today.toDate() : d.toDate()
+        // Chỉ clamp về hôm nay khi isCheckDisableDate=true (cấm ngày tương lai);
+        // isCheckDisableDate=false → cho chọn ngày tương lai bình thường
+        const safeDate = isCheckDisableDate && d.isAfter(today, 'day') ? today.toDate() : d.toDate()
         handleDateChange(safeDate)
       }}
       onMonthChange={(monthIndex: number) => {
@@ -232,8 +233,8 @@ export default function DateRangePicker({
             newDate = minDate
           }
         }
-        // Không vượt quá tháng hiện tại
-        if (newDate.isAfter(today, 'month')) {
+        // Chỉ giới hạn tháng hiện tại khi isCheckDisableDate=true
+        if (isCheckDisableDate && newDate.isAfter(today, 'month')) {
           newDate = today.startOf('month')
         }
         handleDateChange(newDate.toDate())
@@ -251,9 +252,9 @@ export default function DateRangePicker({
             newDate = minDate
           }
         }
-        // Không vượt quá năm hiện tại
+        // Chỉ giới hạn năm hiện tại khi isCheckDisableDate=true
         const unit = chooseMode === 'year' ? 'year' : 'month'
-        if (newDate.isAfter(today, unit)) {
+        if (isCheckDisableDate && newDate.isAfter(today, unit)) {
           newDate = chooseMode === 'year' ? today.startOf('year') : today.startOf('month')
         }
         handleDateChange(newDate.toDate())
