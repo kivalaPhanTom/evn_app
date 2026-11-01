@@ -1,4 +1,4 @@
-import { prefix_api } from '../constants/vars'
+import { prefix_api, prefix_api_v2 } from '../constants/vars'
 import { apiFormUrlEncoded, api, get } from './api.service'
 
 export const Service = {
@@ -24,10 +24,10 @@ export const Service = {
   getTurbineFlowApi_3,
 }
 export const servicePattern = {
-  getHydrographicChart: `${prefix_api}/hydrographic_chart`,
+  getHydrographicChart: `${prefix_api_v2}/hydrographic_chart`,
   getHydrologyFlow: `${prefix_api}/FlowDiagram`,
-  getInflowOutflow: `${prefix_api}/InflowOutflow_v2`,
-  getHydrologyPlantsParam: `${prefix_api}/hydrologyplant_detail`,
+  getInflowOutflow: `${prefix_api_v2}/InflowOutflow_v2`,
+  getHydrologyPlantsParam: `${prefix_api_v2}/hydrologyplant_detail`,
   getHydrologyPlantsInfo: `${prefix_api}/HydrologyPlantInformation`,
   getUpstreamWaterLevel: `${prefix_api}/GetUpstreamWaterLevel`,
   getInflow: `${prefix_api}/getInflow`,
@@ -37,30 +37,33 @@ export const servicePattern = {
   getPowerStoreInLakeFactDetail: `${prefix_api}/PowerStoreInLakeOfFactory`,
   getOperateWaterLevel: `${prefix_api}/GetOperateWaterLevel`,
 }
-function getHydrologyGraphicChartApi(companyId: string, type: string) {
-  return apiFormUrlEncoded.get(`${servicePattern.getHydrographicChart}/${companyId}`, {
-    params: {
-      type: type ? type : null,
-    }
-  })
+function getHydrologyGraphicChartApi(maHoChua: string, type: string) {
+  const url = servicePattern.getHydrographicChart
+  const params = { type, mahochua: maHoChua }
+  return apiFormUrlEncoded.get(url, { params })
 }
 function getHydrologyFlowApi(currentPlantId: string, date: string) {
   return apiFormUrlEncoded.get(`${servicePattern.getHydrologyFlow}?currentPlantId=${currentPlantId}&date=${date}`)
 }
 
-function getInflowOutflowApi(hydroElectricId: string) {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getInflowOutflow}?currentPlantId=${encodeURIComponent(hydroElectricId)}`,
-  )
+function getInflowOutflowApi(plantId: string | number, companyId: string, maHoChua?: string) {
+  const url = servicePattern.getInflowOutflow
+  const params: { currentPlantId: string; companyId: string; mahochua?: string } = {
+    currentPlantId: String(plantId),
+    companyId,
+  }
+  if (maHoChua) params.mahochua = maHoChua
+  return apiFormUrlEncoded.get(url, { params })
 }
-function getHydrologyPlantsParamApi(currentPlantId?: string) {
+async function getHydrologyPlantsParamApi(currentPlantId?: string) {
   const params: { currentPlantId?: string } = {}
   if (currentPlantId) {
     params.currentPlantId = currentPlantId
   }
-  return api.get(`${servicePattern.getHydrologyPlantsParam}`, {
+  const response = await api.get(`${servicePattern.getHydrologyPlantsParam}`, {
     params: params
   })
+  return response
 }
 
 function getHydrologyPlantsInfoApi(plantId: string, date: string) {

@@ -1,5 +1,5 @@
 import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import GradientText from '@/components/GradientText/GradientText.component'
@@ -17,13 +17,18 @@ import { isEmpty } from '@/core/utils/utils'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import SquareSkeleton from '@/components/Skeletons/SquareSkelenton'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
-import { shallowEqual } from 'react-redux'
 
 interface InflowOutflowProps {
-  hydroElectricId: string
+  plantId: string | number
+  maHoChua?: string
 }
 
-const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
+const roundToOneDecimal = (value: unknown): number => {
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? Number(numericValue.toFixed(1)) : 0
+}
+
+const InflowOutflow: React.FC<InflowOutflowProps> = ({ plantId, maHoChua }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const customDataPoint = () => (
@@ -54,30 +59,31 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
   )
 
   const dispatch = useAppDispatch()
+  const { selectedCompanyId: companyId } = useAppSelector((state: any) => state.companyPlantSlice)
+  const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { isLoadingInflowOutflow } = useAppSelector((state: any) => state.hydrologySlice)
-  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice.inflowOutflow || {}, shallowEqual)
-  const isEmptyData = Object.keys(inflowOutflowData).length === 0
-  const inflow = isEmptyData ? {} : inflowOutflowData?.cards[0]
-  const outflow = isEmptyData ? {} : inflowOutflowData?.cards[1]
-  const xtflow = isEmptyData ? {} : inflowOutflowData?.cards[2]
-  const qIn = useMemo(
-    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qIn))),
-    [isEmptyData, inflowOutflowData.qIn],
-  )
-  const qOut = useMemo(
-    () => (isEmptyData ? [] : JSON.parse(JSON.stringify(inflowOutflowData.qOut))),
-    [isEmptyData, inflowOutflowData.qOut],
-  )
+  const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow)
+  const cards = Array.isArray(inflowOutflowData?.cards) ? inflowOutflowData.cards : []
+  const qIn = Array.isArray(inflowOutflowData?.qIn) ? inflowOutflowData.qIn : []
+  const qOut = Array.isArray(inflowOutflowData?.qOut) ? inflowOutflowData.qOut : []
+  const isEmptyData = cards.length === 0 && qIn.length === 0 && qOut.length === 0
+  const inflow = cards[0]
+  const outflow = cards[1]
+  const xtflow = cards[2]
 
   useEffect(() => {
     // Dispatch action to fetch inflow/outflow data
-    console.log(hydroElectricId)
-    dispatch(getInflowOutflow({ hydroElectricId: hydroElectricId }))
-  }, [dispatch, hydroElectricId])
+    if (plantId && companyId) dispatch(getInflowOutflow({ plantId, companyId, maHoChua }))
+  }, [dispatch, plantId, companyId, maHoChua, countRefesh])
 
   return (
     <>
-      {!isEmptyData && (
+      {!isLoadingInflowOutflow && isEmptyData && (
+        <View style={styles.content}>
+          <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Chưa có dữ liệu lưu lượng.</Text>
+        </View>
+      )}
+      {(isLoadingInflowOutflow || !isEmptyData) && (
         <>
           <View style={styles.content}>
             <View style={styles.summaryCard}>
@@ -91,24 +97,24 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
                   <FlowMetricCard
                     label="Q"
                     label1="về"
-                    value={inflow?.value}
-                    unit={inflow?.unit}
+                    value={roundToOneDecimal(inflow?.value)}
+                    unit={inflow?.unit ?? "m³/s"}
                     color={isDark ? dark.inflow : light.inflow}
                     icon="↑"
                   />
                   <FlowMetricCard
                     label="Q"
                     label1="cm"
-                    value={outflow?.value}
-                    unit={outflow?.unit}
+                    value={roundToOneDecimal(outflow?.value)}
+                    unit={outflow?.unit ?? "m³/s"}
                     color={isDark ? dark.outflow : light.outflow}
                     icon="↓"
                   />
                   <FlowMetricCard
                     label="Q"
                     label1="xt"
-                    value={xtflow?.value}
-                    unit={xtflow?.unit}
+                    value={roundToOneDecimal(xtflow?.value)}
+                    unit={xtflow?.unit ?? "m³/s"}
                     color={isDark ? dark.outflow : light.outflow}
                     icon="↓"
                   />
@@ -116,7 +122,7 @@ const InflowOutflow: React.FC<InflowOutflowProps> = ({ hydroElectricId }) => {
               )}
             </View>
           </View>
-          {!isLoadingInflowOutflow && (
+          {!isLoadingInflowOutflow && !isEmptyData && (
             <View style={styles.notePanel}>
               <CircleLineIcon color={isDark ? dark.inflow : light.inflow} />
               <Text style={[styles.noteText, !isDark && { color: light.muted }]}>Qvề</Text>

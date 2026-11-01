@@ -18,12 +18,13 @@ import {
 import { Service } from '@/core/service/powerService'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getPowerOverviewSaga(): Generator {
+function* getPowerOverviewSaga(action: ReturnType<typeof getPowerOverivew>): Generator {
   try {
     yield put(setLoading({ isLoadingOverview: true }))
-    const res = yield call(Service.getPowerOverviewApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getPowerOverviewApi, companyId)
     if (res.status === 200) {
-      yield put(setPowerOverview(res.data))
+      yield put(setPowerOverview(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingOverview: false }))
   } catch (error) {
@@ -35,9 +36,9 @@ function* getPowerOverviewSaga(): Generator {
 function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOverivewFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId)
+    const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
       getDataFromApi(res.data)
     }

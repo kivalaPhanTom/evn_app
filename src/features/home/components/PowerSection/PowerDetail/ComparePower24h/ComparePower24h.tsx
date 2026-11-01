@@ -26,11 +26,17 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
   })
+  // DateRangePicker có thể emit Date object thuần (không phải dayjs) → luôn bọc dayjs() trước khi format
+  const safeFormat = (d: any, fallback: dayjs.Dayjs) => {
+    const day = dayjs(d)
+    return day.isValid() ? day.format('DD/MM/YYYY') : fallback.format('DD/MM/YYYY')
+  }
+
   useEffect(() => {
     dispatch(
       getComparePower({
-        tagetDate: range.to.format('DD/MM/YYYY'),
-        compareDate: range.from.format('DD/MM/YYYY'),
+        tagetDate: safeFormat(range?.to, dayjs()),
+        compareDate: safeFormat(range?.from, dayjs().subtract(1, 'day')),
         currentPlantId: currentPlantId || '',
       }),
     )

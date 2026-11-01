@@ -10,17 +10,27 @@ export interface Company {
   plantCount: number
 }
 
+export interface Reservoir {
+  MaHoChua: string
+  TenHoChua: string
+  maxLevel: number | null
+  referenceLevel: number | null
+  currentLevel: number | null
+  previousLevel: number | null
+}
+
 export interface Plant {
-  plantId: number
+  plantId: string | number
   companyId: string
   plantName: string
   abbreviation: string
   symbol: string
-  maxLevel: number
-  referenceLevel: number
-  currentLevel: number
-  previousLevel: number
-  status: 0 | 1
+  maxLevel?: number | null
+  referenceLevel?: number | null
+  currentLevel?: number | null
+  previousLevel?: number | null
+  ListHoChua?: Reservoir[] | null
+  status: boolean | 0 | 1
   hasHydrology: boolean
   hasRevenue: boolean
   hasProfit: boolean
@@ -29,9 +39,7 @@ export interface Plant {
   regulationType: 'hourly' | 'daily'
 }
 
-interface PlantsResponse {
-  data: { plants: Plant[] }
-}
+type PlantsResponse = Plant[] | { plants: Plant[] } | { data: { plants: Plant[] } }
 
 // Chuyển sang false khi backend triển khai hai endpoint này.
 const useMockApi = false
@@ -184,7 +192,7 @@ async function getPlantsApi(companyId: string) {
   if (typeof companyId !== 'string' || !companyId.trim()) {
     throw new Error('INVALID_PARAM: companyId không hợp lệ')
   }
-  if (useMockApi === false) {
+  if (useMockApi) {
     // if (!mockCompanies.some((company) => company.companyId === companyId)) {
     //   throw new Error('COMPANY_NOT_FOUND')
     // }

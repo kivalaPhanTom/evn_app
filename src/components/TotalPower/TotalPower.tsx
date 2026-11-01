@@ -73,7 +73,8 @@ function TotalPower(props: Props) {
   }))
 
   const isDark = useAppTheme() === 'dark'
-  const hasLightSourceColors = !isDark && (type === 'power' || type === 'product-output')
+  const getSourceColor = (code: string, color?: string | null) =>
+    (color && color.startsWith('#') ? color : null) || lightSourceColors[code?.trim()] || '#8b92a0'
   const totalColors =
     !isDark && type === 'power'
       ? lightGradients.darkBlue
@@ -134,17 +135,13 @@ function TotalPower(props: Props) {
               {detail.map((source, index) => (
                 <View key={index} style={styles.sourceItem}>
                   <View style={styles.sourceInfo}>
-                    <View style={[styles.dot, { backgroundColor: source.color }]} />
+                    <View style={[styles.dot, { backgroundColor: getSourceColor(source.code, source.color) }]} />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                       <Text
                         style={[
                           styles.sourceName,
-                          !isDark && {
-                            color: hasLightSourceColors
-                              ? (lightSourceColors[source.code.trim()] ?? '#8b92a0')
-                              : '#8b92a0',
-                            fontWeight: '700',
-                          },
+                          { color: getSourceColor(source.code, source.color) },
+                          !isDark && { fontWeight: '700' },
                         ]}
                       >
                         {source.code}
@@ -154,9 +151,7 @@ function TotalPower(props: Props) {
                         style={[
                           styles.sourcePower,
                           {
-                            color: hasLightSourceColors
-                              ? (lightSourceColors[source.code.trim()] ?? source.color)
-                              : source.color,
+                            color: getSourceColor(source.code, source.color),
                           },
                         ]}
                       >

@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api } from '../constants/vars'
+import { prefix_api, prefix_api_v2 } from '../constants/vars'
 import { ProductCummulativeOutputParams } from '../model/productOutput.request'
 import dayjs from 'dayjs'
 import { current } from '@reduxjs/toolkit'
@@ -16,29 +16,34 @@ export const Service = {
   getProductOutputCompareChartApi,
 }
 export const servicePattern = {
-  getProductOutputByHours: `${prefix_api}/ProductByHours`,
-  getProductOutputOverview: `${prefix_api}/ProductOutputOverview`,
-  getProductOutputByDays: `${prefix_api}/Product_Recent_Days`,
-  getProductCummulativeOutput: `${prefix_api}/ProductCummulativeOutput`,
-  getCompareProductOutput: `${prefix_api}/CompareProductOutput`,
-  getProductOutputCompareChart: `${prefix_api}/ProductOutput_compare_chart`,
+  getProductOutputByHours: `${prefix_api_v2}/ProductByHours`,
+  getProductOutputOverview: `${prefix_api_v2}/ProductOutputOverview`,
+  getProductOutputByDays: `${prefix_api_v2}/Product_Recent_Days`,
+  getProductCummulativeOutput: `${prefix_api_v2}/ProductCummulativeOutput`,
+  getCompareProductOutput: `${prefix_api_v2}/CompareProductOutput`,
+  getProductOutputCompareChart: `${prefix_api_v2}/ProductOutput_compare_chart`,
 }
 
-function getProductOutputByHoursApi() {
+function getProductOutputByHoursApi(companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       date: dayjs().format('DD/MM/YYYY'),
+      companyId: companyId
     },
   })
 }
 
-function getProductOutputOverviewApi() {
-  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { currentPlantId: '' } })
+function getProductOutputOverviewApi(companyId: string = '') {
+  return api.get(`${servicePattern.getProductOutputOverview}`, { params: { companyId: companyId, currentPlantId: '' } })
 }
 
-function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1) {
+function getProductOutputByDaysApi(dayNumber: number = 7, samePeriod: number = new Date().getFullYear() - 1, companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { nString: dayNumber, samePeriod: samePeriod },
+    params: {
+      nString: dayNumber,
+      samePeriod: samePeriod,
+      companyId: companyId
+    },
   })
 }
 
@@ -49,38 +54,41 @@ function getProductCummulativeOutputApi(params: ProductCummulativeOutputParams) 
       from: params.from,
       to: params.to,
       currentPlantId: params.currentPlantId || '',
+      companyId: params.companyId || '',
       ...(params.startEndOnly && { startEndOnly: true }),
     },
   })
 }
 
-function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string) {
+function getCompareProductOutputApi(tagetDate: string, compareDate: string, currentPlantId: string, companyId: string = '') {
   return api.get(`${servicePattern.getCompareProductOutput}`, {
     params: {
       tagetDate: tagetDate,
       compareDate: compareDate,
       currentPlantId: currentPlantId,
+      companyId: companyId
     },
   })
 }
 
-function getProductOutputOverviewFactDetailApi(factoryId: string = '') {
+function getProductOutputOverviewFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputOverview}`, {
-    params: { currentPlantId: factoryId },
+    params: { currentPlantId: factoryId, companyId: companyId },
   })
 }
 
-function getProductOutputByHoursFactDetailApi(factoryId: string = '') {
+function getProductOutputByHoursFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       currentPlantId: factoryId,
+      companyId: companyId,
     },
   })
 }
 
-function getProductOutputByDaysFactDetailApi(factoryId: string = '') {
+function getProductOutputByDaysFactDetailApi(factoryId: string = '', companyId: string = '', samePeriod: number = new Date().getFullYear() - 1) {
   return api.get(`${servicePattern.getProductOutputByDays}`, {
-    params: { currentPlantId: factoryId },
+    params: { currentPlantId: factoryId, companyId: companyId, samePeriod: samePeriod },
   })
 }
 
@@ -90,6 +98,7 @@ function getProductOutputCompareChartApi(
   compareFromDate: string = '',
   compareToDate: string = '',
   currentPlantId: string = '',
+  companyId: string = '',
 ) {
   return api.get(`${servicePattern.getProductOutputCompareChart}`, {
     params: {
@@ -98,6 +107,7 @@ function getProductOutputCompareChartApi(
       compareFromDate: compareFromDate,
       compareToDate: compareToDate,
       currentPlantId: currentPlantId,
+      companyId: companyId
     },
   })
 }

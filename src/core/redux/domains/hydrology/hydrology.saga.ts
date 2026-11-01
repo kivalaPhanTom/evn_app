@@ -132,12 +132,45 @@ function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyCompa
 function* getHydrographicChartSaga(action: ReturnType<typeof getHydrographicChart>): Generator {
   try {
     yield put(setLoading({ isLoadingHydrologyChart: true }))
-    const payload = action.payload as { companyId: string; type: string }
-    const companyId = payload?.companyId || ''
+    const payload = action.payload as { maHoChua: string; type: string }
+    const maHoChua = payload?.maHoChua || ''
     const type = payload?.type || ''
-    const res = yield call(Service.getHydrologyGraphicChartApi, companyId, type)
+    const res = yield call(Service.getHydrologyGraphicChartApi, maHoChua, type)
     if (res.status === 200) {
-      yield put(setHydrologyChart(res.data))
+      const responseData = res.data
+      const responseValues = responseData && typeof responseData === 'object' ? Object.values(responseData) : []
+      const nestedResponseValues = responseValues.flatMap((value) =>
+        value && typeof value === 'object' && !Array.isArray(value) ? Object.values(value) : [],
+      )
+      const chartDataCandidates = [
+        responseData,
+        responseData?.data,
+        responseData?.Data,
+        responseData?.result,
+        responseData?.items,
+        responseData?.chartData,
+        responseData?.hydrologyCharData,
+        responseData?.hydrographicChart,
+        responseData?.data?.data,
+        ...responseValues,
+        ...nestedResponseValues,
+      ]
+      const chartData = chartDataCandidates.find(Array.isArray) ?? []
+      // console.log(
+      //   '[hydrographic_chart][response]\n' +
+      //     JSON.stringify(
+      //       {
+      //         maHoChua,
+      //         type,
+      //         status: res.status,
+      //         responseKeys: responseData && typeof responseData === 'object' ? Object.keys(responseData) : [],
+      //         data: chartData,
+      //       },
+      //       null,
+      //       2,
+      //     ),
+      // )
+      yield put(setHydrologyChart(chartData))
     }
     yield put(setLoading({ isLoadingHydrologyChart: false }))
   } catch (error) {
@@ -165,11 +198,24 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
 function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): Generator {
   try {
     yield put(setLoading({ isLoadingInflowOutflow: true }))
-    const payload = action.payload as { hydroElectricId: string }
-    const hydroElectricId = payload?.hydroElectricId || ''
-    const res = yield call(Service.getInflowOutflowApi, hydroElectricId)
+    const payload = action.payload as { plantId: string | number; companyId: string; maHoChua?: string }
+    const plantId = payload?.plantId ?? ''
+    const companyId = payload?.companyId || ''
+    const maHoChua = payload?.maHoChua
+    const res = yield call(Service.getInflowOutflowApi, plantId, companyId, maHoChua)
     if (res.status === 200) {
-      yield put(setInflowOutflow(res.data))
+      const responseData = res.data?.data ?? res.data?.Data ?? res.data?.result ?? res.data
+      const normalizedData = {
+        unit: responseData?.unit ?? responseData?.Unit ?? '',
+        cards: responseData?.cards ?? responseData?.Cards ?? [],
+        qIn: responseData?.qIn ?? responseData?.QIn ?? [],
+        qOut: responseData?.qOut ?? responseData?.QOut ?? [],
+      }
+      // console.log(
+      //   '[InflowOutflow_v2][response]\n' +
+      //     JSON.stringify({ plantId, companyId, maHoChua, status: res.status, data: normalizedData }, null, 2),
+      // )
+      yield put(setInflowOutflow(normalizedData))
     }
     yield put(setLoading({ isLoadingInflowOutflow: false }))
   } catch (error) {

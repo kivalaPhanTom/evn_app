@@ -18,6 +18,7 @@ function PowerSection() {
     average,
     total,
     detail,
+    unit: overviewUnit,
     isLoadingOverview,
     powerByTime: { currentDate, currentPower, currentTime, avgPower, HourlyPowerList, offeredPower, offeredPowerList, unit },
     isLoadingByHours,
@@ -26,16 +27,17 @@ function PowerSection() {
   } = useAppSelector((state: RootState) => state.powerSlice, shallowEqual)
   const dispatch = useAppDispatch()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
 
   useAlignedHourlyTimer(() => {
-    dispatch(getPowerOverivew())
+    dispatch(getPowerOverivew({ companyId }))
   })
 
   useEffect(() => {
-    dispatch(getPowerOverivew())
+    dispatch(getPowerOverivew({ companyId }))
     dispatch(getPowerByTime())
     dispatch(getPowerByDays(7))
-  }, [countRefesh])
+  }, [countRefesh, companyId])
   const onPressCard = () => {
     router.navigate({ pathname: '/product-power-detail' })
   }
@@ -49,7 +51,7 @@ function PowerSection() {
             total={total}
             detail={detail}
             isLoading={isLoadingOverview}
-            unit="MW"
+            unit={overviewUnit || 'MW'}
             type="power"
           />
         </View>

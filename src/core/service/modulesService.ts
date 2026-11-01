@@ -8,5 +8,7 @@ export const servicePattern = {
   getModules: `${prefix_api_v2}/Get_Modules`,
 }
 function getModulesApi(companyId: string, username: string) {
-  return api.get(`${servicePattern.getModules}`, { params: { companyId, username } })
+  const url = servicePattern.getModules
+  const params = { companyId, username }
+  return api.get(url, { params })
 }

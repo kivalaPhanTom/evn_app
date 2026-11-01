@@ -7,17 +7,6 @@ import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { RootState } from '@/core/redux/store'
 import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
-interface PlantsData {
-  id: number
-  name: string
-  currentLevel: number
-  maxLevel: number
-  referenceLevel: number
-  color?: string
-  abbreviation?: string
-  symbol?: string
-}
-
 interface WaterLevelByHoursProps {
   currentPlantId: string
 }
@@ -28,15 +17,9 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
   const isDark = scheme === 'dark'
   const colors = (isDark ? hydrologyDark : hydrologyLight).waterLevelByHours
   const { hydrologyCharData, selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
-    let result = 0
-    const findHydrologyItem = hydrologyPlants.find(e => e.symbol === hydroElectricId)
-    if (findHydrologyItem) result = findHydrologyItem.referenceLevel
-    return result
-  }
-
-  const referenceLevel = getReferenceLevel(currentPlantId, hydrologyPlants.plantsData)
+  const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
+  const plant = plants.find((item) => item.symbol === currentPlantId)
+  const referenceLevel = plant?.ListHoChua?.[0]?.referenceLevel ?? null
 
   return (
     <>

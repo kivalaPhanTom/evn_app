@@ -18,6 +18,7 @@ interface productOutputState {
   productOutputOverview: {
     totalPower: number
     averagePower: number
+    unit: string
     powerSources: {
       name: string
       code: string
@@ -57,6 +58,7 @@ const initialState: productOutputState = {
   productOutputOverview: {
     totalPower: 0,
     averagePower: 0,
+    unit: '',
     powerSources: [],
   },
   productOutputByDays: { productionData: [] },
@@ -89,18 +91,21 @@ const productOutputSlice = createSlice({
       state.productOutputByHours.unit = action.payload.unit
     },
     setProductOutputOverview: (state, action) => {
-      state.productOutputOverview.totalPower = action.payload.total
-      state.productOutputOverview.averagePower = action.payload.average
-      state.productOutputOverview.powerSources = action.payload.detail
+      const d = action.payload?.data
+      state.productOutputOverview.totalPower = d?.total ?? 0
+      state.productOutputOverview.averagePower = d?.average ?? 0
+      state.productOutputOverview.unit = d?.unit ?? ''
+      state.productOutputOverview.powerSources = d?.details ?? []
     },
     setProductOutputByDays: (state, action) => {
       state.productOutputByDays.productionData = action.payload
     },
     setProductCummulativeOutput: (state, action) => {
-      state.productCummulativeOutput.barGroups = action.payload.BarChartData
-      state.productCummulativeOutput.byLabel = action.payload.ByLabel
-      state.productCummulativeOutput.summary = action.payload.Summary
-      state.productCummulativeOutput.unit = action.payload.Unit
+      const d = action.payload
+      state.productCummulativeOutput.barGroups = d?.BarChartData ?? []
+      state.productCummulativeOutput.byLabel = d?.ByLabel ?? []
+      state.productCummulativeOutput.summary = d?.Summary ?? {}
+      state.productCummulativeOutput.unit = d?.Unit ?? ''
     },
     setCompareProductOutput: (state, action) => {
       state.compareProductOutput = action.payload

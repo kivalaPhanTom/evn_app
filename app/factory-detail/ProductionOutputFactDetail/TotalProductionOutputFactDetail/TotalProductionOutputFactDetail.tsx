@@ -19,7 +19,8 @@ interface powerSources {
 interface productOutputOverview {
   total: number
   average: number
-  detail: powerSources[]
+  details: powerSources[]
+  unit:string
 }
 function TotalProductionOutputFactDetail(props: Props) {
   const { currentPlantId, keyTab } = props
@@ -28,19 +29,22 @@ function TotalProductionOutputFactDetail(props: Props) {
   const [totalPower, setTotalPower] = useState<number>(0)
   const [averagePower, setAveragePower] = useState<number>(0)
   const [powerSources, setPowerSources] = useState<powerSources[]>([])
+  const [unit, setUnit] = useState<string>('tr.KWh')
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const timerCallback = useCallback(() => {
     if (activeTabIndex === keyTab) {
       dispatch(
         getProductOutputOverviewFactDetail({
           factoryId: currentPlantId,
+          companyId: companyId,
           getDataFromApi: getDataFromApi,
           setLoading: setLoading,
         }),
       )
     }
-  }, [activeTabIndex, keyTab, dispatch])
+  }, [activeTabIndex, keyTab, companyId, dispatch])
   useAlignedHourlyTimer(timerCallback)
 
   useEffect(() => {
@@ -48,17 +52,19 @@ function TotalProductionOutputFactDetail(props: Props) {
       dispatch(
         getProductOutputOverviewFactDetail({
           factoryId: currentPlantId,
+          companyId: companyId,
           getDataFromApi: getDataFromApi,
           setLoading: setLoading,
         }),
       )
     }
-  }, [activeTabIndex, countRefesh])
+  }, [activeTabIndex, countRefesh, companyId])
 
   const getDataFromApi = (data: productOutputOverview) => {
     setTotalPower(data.total)
     setAveragePower(data.average)
-    setPowerSources(data.detail)
+    setPowerSources(data.details || [])
+    setUnit(data.unit || 'tr.KWh')
   }
   const setLoading = (value: boolean) => {
     setIsLoading(value)
@@ -71,7 +77,7 @@ function TotalProductionOutputFactDetail(props: Props) {
       total={totalPower}
       detail={powerSources}
       isLoading={isLoading}
-      unit="tr.KWh"
+      unit={unit}
       type="product-output"
     />
   )

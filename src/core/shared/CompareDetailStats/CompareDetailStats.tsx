@@ -155,6 +155,12 @@ interface CompareDetailStatsProps {
   isLoading?: boolean
 }
 
+// API có thể trả Summary thiếu/null từng cấp (average/target/compare/value) khi đổi ngày so sánh
+const safeValue = (obj: any) => {
+  const num = Number(obj?.value)
+  return Number.isFinite(num) ? Number(num.toFixed(2)) : 0
+}
+
 const CompareDetailStats: React.FC<CompareDetailStatsProps> = ({ summary, isLoading = false }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -165,31 +171,31 @@ const CompareDetailStats: React.FC<CompareDetailStatsProps> = ({ summary, isLoad
 
       <StatItem
         title="Trung bình"
-        currentDate={summary?.average.target.date || ''}
-        currentValue={Number(summary?.average.target.value.toFixed(2)) || 0}
-        compareDate={summary?.average.compare.date || ''}
-        compareValue={Number(summary?.average.compare.value.toFixed(2)) || 0}
-        unit={summary?.average.target.unit || 'MWh'}
+        currentDate={summary?.average?.target?.date || ''}
+        currentValue={safeValue(summary?.average?.target)}
+        compareDate={summary?.average?.compare?.date || ''}
+        compareValue={safeValue(summary?.average?.compare)}
+        unit={summary?.average?.target?.unit || 'MWh'}
         isLoading={isLoading}
       />
 
       <StatItem
         title="Cao nhất"
-        currentDate={summary?.max.target.date || ''}
-        currentValue={Number(summary?.max.target.value.toFixed(2)) || 0}
-        compareDate={summary?.max.compare.date || ''}
-        compareValue={Number(summary?.max.compare.value.toFixed(2)) || 0}
-        unit={summary?.max.target.unit || 'MWh'}
+        currentDate={summary?.max?.target?.date || ''}
+        currentValue={safeValue(summary?.max?.target)}
+        compareDate={summary?.max?.compare?.date || ''}
+        compareValue={safeValue(summary?.max?.compare)}
+        unit={summary?.max?.target?.unit || 'MWh'}
         isLoading={isLoading}
       />
 
       <StatItem
         title="Thấp nhất"
-        currentDate={summary?.min.target.date || ''}
-        currentValue={Number(summary?.min.target.value.toFixed(2)) || 0}
-        compareDate={summary?.min.compare.date || ''}
-        compareValue={Number(summary?.min.compare.value.toFixed(2)) || 0}
-        unit={summary?.min.target.unit || 'MWh'}
+        currentDate={summary?.min?.target?.date || ''}
+        currentValue={safeValue(summary?.min?.target)}
+        compareDate={summary?.min?.compare?.date || ''}
+        compareValue={safeValue(summary?.min?.compare)}
+        unit={summary?.min?.target?.unit || 'MWh'}
         isLoading={isLoading}
       />
     </View>

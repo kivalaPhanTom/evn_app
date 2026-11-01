@@ -135,12 +135,13 @@ function mapInflowOutflowToReservoirMetric(apiData: {
   }
 }
 
-function ReservoirMetric(props: { currentPlantId: string }) {
-  const { currentPlantId } = props
+function ReservoirMetric(props: { plantId: string | number; maHoChua?: string }) {
+  const { plantId, maHoChua } = props
   const isDark = useAppTheme() === 'dark'
   const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirMetric
   const styles = createStyles(isDark)
   const dispatch = useAppDispatch()
+  const { selectedCompanyId: companyId } = useAppSelector((state: any) => state.companyPlantSlice)
   const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {}, shallowEqual)
   const hasApiData = inflowOutflowData?.cards?.length >= 3
   const data = hasApiData
@@ -148,10 +149,10 @@ function ReservoirMetric(props: { currentPlantId: string }) {
     : DEFAULT_DATA
 
   useEffect(() => {
-    if (currentPlantId) {
-      dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
+    if (plantId && companyId) {
+      dispatch(getInflowOutflow({ plantId, companyId, maHoChua }))
     }
-  }, [dispatch, currentPlantId])
+  }, [dispatch, plantId, companyId, maHoChua])
 
   return (
     <View style={styles.container}>
