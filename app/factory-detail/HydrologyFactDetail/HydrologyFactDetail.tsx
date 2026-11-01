@@ -14,9 +14,10 @@ import ReservoirMetric from '../ReservoirWaterLevel/ReservoirMetric/ReservoirMet
 interface hydrologyFactDetailProps {
   currentPlantId: string
   keyTab: number
+  selectedMaHoChua: string
 }
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
-  const { currentPlantId, keyTab } = props
+  const { currentPlantId, keyTab, selectedMaHoChua } = props
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { plants, selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
@@ -26,7 +27,10 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
     (plant) => plant.symbol === currentPlantId || String(plant.plantId) === currentPlantId,
   )
   const plantId = plant?.plantId
-  const maHoChua = plant?.ListHoChua?.[0]?.MaHoChua
+  const selectedReservoir =
+    plant?.ListHoChua?.find((reservoir) => reservoir.MaHoChua === selectedMaHoChua) ??
+    plant?.ListHoChua?.[0]
+  const maHoChua = selectedReservoir?.MaHoChua
   const inflowOutflowMaHoChua = (plant?.ListHoChua?.length ?? 0) > 1 ? maHoChua : undefined
 
   useEffect(() => {
@@ -38,7 +42,6 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
       if (plantId !== undefined && companyId) {
         dispatch(getInflowOutflow({ plantId, companyId, maHoChua: inflowOutflowMaHoChua }))
       }
-      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
   }, [
     currentPlantId,
@@ -53,17 +56,23 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
     inflowOutflowMaHoChua,
   ])
 
+  useEffect(() => {
+    if (activeTabIndex === keyTab) {
+      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId }))
+    }
+  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
+
   return (
     <ScrollView>
       <View>
-        <WaterLevelByHours currentPlantId={currentPlantId} />
+        <WaterLevelByHours currentPlantId={currentPlantId} selectedMaHoChua={maHoChua} />
         <View>
           {plantId !== undefined && (
             <ReservoirMetric plantId={plantId} maHoChua={inflowOutflowMaHoChua} />
           )}
         </View>
         <View style={{ marginTop: 20 }}>
-          <InflowOutflow hydroElectricId={currentPlantId} />
+          <InflowOutflow />
         </View>
 
         <View style={{ marginTop: 20 }}>

@@ -27,7 +27,9 @@ export const getInflowOutflow = createAction<{
   maHoChua?: string
 }>('GET_INFLOW_OUTFLOW')
 export const getHydrographicChart = createAction<{ maHoChua: string; type: string }>('GET_HYDROLOGY_GRAPHIC_CHART')
-export const getHydrologyPlantsParam = createAction<{ currentPlantId?: string }>('GET_HYDROLOGY_PLANTS_PARAM')
+export const getHydrologyPlantsParam = createAction<{ currentPlantId?: string; maHoChua?: string }>(
+  'GET_HYDROLOGY_PLANTS_PARAM',
+)
 export const getUpstreamWaterLevel = createAction<{ currentPlantId: string; date: string }>('GET_UPSTREAM_WATER_LEVEL')
 export const getInflow = createAction<{ currentPlantId: string; date: string }>('GET_INFLOW')
 export const getOutflow = createAction<{ currentPlantId: string; date: string }>('GET_OUTFLOW')

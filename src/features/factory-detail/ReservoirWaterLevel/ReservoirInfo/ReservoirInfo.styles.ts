@@ -12,6 +12,57 @@ const createStyles = (isDark: boolean) => {
     overflow: 'hidden',
     padding: 0,
   },
+  reservoirTabsSection: {
+    paddingTop: px.v(12),
+    paddingHorizontal: px.h(16),
+  },
+  reservoirTabsTitle: {
+    color: colors.infoLabel,
+    fontSize: px.m(12),
+    fontWeight: '500',
+    marginBottom: px.v(8),
+  },
+  reservoirTabsContent: {
+    gap: px.h(8),
+    paddingRight: px.h(8),
+  },
+  reservoirTab: {
+    minWidth: px.h(88),
+    maxWidth: px.h(150),
+    height: px.v(34),
+    paddingHorizontal: px.h(12),
+    borderRadius: px.h(9),
+    borderWidth: 1,
+    borderColor: isDark ? 'rgba(255, 255, 255, 0.22)' : '#BFDBFE',
+    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reservoirTabActive: {
+    borderColor: colors.title,
+    backgroundColor: isDark ? 'rgba(34, 211, 238, 0.18)' : '#E0F2FE',
+  },
+  reservoirTabDot: {
+    width: px.h(6),
+    height: px.h(6),
+    borderRadius: px.h(3),
+    backgroundColor: isDark ? '#9CA3AF' : '#64748B',
+    marginRight: px.h(6),
+  },
+  reservoirTabDotActive: {
+    backgroundColor: colors.title,
+  },
+  reservoirTabText: {
+    color: colors.infoLabel,
+    fontSize: px.m(12),
+    fontWeight: '500',
+    flexShrink: 1,
+  },
+  reservoirTabTextActive: {
+    color: isDark ? '#FFFFFF' : '#0F172A',
+    fontWeight: '700',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -91,6 +91,12 @@ export const LineChart: React.FC<LineCharProps> = ({
   const resolvedRulesColor = rulesColor ?? palette.gridRule
   const resolvedXAxisColor = xAxisColor ?? palette.xAxis
   const fadeAnim = useRef(new Animated.Value(0)).current
+  // react-native-gifted-charts adds internal fields (for example
+  // `isActiveClone`) to each data point. Redux Toolkit freezes state objects
+  // in development, so pass mutable copies instead of Redux references.
+  const mutableData = useMemo(() => (data ?? []).map((item) => ({ ...item })), [data])
+  const mutableData2 = useMemo(() => data2?.map((item) => ({ ...item })), [data2])
+  const mutableData3 = useMemo(() => data3?.map((item) => ({ ...item })), [data3])
 
   //const gradients = isDark ? darkGradients : lightGradients
   //const [startColor, endColor] = gradients[color] || gradients.blue
@@ -105,9 +111,9 @@ export const LineChart: React.FC<LineCharProps> = ({
   }, [fadeAnim])
 
   const commonProps = {
-    data,
-    data2,
-    data3,
+    data: mutableData,
+    data2: mutableData2,
+    data3: mutableData3,
     animateOnDataChange: animateOnDataChange,
     animationDuration,
     yAxisTextStyle: {
