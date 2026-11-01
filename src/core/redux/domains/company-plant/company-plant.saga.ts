@@ -8,7 +8,14 @@ import type { RootState } from '@/core/redux/store'
 import { getModules } from '../modules/modules.actions'
 import { saveModuleState } from '../modules/modules.slice'
 import { getPlants, restoreCompanies } from './company-plant.actions'
-import { companiesFailed, companiesLoaded, companiesLoading, plantsFailed, plantsLoaded, plantsLoading } from './company-plant.slice'
+import {
+  companiesFailed,
+  companiesLoaded,
+  companiesLoading,
+  plantsFailed,
+  plantsLoaded,
+  plantsLoading,
+} from './company-plant.slice'
 
 function* restoreCompaniesSaga(): Generator {
   yield put(companiesLoading())
@@ -59,5 +66,8 @@ function* getPlantsSaga(action: ReturnType<typeof getPlants>): Generator {
 }
 
 export function* companyPlantSagaList() {
-  yield all([takeLatest(restoreCompanies, restoreCompaniesSaga), takeLatest(getPlants, getPlantsSaga)])
+  yield all([
+    takeLatest(restoreCompanies, restoreCompaniesSaga),
+    takeLatest(getPlants, getPlantsSaga),
+  ])
 }

@@ -18,29 +18,49 @@ interface hydrologyFactDetailProps {
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   const { currentPlantId, keyTab } = props
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { plants, selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
   const dispatch = useAppDispatch()
+  const plant = plants.find(
+    (plant) => plant.symbol === currentPlantId || String(plant.plantId) === currentPlantId,
+  )
+  const plantId = plant?.plantId
+  const maHoChua = plant?.ListHoChua?.[0]?.MaHoChua
+  const inflowOutflowMaHoChua = (plant?.ListHoChua?.length ?? 0) > 1 ? maHoChua : undefined
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      const type = selectedOptionsValueFactDetail === "7_DAYS" ? "day" : ""
-      dispatch(getHydrographicChart({
-        companyId: currentPlantId,
-        type: type
-      }))
-      dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
+      const type = selectedOptionsValueFactDetail === '7_DAYS' ? 'day' : 'hour'
+      if (maHoChua) {
+        dispatch(getHydrographicChart({ maHoChua, type }))
+      }
+      if (plantId !== undefined && companyId) {
+        dispatch(getInflowOutflow({ plantId, companyId, maHoChua: inflowOutflowMaHoChua }))
+      }
       dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh, selectedOptionsValueFactDetail])
+  }, [
+    currentPlantId,
+    activeTabIndex,
+    keyTab,
+    dispatch,
+    countRefesh,
+    selectedOptionsValueFactDetail,
+    companyId,
+    plantId,
+    maHoChua,
+    inflowOutflowMaHoChua,
+  ])
 
   return (
     <ScrollView>
       <View>
         <WaterLevelByHours currentPlantId={currentPlantId} />
         <View>
-          <ReservoirMetric currentPlantId={currentPlantId} />
+          {plantId !== undefined && (
+            <ReservoirMetric plantId={plantId} maHoChua={inflowOutflowMaHoChua} />
+          )}
         </View>
         <View style={{ marginTop: 20 }}>
           <InflowOutflow hydroElectricId={currentPlantId} />

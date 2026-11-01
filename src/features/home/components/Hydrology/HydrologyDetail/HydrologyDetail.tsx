@@ -28,24 +28,6 @@ interface HydrologyDetailProps {
   scrollY?: Animated.Value
 }
 
-function getCurrentPlantId(activeTab: string): string {
-  let result: string = ''
-  switch (activeTab) {
-    case 'buon-tua-srah':
-      result = 'BTS'
-      break
-    case 'buon-kuop':
-      result = 'BK'
-      break
-    case 'srepok-3':
-      result = 'SP3'
-      break
-    default:
-      break
-  }
-  return result
-}
-
 function prepareChartData(data: any[] | undefined, currentFilterTab: string, currentHour: number) {
   if (!data) return []
   // filter() khong lam thay doi du lieu API, vi vay khong can deep-clone bang JSON truoc moi lan ve bieu do.
@@ -60,9 +42,10 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
-  const { hydrologyPlants, filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice, shallowEqual)
+  const { filterByTime } = useAppSelector((state: RootState) => state.hydrologySlice, shallowEqual)
+  const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
+  const [selectedTab, setActiveTab] = useState<string>(currentPlantId ?? '')
   const [shouldLoadGeneralInfo, setShouldLoadGeneralInfo] = useState(false)
   const [shouldLoadUpstreamChart, setShouldLoadUpstreamChart] = useState(false)
   const [shouldLoadInflowChart, setShouldLoadInflowChart] = useState(false)
@@ -72,13 +55,11 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
-  const tabs = hydrologyPlants?.plantsData?.map((plant) => {
-    const plantId = getCurrentPlantId(plant.abbreviation)
-    return {
-      id: plantId,
-      label: plant.name,
-    }
-  })
+  const tabs = plants.filter((plant) => plant.hasHydrology).map((plant) => ({
+    id: plant.symbol,
+    label: plant.plantName,
+  }))
+  const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : tabs[0]?.id ?? ''
 
   const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {}, shallowEqual)
   const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {}, shallowEqual)
@@ -87,6 +68,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const currentHour = new Date().getHours()
 
   useEffect(() => {
+    if (!activeTab) return
     console.log('getHydrologyPlantsInfo reload')
     const payload = {
       currentPlantId: activeTab,
