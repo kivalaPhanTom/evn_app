@@ -6,8 +6,14 @@ import ReservoirInfo from './ReservoirInfo/ReservoirInfo'
 import ReservoirMetric from './ReservoirMetric/ReservoirMetric'
 import { t } from 'i18next'
 
-function ReservoirWaterLevel(props: { currentPlantId: string,}) {
-  const { currentPlantId } = props;
+interface ReservoirWaterLevelProps {
+  currentPlantId: string
+  selectedMaHoChua: string
+  onSelectMaHoChua: (maHoChua: string) => void
+}
+
+function ReservoirWaterLevel(props: ReservoirWaterLevelProps) {
+  const { currentPlantId, selectedMaHoChua, onSelectMaHoChua } = props;
 
   return (
     // <SectionContainer
@@ -18,7 +24,11 @@ function ReservoirWaterLevel(props: { currentPlantId: string,}) {
     //   }}
     // >
       <View style={{ marginBottom: 20 }}>
-        <ReservoirInfo currentPlantId={currentPlantId} />
+        <ReservoirInfo
+          currentPlantId={currentPlantId}
+          selectedMaHoChua={selectedMaHoChua}
+          onSelectMaHoChua={onSelectMaHoChua}
+        />
       </View>
     // </SectionContainer>
   )

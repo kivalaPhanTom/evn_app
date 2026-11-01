@@ -9,17 +9,24 @@ import { RootState } from '@/core/redux/store'
 import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 interface WaterLevelByHoursProps {
   currentPlantId: string
+  selectedMaHoChua?: string
 }
 function WaterLevelByHours(props: WaterLevelByHoursProps) {
-  const { currentPlantId } = props
+  const { currentPlantId, selectedMaHoChua } = props
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const colors = (isDark ? hydrologyDark : hydrologyLight).waterLevelByHours
-  const { hydrologyCharData, selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const { hydrologyCharData, selectedOptionsValueFactDetail, isLoadingHydrologyChart } = useAppSelector(
+    (state: RootState) => state.hydrologySlice,
+  )
   const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
-  const plant = plants.find((item) => item.symbol === currentPlantId)
-  const referenceLevel = plant?.ListHoChua?.[0]?.referenceLevel ?? null
+  const plant = plants.find(
+    (item) => item.symbol === currentPlantId || String(item.plantId) === currentPlantId,
+  )
+  const reservoir =
+    plant?.ListHoChua?.find((item) => item.MaHoChua === selectedMaHoChua) ?? plant?.ListHoChua?.[0]
+  const referenceLevel = reservoir?.referenceLevel ?? null
 
   return (
     <>
@@ -27,7 +34,7 @@ function WaterLevelByHours(props: WaterLevelByHoursProps) {
         <Text style={[styles.pillText, { color: colors.title }]}>Mực nước trong hồ theo giờ</Text>
         <View style={[styles.chartPanel, !isDark && { backgroundColor: colors.chartBackground, borderRadius: 12 }]}>
           <HydrographicChart
-            isLoading={false}
+            isLoading={isLoadingHydrologyChart}
             data={hydrologyCharData}
             referenceLevel={referenceLevel}
             bgColor={colors.chartBackground}
