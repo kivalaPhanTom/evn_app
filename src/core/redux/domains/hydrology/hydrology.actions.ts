@@ -21,8 +21,12 @@ export type HydrologyComparisonPayload =
     }
 
 export const getHydrologyflowChart = createAction<{ currentPlantId: string; date: string }>('GET_HYDROLOGY_FLOW_CHART')
-export const getInflowOutflow = createAction<{ hydroElectricId: string }>('GET_INFLOW_OUTFLOW')
-export const getHydrographicChart = createAction<{ companyId: string; type: string }>('GET_HYDROLOGY_GRAPHIC_CHART')
+export const getInflowOutflow = createAction<{
+  plantId: string | number
+  companyId: string
+  maHoChua?: string
+}>('GET_INFLOW_OUTFLOW')
+export const getHydrographicChart = createAction<{ maHoChua: string; type: string }>('GET_HYDROLOGY_GRAPHIC_CHART')
 export const getHydrologyPlantsParam = createAction<{ currentPlantId?: string }>('GET_HYDROLOGY_PLANTS_PARAM')
 export const getUpstreamWaterLevel = createAction<{ currentPlantId: string; date: string }>('GET_UPSTREAM_WATER_LEVEL')
 export const getInflow = createAction<{ currentPlantId: string; date: string }>('GET_INFLOW')
