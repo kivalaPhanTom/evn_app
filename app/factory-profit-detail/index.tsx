@@ -9,6 +9,7 @@ import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
 import { setCountRefesh } from '@/core/redux/domains/revenue-profit'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { textGradients } from '@/core/constants/gradients'
 
 const FactoryProfitDetailScreen: React.FC = () => {
   const isDark = useAppTheme() === 'dark'
@@ -38,7 +39,7 @@ const FactoryProfitDetailScreen: React.FC = () => {
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Lợi nhuận'}
-            colors={'#FFF'}
+            colors={isDark ? '#FFF' : textGradients.waterStrong}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
           />

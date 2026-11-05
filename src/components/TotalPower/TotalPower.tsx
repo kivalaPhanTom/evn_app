@@ -108,7 +108,15 @@ function TotalPower(props: Props) {
           ) : (
             <>
               {/* <Text style={styles.title}>{title}</Text> */}
-              <GradientText text={total} fontSize={px.f(60)} colors={totalColors} allowFontScaling={false} />
+              <GradientText
+                text={total}
+                fontSize={px.f(type === 'power' ? 52 : 60)}
+                colors={totalColors}
+                allowFontScaling={false}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.7}
+              />
             </>
           )}
 

@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { textGradients } from '@/core/constants/gradients'
 
 const ProfitDetailScreen: React.FC = () => {
   const isDark = useAppTheme() === 'dark'
@@ -20,7 +21,7 @@ const ProfitDetailScreen: React.FC = () => {
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết Lợi nhuận'}
-          colors={'#FFF'}
+          colors={isDark ? '#FFF' : textGradients.waterStrong}
           fontSize={px.f(30)}
           style={{ textAlign: 'center' }}
         />

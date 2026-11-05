@@ -4,14 +4,17 @@ import { px } from '@/core/utils/scale'
 import RevenueProfitDetail from '@/features/home/components/RevenueProfit/RevenueProfitDetail/RevenueProfitDetail'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { textGradients } from '@/core/constants/gradients'
 
 const RevenueProfitDetailScreen: React.FC = () => {
+  const isDark = useAppTheme() === 'dark'
   return (
     <View>
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết sản lượng'}
-          colors={'#FFF'}
+          colors={isDark ? '#FFF' : textGradients.waterStrong}
           fontSize={px.f(30)}
           style={{ textAlign: 'center' }}
         />

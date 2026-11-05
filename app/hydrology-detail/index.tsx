@@ -51,7 +51,7 @@ const HydrologyDetailScreen: React.FC = () => {
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Thủy văn'}
-            colors={textGradients.water}
+            colors={isDark ? textGradients.water : textGradients.waterStrong}
             fontSize={px.f(30)}
             style={{ textAlign: 'center' }}
           />

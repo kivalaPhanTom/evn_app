@@ -131,13 +131,16 @@ export const LineChart: React.FC<LineCharProps> = ({
   }
 
   const screenWidth = Dimensions.get('window').width
-  const allValues = [...(data || []), ...(data2 || []), ...(data3 || [])].map((i) => i.value)
+  const allValues = [...(data || []), ...(data2 || []), ...(data3 || [])]
+    .map((item) => item?.value)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
 
   const overallMax = allValues.length ? Math.max(...allValues) : 0
   const overallMin = allValues.length ? Math.min(...allValues) : 0
   const noOfSections = 3
 
   const getNiceStep = (range: number, sections: number) => {
+    if (!Number.isFinite(range) || range <= 0) return 1
     const roughStep = range / sections
 
     const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)))

@@ -6,6 +6,7 @@ export const textGradients = {
   tab: ['#8B5EFF', '#4AD8FF'] as GradientColors,
   border: ['#38445A', '#485A89'] as GradientColors,
   water: ['#3AB7FF', '#7DF0FF'] as GradientColors,
+  waterStrong: ['#0284C7', '#0891B2'] as GradientColors,
 }
 
 export const lightGradients = {

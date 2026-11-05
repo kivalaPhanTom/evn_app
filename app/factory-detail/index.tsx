@@ -141,7 +141,7 @@ function FactoryDetail(props: factoryDetailProps) {
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
-              colors={textGradients.water}
+              colors={isDark ? textGradients.water : textGradients.waterStrong}
               fontSize={px.f(30)}
               style={{ textAlign: 'center' }}
             />

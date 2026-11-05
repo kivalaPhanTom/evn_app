@@ -14,6 +14,8 @@ import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import { Colors } from '@/core/constants/colors'
 import { useLocalSearchParams } from 'expo-router'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import GradientText from '@/components/GradientText/GradientText.component'
+import { textGradients } from '@/core/constants/gradients'
 interface Props { }
 
 const data = {
@@ -135,12 +137,18 @@ export default function RevenueDetail(props: Props) {
       maxSize={2}
     >
       <ScrollView
-        style={styles.container}
+        style={[styles.container, !isDark && { backgroundColor: Colors.lightBackground }]}
         contentContainerStyle={{ paddingBottom: 24 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <Text style={styles.title}>Chi tiết Doanh thu</Text>
-        <Text style={styles.companyName}>Công ty thủy điện Buôn Kuốp</Text>
+        <GradientText
+          text="Chi tiết Doanh thu"
+          colors={isDark ? 'white' : textGradients.waterStrong}
+          fontSize={typography.header}
+          fontWeight="600"
+          style={styles.title}
+        />
+        <Text style={[styles.companyName, !isDark && { color: '#6B7280' }]}>Công ty thủy điện Buôn Kuốp</Text>
         <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Date Picker */}

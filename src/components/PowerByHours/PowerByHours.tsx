@@ -17,13 +17,13 @@ interface HourlyPowerList {
 interface Props {
   isLoading: boolean
   currentDate: string
-  currentPower: number
+  currentPower: number | null
   currentTime: string
   HourlyPowerList: HourlyPowerList[]
   onPressCard: any
   unit: string
   offeredPower: number
-  offeredPowerList: number[]
+  offeredPowerList: (number | null)[]
   scrollToEnd?: boolean
 }
 
@@ -61,7 +61,7 @@ function PowerByHours(props: Props) {
   }, [isLoading])
   const currentOfferedPowerList = offeredPowerList
     ? offeredPowerList
-        .map((value: number, index: number) => ({
+        .map((value, index: number) => ({
           value,
           label: `${index + 1}h`,
         }))
