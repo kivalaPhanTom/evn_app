@@ -1,4 +1,3 @@
-import { images } from '@/assets'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -144,7 +143,8 @@ export default function CompaniesScreen() {
             )}
             {plantsStatus === 'loading' && <ActivityIndicator color={Colors.blue} />}
             {companies.map((c) => {
-              const hasBackground = c.abbreviation === 'BKP'
+              const logoUrl = c.logoUrl?.trim()
+              const hasBackground = Boolean(logoUrl)
               const cardTextColor = hasBackground || isDark ? '#FFFFFF' : '#111827'
               const cardSubtextColor = hasBackground || isDark ? '#E6ECF2' : '#6B7280'
               return (
@@ -159,10 +159,10 @@ export default function CompaniesScreen() {
                     backgroundColor={{ dark: '#0F1830', light: '#FFFFFF' }}
                     borderColor={{ dark: 'rgba(255,255,255,0.06)', light: 'rgba(0,0,0,0.06)' }}
                     borderWidth={1}
-                    backgroundImageOpacity={lightOn ? 1 : 0.2}
-                    backgroundImage={hasBackground ? images.buonKuopBg : undefined}
+                    backgroundImage={logoUrl ? { uri: logoUrl } : undefined}
                     showGradient={false}
                   >
+                    {hasBackground && <View pointerEvents="none" style={styles.companyImageOverlay} />}
                     <View style={styles.row}>
                       <View style={{ flex: 1 }}>
                         <Text style={[styles.company, { color: cardTextColor }]} numberOfLines={2}>
@@ -255,6 +255,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: px.v(14),
     paddingHorizontal: px.h(12),
+  },
+  companyImageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   iconWrap: {
     width: px.h(36),

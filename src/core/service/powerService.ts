@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api, prefix_api_v2 } from '../constants/vars'
+import { prefix_api_v2 } from '../constants/vars'
 
 export const Service = {
   getPowerOverviewApi,
@@ -12,30 +12,35 @@ export const Service = {
 }
 export const servicePattern = {
   getPowerOverview: `${prefix_api_v2}/overview`,
-  getPowerByTime: `${prefix_api}/power_by_time_v2`,
-  getPowerByDays: `${prefix_api}/Recent_days`,
-  getComparePower: `${prefix_api}/ComparePower`,
+  getPowerByTime: `${prefix_api_v2}/power_by_time_v2`,
+  getPowerByDays: `${prefix_api_v2}/Recent_days`,
+  getComparePower: `${prefix_api_v2}/ComparePower`,
 }
 
 function getPowerOverviewApi(companyId: string = '') {
-  return api.get(`${servicePattern.getPowerOverview}`,
-    { params: { companyId: companyId } }
-  )
+  return api.get(`${servicePattern.getPowerOverview}`, { params: { companyId: companyId } })
 }
 
-function getPowerByTimeApi() {
-  return api.get(`${servicePattern.getPowerByTime}`)
-}
-
-function getPowerByDaysApi(dayNumber: number = 7) {
-  return api.get(`${servicePattern.getPowerByDays}`, {
-    params: { nString: dayNumber },
+function getPowerByTimeApi(companyId: string = '') {
+  return api.get(`${servicePattern.getPowerByTime}`, {
+    params: { companyId },
   })
 }
 
-function getComparePowerApi(tagetDate: string = '', compareDate: string = '', currentPlantId: string = '') {
+function getPowerByDaysApi(dayNumber: number = 7, companyId: string = '') {
+  return api.get(`${servicePattern.getPowerByDays}`, {
+    params: { nString: dayNumber, companyId },
+  })
+}
+
+function getComparePowerApi(
+  tagetDate: string = '',
+  compareDate: string = '',
+  currentPlantId: string = '',
+  companyId: string = '',
+) {
   const url = `${servicePattern.getComparePower}?tagetDate=${encodeURIComponent(tagetDate)}&compareDate=${encodeURIComponent(compareDate)}&currentPlantId=${currentPlantId}`
-  return api.get(url)
+  return api.get(url, { params: { companyId } })
 }
 
 function getPowerOverviewFactDetailApi(factoryId: string = '', companyId: string = '') {
@@ -46,11 +51,13 @@ function getPowerOverviewFactDetailApi(factoryId: string = '', companyId: string
     },
   })
 }
-function getPowerByTimeFactDetailApi(factoryId: string = '') {
-  return api.get(`${servicePattern.getPowerByTime}?currentPlantId=${factoryId}`)
+function getPowerByTimeFactDetailApi(factoryId: string = '', companyId: string = '') {
+  return api.get(`${servicePattern.getPowerByTime}?currentPlantId=${factoryId}`, {
+    params: { companyId },
+  })
 }
-function getPowerByDaysFactDetailApi(factoryId: string = '') {
+function getPowerByDaysFactDetailApi(factoryId: string = '', companyId: string = '') {
   return api.get(`${servicePattern.getPowerByDays}`, {
-    params: { currentPlantId: factoryId, nString: 7 },
+    params: { currentPlantId: factoryId, nString: 7, companyId },
   })
 }

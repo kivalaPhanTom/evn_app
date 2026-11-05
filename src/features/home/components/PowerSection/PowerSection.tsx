@@ -20,7 +20,7 @@ function PowerSection() {
     detail,
     unit: overviewUnit,
     isLoadingOverview,
-    powerByTime: { currentDate, currentPower, currentTime, avgPower, HourlyPowerList, offeredPower, offeredPowerList, unit },
+    powerByTime: { currentDate, currentPower, currentTime, HourlyPowerList, offeredPower, offeredPowerList, unit },
     isLoadingByHours,
     powerByDays: { powerData },
     isLoadingNearCurrentDays,
@@ -35,8 +35,8 @@ function PowerSection() {
 
   useEffect(() => {
     dispatch(getPowerOverivew({ companyId }))
-    dispatch(getPowerByTime())
-    dispatch(getPowerByDays(7))
+    dispatch(getPowerByTime({ companyId }))
+    dispatch(getPowerByDays({ dayNumber: 7, companyId }))
   }, [countRefesh, companyId])
   const onPressCard = () => {
     router.navigate({ pathname: '/product-power-detail' })

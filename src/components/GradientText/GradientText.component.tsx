@@ -52,9 +52,12 @@ const GradientText: React.FC<GradientTextProps> = ({
       <LinearGradient colors={gradientColors as [string, string, ...string[]]} start={start} end={end}>
         <TextComponent
           allowFontScaling={false}
+          {...props}
           style={[
             styles.text,
-            { fontSize, fontWeight, opacity: 0 }, // ẩn text thực
+            { fontSize, fontWeight },
+            style,
+            { opacity: 0 }, // ẩn text thực
           ]}
         >
           {text}

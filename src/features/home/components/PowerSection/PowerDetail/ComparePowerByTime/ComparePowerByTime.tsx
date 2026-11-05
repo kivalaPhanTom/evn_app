@@ -16,6 +16,7 @@ function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate
   const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const companyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const [rangeCompare, setRangeCompare] = useState({
     from: dayjs().subtract(14, 'day'),
     to: dayjs().subtract(7, 'day'),
@@ -30,9 +31,10 @@ function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate
         tagetDate: rangeCompare.to.format('DD/MM/YYYY'),
         compareDate: rangeCompare.from.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId,
       }),
     )
-  }, [countRefesh])
+  }, [countRefesh, currentPlantId, companyId])
 
   const onChangeDateRangeCompare = (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => {
     // Đảm bảo kiểu dayjs
@@ -51,6 +53,7 @@ function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate
         tagetDate: toDate.format('DD/MM/YYYY'),
         compareDate: fromDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId,
       }),
     )
   }
@@ -72,6 +75,7 @@ function ComparePowerByTime(props: { currentPlantId?: string; isCheckDisableDate
         tagetDate: toDate.format('DD/MM/YYYY'),
         compareDate: fromDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId,
       }),
     )
   }
