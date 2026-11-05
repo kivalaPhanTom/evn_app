@@ -14,36 +14,65 @@ import ReservoirMetric from '../ReservoirWaterLevel/ReservoirMetric/ReservoirMet
 interface hydrologyFactDetailProps {
   currentPlantId: string
   keyTab: number
+  selectedMaHoChua: string
 }
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
-  const { currentPlantId, keyTab } = props
+  const { currentPlantId, keyTab, selectedMaHoChua } = props
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { plants, selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
-  const { hydrologyPlants } = useAppSelector((state: RootState) => state.hydrologySlice)
   const dispatch = useAppDispatch()
+  const plant = plants.find(
+    (plant) => plant.symbol === currentPlantId || String(plant.plantId) === currentPlantId,
+  )
+  const plantId = plant?.plantId
+  const selectedReservoir =
+    plant?.ListHoChua?.find((reservoir) => reservoir.MaHoChua === selectedMaHoChua) ??
+    plant?.ListHoChua?.[0]
+  const maHoChua = selectedReservoir?.MaHoChua
+  const inflowOutflowMaHoChua = (plant?.ListHoChua?.length ?? 0) > 1 ? maHoChua : undefined
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      const type = selectedOptionsValueFactDetail === "7_DAYS" ? "day" : ""
-      dispatch(getHydrographicChart({
-        companyId: currentPlantId,
-        type: type
-      }))
-      dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
-      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: currentPlantId }))
+      const type = selectedOptionsValueFactDetail === '7_DAYS' ? 'day' : 'hour'
+      if (maHoChua) {
+        dispatch(getHydrographicChart({ maHoChua, type }))
+      }
+      if (plantId !== undefined && companyId) {
+        dispatch(getInflowOutflow({ plantId, companyId, maHoChua: inflowOutflowMaHoChua }))
+      }
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh, selectedOptionsValueFactDetail])
+  }, [
+    currentPlantId,
+    activeTabIndex,
+    keyTab,
+    dispatch,
+    countRefesh,
+    selectedOptionsValueFactDetail,
+    companyId,
+    plantId,
+    maHoChua,
+    inflowOutflowMaHoChua,
+  ])
+
+  useEffect(() => {
+    if (activeTabIndex === keyTab) {
+      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId }))
+    }
+  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
 
   return (
     <ScrollView>
       <View>
-        <WaterLevelByHours currentPlantId={currentPlantId} />
+        <WaterLevelByHours currentPlantId={currentPlantId} selectedMaHoChua={maHoChua} />
         <View>
-          <ReservoirMetric currentPlantId={currentPlantId} />
+          {plantId !== undefined && (
+            <ReservoirMetric plantId={plantId} maHoChua={inflowOutflowMaHoChua} />
+          )}
         </View>
         <View style={{ marginTop: 20 }}>
-          <InflowOutflow hydroElectricId={currentPlantId} />
+          <InflowOutflow />
         </View>
 
         <View style={{ marginTop: 20 }}>

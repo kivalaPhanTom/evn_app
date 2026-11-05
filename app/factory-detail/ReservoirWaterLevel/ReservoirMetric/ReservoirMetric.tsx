@@ -104,6 +104,11 @@ const DEFAULT_DATA: ReservoirMetricData = {
   },
 }
 
+const roundToOneDecimal = (value: unknown): number => {
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? Number(numericValue.toFixed(1)) : 0
+}
+
 function mapInflowOutflowToReservoirMetric(apiData: {
   unit?: string
   cards?: { id?: string; title?: string; value?: number; unit?: string }[]
@@ -115,19 +120,19 @@ function mapInflowOutflowToReservoirMetric(apiData: {
   const xtflow = cards[2]
   return {
     inflow: {
-      value: inflow?.value ?? 0,
+      value: roundToOneDecimal(inflow?.value),
       unit: inflow?.unit ?? unit,
       previousValue: 0,
       samePeriodUnit: inflow?.unit ?? unit,
     },
     outflow: {
-      value: outflow?.value ?? 0,
+      value: roundToOneDecimal(outflow?.value),
       unit: outflow?.unit ?? unit,
       previousValue: 0,
       samePeriodUnit: outflow?.unit ?? unit,
     },
     xtflow: {
-      value: xtflow?.value ?? 0,
+      value: roundToOneDecimal(xtflow?.value),
       unit: xtflow?.unit ?? unit,
       previousValue: 0,
       samePeriodUnit: xtflow?.unit ?? unit,
@@ -135,12 +140,13 @@ function mapInflowOutflowToReservoirMetric(apiData: {
   }
 }
 
-function ReservoirMetric(props: { currentPlantId: string }) {
-  const { currentPlantId } = props
+function ReservoirMetric(props: { plantId: string | number; maHoChua?: string }) {
+  const { plantId, maHoChua } = props
   const isDark = useAppTheme() === 'dark'
   const colors = (isDark ? hydrologyDark : hydrologyLight).reservoirMetric
   const styles = createStyles(isDark)
   const dispatch = useAppDispatch()
+  const { selectedCompanyId: companyId } = useAppSelector((state: any) => state.companyPlantSlice)
   const inflowOutflowData = useAppSelector((state: any) => state.hydrologySlice?.inflowOutflow ?? {}, shallowEqual)
   const hasApiData = inflowOutflowData?.cards?.length >= 3
   const data = hasApiData
@@ -148,10 +154,10 @@ function ReservoirMetric(props: { currentPlantId: string }) {
     : DEFAULT_DATA
 
   useEffect(() => {
-    if (currentPlantId) {
-      dispatch(getInflowOutflow({ hydroElectricId: currentPlantId }))
+    if (plantId && companyId) {
+      dispatch(getInflowOutflow({ plantId, companyId, maHoChua }))
     }
-  }, [dispatch, currentPlantId])
+  }, [dispatch, plantId, companyId, maHoChua])
 
   return (
     <View style={styles.container}>

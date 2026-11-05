@@ -120,34 +120,48 @@ const CompareDashboard = ({ data, lineData, lineData2, currentPlantId, isCheckDi
   )
 
   // Data sử dụng BarGroup format giống BarChart.component.tsx
-  const convertData = data?.map((item) => ({
-    label: item.label,
-    items: [item.value],
+  // Guard: API trả về thiếu trường hoặc chứa null khi đổi ngày so sánh
+  const toNumber = (v: any) => {
+    const num = Number(v)
+    return Number.isFinite(num) ? num : 0
+  }
+
+  const safeData = data ?? []
+
+  const convertData = safeData.map((item) => ({
+    label: item?.label ?? '',
+    items: [item?.value],
   }))
 
   const barData: BarGroup[] = convertData.map((item) => ({
     label: item.label,
     items: [
       {
-        value: item.items[0],
+        value: toNumber(item.items[0]),
         frontColor: barColor,
       },
     ],
   }))
 
-  const lineData2Converted = lineData2?.map((item: any) => ({
-    value: item,
+  const lineData2Converted = (lineData2 ?? []).map((item: any) => ({
+    value: toNumber(item && typeof item === 'object' ? item?.value : item),
   }))
 
-  const lineData1Converted = data?.map((_, index) => ({
-    value: lineData?.[index] ?? 0,
+  const lineData1Converted = safeData.map((_, index) => ({
+    value: toNumber(lineData?.[index]),
   }))
+
+  // DateRangePicker có thể emit Date object thuần (không phải dayjs) → luôn bọc dayjs() trước khi format
+  const safeFormat = (d: any, fallback: dayjs.Dayjs) => {
+    const day = dayjs(d)
+    return day.isValid() ? day.format('DD/MM/YYYY') : fallback.format('DD/MM/YYYY')
+  }
 
   useEffect(() => {
     dispatch(
       getCompareProductOutput({
-        tagetDate: range.to.format('DD/MM/YYYY'),
-        compareDate: range.from.format('DD/MM/YYYY'),
+        tagetDate: safeFormat(range?.to, dayjs()),
+        compareDate: safeFormat(range?.from, dayjs().subtract(1, 'day')),
         currentPlantId: currentPlantId || '',
         companyId: companyId,
       }),
