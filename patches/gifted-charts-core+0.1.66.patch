@@ -1,0 +1,34 @@
+diff --git a/node_modules/gifted-charts-core/dist/utils/index.js b/node_modules/gifted-charts-core/dist/utils/index.js
+index 45367dd..358138e 100644
+--- a/node_modules/gifted-charts-core/dist/utils/index.js
++++ b/node_modules/gifted-charts-core/dist/utils/index.js
+@@ -777,20 +777,24 @@ export var getYForLineInBar = function (value, shiftY, containerHeight, maxValue
+         (shiftY !== null && shiftY !== void 0 ? shiftY : 0) -
+         (((value !== null && value !== void 0 ? value : 0) - yAxisOffset) * containerHeight) / maxValue;
+ };
+-export var clone = function (obj) {
+-    if (obj === null || typeof obj !== 'object' || 'isActiveClone' in obj) {
++export var clone = function (obj, visited) {
++    if (obj === null || typeof obj !== 'object') {
+         return obj;
+     }
++    // Track copies without mutating frozen Redux data or React props.
++    visited = visited || new WeakMap();
++    if (visited.has(obj)) {
++        return visited.get(obj);
++    }
+     var temp;
+     if (obj instanceof Date)
+         temp = new Date(obj);
+     else
+         temp = obj.constructor();
++    visited.set(obj, temp);
+     for (var key in obj) {
+         if (Object.prototype.hasOwnProperty.call(obj, key)) {
+-            obj.isActiveClone = null;
+-            temp[key] = clone(obj[key]);
+-            delete obj.isActiveClone;
++            temp[key] = clone(obj[key], visited);
+         }
+     }
+     return temp;

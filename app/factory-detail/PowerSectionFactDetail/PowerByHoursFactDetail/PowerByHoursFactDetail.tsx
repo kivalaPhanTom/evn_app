@@ -28,6 +28,7 @@ function PowerByHoursFactDetail(props: Props) {
   const dispatch = useAppDispatch()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useAppSelector((state: any) => state.powerSlice.powerByTime)
 
@@ -36,12 +37,13 @@ function PowerByHoursFactDetail(props: Props) {
       dispatch(
         getPowerByTimeFactDetail({
           factoryId: currentPlantId,
+          companyId,
           getDataFromApi: () => {},
           setLoading: setLoading,
         }),
       )
     }
-  }, [currentPlantId, activeTabIndex, countRefesh])
+  }, [currentPlantId, activeTabIndex, countRefesh, companyId])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)

@@ -8,13 +8,7 @@ import {
   getPowerByTimeFactDetail,
   getPowerByDaysFactDetail,
 } from './power.actions'
-import {
-  setPowerOverview,
-  setPowerByTime,
-  setPowerByDays,
-  setComparePower,
-  setLoading,
-} from './power.slice'
+import { setPowerOverview, setPowerByTime, setPowerByDays, setComparePower, setLoading } from './power.slice'
 import { Service } from '@/core/service/powerService'
 import { catchHandle } from '@/core/utils/utils'
 
@@ -40,7 +34,7 @@ function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOveri
     setLoading(true)
     const res = yield call(Service.getPowerOverviewFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      getDataFromApi(res.data)
+      getDataFromApi(res.data?.data ?? res.data)
     }
     setLoading(false)
   } catch (error) {
@@ -49,12 +43,14 @@ function* getPowerOverviewFactDetailSaga(action: ReturnType<typeof getPowerOveri
   }
 }
 
-function* getPowerByTimeSaga(): Generator {
+function* getPowerByTimeSaga(action: ReturnType<typeof getPowerByTime>): Generator {
   try {
     yield put(setLoading({ isLoadingByHours: true }))
-    const res = yield call(Service.getPowerByTimeApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getPowerByTimeApi, companyId)
     if (res.status === 200) {
-      yield put(setPowerByTime(res.data))
+      const data = res.data?.data ?? res.data
+      yield put(setPowerByTime(data))
     }
     yield put(setLoading({ isLoadingByHours: false }))
   } catch (error) {
@@ -66,12 +62,13 @@ function* getPowerByTimeSaga(): Generator {
 function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId)
+    const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      yield put(setPowerByTime(res.data))
-      getDataFromApi(res.data)
+      const data = res.data?.data ?? res.data
+      yield put(setPowerByTime(data))
+      getDataFromApi(data)
     }
     setLoading(false)
   } catch (error) {
@@ -83,10 +80,12 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
 function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generator {
   try {
     yield put(setLoading({ isLoadingNearCurrentDays: true }))
-    const n = action.payload || 7
-    const res = yield call(Service.getPowerByDaysApi, n)
+    const n = action.payload?.dayNumber || 7
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getPowerByDaysApi, n, companyId)
     if (res.status === 200) {
-      yield put(setPowerByDays(res.data.detail))
+      const data = res.data?.data ?? res.data
+      yield put(setPowerByDays(data?.detail))
     }
     yield put(setLoading({ isLoadingNearCurrentDays: false }))
   } catch (error) {
@@ -98,13 +97,14 @@ function* getPowerByDaysSaga(action: ReturnType<typeof getPowerByDays>): Generat
 function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Generator {
   try {
     yield put(setLoading({ isLoadingComparePower: true }))
-    const payload = action.payload as { tagetDate: string; compareDate: string; currentPlantId: string }
+    const payload = action.payload
     const tagetDate = payload?.tagetDate || ''
     const compareDate = payload?.compareDate || ''
     const currentPlantId = payload?.currentPlantId || ''
-    const res = yield call(Service.getComparePowerApi, tagetDate, compareDate, currentPlantId)
+    const companyId = payload?.companyId || ''
+    const res = yield call(Service.getComparePowerApi, tagetDate, compareDate, currentPlantId, companyId)
     if (res.status === 200) {
-      yield put(setComparePower(res.data))
+      yield put(setComparePower(res.data?.data ?? res.data))
     }
     yield put(setLoading({ isLoadingComparePower: false }))
   } catch (error) {
@@ -116,11 +116,12 @@ function* getComparePowerSaga(action: ReturnType<typeof getComparePower>): Gener
 function* getPowerByDaysFactDetailSaga(action: ReturnType<typeof getPowerByDaysFactDetail>): Generator {
   try {
     const payload = action.payload
-    const { factoryId, getDataFromApi, setLoading } = payload
+    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getPowerByDaysFactDetailApi, factoryId)
+    const res = yield call(Service.getPowerByDaysFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
-      getDataFromApi(res.data.detail)
+      const data = res.data?.data ?? res.data
+      getDataFromApi(Array.isArray(data?.detail) ? data.detail : [])
     }
     setLoading(false)
   } catch (error) {

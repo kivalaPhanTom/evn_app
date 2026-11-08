@@ -1,7 +1,6 @@
 import { hydrologyDark, hydrologyLight } from '@/core/constants/hydrologyPalette'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import { View, Text, Animated, Easing } from 'react-native'
-import { useRouter } from 'expo-router'
+import { View, Text, Animated, Easing, Pressable, ScrollView } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg'
@@ -12,20 +11,30 @@ import { getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface ReservoirData {
-  currentLevel: number
-  maxLevel: number
-  deadLevel: number
-  samePeriodLastYear: number
-  referenceLevel: number
-  previousLevel: number
+  currentLevel: number | null
+  maxLevel: number | null
+  deadLevel: number | null
+  referenceLevel: number | null
+  previousLevel: number | null
   percent: number
   symbol: string
   name: string
 }
 
-function ReservoirInfo(props: { currentPlantId: string }) {
-  const { currentPlantId } = props
-  const router = useRouter()
+const toNullableNumber = (value: unknown): number | null => {
+  if (value === null || value === undefined || value === '') return null
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? numericValue : null
+}
+
+interface ReservoirInfoProps {
+  currentPlantId: string
+  selectedMaHoChua: string
+  onSelectMaHoChua: (maHoChua: string) => void
+}
+
+function ReservoirInfo(props: ReservoirInfoProps) {
+  const { currentPlantId, selectedMaHoChua, onSelectMaHoChua } = props
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -35,43 +44,96 @@ function ReservoirInfo(props: { currentPlantId: string }) {
   const containerHeight = px.v(140)
 
   const { currentHydrologyPlant } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
+  const plant = plants.find(
+    (item) =>
+      String(item.plantId) === currentPlantId ||
+      item.symbol === currentPlantId ||
+      item.abbreviation === currentPlantId,
+  )
+  const reservoirs = plant?.ListHoChua ?? []
+  const selectedReservoir = reservoirs[0]
+  const plantId = plant?.plantId ?? currentPlantId
+  const maHoChua = reservoirs.length > 1 ? selectedReservoir?.MaHoChua : undefined
 
   // Call API when component mounts or currentPlantId changes
   useEffect(() => {
-    if (currentPlantId) {
-      dispatch(getHydrologyPlantsParam({ currentPlantId }))
+    if (plantId) {
+      dispatch(getHydrologyPlantsParam({ currentPlantId: String(plantId), maHoChua }))
     }
-  }, [currentPlantId, dispatch])
+  }, [plantId, maHoChua, dispatch])
+
+  const apiReservoirs = Array.isArray(currentHydrologyPlant?.plantsData)
+    ? currentHydrologyPlant.plantsData
+    : []
+  const reservoirOptions = apiReservoirs.length > 0 ? apiReservoirs : reservoirs
+  const getReservoirCode = (item: any): string =>
+    String(item?.symbol ?? item?.MaHoChua ?? item?.maHoChua ?? item?.mahochua ?? '')
+  const reservoirCodes = reservoirOptions.map(getReservoirCode).join('|')
+
+  useEffect(() => {
+    const codes = reservoirCodes ? reservoirCodes.split('|') : []
+    if (!codes.includes(selectedMaHoChua)) {
+      onSelectMaHoChua(codes[0] ?? '')
+    }
+  }, [reservoirCodes, selectedMaHoChua, onSelectMaHoChua])
+
+  const activeReservoir =
+    reservoirOptions.find((item: any) => getReservoirCode(item) === selectedMaHoChua) ?? reservoirOptions[0]
+  const activeReservoirCode = getReservoirCode(activeReservoir)
+  const fallbackReservoir =
+    reservoirs.find((item) => item.MaHoChua === activeReservoirCode) ?? selectedReservoir
 
   // Map API data to ReservoirData format
-  const data = useMemo(() => {
-    if (currentHydrologyPlant?.plantsData && currentHydrologyPlant.plantsData.length > 0) {
-      const plantData = currentHydrologyPlant.plantsData[0]
-      return {
-        currentLevel: plantData.currentLevel,
-        maxLevel: plantData.maxLevel,
-        deadLevel: plantData.referenceLevel, // Using referenceLevel as deadLevel
-        previousLevel: plantData.previousLevel,
-        referenceLevel: plantData.referenceLevel,
-        name: plantData.name,
-        percent: plantData.percent,
-        symbol: plantData.symbol,
-      }
+  const data = useMemo<ReservoirData | undefined>(() => {
+    const plantData = activeReservoir
+    if (!plantData && !fallbackReservoir) return undefined
+
+    const currentLevel = toNullableNumber(plantData?.currentLevel ?? fallbackReservoir?.currentLevel)
+    const maxLevel = toNullableNumber(plantData?.maxLevel ?? fallbackReservoir?.maxLevel)
+    const referenceLevel = toNullableNumber(plantData?.referenceLevel ?? fallbackReservoir?.referenceLevel)
+    const previousLevel = toNullableNumber(plantData?.previousLevel ?? fallbackReservoir?.previousLevel)
+    const responsePercent = toNullableNumber(plantData?.percent)
+    const calculatedPercent =
+      currentLevel !== null && maxLevel !== null && maxLevel > 0 ? (currentLevel / maxLevel) * 100 : 0
+
+    return {
+      currentLevel,
+      maxLevel,
+      deadLevel: referenceLevel,
+      previousLevel,
+      referenceLevel,
+      name: plantData?.name ?? plantData?.TenHoChua ?? fallbackReservoir?.TenHoChua ?? plant?.plantName ?? '',
+      percent: Math.max(0, Math.min(100, responsePercent ?? calculatedPercent)),
+      symbol:
+        plantData?.symbol ??
+        plantData?.MaHoChua ??
+        fallbackReservoir?.MaHoChua ??
+        plant?.symbol ??
+        '',
     }
-  }, [currentHydrologyPlant])
+  }, [activeReservoir, fallbackReservoir, plant])
 
   // Use percentage from API
-  const waterHeightPercent = data?.percent || 0
+  const waterHeightPercent = data?.percent ?? 0
   const waterHeight = (waterHeightPercent / 100) * containerHeight
   // Reference line position: calculate from bottom based on maxLevel
-  const referenceY = data?.maxLevel ? containerHeight - (data.deadLevel / data.maxLevel) * containerHeight : 0
+  const referenceY =
+    data?.maxLevel && data.deadLevel !== null
+      ? containerHeight - (data.deadLevel / data.maxLevel) * containerHeight
+      : 0
   // MaxLevel line position: at the top (y = 0) since maxLevel is the maximum
   const maxLevelY = 0
   const waveAreaHeight = waterHeight
   const gaugeWidth = containerWidth > 0 ? containerWidth : px.h(80)
 
   // Check if water level is low
-  const isLowWaterLevel = (data?.currentLevel || 0) < (data?.referenceLevel || 0)
+  const isLowWaterLevel =
+    data?.currentLevel !== null &&
+    data?.currentLevel !== undefined &&
+    data?.referenceLevel !== null &&
+    data?.referenceLevel !== undefined &&
+    data.currentLevel < data.referenceLevel
 
   const waveTranslateFront = useRef(new Animated.Value(0)).current
   const waveTranslateBack = useRef(new Animated.Value(0)).current
@@ -158,6 +220,37 @@ function ReservoirInfo(props: { currentPlantId: string }) {
       end={{ x: endX, y: endY }}
       style={styles.wrapper}
     >
+      {reservoirOptions.length > 1 && (
+        <View style={styles.reservoirTabsSection}>
+          <Text style={styles.reservoirTabsTitle}>Hồ chứa ({reservoirOptions.length})</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.reservoirTabsContent}
+          >
+            {reservoirOptions.map((reservoir: any, index: number) => {
+              const code = getReservoirCode(reservoir)
+              const isSelected = code === activeReservoirCode
+              const label = reservoir?.name ?? reservoir?.TenHoChua ?? `Hồ ${index + 1}`
+              return (
+                <Pressable
+                  key={code || String(index)}
+                  onPress={() => onSelectMaHoChua(code)}
+                  style={[styles.reservoirTab, isSelected && styles.reservoirTabActive]}
+                >
+                  <View style={[styles.reservoirTabDot, isSelected && styles.reservoirTabDotActive]} />
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.reservoirTabText, isSelected && styles.reservoirTabTextActive]}
+                  >
+                    {label}
+                  </Text>
+                </Pressable>
+              )
+            })}
+          </ScrollView>
+        </View>
+      )}
       <View style={styles.header}>
         <Text style={styles.title}>MỰC NƯỚC HỒ CHỨA (m)</Text>
         <Text style={styles.locationName}>{data?.name}</Text>
@@ -277,7 +370,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                   >
                     <View style={[styles.dashedLine, { borderTopColor: colors.maxLevelLine }]} />
                     <Text style={[styles.referenceText, { color: colors.maxLevelLine, marginRight: 6, marginLeft: 0 }]}>
-                      {data?.maxLevel}
+                      {data?.maxLevel ?? '—'}
                     </Text>
                   </View>
 
@@ -292,7 +385,7 @@ function ReservoirInfo(props: { currentPlantId: string }) {
                       },
                     ]}
                   >
-                    <Text style={[styles.referenceText, { marginLeft: 0 }]}>{data?.deadLevel}</Text>
+                    <Text style={[styles.referenceText, { marginLeft: 0 }]}>{data?.deadLevel ?? '—'}</Text>
                     <View style={styles.dashedLine} />
                   </View>
                 </View>
@@ -303,18 +396,18 @@ function ReservoirInfo(props: { currentPlantId: string }) {
           {/* Right side - Information */}
           <View style={styles.infoContainer}>
             <View style={styles.currentLevelContainer}>
-              <Text style={styles.currentLevel}>{data?.currentLevel}</Text>
-              <Text style={styles.maxLevel}>/ {data?.maxLevel} (mực nước tối đa)</Text>
+              <Text style={styles.currentLevel}>{data?.currentLevel ?? '—'}</Text>
+              <Text style={styles.maxLevel}>/ {data?.maxLevel ?? '—'} (mực nước tối đa)</Text>
             </View>
 
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Mực nước chết</Text>
-              <Text style={styles.infoValue}>{data?.deadLevel}</Text>
+              <Text style={styles.infoValue}>{data?.deadLevel ?? '—'}</Text>
             </View>
 
             <View style={[styles.infoRow, { marginBottom: 0 }]}>
               <Text style={styles.infoLabel}>Cùng kỳ năm ngoái</Text>
-              <Text style={styles.infoValue}>{data?.previousLevel}</Text>
+              <Text style={styles.infoValue}>{data?.previousLevel ?? '—'}</Text>
             </View>
           </View>
         </View>

@@ -195,6 +195,21 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
   }
 }
 
+const normalizeFlowSeries = (series: any): { label: string; value: number }[] => {
+  if (!Array.isArray(series)) return []
+  return series.map((item) => {
+    const rawValue = item?.value ?? item?.Value ?? item?.flow ?? item?.Flow
+    const numericValue = Number(rawValue)
+    return {
+      ...item,
+      label: String(
+        item?.label ?? item?.Label ?? item?.NgayGio ?? item?.ngayGio ?? item?.date ?? item?.time ?? '',
+      ),
+      value: Number.isFinite(numericValue) ? numericValue : 0,
+    }
+  })
+}
+
 function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): Generator {
   try {
     yield put(setLoading({ isLoadingInflowOutflow: true }))
@@ -204,17 +219,41 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
     const maHoChua = payload?.maHoChua
     const res = yield call(Service.getInflowOutflowApi, plantId, companyId, maHoChua)
     if (res.status === 200) {
-      const responseData = res.data?.data ?? res.data?.Data ?? res.data?.result ?? res.data
-      const normalizedData = {
-        unit: responseData?.unit ?? responseData?.Unit ?? '',
-        cards: responseData?.cards ?? responseData?.Cards ?? [],
-        qIn: responseData?.qIn ?? responseData?.QIn ?? [],
-        qOut: responseData?.qOut ?? responseData?.QOut ?? [],
+      let responseData = res.data
+      for (let depth = 0; depth < 4; depth += 1) {
+        const nested = responseData?.data ?? responseData?.Data ?? responseData?.result
+        if (nested === undefined || nested === responseData) break
+        responseData = nested
       }
-      // console.log(
-      //   '[InflowOutflow_v2][response]\n' +
-      //     JSON.stringify({ plantId, companyId, maHoChua, status: res.status, data: normalizedData }, null, 2),
-      // )
+      const payloadCandidates = [
+        responseData,
+        responseData?.chartData,
+        responseData?.ChartData,
+        responseData?.flowData,
+        responseData?.FlowData,
+      ]
+      const flowPayload =
+        payloadCandidates.find(
+          (candidate) =>
+            candidate &&
+            typeof candidate === 'object' &&
+            (Array.isArray(candidate.qIn) ||
+              Array.isArray(candidate.QIn) ||
+              Array.isArray(candidate.qOut) ||
+              Array.isArray(candidate.QOut)),
+        ) ?? responseData
+      const normalizedData = {
+        unit: flowPayload?.unit ?? flowPayload?.Unit ?? '',
+        cards: Array.isArray(flowPayload?.cards ?? flowPayload?.Cards)
+          ? (flowPayload.cards ?? flowPayload.Cards)
+          : [],
+        qIn: normalizeFlowSeries(
+          flowPayload?.qIn ?? flowPayload?.QIn ?? flowPayload?.qVe ?? flowPayload?.QVe ?? flowPayload?.inflowData,
+        ),
+        qOut: normalizeFlowSeries(
+          flowPayload?.qOut ?? flowPayload?.QOut ?? flowPayload?.qXa ?? flowPayload?.QXa ?? flowPayload?.outflowData,
+        ),
+      }
       yield put(setInflowOutflow(normalizedData))
     }
     yield put(setLoading({ isLoadingInflowOutflow: false }))
@@ -498,15 +537,80 @@ function* getHydrologyChartApi() {
   yield takeLatest(getHydrographicChart, getHydrographicChartSaga)
 }
 
+const toNullableNumber = (value: unknown): number | null => {
+  if (value === null || value === undefined || value === '') return null
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? numericValue : null
+}
+
+function normalizeHydrologyPlantDetailResponse(responseData: any) {
+  let unwrapped = responseData
+  for (let depth = 0; depth < 4; depth += 1) {
+    const nested = unwrapped?.data ?? unwrapped?.Data ?? unwrapped?.result
+    if (nested === undefined || nested === unwrapped) break
+    unwrapped = nested
+  }
+  const collectionCandidates = [
+    unwrapped,
+    unwrapped?.plantsData,
+    unwrapped?.PlantsData,
+    unwrapped?.ListHoChua,
+    unwrapped?.listHoChua,
+  ]
+  const collection = collectionCandidates.find(Array.isArray)
+  const initialItems = collection ?? (unwrapped && typeof unwrapped === 'object' ? [unwrapped] : [])
+  const reservoirItems = initialItems.flatMap((item: any) => {
+    const reservoirs = item?.ListHoChua ?? item?.listHoChua
+    return Array.isArray(reservoirs) ? reservoirs : [item]
+  })
+  return {
+    plantsData: reservoirItems.map((item: any) => {
+      const currentLevel = toNullableNumber(
+        item?.currentLevel ?? item?.CurrentLevel ?? item?.mucNuocHienTai ?? item?.MucNuocHienTai,
+      )
+      const maxLevel = toNullableNumber(item?.maxLevel ?? item?.MaxLevel ?? item?.mucNuocToiDa ?? item?.MucNuocToiDa)
+      const referenceLevel = toNullableNumber(
+        item?.referenceLevel ?? item?.ReferenceLevel ?? item?.deadLevel ?? item?.mucNuocChet ?? item?.MucNuocChet,
+      )
+      const previousLevel = toNullableNumber(
+        item?.previousLevel ??
+          item?.PreviousLevel ??
+          item?.samePeriodLastYear ??
+          item?.cungKyNamNgoai ??
+          item?.CungKyNamNgoai,
+      )
+      const responsePercent = toNullableNumber(item?.percent ?? item?.Percent)
+      const calculatedPercent =
+        currentLevel !== null && maxLevel !== null && maxLevel > 0 ? (currentLevel / maxLevel) * 100 : 0
+
+      return {
+        ...item,
+        currentLevel,
+        maxLevel,
+        referenceLevel,
+        previousLevel,
+        percent: responsePercent ?? calculatedPercent,
+        name: item?.name ?? item?.plantName ?? item?.TenHoChua ?? item?.tenHoChua ?? '',
+        symbol: item?.symbol ?? item?.MaHoChua ?? item?.maHoChua ?? item?.mahochua ?? '',
+      }
+    }),
+  }
+}
+
 function* getHydrologyPlantsParamApiSaga(action: ReturnType<typeof getHydrologyPlantsParam>): Generator {
   try {
-    const payload = action.payload as { currentPlantId?: string }
+    const payload = action.payload as { currentPlantId?: string; maHoChua?: string }
     const currentPlantId = payload?.currentPlantId
-    const res = yield call(Service.getHydrologyPlantsParamApi, currentPlantId)
+    const maHoChua = payload?.maHoChua
+    if (currentPlantId) {
+      yield put(setCurrentHydrologyPlant({ plantsData: [] }))
+    }
+    const res = yield call(Service.getHydrologyPlantsParamApi, currentPlantId, maHoChua)
     if (res.status === 200 && !currentPlantId) {
       yield put(setHydrologyPlantsParam(res.data))
     } else if (res.status === 200 && currentPlantId) {
-      yield put(setCurrentHydrologyPlant(res.data))
+      const normalizedData = normalizeHydrologyPlantDetailResponse(res.data)
+      yield put(setCurrentHydrologyPlant(normalizedData))
     }
   } catch (error) {
     catchHandle(error, 'getHydrologyPlantsParamApiSaga')

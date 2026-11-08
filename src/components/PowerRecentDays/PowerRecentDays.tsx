@@ -55,19 +55,19 @@ function ValueCard({ day }: { day: PowerByDays }) {
 
         {isToday ? (
           <Animated.View style={[styles.valueItem, blinkStyle]}>
-            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+            <Text allowFontScaling={false} numberOfLines={1} style={[styles.dayLabel, { color: labelColor }]}>
               {day.date}
             </Text>
-            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+            <Text allowFontScaling={false} numberOfLines={1} style={[styles.dayLabel, { color: labelColor }]}>
               {day.dayOfWeek}
             </Text>
           </Animated.View>
         ) : (
           <>
-            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+            <Text allowFontScaling={false} numberOfLines={1} style={[styles.dayLabel, { color: labelColor }]}>
               {day.date}
             </Text>
-            <Text allowFontScaling={false} style={[styles.dayLabel, { color: labelColor }]}>
+            <Text allowFontScaling={false} numberOfLines={1} style={[styles.dayLabel, { color: labelColor }]}>
               {day.dayOfWeek}
             </Text>
           </>
@@ -100,8 +100,8 @@ function PowerRecentDays(props: Props) {
   }, [isLoading])
   const handleContentSizeChange = () => {
     // Call scrollToEnd() on the ref
-    scrollViewRef.current?.scrollToEnd({ animated: true }); 
-  };
+    scrollViewRef.current?.scrollToEnd({ animated: true })
+  }
   return (
     <AnimatedCardContainer>
       <View>
@@ -109,7 +109,13 @@ function PowerRecentDays(props: Props) {
           <Text style={[styles.title, !isDark && { color: '#374151' }]}>P - 7 NGÀY GẦN NHẤT</Text>
 
           {/* Scrollable Power Values */}
-          <ScrollView ref={scrollViewRef} horizontal onContentSizeChange={handleContentSizeChange} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            onContentSizeChange={handleContentSizeChange}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
             {firstLoading || isLoading ? (
               <SquareSkelenton count={4} />
             ) : (

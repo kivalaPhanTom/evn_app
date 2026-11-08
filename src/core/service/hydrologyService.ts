@@ -55,10 +55,13 @@ function getInflowOutflowApi(plantId: string | number, companyId: string, maHoCh
   if (maHoChua) params.mahochua = maHoChua
   return apiFormUrlEncoded.get(url, { params })
 }
-async function getHydrologyPlantsParamApi(currentPlantId?: string) {
-  const params: { currentPlantId?: string } = {}
+async function getHydrologyPlantsParamApi(currentPlantId?: string, maHoChua?: string) {
+  const params: { currentPlantId?: string; mahochua?: string } = {}
   if (currentPlantId) {
     params.currentPlantId = currentPlantId
+  }
+  if (maHoChua) {
+    params.mahochua = maHoChua
   }
   const response = await api.get(`${servicePattern.getHydrologyPlantsParam}`, {
     params: params
