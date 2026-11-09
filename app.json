@@ -19,7 +19,7 @@
     },
     "android": {
       "package": "com.genco3.hppgenco3",
-      "versionCode": 17,
+      "versionCode": 18,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/icon.png",
@@ -46,8 +46,7 @@
             "backgroundColor": "#000000"
           }
         }
-      ],
-      "react-native-localize"
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
