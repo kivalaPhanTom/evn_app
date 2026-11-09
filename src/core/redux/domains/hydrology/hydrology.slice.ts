@@ -2,9 +2,9 @@ import { createSlice } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
 
 interface HydroChartItem {
-  avgVolume: number
-  percent: number
-  values: number
+  avgVolume: number | null
+  percent: number | null
+  values: number | null
   date: string
 }
 interface flowChartItem {
@@ -139,10 +139,10 @@ const hydrologySlice = createSlice({
   initialState,
   reducers: {
     setInflowOutflow: (state, action) => {
-      state.inflowOutflow = action.payload
+      state.inflowOutflow = action.payload ?? { unit: '', cards: [], qIn: [], qOut: [] }
     },
     setHydrologyChart: (state, action) => {
-      state.hydrologyCharData = action.payload
+      state.hydrologyCharData = Array.isArray(action.payload) ? action.payload : []
     },
     setHydrologyPlantsParam: (state, action) => {
       state.hydrologyPlants = action.payload

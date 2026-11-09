@@ -50,8 +50,13 @@ function FactoryDetail(props: factoryDetailProps) {
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedHydrologyReservoirId, setSelectedHydrologyReservoirId] = useState('')
 
   const router = useRouter();
+
+  useEffect(() => {
+    setSelectedHydrologyReservoirId('')
+  }, [currentPlantId])
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -136,7 +141,7 @@ function FactoryDetail(props: factoryDetailProps) {
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
-              colors={textGradients.water}
+              colors={isDark ? textGradients.water : textGradients.waterStrong}
               fontSize={px.f(30)}
               style={{ textAlign: 'center' }}
             />
@@ -176,8 +181,16 @@ function FactoryDetail(props: factoryDetailProps) {
                 onChangeOption={onChange}
                 selectedValue={selectedOptionsValueFactDetail}
               >
-                <ReservoirWaterLevel currentPlantId={currentPlantId} />
-                <HydrologyFactDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+                <ReservoirWaterLevel
+                  currentPlantId={currentPlantId}
+                  selectedMaHoChua={selectedHydrologyReservoirId}
+                  onSelectMaHoChua={setSelectedHydrologyReservoirId}
+                />
+                <HydrologyFactDetail
+                  keyTab={keyTab}
+                  currentPlantId={currentPlantId}
+                  selectedMaHoChua={selectedHydrologyReservoirId}
+                />
               </SectionContainer>
             </LazySection>
           }

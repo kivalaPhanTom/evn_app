@@ -1,13 +1,12 @@
 import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useRef, useEffect, useMemo } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, StyleSheet, Dimensions, Text } from 'react-native';
 import Svg, {
   Path,
   Circle,
   Line,
   Text as SvgText,
 } from 'react-native-svg';
-import { Text } from 'react-native';
 import WaterDrop from '../WaterDrop/WaterDrop.component';
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton';
 import { useAppTheme } from '@/core/hooks/use-app-theme';
@@ -35,15 +34,15 @@ interface Props {
   data: ChartPoint[];
 }
 interface HydroChartItem {
-  avgVolume: number;
-  percent: number;
-  values: number;
+  avgVolume: number | null;
+  percent: number | null;
+  values: number | null;
   date: string;
 }
 interface HydrographicChartProps {
   isLoading: boolean
   data: HydroChartItem[]
-  referenceLevel: number
+  referenceLevel: number | null
   maxLevel?: number
   bgColor?: string
   selectedOptionsValue?: string
@@ -54,29 +53,37 @@ const convertDateLabel = (dateString: string) => {
 }
 const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const { isLoading = false, data = [], referenceLevel = 0, bgColor, selectedOptionsValue = "" } = props
+  const safeInputData = useMemo(() => (Array.isArray(data) ? data : []), [data])
   const scheme = useAppTheme();
   const isDark = scheme === 'dark';
   const scrollRef = useRef<ScrollView>(null);
-  const convertedData: { label: string; value: number }[] = data.map((item, index) => ({
+  const convertedData: { label: string; value: number }[] = safeInputData.map((item, index) => ({
     label: `${selectedOptionsValue === "7_DAYS" ? convertDateLabel(item.date) : index}`,
-    value: item.avgVolume,
+    value: sanitizeNumber(item.avgVolume) ?? 0,
   }))
   const waterDrops = useMemo(() => {
-    return data.map((item, index) => ({
+    return safeInputData.map((item, index) => ({
       hour: index,
-      percent: item.percent,
-      volume: `${item.avgVolume}m`
+      percent: sanitizeNumber(item.percent) ?? 0,
+      volume: `${sanitizeNumber(item.avgVolume) ?? 0}m`
     }));
-  }, [JSON.stringify(data)]);
+  }, [safeInputData]);
 
   useEffect(() => {
-    if (scrollRef.current && safeData.length > 0) {
+    if (scrollRef.current && convertedData.length > 0) {
       requestAnimationFrame(() => {
         scrollRef.current?.scrollToEnd({ animated: true });
       });
     }
-  }, [JSON.stringify(data), isLoading]);
-  if (!data || data.length < 2) return null;
+  }, [convertedData.length, isLoading, scrollRef]);
+  if (isLoading) {
+    return (
+      <View style={styles.mainContainer}>
+        <LineChartSkeleton />
+      </View>
+    )
+  }
+  if (safeInputData.length < 2) return null;
 
   const safeData = convertedData
     .map(d => ({ ...d, value: sanitizeNumber(d.value) }))
@@ -90,7 +97,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const values = safeData.map(d => d.value);
 
   let min = Math.min(...values);
-  if (referenceLevel < min) {
+  if (referenceLevel !== null && referenceLevel < min) {
     min = referenceLevel;
   }
   let max = Math.max(...values);
@@ -126,7 +133,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
       return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
     })
     .join(' ');
-  const thresholdY = getY(referenceLevel);
+  const thresholdY = referenceLevel === null ? null : getY(referenceLevel);
   const formatYAxis = (value: number, range: number) => {
     if (range < 1) return value.toFixed(2);
     if (range < 10) return value.toFixed(1);
@@ -134,19 +141,20 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   };
   return (
     <View style={styles.mainContainer}>
-      {isLoading ? <LineChartSkeleton /> :
-        <View style={styles.container}>
+      <View style={styles.container}>
           <View style={styles.legendContainer}>
             <View style={[styles.legendItem, { marginLeft: 8 }]}>
               <Text style={[styles.legendText, !isDark && { color: light.muted }]}>Đơn vị:</Text>
               <Text style={[styles.legendText, { marginLeft: 4 }, !isDark && { color: light.muted }]}>m</Text>
             </View>
-            <View style={styles.legendItem}>
-              <Svg height="2" width="30" style={styles.legendLine}>
-                <Line x1="0" y1="1" x2="24" y2="1" stroke={isDark ? dark.warning : light.warning} strokeWidth="2" strokeDasharray="4, 3" />
-              </Svg>
-              <Text style={[styles.legendText, !isDark && { color: light.muted }]}>Mực nước chết</Text>
-            </View>
+            {referenceLevel !== null && (
+              <View style={styles.legendItem}>
+                <Svg height="2" width="30" style={styles.legendLine}>
+                  <Line x1="0" y1="1" x2="24" y2="1" stroke={isDark ? dark.warning : light.warning} strokeWidth="2" strokeDasharray="4, 3" />
+                </Svg>
+                <Text style={[styles.legendText, !isDark && { color: light.muted }]}>Mực nước chết</Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.chartContainer}>
@@ -377,8 +385,7 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
               )}
             </View>
           </View>
-        </View>
-      }
+      </View>
     </View>
 
   );

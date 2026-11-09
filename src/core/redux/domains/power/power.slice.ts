@@ -26,12 +26,12 @@ interface powerOverviewState {
   activeTabIndex: number
   powerByTime: {
     currentDate: string
-    currentPower: number
+    currentPower: number | null
     currentTime: string
     offeredPower: number
     unit: string
     HourlyPowerList: HourlyPowerList[]
-    offeredPowerList: number[]
+    offeredPowerList: (number | null)[]
   }
   powerByDays: {
     powerData: PowerByDays[]
@@ -55,7 +55,7 @@ const initialState: powerOverviewState = {
   activeTabIndex: 0,
   powerByTime: {
     currentDate: '',
-    currentPower: 0,
+    currentPower: null,
     currentTime: '0h',
     offeredPower: 0,
     unit: '',
@@ -92,10 +92,25 @@ const powerSlice = createSlice({
       state.detail = d?.details ?? d?.detail ?? []
     },
     setPowerByTime: (state, action) => {
-      state.powerByTime = action.payload
+      const data = action.payload
+      const hourlyPowerList = data?.hourlyPowerList ?? data?.HourlyPowerList
+      state.powerByTime = {
+        currentDate: data?.currentDate ?? '',
+        currentPower: data?.currentPower ?? null,
+        currentTime: data?.currentTime ?? '0h',
+        offeredPower: data?.offeredPower ?? 0,
+        unit: data?.unit ?? '',
+        HourlyPowerList: Array.isArray(hourlyPowerList) ? hourlyPowerList : [],
+        offeredPowerList: Array.isArray(data?.offeredPowerList)
+          ? data.offeredPowerList.map((point: number | { value?: number | null } | null) => {
+              const value = typeof point === 'number' ? point : point?.value
+              return typeof value === 'number' && Number.isFinite(value) ? value : null
+            })
+          : [],
+      }
     },
     setPowerByDays: (state, action) => {
-      state.powerByDays.powerData = action.payload
+      state.powerByDays.powerData = Array.isArray(action.payload) ? action.payload : []
     },
     setComparePower: (state, action) => {
       state.comparePower = action.payload

@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.05)',
-    width: 75, // Width cố định 70px
+    minWidth: 100,
   },
   // valueCard: {
   //     backgroundColor: '#1e2838',

@@ -18,6 +18,7 @@ function PowerRecentDaysFactDetail(props: Props) {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [powerData, setPowerByDays] = useState<PowerByDays[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -31,11 +32,12 @@ function PowerRecentDaysFactDetail(props: Props) {
     if (activeTabIndex === keyTab) {
       dispatch(getPowerByDaysFactDetail({
         factoryId: currentPlantId,
+        companyId,
         getDataFromApi: getDataFromApi,
         setLoading: setLoading
       }))
     }
-  }, [currentPlantId, activeTabIndex])
+  }, [currentPlantId, activeTabIndex, companyId])
 
   return (
     <PowerRecentDays

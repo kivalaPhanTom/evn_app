@@ -26,9 +26,9 @@ function TotalPowerFactDetail(props: Props) {
   const [isLoadingOverview, setIsLoadingOverview] = useState<boolean>(false)
 
   const getDataFromApi = (payload: any) => {
-    setAverage(payload.average)
-    setTotal(payload.total)
-    setDetail(payload.detail)
+    setAverage(payload?.average ?? 0)
+    setTotal(payload?.total ?? 0)
+    setDetail(payload?.details ?? payload?.detail ?? [])
   }
   const setLoading = (value: boolean) => {
     setIsLoadingOverview(value)

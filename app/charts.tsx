@@ -1,5 +1,6 @@
 import GradientText from '@/components/GradientText/GradientText.component'
-import { lightGradients } from '@/core/constants/gradients'
+import { lightGradients, textGradients } from '@/core/constants/gradients'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { px } from '@/core/utils/scale'
 import LakeCard from '@/features/dashboard/components/LakeCard/LakeCard'
 import ProfitCard from '@/features/dashboard/components/ProfitCard/ProfitCard'
@@ -200,6 +201,7 @@ const rawBarGroups: BarGroup[] = [
 ]
 
 export default function ChartsScreen() {
+  const isDark = useAppTheme() === 'dark'
   const [tab, setTab] = useState<'day' | 'month' | 'year'>('day')
 
   const contentAnim = useRef(new Animated.Value(1)).current
@@ -216,7 +218,7 @@ export default function ChartsScreen() {
       <View style={styles.header}>
         <GradientText
           text={companyTitle ?? 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'}
-          colors={lightGradients.purple}
+          colors={isDark ? lightGradients.purple : textGradients.waterStrong}
           fontSize={px.f(30)}
           style={{ textAlign: 'center' }}
         />

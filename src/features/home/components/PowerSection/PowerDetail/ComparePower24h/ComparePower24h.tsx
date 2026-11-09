@@ -22,19 +22,27 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
   const { isLoadingComparePower } = useAppSelector((state: any) => state.powerSlice)
   const { Unit = '', BarChartData, compareLineChartData, Summary } = comparePowerData
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const companyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const [range, setRange] = useState({
     from: dayjs().subtract(1, 'day'),
     to: dayjs(),
   })
+  // DateRangePicker có thể emit Date object thuần (không phải dayjs) → luôn bọc dayjs() trước khi format
+  const safeFormat = (d: any, fallback: dayjs.Dayjs) => {
+    const day = dayjs(d)
+    return day.isValid() ? day.format('DD/MM/YYYY') : fallback.format('DD/MM/YYYY')
+  }
+
   useEffect(() => {
     dispatch(
       getComparePower({
-        tagetDate: range.to.format('DD/MM/YYYY'),
-        compareDate: range.from.format('DD/MM/YYYY'),
+        tagetDate: safeFormat(range?.to, dayjs()),
+        compareDate: safeFormat(range?.from, dayjs().subtract(1, 'day')),
         currentPlantId: currentPlantId || '',
+        companyId,
       }),
     )
-  }, [countRefesh])
+  }, [countRefesh, currentPlantId, companyId])
 
   const onChangeDateRage = (newRange: { from: dayjs.Dayjs; to: dayjs.Dayjs }) => {
     // Đảm bảo kiểu dayjs
@@ -53,6 +61,7 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
         tagetDate: toDate.format('DD/MM/YYYY'),
         compareDate: fromDate.format('DD/MM/YYYY'),
         currentPlantId: currentPlantId || '',
+        companyId,
       }),
     )
     // setRange(newRange)

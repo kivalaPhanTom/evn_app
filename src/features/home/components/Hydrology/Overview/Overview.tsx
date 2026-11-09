@@ -1,16 +1,12 @@
 import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants/hydrologyPalette'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import { View, Text, StyleSheet, Animated, Pressable, Easing } from 'react-native'
+import { View, Text, StyleSheet, Animated, Pressable, Easing, ScrollView } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
-import {
-  getHydrologyflowChart,
-  getInflowOutflow,
-  getHydrographicChart,
-  getHydrologyPlantsParam,
-} from '@/core/redux/domains/hydrology'
+import { getHydrographicChart } from '@/core/redux/domains/hydrology'
+import { getReservoirTabs } from './overview.data'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
@@ -25,21 +21,12 @@ import { shallowEqual } from 'react-redux'
 interface WaterLevelData {
   id: string
   name: string
-  currentLevel: number
-  maxLevel: number
-  referenceLevel: number
+  plantId: string | number
+  reservoirCount: number
+  currentLevel: number | null
+  maxLevel: number | null
+  referenceLevel: number | null
   color?: string
-  abbreviation?: string
-  symbol?: string
-}
-interface PlantsData {
-  id: number
-  name: string
-  currentLevel: number
-  maxLevel: number
-  referenceLevel: number
-  color?: string
-  abbreviation?: string
 }
 // Mảng màu sắc tuần tự cho các nhà máy
 const plantColors = dark.plants
@@ -49,23 +36,28 @@ const getColorByIndex = (index: number): string => {
   return plantColors[index % plantColors.length]
 }
 
+const formatWaterLevel = (value: number | null): number | string => {
+  return value === null ? '—' : Number(value.toFixed(1))
+}
+
 const WaterLevelCard: React.FC<{
   data: WaterLevelData
   isActive: boolean
   onPress: () => void
   isLastTab?: boolean
   index: number
-}> = ({ data, isActive, onPress, isLastTab = false, index }) => {
+  tabWidth?: number
+}> = ({ data, isActive, onPress, isLastTab = false, index, tabWidth }) => {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const containerHeight = px.v(120)
   const [cardWidth, setCardWidth] = useState(0)
-  const MAX_TANK_HEIGHT = 700
+  const tankHeight = Math.max(data.maxLevel ?? 0, data.currentLevel ?? 0, data.referenceLevel ?? 0, 1)
 
   // waterHeight tính theo currentLevel, referenceLevel cố định để vẽ đường reference line
   // MaxLevel line position: tính toán giống như reference line
-  const maxLevelYRaw = containerHeight - (data.maxLevel / MAX_TANK_HEIGHT) * containerHeight
-  const referenceYRaw = containerHeight - (data.referenceLevel / MAX_TANK_HEIGHT) * containerHeight
+  const maxLevelYRaw = containerHeight - ((data.maxLevel ?? 0) / tankHeight) * containerHeight
+  const referenceYRaw = containerHeight - ((data.referenceLevel ?? data.currentLevel ?? 0) / tankHeight) * containerHeight
   // Khoảng cách tối thiểu giữa MaxLevel line và Reference line (px)
   const MIN_DISTANCE = px.v(10)
   // Điều chỉnh vị trí nếu 2 line quá gần nhau
@@ -73,7 +65,7 @@ const WaterLevelCard: React.FC<{
   let maxLevelY = maxLevelYRaw
   let referenceY = referenceYRaw
 
-  if (distance < MIN_DISTANCE) {
+  if (data.maxLevel !== null && data.referenceLevel !== null && distance < MIN_DISTANCE) {
     // Nếu referenceY ở dưới maxLevelY, đẩy referenceY xuống
     if (referenceYRaw > maxLevelYRaw) {
       referenceY = Math.min(maxLevelYRaw + MIN_DISTANCE, containerHeight)
@@ -87,7 +79,7 @@ const WaterLevelCard: React.FC<{
   const containerWidth = cardWidth > 0 ? cardWidth - px.h(24) : 0
 
   // Kiểm tra mực nước cảnh báo: currentLevel < referenceLevel
-  const isLowWaterLevel = data.currentLevel < data.referenceLevel
+  const isLowWaterLevel = data.currentLevel !== null && data.referenceLevel !== null && data.currentLevel < data.referenceLevel
 
   // Thêm offset ban đầu khác nhau cho mỗi tab dựa trên index để tạo hiệu ứng không đồng bộ
   // Mỗi tab có offset khác nhau: 0, Math.PI/2, Math.PI, etc.
@@ -165,6 +157,16 @@ const WaterLevelCard: React.FC<{
     <View
       style={StyleSheet.flatten([
         styles.card,
+        tabWidth
+          ? {
+              flex: 0,
+              flexGrow: 0,
+              flexShrink: 0,
+              width: tabWidth,
+              minWidth: tabWidth,
+              maxWidth: tabWidth,
+            }
+          : { width: undefined, minWidth: px.h(110) },
         isActive && styles.cardActive,
         isActive && {
           backgroundColor: isDark ? dark.background : light.background,
@@ -224,11 +226,11 @@ const WaterLevelCard: React.FC<{
 
                 <View style={styles.levelContainer}>
                   <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
-                    {data.currentLevel}
+                    {formatWaterLevel(data.currentLevel)}
                   </Text>
                   <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
                     {' '}
-                    / {data.maxLevel}
+                    / {data.maxLevel ?? '—'}
                   </Text>
                 </View>
 
@@ -309,6 +311,7 @@ const WaterLevelCard: React.FC<{
                       )}
 
                       {/* MaxLevel line */}
+                      {data.maxLevel !== null && (
                       <View
                         style={[
                           styles.referenceLine,
@@ -322,8 +325,10 @@ const WaterLevelCard: React.FC<{
                         <View style={[styles.dashedLine, { borderTopColor: isDark ? dark.inflow : '#00DF73' }]} />
                         <Text style={[styles.referenceText, { color: isDark ? dark.inflow : '#00DF73' }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                       </View>
+                      )}
 
                       {/* Reference line */}
+                      {data.referenceLevel !== null && (
                       <View
                         style={[
                           styles.referenceLine,
@@ -337,6 +342,7 @@ const WaterLevelCard: React.FC<{
                         <Text style={[styles.referenceText, !isDark && { color: light.warning, backgroundColor: 'transparent' }]}>{data.referenceLevel}</Text>
                         <View style={[styles.dashedLine, !isDark && { borderTopColor: light.warning }]} />
                       </View>
+                      )}
                     </View>
                     <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? dark.text : light.border }}></View>
                   </View>
@@ -366,11 +372,11 @@ const WaterLevelCard: React.FC<{
 
               <View style={styles.levelContainer}>
                 <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
-                  {data.currentLevel}
+                  {formatWaterLevel(data.currentLevel)}
                 </Text>
                 <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
                   {' '}
-                  / {data.maxLevel}
+                  / {data.maxLevel ?? '—'}
                 </Text>
               </View>
 
@@ -451,6 +457,7 @@ const WaterLevelCard: React.FC<{
                     )}
 
                     {/* MaxLevel line */}
+                    {data.maxLevel !== null && (
                     <View
                       style={[
                         styles.referenceLine,
@@ -464,8 +471,10 @@ const WaterLevelCard: React.FC<{
                       <View style={[styles.dashedLine, { borderTopColor: isDark ? dark.inflow : '#00DF73' }]} />
                       <Text style={[styles.referenceText, { color: isDark ? dark.inflow : '#00DF73' }, !isDark && { backgroundColor: 'transparent' }]}>{data.maxLevel}</Text>
                     </View>
+                    )}
 
                     {/* Reference line */}
+                    {data.referenceLevel !== null && (
                     <View
                       style={[
                         styles.referenceLine,
@@ -479,6 +488,7 @@ const WaterLevelCard: React.FC<{
                       <Text style={[styles.referenceText, !isDark && { color: light.warning, backgroundColor: 'transparent' }]}>{data.referenceLevel}</Text>
                       <View style={[styles.dashedLine, !isDark && { borderTopColor: light.warning }]} />
                     </View>
+                    )}
                   </View>
                   <View style={{ width: 4, borderTopWidth: 2, borderColor: isDark ? dark.text : light.border }}></View>
                 </View>
@@ -491,88 +501,51 @@ const WaterLevelCard: React.FC<{
   )
 }
 
-const getReferenceLevel = (hydroElectricId: string, hydrologyPlants: PlantsData[]): number => {
-  let result = 0
-  const findHydrologyItem = hydrologyPlants.find((e) => e.abbreviation === hydroElectricId)
-  if (findHydrologyItem) result = findHydrologyItem.referenceLevel
-  return result
-}
-
-const getMaxLevel = (hydrologyPlants: PlantsData[]): number => {
-  return hydrologyPlants.reduce((max, item) => Math.max(max, item.maxLevel), 0)
-}
 const Overview: React.FC = () => {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
-  const { hydrologyPlants, selectedOptionsValue, hydrologyCharData, isLoadingHydrologyChart } = useAppSelector(
+  const { selectedOptionsValue, hydrologyCharData, isLoadingHydrologyChart } = useAppSelector(
     (state: RootState) => state.hydrologySlice,
     shallowEqual,
   )
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { plants, plantsStatus, plantsError } = useAppSelector(
+    (state: RootState) => state.companyPlantSlice,
+    shallowEqual,
+  )
   // Chuyển đổi dữ liệu từ API sang format của component
   const waterData: WaterLevelData[] = React.useMemo(() => {
-    if (!hydrologyPlants?.plantsData || hydrologyPlants.plantsData.length === 0) {
-      return []
-    }
-    return hydrologyPlants.plantsData.map((plant, index) => ({
-      id: String(plant.id),
-      name: plant.name,
-      currentLevel: plant.currentLevel,
-      maxLevel: plant.maxLevel,
-      referenceLevel: plant.referenceLevel,
-      color: getColorByIndex(index),
-      abbreviation: plant.abbreviation,
-      symbol: plant.symbol,
+    return getReservoirTabs(plants).map((reservoir, index) => ({
+      ...reservoir,
+      color: reservoir.color || getColorByIndex(index),
     }))
-  }, [hydrologyPlants?.plantsData])
+  }, [plants])
 
   const [activeTab, setActiveTab] = useState<string>('')
-
-  useEffect(() => {
-    dispatch(getHydrologyPlantsParam({}))
-  }, [countRefesh, dispatch])
+  const [tabsViewportWidth, setTabsViewportWidth] = useState(0)
 
   // Set activeTab khi data được load
   useEffect(() => {
-    if (waterData.length > 0 && !activeTab) {
-      setActiveTab(waterData[0].id)
+    if (!waterData.some((reservoir) => reservoir.id === activeTab)) {
+      setActiveTab(waterData[0]?.id ?? '')
     }
   }, [waterData, activeTab])
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
-  const hydroElectricId = activeData?.abbreviation || ''
-  const currentPlantId = activeData ? activeData.symbol : ''
-  console.log(currentPlantId)
-  const referenceLevel = getReferenceLevel(hydroElectricId, hydrologyPlants.plantsData)
-  const maxLevel = getMaxLevel(hydrologyPlants.plantsData)
+  const reservoirId = activeData?.id ?? ''
+  const referenceLevel = activeData?.referenceLevel ?? null
+  const maxLevel = activeData?.maxLevel ?? undefined
+  const uniformTabWidth = waterData.length > 3 && tabsViewportWidth > 0 ? tabsViewportWidth / 3 : undefined
   useEffect(() => {
-    let companyId = ''
-    switch (hydroElectricId) {
-      case 'buon-tua-srah':
-        companyId = 'BTS'
-        break
-      case 'buon-kuop':
-        companyId = 'BK'
-        break
-      case 'srepok-3':
-        companyId = 'SP3'
-        break
-      default:
-        // companyId = hydroElectricId
-        break
+    if (reservoirId) {
+      const type = selectedOptionsValue === '7_DAYS' ? 'day' : 'hour'
+      dispatch(getHydrographicChart({ maHoChua: reservoirId, type }))
     }
-    if (companyId !== '') {
-      const type = selectedOptionsValue === '7_DAYS' ? 'day' : ''
-      dispatch(
-        getHydrographicChart({
-          companyId: companyId,
-          type: type,
-        }),
-      )
-      dispatch(getInflowOutflow({ hydroElectricId: companyId }))
-    }
-  }, [hydroElectricId, countRefesh, dispatch, selectedOptionsValue])
+  }, [reservoirId, countRefesh, dispatch, selectedOptionsValue])
+  if (waterData.length === 0 && (plantsStatus === 'succeeded' || plantsStatus === 'failed')) {
+    return <Text style={{ color: isDark ? dark.text : light.muted }}>{plantsError ?? 'Không có dữ liệu hồ chứa.'}</Text>
+  }
   // Hiển thị skeleton loading nếu chưa có dữ liệu
   if (!waterData || waterData.length === 0) {
     return (
@@ -600,7 +573,7 @@ const Overview: React.FC = () => {
           </View>
 
           {/* Skeleton cho detail container */}
-        <View style={[styles.detailContainer, !isDark && { backgroundColor: light.background }]}>
+          <View style={[styles.detailContainer, !isDark && { backgroundColor: light.background }]}>
             <BarSkeleton width={'70%'} height={16} marginTop={0} alignSelf="center" />
             <View style={{ marginTop: px.v(16) }}>
               <LineChartSkeleton />
@@ -623,14 +596,23 @@ const Overview: React.FC = () => {
       borderRadius={0}
     >
       <View style={[styles.container, { margin: -24 }]}>
-        <View style={styles.tabsContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onLayout={(event) => {
+            const width = event.nativeEvent.layout.width
+            if (width > 0 && width !== tabsViewportWidth) setTabsViewportWidth(width)
+          }}
+          contentContainerStyle={[styles.tabsContainer, { width: undefined, minWidth: '100%' }]}
+        >
           {waterData.map((data, index) => (
             <WaterLevelCard
               key={data.id}
               data={data}
-              isActive={activeTab === data.id}
+              isActive={activeData?.id === data.id}
               isLastTab={index === waterData.length - 1}
               index={index}
+              tabWidth={uniformTabWidth}
               onPress={() => {
                 if (activeTab !== data.id) {
                   setActiveTab(data.id)
@@ -638,7 +620,7 @@ const Overview: React.FC = () => {
               }}
             />
           ))}
-        </View>
+        </ScrollView>
 
         <View style={[styles.detailContainer, !isDark && { backgroundColor: light.background }]}>
           {activeData && (
@@ -647,13 +629,18 @@ const Overview: React.FC = () => {
                 {/* {activeData.name}: {activeData.currentLevel}m/ {activeData.maxLevel}m */}
               </Text>
               <HydrographicChart
-                isLoading={isLoadingHydrologyChart}
+                isLoading={
+                  isLoadingHydrologyChart || !Array.isArray(hydrologyCharData) || hydrologyCharData.length < 2
+                }
                 data={hydrologyCharData}
                 referenceLevel={referenceLevel}
                 maxLevel={maxLevel}
                 selectedOptionsValue={selectedOptionsValue}
               />
-              <InflowOutflow hydroElectricId={currentPlantId || 'BTS'} />
+              <InflowOutflow
+                plantId={activeData.plantId}
+                maHoChua={activeData.reservoirCount > 1 ? activeData.id : undefined}
+              />
             </>
           )}
         </View>
