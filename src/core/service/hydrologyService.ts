@@ -25,14 +25,14 @@ export const Service = {
 }
 export const servicePattern = {
   getHydrographicChart: `${prefix_api_v2}/hydrographic_chart`,
-  getHydrologyFlow: `${prefix_api}/FlowDiagram`,
+  getHydrologyFlow: `${prefix_api_v2}/FlowDiagram`,
   getInflowOutflow: `${prefix_api_v2}/InflowOutflow_v2`,
   getHydrologyPlantsParam: `${prefix_api_v2}/hydrologyplant_detail`,
   getHydrologyPlantsInfo: `${prefix_api}/HydrologyPlantInformation`,
-  getUpstreamWaterLevel: `${prefix_api}/GetUpstreamWaterLevel`,
-  getInflow: `${prefix_api}/getInflow`,
-  getOutflow: `${prefix_api}/getOutflow`,
-  getTurbineflow: `${prefix_api}/getTurbineflow`,
+  getUpstreamWaterLevel: `${prefix_api_v2}/GetUpstreamWaterLevel`,
+  getInflow: `${prefix_api_v2}/getInflow`,
+  getOutflow: `${prefix_api_v2}/getOutflow`,
+  getTurbineflow: `${prefix_api_v2}/getTurbineflow`,
   getPowerStoreInLake: `${prefix_api}/PowerStoreInLake`,
   getPowerStoreInLakeFactDetail: `${prefix_api}/PowerStoreInLakeOfFactory`,
   getOperateWaterLevel: `${prefix_api}/GetOperateWaterLevel`,
@@ -73,10 +73,14 @@ function getHydrologyPlantsInfoApi(plantId: string, date: string) {
   return api.get(`${servicePattern.getHydrologyPlantsInfo}?currentPlantId=${plantId}&date=${date}`)
 }
 
+// Log tại service để theo dõi MNTL cho cả luồng so sánh và các action gọi riêng.
+async function requestUpstreamWaterLevel(url: string, params: Record<string, string>) {
+  const response = await apiFormUrlEncoded.get(url, { params })
+  return response
+}
+
 function getUpstreamWaterLevelApi(currentPlantId: string, date: string) {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getUpstreamWaterLevel}?currentPlantId=${encodeURIComponent(currentPlantId)}&date=${encodeURIComponent(date)}`,
-  )
+  return requestUpstreamWaterLevel(servicePattern.getUpstreamWaterLevel, { currentPlantId, date })
 }
 function getInflowApi(currentPlantId: string, date: string) {
   return apiFormUrlEncoded.get(
@@ -116,31 +120,15 @@ function getOperateWaterLevel(selectedMonth: string) {
 }
 
 function getUpstreamWaterLevelApi_2(currentPlantId: string, currentDate: string, compareDate: string, type: string) {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getUpstreamWaterLevel}_v2`, {
-    params: {
-      currentPlantId: currentPlantId,
-      currentDate: currentDate,
-      compareDate: compareDate,
-      type: type
-    }
-  }
-  )
+  return requestUpstreamWaterLevel(`${servicePattern.getUpstreamWaterLevel}_v2`, {
+    currentPlantId, currentDate, compareDate, type,
+  })
 }
 
 function getUpstreamWaterLevelApi_3(currentPlantId: string, currentFromDate: string, currentToDate: string, compareFromDate: string, compareToDate: string, type: string) {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getUpstreamWaterLevel}_v3`, {
-    params: {
-      currentPlantId: currentPlantId,
-      currentFromDate: currentFromDate,
-      currentToDate: currentToDate,
-      compareFromDate:compareFromDate,
-      compareToDate: compareToDate,
-      type: type
-    }
-  }
-  )
+  return requestUpstreamWaterLevel(`${servicePattern.getUpstreamWaterLevel}_v3`, {
+    currentPlantId, currentFromDate, currentToDate, compareFromDate, compareToDate, type,
+  })
 }
 
 

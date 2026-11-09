@@ -1,4 +1,5 @@
 import { all, takeEvery, takeLatest, put, call } from 'redux-saga/effects'
+import type { CallEffect } from 'redux-saga/effects'
 import {
   getHydrologyflowChart,
   getInflowOutflow,
@@ -41,6 +42,17 @@ import {
   setLoading,
 } from './hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
+import { combineOutflowSeries } from './inflow-outflow.utils'
+
+function* settleComparisonRequest(request: CallEffect, metric: string): Generator {
+  try {
+    return yield request
+  } catch (error) {
+    // Một API lỗi không được làm hủy kết quả thành công của ba biểu đồ còn lại.
+    catchHandle(error, `getHydrologyComparisonSaga.${metric}`)
+    return null
+  }
+}
 
 function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyComparison>): Generator {
   try {
@@ -119,7 +131,10 @@ function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyCompa
     // Chay 4 request song song, sau do day toan bo ket qua vao Redux trong mot lan.
     // Van ghi vao 4 field cu (upstreamWaterLevel, inflow, outflow, turbineflow) de
     // HydrologyDetail va cac component lien quan doc duoc binh thuong.
-    const [upstreamResponse, inflowResponse, outflowResponse, turbineResponse]: any[] = yield all(requests)
+    const metricNames = ['upstream', 'inflow', 'outflow', 'turbineflow']
+    const [upstreamResponse, inflowResponse, outflowResponse, turbineResponse]: any[] = yield all(
+      requests.map((request, index) => call(settleComparisonRequest, request, metricNames[index])),
+    )
     if (upstreamResponse?.status === 200) yield put(setUpStreamWaterLevel(upstreamResponse.data))
     if (inflowResponse?.status === 200) yield put(setInflow(inflowResponse.data))
     if (outflowResponse?.status === 200) yield put(setOutflow(outflowResponse.data))
@@ -184,9 +199,30 @@ function* getHydrologyflowChartApiSaga(action: ReturnType<typeof getHydrologyflo
   const { currentPlantId, date } = payload
   try {
     yield put(setLoading({ isLoadingFlowChart: true }))
+    // Xóa dữ liệu hồ/ngày cũ trong lúc tải, tránh giữ số liệu không còn đúng khi API lỗi.
+    yield put(setFlowChartData({ flowChart: null, flowChartSummary: null }))
     const res = yield call(Service.getHydrologyFlowApi, currentPlantId, date)
     if (res.status === 200) {
-      yield put(setFlowChartData({ flowChart: res.data.metrics, flowChartSummary: res.data.summary }))
+      // Hỗ trợ dữ liệu trực tiếp và response v2 có lớp bọc data/Data/result.
+      let responseData = res.data
+      for (let depth = 0; depth < 4; depth += 1) {
+        if (Array.isArray(responseData) || responseData?.metrics !== undefined || responseData?.summary !== undefined) break
+        const nested = responseData?.data ?? responseData?.Data ?? responseData?.result
+        if (nested === undefined || nested === responseData) break
+        responseData = nested
+      }
+      // Bản v2 trả danh sách hồ: mỗi phần tử có metrics và summary riêng.
+      // Giữ toàn bộ danh sách để component chọn hồ; dữ liệu mặc định là hồ đầu tiên.
+      const reservoirs = Array.isArray(responseData) ? responseData : []
+      const firstReservoir = Array.isArray(responseData) ? reservoirs[0] : responseData
+      if (!firstReservoir?.metrics || !firstReservoir?.summary) {
+        throw new Error('INVALID_RESPONSE: FlowDiagram thiếu metrics hoặc summary. Kiểm tra log [FlowDiagram][response].')
+      }
+      yield put(setFlowChartData({
+        flowChart: firstReservoir.metrics,
+        flowChartSummary: firstReservoir.summary,
+        reservoirs,
+      }))
     }
     yield put(setLoading({ isLoadingFlowChart: false }))
   } catch (error) {
@@ -240,8 +276,13 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
             (Array.isArray(candidate.qIn) ||
               Array.isArray(candidate.QIn) ||
               Array.isArray(candidate.qOut) ||
-              Array.isArray(candidate.QOut)),
+              Array.isArray(candidate.QOut) ||
+              Array.isArray(candidate.qcm) ||
+              Array.isArray(candidate.qxt)),
         ) ?? responseData
+      const qOut = normalizeFlowSeries(
+        flowPayload?.qOut ?? flowPayload?.QOut ?? flowPayload?.qXa ?? flowPayload?.QXa ?? flowPayload?.outflowData,
+      )
       const normalizedData = {
         unit: flowPayload?.unit ?? flowPayload?.Unit ?? '',
         cards: Array.isArray(flowPayload?.cards ?? flowPayload?.Cards)
@@ -250,8 +291,11 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
         qIn: normalizeFlowSeries(
           flowPayload?.qIn ?? flowPayload?.QIn ?? flowPayload?.qVe ?? flowPayload?.QVe ?? flowPayload?.inflowData,
         ),
-        qOut: normalizeFlowSeries(
-          flowPayload?.qOut ?? flowPayload?.QOut ?? flowPayload?.qXa ?? flowPayload?.QXa ?? flowPayload?.outflowData,
+        // API mới trả qcm và qxt riêng; tổng hợp Qxả để giữ đúng dữ liệu LineChart đang nhận.
+        // Nếu backend đã trả qOut thì ưu tiên chuỗi đó, không tính lại.
+        qOut: qOut.length > 0 ? qOut : combineOutflowSeries(
+          normalizeFlowSeries(flowPayload?.qcm ?? flowPayload?.Qcm),
+          normalizeFlowSeries(flowPayload?.qxt ?? flowPayload?.Qxt),
         ),
       }
       yield put(setInflowOutflow(normalizedData))
