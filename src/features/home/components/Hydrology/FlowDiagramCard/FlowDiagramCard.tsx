@@ -7,6 +7,7 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import FlowDiagram from '@/components/FlowDiagram/FlowDiagram'
 import { getHydrologyflowChart } from '@/core/redux/domains/hydrology'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import ScrollableTabBar from '@/components/ScrollableTabBar/ScrollableTabBar.component'
 
 
 interface flowDiagramCardProps {
@@ -21,8 +22,19 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
     const isDark = scheme === 'dark'
     const styles = createStyles(isDark)
     const { countRefesh, isLoadingFlowChart } = useAppSelector((state: any) => state.hydrologySlice)
-    const { flowChart, flowChartSummary } = useAppSelector((state: any) => state.hydrologySlice)
+    const { flowChart: defaultChart, flowChartSummary: defaultSummary, flowChartReservoirs = [] } = useAppSelector(
+        (state) => state.hydrologySlice,
+    )
+    const [selectedReservoirId, setSelectedReservoirId] = useState('')
+    const selectedReservoir = flowChartReservoirs.find((item) => item.maHoChua === selectedReservoirId) ?? flowChartReservoirs[0]
+    const flowChart = selectedReservoir?.metrics ?? defaultChart
+    const flowChartSummary = selectedReservoir?.summary ?? defaultSummary
+    // FlowDiagram đọc trực tiếp các nhóm này; chỉ vẽ khi dữ liệu đã đủ để tránh lỗi truy cập undefined.
+    const hasFlowChart = ['mntl', 'qve', 'qcm', 'qxt', 'qxmt'].every(
+        (key) => flowChart?.[key]?.value && typeof flowChart[key].value === 'object',
+    )
     useEffect(() => {
+        if (!currentPlantId) return
         const payload = {
             date: dateStr,
             currentPlantId
@@ -37,11 +49,19 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
                     <Text style={styles.title}>{"Sơ đồ dòng chảy"}</Text>
                     <Text style={styles.ck}>{`CK = Cùng kỳ năm ngoái (${oneYearAgo})`}</Text>
                 </View>
+                {/* Nếu một nhà máy có nhiều hồ, chọn hồ trong response đã tải, không gọi lại API. */}
+                {flowChartReservoirs.length > 1 && (
+                    <ScrollableTabBar
+                        tabs={flowChartReservoirs.map((item) => ({ id: item.maHoChua, label: item.tenHoChua }))}
+                        activeTab={selectedReservoir?.maHoChua ?? ''}
+                        onTabChange={setSelectedReservoirId}
+                    />
+                )}
                 <View style={styles.flowDiagramDetail}>
-                    <FlowDiagram
+                    {isLoadingFlowChart || hasFlowChart ? <FlowDiagram
                         data={flowChart}
                         isLoading={isLoadingFlowChart}
-                    />
+                    /> : <Text style={styles.ck}>Chưa có dữ liệu sơ đồ dòng chảy.</Text>}
                 </View>
                 <View style={styles.container}>
                     {/* Line phía trên */}
@@ -53,7 +73,7 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
                         <View style={[styles.box, styles.inboundTraffic]}>
                             <Text style={styles.titleSection}>LƯU LƯỢNG VỀ</Text>
                             <Text style={styles.valueBlue}>
-                                {flowChartSummary.totalInflow} <Text style={styles.unit}>{flowChartSummary.unit}</Text>
+                                {flowChartSummary?.totalInflow ?? '—'} <Text style={styles.unit}>{flowChartSummary?.unit ?? ''}</Text>
                             </Text>
                         </View>
 
@@ -61,7 +81,7 @@ function FlowDiagramCard(props: flowDiagramCardProps) {
                         <View style={[styles.box, styles.dischargeFlow]}>
                             <Text style={styles.titleSection}>LƯU LƯỢNG XẢ</Text>
                             <Text style={styles.valueRed}>
-                                {flowChartSummary.totalOutflow} <Text style={styles.unit}>{flowChartSummary.unit}</Text>
+                                {flowChartSummary?.totalOutflow ?? '—'} <Text style={styles.unit}>{flowChartSummary?.unit ?? ''}</Text>
                             </Text>
                         </View>
 
