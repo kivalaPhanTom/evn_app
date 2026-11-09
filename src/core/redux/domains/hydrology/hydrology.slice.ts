@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
+import { normalizeUpstreamWaterLevel } from './upstream-water-level.utils'
 
 interface HydroChartItem {
   avgVolume: number | null
@@ -25,6 +26,12 @@ interface waterLevelRangeItem {
   fromLevel: number
   toLevel: number
 }
+export interface FlowChartReservoir {
+  maHoChua: string
+  tenHoChua: string
+  metrics: any
+  summary: { totalInflow: number; totalOutflow: number; unit: string }
+}
 interface hydrologyState {
   countRefesh: number
   inboundTraffic: number
@@ -48,11 +55,12 @@ interface hydrologyState {
     plantsData: any[]
   }
   flowChart: any
+  flowChartReservoirs: FlowChartReservoir[]
   flowChartSummary: {
     totalInflow: number
     totalOutflow: number
     unit: string
-  }
+  } | null
   upstreamWaterLevel: any
   inflow: any
   outflow: any
@@ -91,6 +99,7 @@ const initialState: hydrologyState = {
   hydrologyCharData: [],
   hydrologyPlants: { plantsData: [] },
   currentHydrologyPlant: { plantsData: [] },
+  flowChartReservoirs: [],
   hydrologyPlantsInfo: { PlantsInfoData: [] },
   flowChart: {
     mntl: { label: 'Mực nước thượng lưu', code: 'MNTL', value: { current: 0, period: 0 }, unit: 'm' },
@@ -154,12 +163,13 @@ const hydrologySlice = createSlice({
       state.hydrologyPlantsInfo = action.payload
     },
     setFlowChartData: (state, action) => {
-      const { flowChart, flowChartSummary } = action.payload
-      state.flowChart = flowChart
-      state.flowChartSummary = flowChartSummary
+      // Không lưu undefined: component có thể nhận null khi đang tải hoặc API thiếu dữ liệu.
+      state.flowChart = action.payload?.flowChart ?? null
+      state.flowChartSummary = action.payload?.flowChartSummary ?? null
+      state.flowChartReservoirs = Array.isArray(action.payload?.reservoirs) ? action.payload.reservoirs : []
     },
     setUpStreamWaterLevel: (state, action) => {
-      state.upstreamWaterLevel = action.payload
+      state.upstreamWaterLevel = normalizeUpstreamWaterLevel(action.payload)
     },
     setInflow: (state, action) => {
       state.inflow = action.payload

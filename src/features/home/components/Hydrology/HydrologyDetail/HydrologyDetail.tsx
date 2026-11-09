@@ -22,18 +22,11 @@ import { LazySection } from '@/components/LazySection/LazySection'
 import FilterByTime from '../FilterByTime/FilterByTime'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { shallowEqual } from 'react-redux'
+import { prepareChartData } from './hydrologyDetail.data'
 
 interface HydrologyDetailProps {
   currentPlantId?: string
   scrollY?: Animated.Value
-}
-
-function prepareChartData(data: any[] | undefined, currentFilterTab: string, currentHour: number) {
-  if (!data) return []
-  // filter() khong lam thay doi du lieu API, vi vay khong can deep-clone bang JSON truoc moi lan ve bieu do.
-  return currentFilterTab === 'hour'
-    ? data.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentHour)
-    : data
 }
 
 function HydrologyDetail(props: HydrologyDetailProps) {
@@ -186,7 +179,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       data: prepareChartData(upstreamData?.todayUpstream, filterByTime.currentFilterTab, currentHour),
       data2: prepareChartData(upstreamData?.samePeriodUpstream, filterByTime.currentFilterTab, currentHour),
       currentColor: isDark ? dark.detail.upstream : light.water,
-      unit: upstreamData?.unit,
+      unit: upstreamData?.unit || 'm',
       flowRateInfo: [
         { label: 'Hiện tại', value: upstreamData?.currentValue, color: isDark ? dark.detail.upstream : light.water },
         { label: 'Cao nhất', value: upstreamData?.maxValue, color: isDark ? dark.text : light.text },
