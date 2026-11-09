@@ -22,6 +22,7 @@ export interface LineCharProps {
   animationDuration?: number
   gradientColors?: GradientColors
   ruleTypes?: string
+  showRules?: boolean
   areaChart?: boolean
   hideDataPoints1?: boolean
   hideDataPoints2?: boolean
@@ -61,6 +62,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   loading = false,
   animationDuration = 1000,
   ruleTypes = 'dash',
+  showRules = true,
   areaChart = true,
   hideDataPoints1 = false,
   hideDataPoints2 = false,
@@ -200,9 +202,9 @@ export const LineChart: React.FC<LineCharProps> = ({
         showVerticalLines={false}
         hideYAxisText={hideYAxisText}
         yAxisColor="transparent"
-        {...(ruleTypes && { xAxisColor: resolvedXAxisColor, rulesColor: resolvedRulesColor, dashGap: 10, dashWidth: 5 })}
+        {...(showRules && ruleTypes && { xAxisColor: resolvedXAxisColor, rulesColor: resolvedRulesColor, dashGap: 10, dashWidth: 5, rulesType: ruleTypes })}
         noOfSections={noOfSections}
-        rulesType={ruleTypes}
+        showRules={showRules}
         initialSpacing={30}
         endSpacing={15}
         strokeDashArray1={strokedashArray1}
