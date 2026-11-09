@@ -41,6 +41,7 @@ import {
   setLoading,
 } from './hydrology.slice'
 import { catchHandle } from '@/core/utils/utils'
+import { combineOutflowSeries } from './inflow-outflow.utils'
 
 function* getHydrologyComparisonSaga(action: ReturnType<typeof getHydrologyComparison>): Generator {
   try {
@@ -240,8 +241,13 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
             (Array.isArray(candidate.qIn) ||
               Array.isArray(candidate.QIn) ||
               Array.isArray(candidate.qOut) ||
-              Array.isArray(candidate.QOut)),
+              Array.isArray(candidate.QOut) ||
+              Array.isArray(candidate.qcm) ||
+              Array.isArray(candidate.qxt)),
         ) ?? responseData
+      const qOut = normalizeFlowSeries(
+        flowPayload?.qOut ?? flowPayload?.QOut ?? flowPayload?.qXa ?? flowPayload?.QXa ?? flowPayload?.outflowData,
+      )
       const normalizedData = {
         unit: flowPayload?.unit ?? flowPayload?.Unit ?? '',
         cards: Array.isArray(flowPayload?.cards ?? flowPayload?.Cards)
@@ -250,8 +256,11 @@ function* getInflowOutflowApiSaga(action: ReturnType<typeof getInflowOutflow>): 
         qIn: normalizeFlowSeries(
           flowPayload?.qIn ?? flowPayload?.QIn ?? flowPayload?.qVe ?? flowPayload?.QVe ?? flowPayload?.inflowData,
         ),
-        qOut: normalizeFlowSeries(
-          flowPayload?.qOut ?? flowPayload?.QOut ?? flowPayload?.qXa ?? flowPayload?.QXa ?? flowPayload?.outflowData,
+        // API mới trả qcm và qxt riêng; tổng hợp Qxả để giữ đúng dữ liệu LineChart đang nhận.
+        // Nếu backend đã trả qOut thì ưu tiên chuỗi đó, không tính lại.
+        qOut: qOut.length > 0 ? qOut : combineOutflowSeries(
+          normalizeFlowSeries(flowPayload?.qcm ?? flowPayload?.Qcm),
+          normalizeFlowSeries(flowPayload?.qxt ?? flowPayload?.Qxt),
         ),
       }
       yield put(setInflowOutflow(normalizedData))
