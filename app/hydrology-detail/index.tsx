@@ -17,6 +17,10 @@ const HydrologyDetailScreen: React.FC = () => {
   const isDark = scheme === 'dark'
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const { countRefesh } = useAppSelector((state: any) => state.hydrologySlice)
+  const companyName = useAppSelector((state) => {
+    const { companies, selectedCompanyId } = state.companyPlantSlice
+    return companies.find((company) => company.companyId === selectedCompanyId)?.companyName ?? ''
+  })
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()
@@ -56,7 +60,7 @@ const HydrologyDetailScreen: React.FC = () => {
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{'Công ty thủy điện Buôn Kuốp'}</Text>
+            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{companyName}</Text>
           </View>
         </View>
         <HydrologyDetail scrollY={scrollY} currentPlantId={currentPlantId} />

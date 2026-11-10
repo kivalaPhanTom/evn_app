@@ -10,11 +10,7 @@ import Svg, {
 import WaterDrop from '../WaterDrop/WaterDrop.component';
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton';
 import { useAppTheme } from '@/core/hooks/use-app-theme';
-
-interface ChartPoint {
-  label: string;
-  value: unknown;
-}
+import { prepareHydrographicChartData, type HydroChartItem } from './hydrographicChart.data';
 
 /* ===== CONFIG ===== */
 const CHART_HEIGHT = 220;
@@ -24,21 +20,6 @@ const PADDING_TOP = 20;
 const PADDING_BOTTOM = 36;
 const PADDING_RIGHT = 16;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-/* ===== HELPERS ===== */
-const sanitizeNumber = (v: unknown): number | null => {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-};
-
-interface Props {
-  data: ChartPoint[];
-}
-interface HydroChartItem {
-  avgVolume: number | null;
-  percent: number | null;
-  values: number | null;
-  date: string;
-}
 interface HydrographicChartProps {
   isLoading: boolean
   data: HydroChartItem[]
@@ -47,35 +28,28 @@ interface HydrographicChartProps {
   bgColor?: string
   selectedOptionsValue?: string
 }
-const convertDateLabel = (dateString: string) => {
-  const result = dateString.slice(0, 5)
-  return result;
-}
 const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const { isLoading = false, data = [], referenceLevel = 0, bgColor, selectedOptionsValue = "" } = props
-  const safeInputData = useMemo(() => (Array.isArray(data) ? data : []), [data])
   const scheme = useAppTheme();
   const isDark = scheme === 'dark';
   const scrollRef = useRef<ScrollView>(null);
-  const convertedData: { label: string; value: number }[] = safeInputData.map((item, index) => ({
-    label: `${selectedOptionsValue === "7_DAYS" ? convertDateLabel(item.date) : index}`,
-    value: sanitizeNumber(item.avgVolume) ?? 0,
-  }))
-  const waterDrops = useMemo(() => {
-    return safeInputData.map((item, index) => ({
-      hour: index,
-      percent: sanitizeNumber(item.percent) ?? 0,
-      volume: `${sanitizeNumber(item.avgVolume) ?? 0}m`
-    }));
-  }, [safeInputData]);
+  // Chuẩn bị chung dữ liệu đường biểu diễn và giọt nước để hai phần không lệch giờ.
+  // Chỉ tính lại khi response hoặc chế độ xem thay đổi.
+  const { points: safeData, waterDrops } = useMemo(
+    () => prepareHydrographicChartData(data, selectedOptionsValue),
+    [data, selectedOptionsValue],
+  )
+  // Kết thúc biểu đồ ở điểm cuối có dữ liệu, bỏ phần giờ tương lai đang null ở cuối response.
+  const lastPointIndex = safeData[safeData.length - 1]?.index ?? 0
 
   useEffect(() => {
-    if (scrollRef.current && convertedData.length > 0) {
+    // Sau khi cập nhật dữ liệu, cuộn đến cuối biểu đồ để thấy điểm mới nhất.
+    if (scrollRef.current && safeData.length > 0) {
       requestAnimationFrame(() => {
         scrollRef.current?.scrollToEnd({ animated: true });
       });
     }
-  }, [convertedData.length, isLoading, scrollRef]);
+  }, [safeData.length, lastPointIndex, isLoading, scrollRef]);
   if (isLoading) {
     return (
       <View style={styles.mainContainer}>
@@ -83,17 +57,10 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
       </View>
     )
   }
-  if (safeInputData.length < 2) return null;
-
-  const safeData = convertedData
-    .map(d => ({ ...d, value: sanitizeNumber(d.value) }))
-    .filter(d => d.value !== null) as {
-      label: string;
-      value: number;
-    }[];
-
+  // Giữ điều kiện cũ: cần ít nhất hai điểm hợp lệ để hiển thị biểu đồ đường.
   if (safeData.length < 2) return null;
 
+  // Chỉ dùng mực nước hợp lệ để tính trục Y, tránh null bị ép thành 0 làm sai thang đo.
   const values = safeData.map(d => d.value);
 
   let min = Math.min(...values);
@@ -113,8 +80,9 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const rangeY = maxY - minY;
   const scaleY = CHART_HEIGHT / rangeY;
 
+  // Dùng vị trí gốc của điểm cuối, không dùng số điểm sau lọc để tránh dồn các giờ bị thiếu.
   const chartWidth =
-    POINT_WIDTH * (safeData.length - 1) +
+    POINT_WIDTH * lastPointIndex +
     Y_AXIS_WIDTH +
     PADDING_RIGHT;
 
@@ -128,9 +96,12 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
 
   const path = safeData
     .map((p, i) => {
-      const x = getX(i);
+      const x = getX(p.index);
       const y = getY(p.value);
-      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+      // SVG: M bắt đầu đoạn mới, L nối tiếp đoạn hiện tại.
+      // Nếu thiếu dữ liệu giữa hai giờ thì ngắt đường, không nối xuyên qua khoảng thiếu.
+      const startsSegment = i === 0 || p.index !== safeData[i - 1].index + 1;
+      return `${startsSegment ? 'M' : 'L'} ${x} ${y}`;
     })
     .join(' ');
   const thresholdY = referenceLevel === null ? null : getY(referenceLevel);
@@ -240,9 +211,9 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       fill="none"
                     />
 
-                    {/* points + labels */}
+                    {/* Chỉ vẽ điểm và nhãn đã qua lọc, đặt theo vị trí giờ gốc. */}
                     {safeData.map((p, i) => {
-                      const x = getX(i);
+                      const x = getX(p.index);
                       const y = getY(p.value);
 
                       return (
@@ -296,12 +267,13 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                       height: 80,
                     }}
                   >
-                    {waterDrops.map((drop, index) => {
-                      const x = getX(index);
+                    {/* Dùng cùng vị trí giờ với đường biểu diễn; không tạo giọt nước cho percent null. */}
+                    {waterDrops.map((drop) => {
+                      const x = getX(drop.index);
 
                       return (
                         <View
-                          key={index}
+                          key={drop.index}
                           style={{
                             position: 'absolute',
                             left: x,
