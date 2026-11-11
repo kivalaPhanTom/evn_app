@@ -13,6 +13,7 @@ export function getReservoirTabs(plants: Plant[]) {
       reservoirCount: plant.ListHoChua?.length ?? 0,
       symbol: plant.symbol,
       color: plant.color,
+      regulationType: plant.regulationType,
     })),
   )
 }

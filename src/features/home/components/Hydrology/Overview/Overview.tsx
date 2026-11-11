@@ -5,8 +5,9 @@ import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCa
 import { px } from '@/core/utils/scale'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { styles } from './Overview.styles'
-import { getHydrographicChart } from '@/core/redux/domains/hydrology'
+import { getHydrographicChart, setSelectedOptionsValue } from '@/core/redux/domains/hydrology'
 import { getReservoirTabs } from './overview.data'
+import { getDefaultHydrologyPeriod, getHydrologyApiType } from '../hydrologyPeriod'
 
 import HydrographicChart from '@/components/HydrographicChart/HydrographicChart'
 import InflowOutflow from '../InflowOutflow/InflowOutflow'
@@ -26,6 +27,7 @@ interface WaterLevelData {
   currentLevel: number | null
   maxLevel: number | null
   referenceLevel: number | null
+  regulationType?: 'hourly' | 'daily'
   color?: string
 }
 // Mảng màu sắc tuần tự cho các nhà máy
@@ -528,9 +530,13 @@ const Overview: React.FC = () => {
   // Set activeTab khi data được load
   useEffect(() => {
     if (!waterData.some((reservoir) => reservoir.id === activeTab)) {
-      setActiveTab(waterData[0]?.id ?? '')
+      const firstReservoir = waterData[0]
+      setActiveTab(firstReservoir?.id ?? '')
+      if (firstReservoir) {
+        dispatch(setSelectedOptionsValue(getDefaultHydrologyPeriod(firstReservoir.regulationType)))
+      }
     }
-  }, [waterData, activeTab])
+  }, [waterData, activeTab, dispatch])
 
   const activeData = waterData.find((d) => d.id === activeTab) || waterData[0]
   const reservoirId = activeData?.id ?? ''
@@ -538,11 +544,11 @@ const Overview: React.FC = () => {
   const maxLevel = activeData?.maxLevel ?? undefined
   const uniformTabWidth = waterData.length > 3 && tabsViewportWidth > 0 ? tabsViewportWidth / 3 : undefined
   useEffect(() => {
-    if (reservoirId) {
-      const type = selectedOptionsValue === '7_DAYS' ? 'day' : 'hour'
+    if (reservoirId && activeTab) {
+      const type = getHydrologyApiType(selectedOptionsValue as 'HOURS' | '7_DAYS')
       dispatch(getHydrographicChart({ maHoChua: reservoirId, type }))
     }
-  }, [reservoirId, countRefesh, dispatch, selectedOptionsValue])
+  }, [reservoirId, activeTab, countRefesh, dispatch, selectedOptionsValue])
   if (waterData.length === 0 && (plantsStatus === 'succeeded' || plantsStatus === 'failed')) {
     return <Text style={{ color: isDark ? dark.text : light.muted }}>{plantsError ?? 'Không có dữ liệu hồ chứa.'}</Text>
   }
@@ -615,6 +621,7 @@ const Overview: React.FC = () => {
               tabWidth={uniformTabWidth}
               onPress={() => {
                 if (activeTab !== data.id) {
+                  dispatch(setSelectedOptionsValue(getDefaultHydrologyPeriod(data.regulationType)))
                   setActiveTab(data.id)
                 }
               }}
