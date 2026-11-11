@@ -17,7 +17,13 @@ const ProfitDetailScreen: React.FC = () => {
   }>()
 
   return (
-    <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <TwinkleStars
+      background={isDark ? Colors.background : Colors.lightBackground}
+      particleDensity={50}
+      particleColor={Colors.textColor}
+      minSize={0.5}
+      maxSize={2}
+    >
       <View style={styles.header}>
         <GradientText
           text={'Chi tiết Lợi nhuận'}
@@ -57,4 +63,3 @@ const styles = StyleSheet.create({
     fontSize: px.m(13),
   },
 })
-

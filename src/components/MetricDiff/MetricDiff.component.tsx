@@ -12,6 +12,8 @@ interface MetricDiffProps {
   withBackground?: boolean
   containerStyle?: ViewStyle
   unit?: string
+  bgColor?: string
+  textColor?: string
 }
 
 const hexToRgba = (hex: string, alpha: number) => {
@@ -32,13 +34,15 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
   withBackground = false,
   containerStyle,
   unit = '%',
+  bgColor,
+  textColor,
 }) => {
   const base = typeof compareTo === 'number' ? compareTo : 0
 
   // If comparing to 0 and showing percent, use raw diff with % (no extra calc)
   if (unit === '%' && compareTo === 0) {
     const isUp = diff >= 0
-    const color = isUp ? Colors.green : Colors.red
+    const color = textColor ?? (isUp ? Colors.green : Colors.red)
     const arrow = isUp ? '▲' : '▼'
     const value = Math.abs(diff).toFixed(decimals)
     const content = `${arrow} ${value}% ${label}`
@@ -48,7 +52,7 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
         <View
           style={[
             styles.badge,
-            { backgroundColor: hexToRgba(color, 0.15) },
+            { backgroundColor: bgColor ?? hexToRgba(color, 0.15) },
             containerStyle,
           ]}
         >
@@ -65,7 +69,7 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
 
   const signValue = isPercent ? percent : rawDelta
   const isUp = signValue >= 0
-  const color = isUp ? Colors.green : Colors.red
+  const color = textColor ?? (isUp ? Colors.green : Colors.red)
   const arrow = isUp ? '▲' : '▼'
   const value = Math.abs(isPercent ? percent : rawDelta).toFixed(decimals)
 
@@ -76,7 +80,7 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
       <View
         style={[
           styles.badge,
-          { backgroundColor: hexToRgba(color, 0.15) },
+          { backgroundColor: bgColor ?? hexToRgba(color, 0.15) },
           containerStyle,
         ]}
       >
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
   badge: {
     paddingHorizontal: px.h(10),
     paddingVertical: px.v(6),
-    borderRadius: px.h(12),
+    borderRadius: px.h(8),
     alignSelf: 'flex-start',
   },
 })

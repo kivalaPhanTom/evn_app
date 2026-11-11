@@ -148,8 +148,11 @@ export default function RevenueDetail(props: Props) {
           fontWeight="600"
           style={styles.title}
         />
-        <Text style={[styles.companyName, !isDark && { color: '#6B7280' }]}>Công ty thủy điện Buôn Kuốp</Text>
+        <Text style={[styles.companyName, !isDark && { color: '#475569', opacity: 0.6 }]}>Công ty thủy điện Buôn Kuốp</Text>
         <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+
+        {/* Horizontal Divider */}
+        <View style={[styles.divider, { backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.12)' }]} />
 
         {/* Date Picker */}
         <View style={{ marginBottom: 20, paddingHorizontal: 0 }}>
@@ -157,11 +160,15 @@ export default function RevenueDetail(props: Props) {
             value={selectedDate}
             onChange={setSelectedDate}
             format="DD/MM/YYYY"
-            textColor="#fff"
-            borderColor="rgba(255,255,255,0.15)"
-            backgroundColor="rgba(26, 35, 50, 0.6)"
+            textColor={isDark ? '#fff' : '#475569'}
+            borderColor={isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.15)'}
+            backgroundColor={isDark ? 'rgba(26, 35, 50, 0.6)' : '#d9d9d9'}
           />
         </View>
+
+        {/* Horizontal Divider */}
+        <View style={[styles.divider, { backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.12)' }]} />
+
         <PowerPrices />
         <TotalRevenueExpenses />
         <ReveneCompareByTime
@@ -276,5 +283,11 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontSize: 11,
     marginTop: 6,
+  },
+
+  divider: {
+    height: 1,
+    width: '100%',
+    marginVertical: 16,
   },
 })
