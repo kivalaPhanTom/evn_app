@@ -7,6 +7,7 @@ import { setSelectedOptionsValue } from '@/core/redux/domains/hydrology'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import Overview from './Overview/Overview'
+import { HYDROLOGY_PERIOD_OPTIONS } from './hydrologyPeriod'
 
 function Hydrology() {
   const router = useRouter()
@@ -15,11 +16,6 @@ const dispatch = useAppDispatch()
   const onPressCard = () => {
     router.navigate({ pathname: '/hydrology-detail' as any })
   }
-  const options = [
-    { label: "Theo giờ", value: "HOURS" },
-    { label: "Theo 7 ngày gần nhất", value: "7_DAYS" },
-  ];
- 
   const onChange = (val: string) => {
     dispatch(setSelectedOptionsValue(val))
   }
@@ -32,7 +28,7 @@ const dispatch = useAppDispatch()
         onPress: onPressCard,
       }}
       isShowSelectButton={true}
-      options={options}
+      options={HYDROLOGY_PERIOD_OPTIONS}
       onChangeOption={onChange}
       selectedValue={selectedOptionsValue}
     >
