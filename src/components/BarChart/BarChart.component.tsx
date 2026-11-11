@@ -336,7 +336,7 @@ const BarChart: React.FC<Props> = ({
           yAxisThickness={showYAxis ? 1 : 0}
           yAxisColor={showYAxis ? (isDark ? '#FFF' : '#6B7280') : 'transparent'}
           xAxisThickness={1}
-          xAxisColor={'rgb(255,255,255,0.1)'}
+          xAxisColor={isDark ? 'rgb(255,255,255,0.1)' : 'rgba(0,0,0,0.12)'}
           disableScroll={disableScroll}
           hideYAxisText={!showYAxis}
           yAxisLabelTexts={showYAxis ? yAxisLabelTexts : []}
@@ -346,7 +346,7 @@ const BarChart: React.FC<Props> = ({
           }}
           hideRules={!showHorizontalGrid}
           rulesType={rulesType}
-          rulesColor="rgb(255,255,255,0.1)"
+          rulesColor={isDark ? 'rgb(255,255,255,0.1)' : 'rgba(0,0,0,0.12)'}
           isAnimated={false}
           barBorderRadius={rounded ? barRadius : 0}
           barBorderTopRightRadius={rounded ? barRadius : 0}

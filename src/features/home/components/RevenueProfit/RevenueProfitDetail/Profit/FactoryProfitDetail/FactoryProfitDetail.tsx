@@ -8,7 +8,7 @@ import GradientCard from '@/components/GradientCard/GradientCard.component'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker.component'
 import dayjs from 'dayjs'
-import { styles } from './FactoryProfitDetail.styles'
+import { styles as makeStyles } from './FactoryProfitDetail.styles'
 import { LinearGradient } from 'expo-linear-gradient'
 import { BarGroup } from '@/core/types'
 import { Colors } from '@/core/constants/colors'
@@ -16,9 +16,12 @@ import BarChart from '@/components/BarChart/BarChart.component'
 import { px } from '@/core/utils/scale'
 import { useLocalSearchParams } from 'expo-router'
 import { Toast } from 'toastify-react-native'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function FactoryProfitDetail() {
   const dispatch = useAppDispatch()
+  const isDark = useAppTheme() === 'dark'
+  const styles = makeStyles(isDark)
   const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
@@ -74,19 +77,23 @@ function FactoryProfitDetail() {
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
   const heightLine = 1
-  const colorLine = '#7a8596'
+  const colorLine = isDark ? '#7a8596' : '#94A3B8'
   const lineStyle = { marginVertical: 10 }
 
   // Check if profit is negative (loss)
   const isLoss = profit.Today.Value < 0
   const cardColors = isLoss
-    ? (['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'] as const)
-    : (['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'] as const)
-  const labelColor = isLoss ? '#F97316' : '#22C55E'
-  const valueColor = isLoss ? '#EF4444' : '#10B981'
+    ? (isDark
+        ? (['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'] as const)
+        : (['rgba(254, 215, 170, 0.6)', 'rgba(254, 226, 226, 0.6)'] as const))
+    : (isDark
+        ? (['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'] as const)
+        : (['rgba(187, 247, 208, 0.6)', 'rgba(167, 243, 208, 0.6)'] as const))
+  const labelColor = isLoss ? (isDark ? '#F97316' : '#C2410C') : (isDark ? '#22C55E' : '#15803D')
+  const valueColor = isLoss ? (isDark ? '#EF4444' : '#B91C1C') : (isDark ? '#10B981' : '#047857')
 
   // Plant colors mapping
-  const plantColors = ['#A78BFA', '#4ADE80', '#22D3EE']
+  const plantColors = isDark ? ['#A78BFA', '#4ADE80', '#22D3EE'] : ['#7C3AED', '#16A34A', '#0891B2']
 
   const profitData = profitByPeriod?.Data || []
   const values: { label: string; value: number }[] = profitData?.map((item: { Value: number; Date: string }) => ({
@@ -124,9 +131,9 @@ function FactoryProfitDetail() {
           value={selectedDate}
           onChange={setSelectedDate}
           format="DD/MM/YYYY"
-          textColor="#fff"
-          borderColor="rgba(255,255,255,0.15)"
-          backgroundColor="rgba(26, 35, 50, 0.6)"
+          textColor={isDark ? '#fff' : '#475569'}
+          borderColor={isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.12)'}
+          backgroundColor={isDark ? 'rgba(26, 35, 50, 0.6)' : '#d9d9d9'}
         />
       </View>
 
@@ -167,7 +174,7 @@ function FactoryProfitDetail() {
       {/* Card - Cumulative Month (Above) */}
       <View style={styles.cardsRow}>
         <GradientCard
-          colors={['rgba(245, 158, 11, 0.2)', 'rgba(234, 179, 8, 0.1)']}
+          colors={isDark ? ['rgba(245, 158, 11, 0.2)', 'rgba(234, 179, 8, 0.1)'] : ['rgba(254, 240, 138, 0.6)', 'rgba(253, 224, 71, 0.6)']}
           locations={[0, 1]}
           angle={132.12}
           style={[styles.card, styles.fullWidthCard]}

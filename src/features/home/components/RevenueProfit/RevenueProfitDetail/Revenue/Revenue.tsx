@@ -15,10 +15,33 @@ import { getRevenue } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { BarGroup } from '@/core/types'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const clean = hex.replace('#', '')
+  const bigint = parseInt(
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean,
+    16,
+  )
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 
 function RevenueDetail() {
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const theme = useAppTheme()
+  const isDark = theme === 'dark'
+  const p = createThemePalette(isDark)
+
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { revenue, isLoadingRevenue } = useAppSelector((state: RootState) => state.revenueProfitSlice)
 
@@ -31,22 +54,20 @@ function RevenueDetail() {
   }, [countRefesh])
 
   const data = useMemo<{ label: string; value: number }[]>(
-    () => revenue.Chart.Data.map(
-      (item: { Contract: number; Date: string }) => ({
+    () =>
+      revenue.Chart.Data.map((item: { Contract: number; Date: string }) => ({
         value: item.Contract,
         label: item.Date?.split('-')[2] ?? '',
-      }),
-    ),
+      })),
     [revenue.Chart.Data],
   )
 
   const data2 = useMemo<{ label: string; value: number }[]>(
-    () => revenue.Chart.Data.map(
-      (item: { Actual: number; Date: string }) => ({
+    () =>
+      revenue.Chart.Data.map((item: { Actual: number; Date: string }) => ({
         value: item.Actual,
         label: item.Date?.split('-')[2] ?? '',
-      }),
-    ),
+      })),
     [revenue.Chart.Data],
   )
 
@@ -62,69 +83,108 @@ function RevenueDetail() {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
-  const unit = "tỷ VNĐ";
+  const unit = 'tỷ VNĐ'
+
+  // Theme-aware colors
+  const cardBg = isDark ? '#1e2838' : '#FFFFFF'
+  const cardBorder = isDark ? 'rgba(255, 255, 255, 0.2)' : p.border
+  const weekTintBg = isDark ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.08)'
+  const monthTintBg = isDark ? 'rgba(251, 191, 36, 0.1)' : 'rgba(251, 191, 36, 0.12)'
+  const weekTitleColor = isDark ? '#A5B4FC' : '#6366F1'
+  const monthTitleColor = isDark ? '#FCD34D' : '#B28800'
+  const cardTitleColor = isDark ? '#8b92a0' : p.textLabel
+  const cardValueColor = isDark ? '#ffffff' : p.textPrimary
+  const profitByDayTitleColor = isDark ? '#fff' : '#475569'
+  const revenueTitleColor = isDark ? '#8b92a0' : p.textLabel
+  const dateBadgeBg = isDark ? '#1f2937' : '#D9D9D9'
+  const dateBadgeBorder = isDark ? 'rgba(255,255,255,0.12)' : p.border
+  const dateTextColor = isDark ? '#8b92a0' : '#475569'
+  const lineColor = isDark ? 'rgba(255, 255, 255, 0.4)' : '#3B82F6'
+  const lineColor2 = isDark ? '#4ADE80' : '#4ADE80'
+  const startFillColor2 = isDark ? '#4ADE80' : '#4ADE80'
+  const endFillColor2 = isDark ? '#4ADE80' : '#4ADE80'
+  const legendLineColor = isDark ? '#4ADE80' : '#4ADE80'
+  const legendDashColor = isDark ? 'rgba(255,255,255,0.4)' : '#3B82F6'
+  const legendLabelColor = isDark ? '#9CA3AF' : 'rgba(0,0,0,0.4)'
+  const chartCardBg = isDark ? 'rgba(255,255,255,0.06)' : '#FFFFFF'
+  const chartCardBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'
 
   return (
     <SectionContainer title="Doanh thu">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
-          <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
+          <Text
+            style={[styles.revenueTitle, { color: revenueTitleColor }]}
+          >{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
+          <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(70) }]}>
             {revenue.Today.Value} <Text style={styles.cardUnit}>{revenue.Today.Unit}</Text>
           </Text>
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
-            unit={unit}
+            unit="%"
+            compareTo={0}
             diff={revenue.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
+            bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+            textColor={isDark ? '#22C55E' : '#00A73D'}
           />
         </View>
         <View style={{ marginTop: px.v(10) }}>
-          <View style={styles.revenueCard}>
+          <View style={[styles.revenueCard, { backgroundColor: weekTintBg, borderColor: cardBorder }]}>
             <View>
-              <Text style={[styles.cardTitle, { color: '#A5B4FC' }]}>{`Lũy kế tuần`}</Text>
-              <Text style={styles.cardValue}>
+              <Text style={[styles.cardTitle, { color: weekTitleColor }]}>{`Lũy kế tuần`}</Text>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
                 {revenue.Cumulative.Week.Value} <Text style={styles.cardUnit}>{revenue.Cumulative.Week.Unit}</Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground unit={unit} diff={revenue.Cumulative.Week.ChangeValue} />
+              <MetricDiff
+                withBackground
+                unit="%"
+                compareTo={0}
+                diff={revenue.Cumulative.Week.ChangeValue}
+                bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                textColor={isDark ? '#22C55E' : '#00A73D'}
+              />
             </View>
           </View>
         </View>
         <View>
-          <View style={[styles.revenueCard, { backgroundColor: 'rgba(251, 191, 36, 0.1)' }]}>
+          <View style={[styles.revenueCard, { backgroundColor: monthTintBg, borderColor: cardBorder }]}>
             <View>
               <Text
-                style={[styles.cardTitle, { color: '#FCD34D' }]}
+                style={[styles.cardTitle, { color: monthTitleColor }]}
               >{`Lũy kế tháng ${revenue.Cumulative.Month.month?.split('-')[1] ?? ''}`}</Text>
-              <Text style={styles.cardValue}>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
                 {revenue.Cumulative.Month.Value} <Text style={styles.cardUnit}>{revenue.Cumulative.Month.Unit}</Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground unit={unit} diff={revenue.Cumulative.Month.ChangeValue} />
+              <MetricDiff
+                withBackground
+                unit="%"
+                compareTo={0}
+                diff={revenue.Cumulative.Month.ChangeValue}
+                bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                textColor={isDark ? '#22C55E' : '#00A73D'}
+              />
             </View>
           </View>
         </View>
         <View>
-          <View
-            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
-          >
+          <View style={[styles.profitCard, { backgroundColor: chartCardBg, borderColor: chartCardBorder }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={styles.profitByDayTitle}>Biểu đồ doanh thu</Text>
+              <Text style={[styles.profitByDayTitle, { color: profitByDayTitleColor }]}>Biểu đồ doanh thu</Text>
               <View
                 style={{
-                  paddingHorizontal: px.h(12),
-                  paddingVertical: px.v(6),
-                  backgroundColor: '#1f2937',
-                  borderRadius: px.h(18),
-                  borderWidth: 1,
-                  borderColor: 'rgba(255,255,255,0.12)',
+                  paddingHorizontal: px.h(8),
+                  paddingVertical: px.v(4),
+                  backgroundColor: dateBadgeBg,
+                  borderRadius: px.h(8),
                 }}
               >
-                <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>
+                <Text style={{ color: dateTextColor, fontSize: px.f(11) }}>
                   {fromDay} - {toDay}/{toMonth}
                 </Text>
               </View>
@@ -135,27 +195,30 @@ function RevenueDetail() {
             <LineChart
               data={data}
               data2={data2}
-              color="rgba(255, 255, 255, 0.25)"
-              color2="#4ADE80"
+              color={lineColor}
+              color2={lineColor2}
               hideDataPoints2={false}
               hideYAxisText={true}
               hideDataPoints1={true}
               strokedashArray1={[12, 6]}
               spacing={9}
-              startFillColor2="#4ADE80"
-              endFillColor2="#4ADE80"
+              startFillColor2={startFillColor2}
+              endFillColor2={endFillColor2}
+              areaChart={false}
+              areaChart2={true}
+              ruleTypes={undefined}
+              showRules={false}
               animateOnDataChange={false}
               scrollToEnd={true}
             />
-            <View style={styles.line} />
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                <View style={[styles.legendLine]} />
-                <Text style={styles.legendLabel}>{'Thực tế'}</Text>
+                <View style={[styles.legendLine, { backgroundColor: legendLineColor }]} />
+                <Text style={[styles.legendLabel, { color: legendLabelColor }]}>{'Thực tế'}</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 17 }}>
-                <View style={[styles.legendDashLine]} />
-                <Text style={styles.legendLabel}>{'Hợp đồng'}</Text>
+                <View style={[styles.legendDashLine, { backgroundColor: legendDashColor }]} />
+                <Text style={[styles.legendLabel, { color: legendLabelColor }]}>{'Hợp đồng'}</Text>
               </View>
             </View>
           </View>
@@ -165,43 +228,59 @@ function RevenueDetail() {
           onStartShouldSetResponder={() => true}
           onResponderTerminationRequest={() => false}
         >
-          <Text style={[styles.cardTitle, { fontSize: px.f(20), fontWeight: 'bold' }]}>Chi tiết theo nhà máy</Text>
+          <Text style={[styles.cardTitle, { color: cardTitleColor, fontSize: px.f(20), fontWeight: 'bold' }]}>
+            Chi tiết theo nhà máy
+          </Text>
           <View>
-            {revenue.Breakdown.map((plant: { Sparkline: number[]; Color: string; PlantName: string; Value: number; Unit: string; ChangeValue: number }, idx: number) => {
-              const dataPlant: { label: string; value: number }[] = plant.Sparkline.map((item: number) => ({
-                value: item,
-                label: '',
-              }))
-              return (
-                <View key={idx} style={[styles.revenueCard, { backgroundColor: '#1e2838' }]}>
-                  <View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <View
-                        style={{
-                          width: px.h(20),
-                          height: px.h(20),
-                          borderRadius: '100%',
-                          backgroundColor: plant.Color,
-                          marginRight: px.h(10),
-                        }}
-                      />
-                      <View>
-                        <Text style={[styles.cardTitle, { fontSize: px.f(20) }]}>{plant.PlantName}</Text>
-                        <Text style={{ color: Colors.green, fontSize: px.f(30) }}>
-                          <Ionicons name="analytics-outline" size={px.f(24)} color={Colors.green} />
-                        </Text>
+            {revenue.Breakdown.map(
+              (
+                plant: {
+                  Sparkline: number[]
+                  Color: string
+                  PlantName: string
+                  Value: number
+                  Unit: string
+                  ChangeValue: number
+                },
+                idx: number,
+              ) => {
+                const dataPlant: { label: string; value: number }[] = plant.Sparkline.map((item: number) => ({
+                  value: item,
+                  label: '',
+                }))
+                return (
+                  <View key={idx} style={[styles.revenueCard, { backgroundColor: cardBg, borderColor: cardBorder }]}>
+                    <View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View
+                          style={{
+                            width: px.h(20),
+                            height: px.h(20),
+                            borderRadius: '100%',
+                            backgroundColor: plant.Color,
+                            marginRight: px.h(10),
+                          }}
+                        />
+                        <View>
+                          <Text style={[styles.cardTitle, { color: cardTitleColor, fontSize: px.f(20) }]}>
+                            {plant.PlantName}
+                          </Text>
+                          <Text style={{ color: Colors.green, fontSize: px.f(30) }}>
+                            <Ionicons name="analytics-outline" size={px.f(24)} color={Colors.green} />
+                          </Text>
+                        </View>
                       </View>
                     </View>
+                    <View>
+                      <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(24) }]}>
+                        {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
+                      </Text>
+                      <MetricDiff unit={unit} diff={plant.ChangeValue} />
+                    </View>
                   </View>
-                  <View>
-                    <Text style={[styles.cardValue, { fontSize: px.f(24) }]}>
-                      {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
-                    </Text>
-                    <MetricDiff unit={unit} diff={plant.ChangeValue} />
-                  </View>
-                </View>
-              )
-            })}
+                )
+              },
+            )}
           </View>
         </View>
       </AnimatedCardContainer>
@@ -241,6 +320,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
   chartWrapper: {
     marginTop: px.v(8),
@@ -273,7 +357,8 @@ const styles = StyleSheet.create({
   },
   profitByDayTitle: {
     color: '#fff',
-    fontSize: px.f(20),
+    fontSize: px.f(15),
+    fontWeight: '600',
   },
   revenueTitle: {
     color: '#8b92a0',

@@ -21,6 +21,7 @@ import { LazySection } from '@/components/LazySection/LazySection'
 import TechInfoDetail from './TechInfoDetail/TechInfoDetail'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
 import { setSelectedOptionsValueFactDetail } from '@/core/redux/domains/hydrology'
+import { getDefaultHydrologyPeriod, HYDROLOGY_PERIOD_OPTIONS } from '@/features/home/components/Hydrology/hydrologyPeriod'
 import { RootState } from '@/core/redux/store'
 import { Colors } from '@/core/constants/colors'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
@@ -49,6 +50,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
+  const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedHydrologyReservoirId, setSelectedHydrologyReservoirId] = useState('')
 
@@ -56,7 +58,16 @@ function FactoryDetail(props: factoryDetailProps) {
 
   useEffect(() => {
     setSelectedHydrologyReservoirId('')
-  }, [currentPlantId])
+    const plant = plants.find(
+      (item) =>
+        String(item.plantId) === currentPlantId ||
+        item.symbol === currentPlantId ||
+        item.abbreviation === currentPlantId,
+    )
+    if (plant) {
+      dispatch(setSelectedOptionsValueFactDetail(getDefaultHydrologyPeriod(plant.regulationType)))
+    }
+  }, [currentPlantId, dispatch, plants])
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -115,11 +126,6 @@ function FactoryDetail(props: factoryDetailProps) {
     });
     return () => scrollY.removeListener(id);
   }, [scrollY, thresholds]);
-  const options = [
-    { label: "Theo giờ", value: "HOURS" },
-    { label: "Theo 7 ngày gần nhất", value: "7_DAYS" }
-  ];
-
   const onChange = (val: string) => {
     dispatch(setSelectedOptionsValueFactDetail(val))
   }
@@ -177,7 +183,7 @@ function FactoryDetail(props: factoryDetailProps) {
                   onPress: onPressCardHydro,
                 }}
                 isShowSelectButton={true}
-                options={options}
+                options={HYDROLOGY_PERIOD_OPTIONS}
                 onChangeOption={onChange}
                 selectedValue={selectedOptionsValueFactDetail}
               >

@@ -17,25 +17,29 @@ const FactoryProfitDetailScreen: React.FC = () => {
     companyName?: string | string[]
   }>()
   const dispatch = useAppDispatch()
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false)
   const { countRefesh } = useAppSelector((state: any) => state.revenueProfitSlice)
   const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName
   const onRefresh = async () => {
-    setRefreshing(true);
+    setRefreshing(true)
     setTimeout(() => {
-      setRefreshing(false);
-      dispatch(setCountRefesh({
-        countRefesh: countRefesh + 1
-      }))
-    }, 80);
-  };
+      setRefreshing(false)
+      dispatch(
+        setCountRefesh({
+          countRefesh: countRefesh + 1,
+        }),
+      )
+    }, 80)
+  }
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <TwinkleStars
+        background={isDark ? Colors.background : Colors.lightBackground}
+        particleDensity={50}
+        particleColor={Colors.textColor}
+        minSize={0.5}
+        maxSize={2}
+      >
         <View style={styles.header}>
           <GradientText
             text={'Chi tiết Lợi nhuận'}
@@ -44,7 +48,7 @@ const FactoryProfitDetailScreen: React.FC = () => {
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={styles.locationText}>{companyTitle ?? 'Công ty thủy điện Buôn Kuốp'}</Text>
+            <Text style={[styles.locationText, !isDark && { color: '#475569', opacity: 0.6 }]}>{companyTitle ?? 'Công ty thủy điện Buôn Kuốp'}</Text>
           </View>
         </View>
         <FactoryProfitDetail />
@@ -76,4 +80,3 @@ const styles = StyleSheet.create({
     fontSize: px.m(14),
   },
 })
-
