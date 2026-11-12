@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { Ionicons } from '@expo/vector-icons'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { createThemePalette } from '@/core/constants/themePalette'
+import DateRangeCalendar from './DateRangeCalendar'
 
 export interface DateRange {
   from: any
@@ -57,7 +58,7 @@ export default function DateRangePicker({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const palette = createThemePalette(isDark)
-  const styles = createStyles(isDark)
+  const styles = useMemo(() => createStyles(isDark), [isDark])
   const resolvedIconColor = iconColor ?? palette.icon
   const resolvedTextColor = textColor ?? palette.textPrimary
   const resolvedLabelColor = labelColor ?? palette.textSecondary
@@ -164,6 +165,8 @@ export default function DateRangePicker({
       <View style={{ flex: 1 }}>
         <Text style={[styles.label, { color: resolvedLabelColor }, labelStyle]}>{label}</Text>
         <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={`${label}: ${formatDate(date)}`}
           style={[
             styles.input,
             { borderColor: resolvedBorderColor, backgroundColor: resolvedBackgroundColor },
@@ -187,6 +190,7 @@ export default function DateRangePicker({
       resolvedLabelColor,
       labelStyle,
       resolvedTextColor,
+      styles,
     ],
   )
 
@@ -268,8 +272,19 @@ export default function DateRangePicker({
       <View style={{ width: 20 }} />
       {renderInput(labelTo, value.to, 'to')}
 
-      {mode === 'modal' && !!focused && (
-        <Modal visible transparent animationType="fade">
+      {mode === 'modal' && !!focused && chooseMode === 'day' && (
+        <DateRangeCalendar
+          value={value}
+          onChange={onChange}
+          onClose={() => setFocused(null)}
+          disableFutureDates={isCheckDisableDate}
+          labelFrom={labelFrom}
+          labelTo={labelTo}
+        />
+      )}
+
+      {mode === 'modal' && !!focused && chooseMode !== 'day' && (
+        <Modal visible transparent animationType="fade" onRequestClose={() => setFocused(null)}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               {picker}
