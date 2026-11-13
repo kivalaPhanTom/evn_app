@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, ViewStyle } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, ViewStyle, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import createStyles, { TAB_WIDTH } from './ScrollableTabBar.styles'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
@@ -19,45 +19,38 @@ interface Props {
 export default function ScrollableTabBar({ tabs, activeTab, onTabChange, containerStyle }: Props) {
   const scrollViewRef = useRef<ScrollView>(null)
   const isScrollingRef = useRef(false)
-  const lastActiveIndexRef = useRef<number>(-1)
+  const activeIndex = tabs.findIndex((tab) => tab.id === activeTab)
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const styles = createStyles(isDark)
 
   useEffect(() => {
-    if (!isScrollingRef.current) {
-      const activeIndex = tabs.findIndex((tab) => tab.id === activeTab)
-      if (activeIndex !== -1 && scrollViewRef.current) {
-        lastActiveIndexRef.current = activeIndex
-        scrollViewRef.current.scrollTo({
-          x: activeIndex * TAB_WIDTH,
-          animated: true,
-        })
-      }
+    // Data responses can recreate tabs without changing the selected plant.
+    if (!isScrollingRef.current && activeIndex !== -1) {
+      scrollViewRef.current?.scrollTo({
+        x: activeIndex * TAB_WIDTH,
+        animated: true,
+      })
     }
-  }, [activeTab, tabs])
+  }, [activeIndex])
 
-  const handleMomentumScrollEnd = (event: any) => {
+  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    // scrollTo also emits momentum events; only a user swipe may change the selection.
+    if (!isScrollingRef.current) return
+    isScrollingRef.current = false
     const scrollX = event.nativeEvent.contentOffset.x
     const currentIndex = Math.round(scrollX / TAB_WIDTH)
 
     if (currentIndex >= 0 && currentIndex < tabs.length) {
       const newActiveTab = tabs[currentIndex].id
       if (newActiveTab !== activeTab) {
-        lastActiveIndexRef.current = currentIndex
         onTabChange(newActiveTab)
       }
     }
-    isScrollingRef.current = false
   }
 
   const handleScrollBeginDrag = () => {
     isScrollingRef.current = true
-  }
-
-  const handleScroll = (event: any) => {
-    // Chỉ track vị trí scroll, không cập nhật activeTab ngay
-    // Để tránh bỏ qua tab khi scroll nhanh
   }
 
   return (
@@ -72,10 +65,8 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
           decelerationRate="fast"
           contentContainerStyle={[styles.scrollContent, { width: TAB_WIDTH * tabs.length }]}
           style={styles.scrollView}
-          onScroll={handleScroll}
           onScrollBeginDrag={handleScrollBeginDrag}
           onMomentumScrollEnd={handleMomentumScrollEnd}
-          scrollEventThrottle={16}
           bounces={false}
           scrollEnabled={true}
         >
@@ -95,7 +86,10 @@ export default function ScrollableTabBar({ tabs, activeTab, onTabChange, contain
                   isFirst && styles.tabFirst,
                   isLast && styles.tabLast,
                 ]}
-                onPress={() => onTabChange(tab.id)}
+                onPress={() => {
+                  isScrollingRef.current = false
+                  onTabChange(tab.id)
+                }}
                 activeOpacity={0.8}
               >
                 <View

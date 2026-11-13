@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import Svg, { Circle } from 'react-native-svg'
 import dayjs, { Dayjs } from 'dayjs'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import type { DateRange } from './DateRangePicker.component'
@@ -81,6 +82,7 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
           const inRange = !!from && !!to && !date.isBefore(from, 'day') && !date.isAfter(to, 'day')
           const disabled = disableFutureDates && date.isAfter(today, 'day')
           const selected = isStart || isEnd
+          const isToday = date.isSame(today, 'day')
           return (
             <TouchableOpacity
               key={index}
@@ -94,9 +96,24 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
               {inRange && !from?.isSame(to, 'day') && (
                 <View style={[styles.rangeBand, isStart && styles.rangeStart, isEnd && styles.rangeEnd]} />
               )}
-              <View style={[styles.dayCircle, date.isSame(today, 'day') && !selected && styles.today]}>
-                {/* Mount the fill separately so Android preserves its round shape when selection changes. */}
-                {selected && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, styles.selected]} />}
+              <View style={styles.dayCircle}>
+                {/* Keep one indicator mounted when today's outline changes to a selected fill. */}
+                <Svg
+                  width={DAY_SIZE}
+                  height={DAY_SIZE}
+                  style={StyleSheet.absoluteFillObject}
+                  pointerEvents="none"
+                  accessible={false}
+                >
+                  <Circle
+                    cx={DAY_SIZE / 2}
+                    cy={DAY_SIZE / 2}
+                    r={selected ? DAY_SIZE / 2 : (DAY_SIZE - 1) / 2}
+                    fill={selected ? '#387FD2' : 'none'}
+                    stroke={isToday && !selected ? (isDark ? '#28CEE0' : '#2F7BEE') : 'none'}
+                    strokeWidth={1}
+                  />
+                </Svg>
                 <Text style={[styles.dayText, disabled && styles.disabledText, selected && styles.selectedText]}>
                   {day}
                 </Text>
@@ -267,8 +284,6 @@ const createStyles = (isDark: boolean) => {
     dayCircle: {
       width: DAY_SIZE,
       height: DAY_SIZE,
-      borderRadius: DAY_SIZE / 2,
-      overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -276,8 +291,6 @@ const createStyles = (isDark: boolean) => {
     rangeBand: { position: 'absolute', left: 0, right: 0, height: DAY_SIZE, backgroundColor: isDark ? '#43658E' : '#C8F4FC' },
     rangeStart: { left: '50%' },
     rangeEnd: { right: '50%' },
-    today: { borderWidth: 1, borderColor: isDark ? '#28CEE0' : accent },
-    selected: { backgroundColor: '#387FD2', borderRadius: DAY_SIZE / 2 },
     selectedText: { color: '#FFFFFF' },
     disabledText: { color: isDark ? '#737D99' : '#B8BEC9' },
     yearList: { ...StyleSheet.absoluteFillObject, backgroundColor: background },
