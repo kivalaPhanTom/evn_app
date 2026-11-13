@@ -15,6 +15,7 @@ interface Props {
 }
 
 const DAY_HEIGHT = 42
+const DAY_SIZE = 36
 const MONTH_HEIGHT = 48 + DAY_HEIGHT * 6
 const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
 
@@ -93,7 +94,9 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
               {inRange && !from?.isSame(to, 'day') && (
                 <View style={[styles.rangeBand, isStart && styles.rangeStart, isEnd && styles.rangeEnd]} />
               )}
-              <View style={[styles.dayCircle, date.isSame(today, 'day') && styles.today, selected && styles.selected]}>
+              <View style={[styles.dayCircle, date.isSame(today, 'day') && !selected && styles.today]}>
+                {/* Mount the fill separately so Android preserves its round shape when selection changes. */}
+                {selected && <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, styles.selected]} />}
                 <Text style={[styles.dayText, disabled && styles.disabledText, selected && styles.selectedText]}>
                   {day}
                 </Text>
@@ -261,13 +264,20 @@ const createStyles = (isDark: boolean) => {
     },
     days: { flexDirection: 'row', flexWrap: 'wrap' },
     dayCell: { width: '14.285714%', height: DAY_HEIGHT, alignItems: 'center', justifyContent: 'center' },
-    dayCircle: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+    dayCircle: {
+      width: DAY_SIZE,
+      height: DAY_SIZE,
+      borderRadius: DAY_SIZE / 2,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     dayText: { color: text, fontSize: 14 },
-    rangeBand: { position: 'absolute', left: 0, right: 0, height: 36, backgroundColor: isDark ? '#43658E' : '#C8F4FC' },
+    rangeBand: { position: 'absolute', left: 0, right: 0, height: DAY_SIZE, backgroundColor: isDark ? '#43658E' : '#C8F4FC' },
     rangeStart: { left: '50%' },
     rangeEnd: { right: '50%' },
     today: { borderWidth: 1, borderColor: isDark ? '#28CEE0' : accent },
-    selected: { backgroundColor: '#387FD2', borderWidth: 0 },
+    selected: { backgroundColor: '#387FD2', borderRadius: DAY_SIZE / 2 },
     selectedText: { color: '#FFFFFF' },
     disabledText: { color: isDark ? '#737D99' : '#B8BEC9' },
     yearList: { ...StyleSheet.absoluteFillObject, backgroundColor: background },
