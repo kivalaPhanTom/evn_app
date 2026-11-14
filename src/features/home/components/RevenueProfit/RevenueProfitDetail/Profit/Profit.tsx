@@ -66,13 +66,13 @@ function ProfitDetail() {
         items: [
           {
             value,
-            frontColor: value < 0 ? Colors.red : Colors.green,
+            frontColor: value < 0 ? (isDark ? Colors.red : '#ef4444') : isDark ? Colors.green : '#22c55e',
             showValuesOnTop: true,
             showPrefix: value > 0,
           },
         ],
       })),
-    [values],
+    [values, isDark],
   )
 
   useEffect(() => {
@@ -156,21 +156,17 @@ function ProfitDetail() {
             <Text style={[styles.revenueTitle, { color: cardLabelColor, opacity: isDark ? 1 : 0.5 }]}>
               {`Lợi nhuận ngày ${formatDayWithMonth(endDate)}`}
             </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: moreLinkColor, fontSize: px.f(12), fontWeight: '600' }}>Thêm chi tiết</Text>
-              <Ionicons name="chevron-forward" size={px.f(12)} color={moreLinkColor} style={{ marginLeft: px.h(2) }} />
-            </View>
           </View>
-          <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(48) }]}>
+          <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(70) }]}>
             {profit.Today.Value}{' '}
-            <Text style={[styles.cardUnit, { color: cardUnitColor, opacity: isDark ? 1 : 0.6, fontSize: px.f(20) }]}>
+            <Text style={[styles.cardUnit, { color: cardUnitColor, opacity: isDark ? 1 : 0.6 }]}>
               {profit.Today.Unit}
             </Text>
           </Text>
           <MetricDiff
-            style={{ fontSize: px.f(13) }}
+            style={{ fontSize: px.f(20) }}
             withBackground
-            unit="%"
+            unit={unit}
             compareTo={0}
             diff={profit.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
@@ -193,10 +189,9 @@ function ProfitDetail() {
             style={[styles.revenueCard, { borderColor: weekBorderColor }]}
           >
             <View>
-              <Text style={[styles.cardTitle, { color: weekTitleColor, fontSize: px.f(11) }]}>{`Lũy kế tuần`}</Text>
-              <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(22) }]}>
-                {profit.Cumulative.Week.Value}{' '}
-                <Text style={[styles.cardUnit, { fontSize: px.f(12) }]}>{profit.Cumulative.Week.Unit}</Text>
+              <Text style={[styles.cardTitle, { color: weekTitleColor }]}>{`Lũy kế tuần`}</Text>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
+                {profit.Cumulative.Week.Value} <Text style={styles.cardUnit}>{profit.Cumulative.Week.Unit}</Text>
               </Text>
             </View>
             <View>
@@ -225,12 +220,11 @@ function ProfitDetail() {
             style={[styles.revenueCard, { borderColor: monthBorderColor }]}
           >
             <View>
-              <Text style={[styles.cardTitle, { color: monthTitleColor, fontSize: px.f(11) }]}>
+              <Text style={[styles.cardTitle, { color: monthTitleColor }]}>
                 {`Lũy kế tháng ${profit.Cumulative.Month.month?.split('-')[1] ?? ''}`}
               </Text>
-              <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(22) }]}>
-                {profit.Cumulative.Month.Value}{' '}
-                <Text style={[styles.cardUnit, { fontSize: px.f(12) }]}>{profit.Cumulative.Month.Unit}</Text>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
+                {profit.Cumulative.Month.Value} <Text style={styles.cardUnit}>{profit.Cumulative.Month.Unit}</Text>
               </Text>
             </View>
             <View>
@@ -254,11 +248,7 @@ function ProfitDetail() {
             onResponderTerminationRequest={() => false}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text
-                style={[styles.profitByDayTitle, { color: chartTitleColor, fontSize: px.f(15), fontWeight: '600' }]}
-              >
-                Lãi/Lỗ theo ngày
-              </Text>
+              <Text style={[styles.profitByDayTitle, { color: chartTitleColor }]}>Lãi/Lỗ theo ngày</Text>
               <View
                 style={{
                   paddingHorizontal: px.h(8),
@@ -267,7 +257,7 @@ function ProfitDetail() {
                   borderRadius: px.h(8),
                 }}
               >
-                <Text style={{ color: dateTextColor, fontSize: px.f(11) }}>
+                <Text style={{ color: dateTextColor, fontSize: px.f(16) }}>
                   {fromDay} - {toDay}/{toMonth}
                 </Text>
               </View>
@@ -285,7 +275,7 @@ function ProfitDetail() {
                   const color = isToday ? axisLabelTodayColor : isNegative ? axisLabelNegativeColor : axisLabelColor
                   return (
                     <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
-                      <Text style={[styles.axisLabel, { color, fontSize: px.f(11) }]}>{label}</Text>
+                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
                     </View>
                   )
                 })}
@@ -300,7 +290,7 @@ function ProfitDetail() {
                     end={{ x: 0, y: 1 }}
                     style={[styles.legendSwatch, { borderRadius: 3 }]}
                   />
-                  <Text style={[styles.legendText, { color: legendTextColor, fontSize: px.f(12) }]}>Lãi</Text>
+                  <Text style={[styles.legendText, { color: legendTextColor }]}>Lãi</Text>
                 </View>
                 <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
                   <LinearGradient
@@ -309,7 +299,7 @@ function ProfitDetail() {
                     end={{ x: 0, y: 1 }}
                     style={[styles.legendSwatch, { borderRadius: 3 }]}
                   />
-                  <Text style={[styles.legendText, { color: legendTextColor, fontSize: px.f(12) }]}>Lỗ</Text>
+                  <Text style={[styles.legendText, { color: legendTextColor }]}>Lỗ</Text>
                 </View>
               </View>
 
@@ -326,7 +316,7 @@ function ProfitDetail() {
                       color={lossIndicatorTextColor}
                       style={{ marginRight: px.h(8) }}
                     />
-                    <Text style={[styles.warningText, { color: lossIndicatorTextColor, fontSize: px.f(12) }]}>
+                    <Text style={[styles.warningText, { color: lossIndicatorTextColor }]}>
                       {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
                     </Text>
                   </View>
@@ -369,7 +359,7 @@ function ProfitDetail() {
                           {plant.PlantName}
                         </Text>
                         <Text style={{ color: Colors.green, fontSize: px.f(30) }}>
-                          <Ionicons name="analytics-outline" size={px.f(24)} color={Colors.green} />
+                          <Ionicons name="analytics-outline" size={px.f(24)} color={isDark ? '#22C55E' : '#00A73D'} />
                         </Text>
                       </View>
                     </View>
@@ -378,7 +368,14 @@ function ProfitDetail() {
                     <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(24) }]}>
                       {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
                     </Text>
-                    <MetricDiff unit={unit} diff={plant.ChangeValue} />
+                    <MetricDiff
+                      withBackground
+                      unit="%"
+                      compareTo={0}
+                      diff={plant.ChangeValue}
+                      bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                      textColor={isDark ? '#22C55E' : '#00A73D'}
+                    />
                   </View>
                 </TouchableOpacity>
               )
@@ -428,7 +425,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   axisLabel: {
-    fontSize: px.f(11),
+    fontSize: px.f(14),
   },
   legendRow: {
     flexDirection: 'row',
@@ -440,12 +437,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   legendSwatch: {
-    width: px.h(12),
-    height: px.h(12),
+    width: px.h(16),
+    height: px.h(16),
+    borderRadius: 4,
     marginRight: px.h(8),
   },
   legendText: {
-    fontSize: px.f(12),
+    fontSize: px.f(16),
   },
   warningCard: {
     flexDirection: 'row',
@@ -456,17 +454,17 @@ const styles = StyleSheet.create({
     marginTop: px.v(8),
   },
   warningText: {
-    fontSize: px.f(12),
+    fontSize: px.f(16),
   },
   cardTitle: {
-    fontSize: px.f(11),
+    fontSize: px.f(16),
     textTransform: 'uppercase',
   },
   profitByDayTitle: {
-    fontSize: px.f(15),
+    fontSize: px.f(20),
   },
   revenueTitle: {
-    fontSize: px.f(13),
+    fontSize: px(20),
     textTransform: 'uppercase',
   },
   revenueCard: {
@@ -480,12 +478,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   cardValue: {
-    fontSize: px.f(22),
+    fontSize: 24,
     fontWeight: '700',
     marginBottom: px.v(6),
   },
   cardUnit: {
-    fontSize: px.f(12),
+    fontSize: 16,
     fontWeight: '300',
   },
 })

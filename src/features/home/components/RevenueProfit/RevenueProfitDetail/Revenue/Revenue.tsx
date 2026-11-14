@@ -184,7 +184,7 @@ function RevenueDetail() {
                   borderRadius: px.h(8),
                 }}
               >
-                <Text style={{ color: dateTextColor, fontSize: px.f(11) }}>
+                <Text style={{ color: dateTextColor, fontSize: px.f(16) }}>
                   {fromDay} - {toDay}/{toMonth}
                 </Text>
               </View>
@@ -266,7 +266,7 @@ function RevenueDetail() {
                             {plant.PlantName}
                           </Text>
                           <Text style={{ color: Colors.green, fontSize: px.f(30) }}>
-                            <Ionicons name="analytics-outline" size={px.f(24)} color={Colors.green} />
+                            <Ionicons name="analytics-outline" size={px.f(24)} color={isDark ? '#22C55E' : '#00A73D'} />
                           </Text>
                         </View>
                       </View>
@@ -275,7 +275,14 @@ function RevenueDetail() {
                       <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(24) }]}>
                         {plant.Value} <Text style={[styles.cardUnit, { fontSize: px.f(20) }]}>{plant.Unit}</Text>
                       </Text>
-                      <MetricDiff unit={unit} diff={plant.ChangeValue} />
+                      <MetricDiff
+                        withBackground
+                        unit="%"
+                        compareTo={0}
+                        diff={plant.ChangeValue}
+                        bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                        textColor={isDark ? '#22C55E' : '#00A73D'}
+                      />
                     </View>
                   </View>
                 )
@@ -357,8 +364,7 @@ const styles = StyleSheet.create({
   },
   profitByDayTitle: {
     color: '#fff',
-    fontSize: px.f(15),
-    fontWeight: '600',
+    fontSize: px.f(20),
   },
   revenueTitle: {
     color: '#8b92a0',

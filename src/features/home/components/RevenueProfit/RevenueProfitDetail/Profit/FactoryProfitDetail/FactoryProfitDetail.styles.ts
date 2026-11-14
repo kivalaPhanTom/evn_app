@@ -103,14 +103,14 @@ export const styles = (isDark: boolean) =>
       fontWeight: '600',
       textTransform: 'uppercase',
       textAlign: 'left',
-      color: isDark ? '#FBBF24' : '#B45309',
+      color: isDark ? '#FBBF24' : '#b28800',
     },
     cardValueLeft: {
       fontSize: px.f(40),
       fontWeight: '700',
       lineHeight: px.f(48),
       textAlign: 'left',
-      color: isDark ? '#FFFFFF' : '#1E293B',
+      color: isDark ? '#FFFFFF' : '#475569',
     },
     cardUnitLeft: {
       fontSize: px.f(14),
@@ -122,7 +122,7 @@ export const styles = (isDark: boolean) =>
       fontSize: px.f(24),
       fontWeight: 'bold',
       marginBottom: px.v(12),
-      color: isDark ? '#fff' : '#1E293B',
+      color: isDark ? '#fff' : '#475569',
     },
     selectContainer: {
       width: '100%',
@@ -197,7 +197,7 @@ export const styles = (isDark: boolean) =>
     },
     axisDivider: {
       height: StyleSheet.hairlineWidth,
-      backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+      backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
       marginVertical: px.v(20),
     },
     axisLabelsRow: {

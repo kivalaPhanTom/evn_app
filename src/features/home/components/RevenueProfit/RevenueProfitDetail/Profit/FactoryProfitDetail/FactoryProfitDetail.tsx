@@ -22,9 +22,11 @@ function FactoryProfitDetail() {
   const dispatch = useAppDispatch()
   const isDark = useAppTheme() === 'dark'
   const styles = makeStyles(isDark)
-  const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useAppSelector((state: RootState) => state.revenueProfitSlice)
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useAppSelector(
+    (state: RootState) => state.revenueProfitSlice,
+  )
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
   const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -77,20 +79,20 @@ function FactoryProfitDetail() {
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
   const heightLine = 1
-  const colorLine = isDark ? '#7a8596' : '#94A3B8'
+  const colorLine = isDark ? '#7a8596' : '#FFFFFF'
   const lineStyle = { marginVertical: 10 }
 
   // Check if profit is negative (loss)
   const isLoss = profit.Today.Value < 0
   const cardColors = isLoss
-    ? (isDark
-        ? (['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'] as const)
-        : (['rgba(254, 215, 170, 0.6)', 'rgba(254, 226, 226, 0.6)'] as const))
-    : (isDark
-        ? (['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'] as const)
-        : (['rgba(187, 247, 208, 0.6)', 'rgba(167, 243, 208, 0.6)'] as const))
-  const labelColor = isLoss ? (isDark ? '#F97316' : '#C2410C') : (isDark ? '#22C55E' : '#15803D')
-  const valueColor = isLoss ? (isDark ? '#EF4444' : '#B91C1C') : (isDark ? '#10B981' : '#047857')
+    ? isDark
+      ? (['rgba(249, 115, 22, 0.2)', 'rgba(239, 68, 68, 0.1)'] as const)
+      : (['rgba(254, 215, 170, 0.6)', 'rgba(254, 226, 226, 0.6)'] as const)
+    : isDark
+      ? (['rgba(34, 197, 94, 0.2)', 'rgba(16, 185, 129, 0.1)'] as const)
+      : (['rgba(74, 222, 128, 0.2)', 'rgba(34, 197, 94, 0.1)'] as const)
+  const labelColor = isLoss ? (isDark ? '#F97316' : '#C2410C') : isDark ? '#22C55E' : '#00a73d'
+  const valueColor = isLoss ? (isDark ? '#EF4444' : '#B91C1C') : isDark ? '#10B981' : '#00a73d'
 
   // Plant colors mapping
   const plantColors = isDark ? ['#A78BFA', '#4ADE80', '#22D3EE'] : ['#7C3AED', '#16A34A', '#0891B2']
@@ -105,7 +107,7 @@ function FactoryProfitDetail() {
     items: [
       {
         value,
-        frontColor: value < 0 ? Colors.red : Colors.green,
+        frontColor: value < 0 ? (isDark ? Colors.red : '#ef4444') : isDark ? Colors.green : '#22c55e',
         showValuesOnTop: true,
         showPrefix: value > 0,
       },
@@ -174,7 +176,11 @@ function FactoryProfitDetail() {
       {/* Card - Cumulative Month (Above) */}
       <View style={styles.cardsRow}>
         <GradientCard
-          colors={isDark ? ['rgba(245, 158, 11, 0.2)', 'rgba(234, 179, 8, 0.1)'] : ['rgba(254, 240, 138, 0.6)', 'rgba(253, 224, 71, 0.6)']}
+          colors={
+            isDark
+              ? ['rgba(245, 158, 11, 0.2)', 'rgba(234, 179, 8, 0.1)']
+              : ['rgba(251, 191, 36, 0.12)', 'rgba(251, 191, 36, 0.06)']
+          }
           locations={[0, 1]}
           angle={132.12}
           style={[styles.card, styles.fullWidthCard]}
@@ -243,7 +249,14 @@ function FactoryProfitDetail() {
             </View>
           </TouchableOpacity>
         </Modal>
-        <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" noRangeConstraint chooseMode="day" />
+        <DateRangePicker
+          format="DD/MM/YYYY"
+          value={range}
+          onChange={onChangeDateRage}
+          mode="modal"
+          noRangeConstraint
+          chooseMode="day"
+        />
         <View>
           <View style={[styles.chartWrapper]}>
             <BarChart data={rawBarGroups} rounded noOfSection={3} scrollToEnd />
@@ -265,11 +278,21 @@ function FactoryProfitDetail() {
             {/* Legend */}
             <View style={styles.legendRow}>
               <View style={[styles.legendItem]}>
-                <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
+                <LinearGradient
+                  colors={isDark ? [Colors.green, Colors.green] : ['#4ade80', '#22c55e']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={[styles.legendSwatch, { borderRadius: 3 }]}
+                />
                 <Text style={styles.legendText}>Lãi</Text>
               </View>
               <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
-                <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
+                <LinearGradient
+                  colors={isDark ? [Colors.red, Colors.red] : ['#f87171', '#ef4444']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={[styles.legendSwatch, { borderRadius: 3 }]}
+                />
                 <Text style={styles.legendText}>Lỗ</Text>
               </View>
             </View>

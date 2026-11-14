@@ -24,8 +24,8 @@ interface ProfitDetailProps {
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
   const dispatch = useAppDispatch()
   const { dailyAndCumulativeData, profitByPeriod } = useAppSelector((state: RootState) => state.revenueProfitSlice)
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
   const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
   const [range, setRange] = useState({
     from: dayjs().subtract(10, 'day'),
@@ -70,24 +70,26 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
 
   const profitData = profitByPeriod?.Data || []
   const values = useMemo<{ label: string; value: number }[]>(
-    () => profitData?.map((item: { Value: number; Date: string }) => ({
-      label: item.Date.substring(0, 5),
-      value: Number(item.Value),
-    })),
+    () =>
+      profitData?.map((item: { Value: number; Date: string }) => ({
+        label: item.Date.substring(0, 5),
+        value: Number(item.Value),
+      })),
     [profitData],
   )
   const rawBarGroups = useMemo<BarGroup[]>(
-    () => values.map(({ label, value }: { label: string; value: number }) => ({
-      label,
-      items: [
-        {
-          value,
-          frontColor: value < 0 ? Colors.red : Colors.green,
-          showValuesOnTop: true,
-          showPrefix: value > 0,
-        },
-      ],
-    })),
+    () =>
+      values.map(({ label, value }: { label: string; value: number }) => ({
+        label,
+        items: [
+          {
+            value,
+            frontColor: value < 0 ? Colors.red : Colors.green,
+            showValuesOnTop: true,
+            showPrefix: value > 0,
+          },
+        ],
+      })),
     [values],
   )
 
