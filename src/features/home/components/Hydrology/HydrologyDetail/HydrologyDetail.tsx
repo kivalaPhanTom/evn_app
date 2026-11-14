@@ -48,10 +48,14 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   const formattedOneYearAgo = new Date(
     new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
   ).toLocaleDateString('vi-VN')
-  const tabs = plants.filter((plant) => plant.hasHydrology).map((plant) => ({
-    id: plant.symbol,
-    label: plant.plantName,
-  }))
+  const tabs = useMemo(
+    () =>
+      plants.filter((plant) => plant.hasHydrology).map((plant) => ({
+        id: plant.symbol,
+        label: plant.plantName,
+      })),
+    [plants],
+  )
   const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : tabs[0]?.id ?? ''
 
   const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {}, shallowEqual)
@@ -186,7 +190,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
         { label: 'Thấp nhất', value: upstreamData?.minValue, color: isDark ? dark.text : light.text },
       ],
     }),
-    [upstreamData, filterByTime.currentFilterTab, currentHour, isDark],
+    [upstreamData, activeTab, filterByTime.currentFilterTab, currentHour, isDark],
   )
 
   const convertedInflowData = useMemo(
