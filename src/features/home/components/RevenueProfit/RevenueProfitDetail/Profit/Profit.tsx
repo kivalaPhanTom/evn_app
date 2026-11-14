@@ -156,6 +156,10 @@ function ProfitDetail() {
             <Text style={[styles.revenueTitle, { color: cardLabelColor, opacity: isDark ? 1 : 0.5 }]}>
               {`Lợi nhuận ngày ${formatDayWithMonth(endDate)}`}
             </Text>
+            <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+              <Text style={[styles.actionButtonText, !isDark && { color: '#4E8DF9' }]}>Chi tiết</Text>
+              <Text style={[styles.actionButtonIcon, !isDark && { color: '#4E8DF9' }]}>{'>'}</Text>
+            </TouchableOpacity>
           </View>
           <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(70) }]}>
             {profit.Today.Value}{' '}
@@ -485,6 +489,20 @@ const styles = StyleSheet.create({
   cardUnit: {
     fontSize: 16,
     fontWeight: '300',
+  },
+  actionButton: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionButtonText: {
+    color: '#9CA3AF',
+    fontSize: 13,
+  },
+  actionButtonIcon: {
+    color: '#9CA3AF',
+    fontSize: 13,
   },
 })
 

@@ -259,7 +259,7 @@ function FactoryProfitDetail() {
         />
         <View>
           <View style={[styles.chartWrapper]}>
-            <BarChart data={rawBarGroups} rounded noOfSection={3} scrollToEnd />
+            <BarChart topLabelOffset={0} data={rawBarGroups} rounded noOfSection={3} scrollToEnd />
           </View>
           <View style={styles.axisContainer}>
             {/* <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>

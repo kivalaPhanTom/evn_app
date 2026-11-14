@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { px } from '@/core/utils/scale'
 import { Stack, usePathname, useRouter } from 'expo-router'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
@@ -113,9 +113,15 @@ function RevenueDetail() {
     <SectionContainer title="Doanh thu">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text
-            style={[styles.revenueTitle, { color: revenueTitleColor }]}
-          >{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text
+              style={[styles.revenueTitle, { color: revenueTitleColor }]}
+            >{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
+            <TouchableOpacity onPress={onPressCard} style={styles.actionButton}>
+              <Text style={[styles.actionButtonText, !isDark && { color: '#4E8DF9' }]}>Chi tiết</Text>
+              <Text style={[styles.actionButtonIcon, !isDark && { color: '#4E8DF9' }]}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(70) }]}>
             {revenue.Today.Value} <Text style={styles.cardUnit}>{revenue.Today.Unit}</Text>
           </Text>
