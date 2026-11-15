@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useLayoutEffect, useRef } from 'react'
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ViewStyle, TextStyle } from 'react-native'
 import DateTimePicker, { CalendarComponents, useDefaultStyles } from 'react-native-ui-datepicker'
 import dayjs from 'dayjs'
@@ -33,47 +33,15 @@ interface Props {
   noRangeConstraint?: boolean
 }
 
-export default function DateRangePicker({
-  value,
-  onChange,
-  mode = 'modal',
-  chooseMode = 'day',
-  labelFrom = 'TỪ NGÀY',
-  labelTo = 'ĐẾN NGÀY',
-  iconColor,
-  textColor,
-  labelColor,
-  borderColor,
-  backgroundColor,
-  format = 'DD/MM/YYYY',
-  containerStyle,
-  inputStyle,
-  labelStyle,
-  allowToBeforeFrom = false,
-  isCheckDisableDate = true,
-  noRangeConstraint = false,
-}: Props) {
-  const [focused, setFocused] = useState<'from' | 'to' | null>(null)
-  const defaultStyles = useDefaultStyles()
-  const scheme = useAppTheme()
-  const isDark = scheme === 'dark'
-  const palette = createThemePalette(isDark)
-  const styles = useMemo(() => createStyles(isDark), [isDark])
-  const resolvedIconColor = iconColor ?? palette.icon
-  const resolvedTextColor = textColor ?? palette.textPrimary
-  const resolvedLabelColor = labelColor ?? palette.textSecondary
-  const resolvedBorderColor = borderColor ?? palette.border
-  const resolvedBackgroundColor = backgroundColor ?? palette.inputBg
+type SingleDatePickerProps = Extract<React.ComponentProps<typeof DateTimePicker>, { mode: 'single' }> & {
+  chooseMode: NonNullable<Props['chooseMode']>
+}
 
-  // const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
-  const formatDate = useCallback(
-    (d: any) => {
-      if (!d) return ''
-      const day = dayjs(d)
-      return day.isValid() ? day.format(format) : ''
-    },
-    [format],
-  )
+// The library builds its default style objects only when this picker is visible.
+function SingleDatePicker({ chooseMode, ...props }: SingleDatePickerProps) {
+  const defaultStyles = useDefaultStyles()
+  const isDark = useAppTheme() === 'dark'
+  const palette = createThemePalette(isDark)
   const components: CalendarComponents = useMemo(
     () => ({
       IconNext: chooseMode === 'year' ? null : <Ionicons name="chevron-forward" size={20} color={palette.iconStrong} />,
@@ -108,6 +76,57 @@ export default function DateRangePicker({
     button_prev: chooseMode === 'year' ? { display: 'none' } : {},
   }
 
+  return <DateTimePicker {...props} components={components} styles={pickerStyles} />
+}
+
+export default function DateRangePicker({
+  value,
+  onChange,
+  mode = 'modal',
+  chooseMode = 'day',
+  labelFrom = 'TỪ NGÀY',
+  labelTo = 'ĐẾN NGÀY',
+  iconColor,
+  textColor,
+  labelColor,
+  borderColor,
+  backgroundColor,
+  format = 'DD/MM/YYYY',
+  containerStyle,
+  inputStyle,
+  labelStyle,
+  allowToBeforeFrom = false,
+  isCheckDisableDate = true,
+  noRangeConstraint = false,
+}: Props) {
+  const [focused, setFocused] = useState<'from' | 'to' | null>(null)
+  const closeCalendar = useCallback(() => setFocused(null), [])
+  const onChangeRef = useRef(onChange)
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange
+  }, [onChange])
+  // Parent screens often pass inline handlers while refreshing charts or API data.
+  const changeRange = useCallback((range: DateRange) => onChangeRef.current(range), [])
+  const calendarValue = useMemo(() => ({ from: value.from, to: value.to }), [value.from, value.to])
+  const scheme = useAppTheme()
+  const isDark = scheme === 'dark'
+  const palette = createThemePalette(isDark)
+  const styles = useMemo(() => createStyles(isDark), [isDark])
+  const resolvedIconColor = iconColor ?? palette.icon
+  const resolvedTextColor = textColor ?? palette.textPrimary
+  const resolvedLabelColor = labelColor ?? palette.textSecondary
+  const resolvedBorderColor = borderColor ?? palette.border
+  const resolvedBackgroundColor = backgroundColor ?? palette.inputBg
+
+  // const formatDate = useCallback((d: any) => dayjs(d).format(format), [format])
+  const formatDate = useCallback(
+    (d: any) => {
+      if (!d) return ''
+      const day = dayjs(d)
+      return day.isValid() ? day.format(format) : ''
+    },
+    [format],
+  )
   const handleDateChange = useCallback(
     (newDate: any) => {
       const isFrom = focused === 'from'
@@ -194,77 +213,77 @@ export default function DateRangePicker({
     ],
   )
 
-  const picker = (
-    <DateTimePicker
-      mode="single"
-      date={focused === 'from' ? value.from : value.to}
-      components={components}
-      styles={pickerStyles}
-      locale="vi"
-      disabledDates={(date) => {
-        if (isCheckDisableDate) {
-          const today = dayjs()
-          if (chooseMode !== 'day') return true
-          // Không cho chọn ngày sau hôm nay
-          if (dayjs(date).isAfter(today, 'day')) return true
-          if (focused === 'to' && !allowToBeforeFrom && value.from) {
-            return dayjs(date).isBefore(dayjs(value.from), 'day')
+  const picker =
+    focused && (mode === 'inline' || chooseMode !== 'day') ? (
+      <SingleDatePicker
+        mode="single"
+        date={focused === 'from' ? value.from : value.to}
+        chooseMode={chooseMode}
+        locale="vi"
+        disabledDates={(date) => {
+          if (isCheckDisableDate) {
+            const today = dayjs()
+            if (chooseMode !== 'day') return true
+            // Không cho chọn ngày sau hôm nay
+            if (dayjs(date).isAfter(today, 'day')) return true
+            if (focused === 'to' && !allowToBeforeFrom && value.from) {
+              return dayjs(date).isBefore(dayjs(value.from), 'day')
+            }
+          } else {
+            return false
           }
-        } else {
           return false
-        }
-        return false
-      }}
-      disableMonthPicker={chooseMode === 'year'}
-      onChange={(params) => {
-        const today = dayjs()
-        const d = dayjs(params.date)
-        // Chỉ clamp về hôm nay khi isCheckDisableDate=true (cấm ngày tương lai);
-        // isCheckDisableDate=false → cho chọn ngày tương lai bình thường
-        const safeDate = isCheckDisableDate && d.isAfter(today, 'day') ? today.toDate() : d.toDate()
-        handleDateChange(safeDate)
-      }}
-      onMonthChange={(monthIndex: number) => {
-        const today = dayjs()
-        const base = focused === 'from' ? value.from : value.to
-        let newDate = dayjs(base).month(monthIndex).startOf('month')
+        }}
+        disableMonthPicker={chooseMode === 'year'}
+        onChange={(params) => {
+          const today = dayjs()
+          const d = dayjs(params.date)
+          // Chỉ clamp về hôm nay khi isCheckDisableDate=true (cấm ngày tương lai);
+          // isCheckDisableDate=false → cho chọn ngày tương lai bình thường
+          const safeDate = isCheckDisableDate && d.isAfter(today, 'day') ? today.toDate() : d.toDate()
+          handleDateChange(safeDate)
+        }}
+        onMonthChange={(monthIndex: number) => {
+          const today = dayjs()
+          const base = focused === 'from' ? value.from : value.to
+          let newDate = dayjs(base).month(monthIndex).startOf('month')
 
-        // Chi gioi han moc toi (to) khong duoc truoc moc tu (from).
-        // Mốc from phai duoc phep lui ve cac thang/nam trong qua khu.
-        if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
-          const minDate = dayjs(value.from).startOf('month')
-          if (newDate.isBefore(minDate, 'month')) {
-            newDate = minDate
+          // Chi gioi han moc toi (to) khong duoc truoc moc tu (from).
+          // Mốc from phai duoc phep lui ve cac thang/nam trong qua khu.
+          if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
+            const minDate = dayjs(value.from).startOf('month')
+            if (newDate.isBefore(minDate, 'month')) {
+              newDate = minDate
+            }
           }
-        }
-        // Chỉ giới hạn tháng hiện tại khi isCheckDisableDate=true
-        if (isCheckDisableDate && newDate.isAfter(today, 'month')) {
-          newDate = today.startOf('month')
-        }
-        handleDateChange(newDate.toDate())
-      }}
-      onYearChange={(year: number) => {
-        const today = dayjs()
-        const base = focused === 'from' ? value.from : value.to
-        let d = dayjs(base).year(year)
-        let newDate = chooseMode === 'year' ? d.startOf('year') : d.startOf('month')
-        // Khong so sanh from moi voi chinh value.from cu; chi clamp khi dang chon to.
-        if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
-          const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
+          // Chỉ giới hạn tháng hiện tại khi isCheckDisableDate=true
+          if (isCheckDisableDate && newDate.isAfter(today, 'month')) {
+            newDate = today.startOf('month')
+          }
+          handleDateChange(newDate.toDate())
+        }}
+        onYearChange={(year: number) => {
+          const today = dayjs()
+          const base = focused === 'from' ? value.from : value.to
+          let d = dayjs(base).year(year)
+          let newDate = chooseMode === 'year' ? d.startOf('year') : d.startOf('month')
+          // Khong so sanh from moi voi chinh value.from cu; chi clamp khi dang chon to.
+          if (!noRangeConstraint && focused === 'to' && !allowToBeforeFrom && value.from) {
+            const minDate = dayjs(value.from).startOf(chooseMode === 'year' ? 'year' : 'month')
 
-          if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {
-            newDate = minDate
+            if (newDate.isBefore(minDate, chooseMode === 'year' ? 'year' : 'month')) {
+              newDate = minDate
+            }
           }
-        }
-        // Chỉ giới hạn năm hiện tại khi isCheckDisableDate=true
-        const unit = chooseMode === 'year' ? 'year' : 'month'
-        if (isCheckDisableDate && newDate.isAfter(today, unit)) {
-          newDate = chooseMode === 'year' ? today.startOf('year') : today.startOf('month')
-        }
-        handleDateChange(newDate.toDate())
-      }}
-    />
-  )
+          // Chỉ giới hạn năm hiện tại khi isCheckDisableDate=true
+          const unit = chooseMode === 'year' ? 'year' : 'month'
+          if (isCheckDisableDate && newDate.isAfter(today, unit)) {
+            newDate = chooseMode === 'year' ? today.startOf('year') : today.startOf('month')
+          }
+          handleDateChange(newDate.toDate())
+        }}
+      />
+    ) : null
 
   return (
     <View style={[styles.row, containerStyle]}>
@@ -274,9 +293,9 @@ export default function DateRangePicker({
 
       {mode === 'modal' && !!focused && chooseMode === 'day' && (
         <DateRangeCalendar
-          value={value}
-          onChange={onChange}
-          onClose={() => setFocused(null)}
+          value={calendarValue}
+          onChange={changeRange}
+          onClose={closeCalendar}
           disableFutureDates={isCheckDisableDate}
           labelFrom={labelFrom}
           labelTo={labelTo}
@@ -284,7 +303,7 @@ export default function DateRangePicker({
       )}
 
       {mode === 'modal' && !!focused && chooseMode !== 'day' && (
-        <Modal visible transparent animationType="fade" onRequestClose={() => setFocused(null)}>
+        <Modal visible transparent animationType="fade" onRequestClose={closeCalendar}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               {picker}
@@ -302,7 +321,7 @@ export default function DateRangePicker({
                 >
                   <Text style={[styles.closeText, !isDark && { color: '#374151' }]}>{getQuickLabel}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setFocused(null)} style={[styles.closeBtn, { flex: 1 }]}>
+                <TouchableOpacity onPress={closeCalendar} style={[styles.closeBtn, { flex: 1 }]}>
                   <Text style={styles.closeText}>Đóng</Text>
                 </TouchableOpacity>
               </View>

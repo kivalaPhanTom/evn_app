@@ -1,8 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react'
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import React, { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { FlatList, Modal, Pressable, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import Svg, { Circle } from 'react-native-svg'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import type { DateRange } from './DateRangePicker.component'
 
@@ -17,8 +18,11 @@ interface Props {
 
 const DAY_HEIGHT = 42
 const DAY_SIZE = 36
+// Keep weekday headers, leading spaces and day buttons on the same column widths.
+const DAY_WIDTH_PERCENT = 14.285714
 const MONTH_HEIGHT = 48 + DAY_HEIGHT * 6
 const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
+const DAY_RIPPLE = { color: '#387FD230', radius: DAY_SIZE / 2 }
 
 const validDate = (value: unknown) => {
   if (!value) return null
@@ -26,7 +30,205 @@ const validDate = (value: unknown) => {
   return date.isValid() ? date.startOf('day') : null
 }
 
-export default function DateRangeCalendar({ value, onChange, onClose, disableFutureDates, labelFrom, labelTo }: Props) {
+type CalendarStyles = ReturnType<typeof createStyles>
+
+// Compare local calendar days without allocating Dayjs objects per cell.
+const dateKey = (date: dayjs.Dayjs) => date.year() * 10000 + (date.month() + 1) * 100 + date.date()
+const monthKey = (month: number) => Math.floor(month / 12) * 10000 + ((month % 12) + 1) * 100
+const getMonthLayout = (_: unknown, index: number) => ({ length: MONTH_HEIGHT, offset: MONTH_HEIGHT * index, index })
+const getYearLayout = (_: unknown, index: number) => ({ length: 52, offset: 52 * index, index })
+const itemKey = (item: number) => String(item)
+
+interface CalendarDayProps {
+  day: number
+  value: number
+  label: string
+  selected: boolean
+  disabled: boolean
+  isToday: boolean
+  styles: CalendarStyles
+  onSelect: (value: number) => void
+}
+
+const CalendarDay = memo(function CalendarDay({
+  day,
+  value,
+  label,
+  selected,
+  disabled,
+  isToday,
+  styles,
+  onSelect,
+}: CalendarDayProps) {
+  const handlePress = useCallback(() => onSelect(value), [onSelect, value])
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected, disabled }}
+      disabled={disabled}
+      onPress={handlePress}
+      style={styles.dayCell}
+      android_ripple={DAY_RIPPLE}
+    >
+      {/* Today's SVG stays mounted when its outline changes to a selected fill. */}
+      {(selected || isToday) && (
+        <Svg width={DAY_SIZE} height={DAY_SIZE} style={styles.dayIndicator} pointerEvents="none" accessible={false}>
+          <Circle
+            cx={DAY_SIZE / 2}
+            cy={DAY_SIZE / 2}
+            r={selected ? DAY_SIZE / 2 : (DAY_SIZE - 1) / 2}
+            fill={selected ? '#387FD2' : 'none'}
+            stroke={isToday && !selected ? styles.todayIndicator.color : 'none'}
+            strokeWidth={1}
+          />
+        </Svg>
+      )}
+      <Text style={[styles.dayText, disabled && styles.disabledText, selected && styles.selectedText]}>{day}</Text>
+    </Pressable>
+  )
+})
+
+interface CalendarRangeProps {
+  offset: number
+  daysInMonth: number
+  start: number
+  end: number
+  trimStart: boolean
+  trimEnd: boolean
+  styles: CalendarStyles
+}
+
+// Draw at most six bands per month. Range changes do not need to update day buttons.
+const CalendarRange = memo(function CalendarRange({
+  offset,
+  daysInMonth,
+  start,
+  end,
+  trimStart,
+  trimEnd,
+  styles,
+}: CalendarRangeProps) {
+  if (!start || !end) return null
+  const firstCell = offset + start - 1
+  const lastCell = offset + Math.min(daysInMonth, end) - 1
+  const firstRow = Math.floor(firstCell / 7)
+  const lastRow = Math.floor(lastCell / 7)
+
+  return (
+    <>
+      {Array.from({ length: lastRow - firstRow + 1 }, (_, index) => {
+        const row = firstRow + index
+        const left = row === firstRow ? (firstCell % 7) + (trimStart ? 0.5 : 0) : 0
+        const right = row === lastRow ? 6 - (lastCell % 7) + (trimEnd ? 0.5 : 0) : 0
+        return (
+          <View
+            key={row}
+            pointerEvents="none"
+            accessible={false}
+            style={[
+              styles.rangeBand,
+              {
+                top: row * DAY_HEIGHT + (DAY_HEIGHT - DAY_SIZE) / 2,
+                left: `${(left * 100) / 7}%`,
+                right: `${(right * 100) / 7}%`,
+              },
+            ]}
+          />
+        )
+      })}
+    </>
+  )
+})
+
+interface CalendarMonthProps {
+  month: number
+  startDay: number
+  endDay: number
+  rangeStart: number
+  rangeEnd: number
+  todayDay: number
+  disabledAfter: number
+  styles: CalendarStyles
+  onSelect: (value: number) => void
+}
+
+const CalendarMonth = memo(function CalendarMonth({
+  month,
+  startDay,
+  endDay,
+  rangeStart,
+  rangeEnd,
+  todayDay,
+  disabledAfter,
+  styles,
+  onSelect,
+}: CalendarMonthProps) {
+  const year = Math.floor(month / 12)
+  const monthNumber = month % 12
+  const { cells, offset, daysInMonth, leadingSpace } = useMemo(() => {
+    const offset = new Date(year, monthNumber, 1).getDay()
+    const daysInMonth = new Date(year, monthNumber + 1, 0).getDate()
+    const key = monthKey(month)
+    const cells = Array.from({ length: daysInMonth }, (_, index) => {
+      const day = index + 1
+      return {
+        day,
+        value: key + day,
+        label: `${String(day).padStart(2, '0')}/${String(monthNumber + 1).padStart(2, '0')}/${year}`,
+      }
+    })
+    // Combining fractional leading widths can wrap the last day of the first week
+    // onto the next row in Yoga, so retain only these individual empty cells.
+    const leadingSpace = Array.from({ length: offset }, (_, index) => (
+      <View
+        key={index}
+        pointerEvents="none"
+        accessible={false}
+        style={{ width: `${DAY_WIDTH_PERCENT}%`, height: DAY_HEIGHT }}
+      />
+    ))
+    return { cells, offset, daysInMonth, leadingSpace }
+  }, [month, monthNumber, year])
+  const dayButtons = useMemo(
+    () =>
+      cells.map((cell) => (
+        <CalendarDay
+          key={cell.day}
+          {...cell}
+          selected={cell.day === startDay || cell.day === endDay}
+          disabled={cell.day > disabledAfter}
+          isToday={cell.day === todayDay}
+          styles={styles}
+          onSelect={onSelect}
+        />
+      )),
+    [cells, startDay, endDay, disabledAfter, todayDay, styles, onSelect],
+  )
+
+  return (
+    <View style={styles.month}>
+      <Text style={styles.monthTitle}>
+        Tháng {monthNumber + 1} năm {year}
+      </Text>
+      <View style={styles.days}>
+        <CalendarRange
+          offset={offset}
+          daysInMonth={daysInMonth}
+          start={rangeStart}
+          end={rangeEnd}
+          trimStart={startDay > 0}
+          trimEnd={endDay > 0}
+          styles={styles}
+        />
+        {leadingSpace}
+        {dayButtons}
+      </View>
+    </View>
+  )
+})
+
+function DateRangeCalendar({ value, onChange, onClose, disableFutureDates, labelFrom, labelTo }: Props) {
   const isDark = useAppTheme() === 'dark'
   const { height } = useWindowDimensions()
   const styles = useMemo(() => createStyles(isDark), [isDark])
@@ -34,95 +236,92 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
   const [from, setFrom] = useState(() => validDate(value.from))
   const [to, setTo] = useState(() => validDate(value.to))
   const [selectingEnd, setSelectingEnd] = useState(false)
-  const initialDate = from ?? to ?? today
+  // Keep the list origin and initial offset fixed while the user selects a new range.
+  const [initialDate] = useState(() => from ?? to ?? today)
   const [visibleYear, setVisibleYear] = useState(initialDate.year())
+  const visibleYearRef = useRef(visibleYear)
   const [showYears, setShowYears] = useState(false)
-  const listRef = useRef<FlatList<Dayjs>>(null)
+  const listRef = useRef<FlatList<number>>(null)
   const firstYear = Math.min(1900, initialDate.year())
   const lastYear = disableFutureDates ? today.year() : Math.max(today.year() + 20, initialDate.year())
   const months = useMemo(
-    () => Array.from({ length: (lastYear - firstYear + 1) * 12 }, (_, index) => dayjs(new Date(firstYear, index, 1))),
+    () => Array.from({ length: (lastYear - firstYear + 1) * 12 }, (_, index) => firstYear * 12 + index),
     [firstYear, lastYear],
   )
   const initialIndex = Math.max(
     0,
     Math.min(months.length - 1, (initialDate.year() - firstYear) * 12 + initialDate.month()),
   )
-  const years = Array.from({ length: lastYear - firstYear + 1 }, (_, index) => lastYear - index)
+  const years = useMemo(
+    () => Array.from({ length: lastYear - firstYear + 1 }, (_, index) => lastYear - index),
+    [firstYear, lastYear],
+  )
   const complete = !!from && !!to && !selectingEnd
 
-  const selectDate = (date: Dayjs) => {
-    if (!selectingEnd || !from) {
-      setFrom(date)
-      setTo(null)
-      setSelectingEnd(true)
-      return
+  const selectDateRef = useRef<(key: number) => void>(() => {})
+  useLayoutEffect(() => {
+    selectDateRef.current = (key) => {
+      const date = dayjs(new Date(Math.floor(key / 10000), (Math.floor(key / 100) % 100) - 1, key % 100))
+      if (!selectingEnd || !from) {
+        setFrom(date)
+        setTo(null)
+        setSelectingEnd(true)
+        return
+      }
+      // Keep the completed range local until OK/Save confirms it.
+      const beforeStart = key < dateKey(from)
+      const start = beforeStart ? date : from
+      const end = beforeStart ? from : date
+      setFrom(start)
+      setTo(end)
+      setSelectingEnd(false)
     }
-    // The second tap completes the range, including when it precedes the first tap.
-    const start = date.isBefore(from, 'day') ? date : from
-    const end = date.isBefore(from, 'day') ? from : date
-    setFrom(start)
-    setTo(end)
-    setSelectingEnd(false)
-    onChange({ from: start.toDate(), to: end.toDate() })
-  }
-
-  const renderMonth = ({ item: month }: { item: Dayjs }) => (
-    <View style={styles.month}>
-      <Text style={styles.monthTitle}>
-        Tháng {month.month() + 1} năm {month.year()}
-      </Text>
-      <View style={styles.days}>
-        {Array.from({ length: 42 }, (_, index) => {
-          const day = index - month.day() + 1
-          if (day < 1 || day > month.daysInMonth()) return <View key={index} style={styles.dayCell} />
-          const date = month.date(day)
-          const isStart = !!from && date.isSame(from, 'day')
-          const isEnd = !!to && date.isSame(to, 'day')
-          const inRange = !!from && !!to && !date.isBefore(from, 'day') && !date.isAfter(to, 'day')
-          const disabled = disableFutureDates && date.isAfter(today, 'day')
-          const selected = isStart || isEnd
-          const isToday = date.isSame(today, 'day')
-          return (
-            <TouchableOpacity
-              key={index}
-              accessibilityRole="button"
-              accessibilityLabel={date.format('DD/MM/YYYY')}
-              accessibilityState={{ selected, disabled }}
-              disabled={disabled}
-              onPress={() => selectDate(date)}
-              style={styles.dayCell}
-            >
-              {inRange && !from?.isSame(to, 'day') && (
-                <View style={[styles.rangeBand, isStart && styles.rangeStart, isEnd && styles.rangeEnd]} />
-              )}
-              <View style={styles.dayCircle}>
-                {/* Keep one indicator mounted when today's outline changes to a selected fill. */}
-                <Svg
-                  width={DAY_SIZE}
-                  height={DAY_SIZE}
-                  style={StyleSheet.absoluteFillObject}
-                  pointerEvents="none"
-                  accessible={false}
-                >
-                  <Circle
-                    cx={DAY_SIZE / 2}
-                    cy={DAY_SIZE / 2}
-                    r={selected ? DAY_SIZE / 2 : (DAY_SIZE - 1) / 2}
-                    fill={selected ? '#387FD2' : 'none'}
-                    stroke={isToday && !selected ? (isDark ? '#28CEE0' : '#2F7BEE') : 'none'}
-                    strokeWidth={1}
-                  />
-                </Svg>
-                <Text style={[styles.dayText, disabled && styles.disabledText, selected && styles.selectedText]}>
-                  {day}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-    </View>
+  }, [from, selectingEnd])
+  const confirmSelection = useCallback(() => {
+    if (!from || !to || selectingEnd) return
+    // Commit input values at normal priority before closing the modal. Parent
+    // handlers may also dispatch chart requests, so do not defer this update.
+    onChange({ from: from.toDate(), to: to.toDate() })
+    onClose()
+  }, [from, to, selectingEnd, onChange, onClose])
+  // Stable identity lets days skip rendering without using stale selection state.
+  const selectDate = useCallback((key: number) => selectDateRef.current(key), [])
+  const fromKey = from ? dateKey(from) : 0
+  const toKey = to ? dateKey(to) : 0
+  const todayKey = dateKey(today)
+  const renderMonth = useCallback(
+    ({ item: month }: { item: number }) => {
+      const key = monthKey(month)
+      const hasRange = fromKey > 0 && toKey > fromKey && fromKey <= key + 31 && toKey >= key + 1
+      return (
+        <CalendarMonth
+          month={month}
+          startDay={fromKey > key && fromKey <= key + 31 ? fromKey - key : 0}
+          endDay={toKey > key && toKey <= key + 31 ? toKey - key : 0}
+          rangeStart={hasRange ? Math.max(1, fromKey - key) : 0}
+          rangeEnd={hasRange ? Math.min(31, toKey - key) : 0}
+          todayDay={todayKey > key && todayKey <= key + 31 ? todayKey - key : 0}
+          disabledAfter={disableFutureDates ? Math.max(0, Math.min(31, todayKey - key)) : 31}
+          styles={styles}
+          onSelect={selectDate}
+        />
+      )
+    },
+    [fromKey, toKey, todayKey, disableFutureDates, styles, selectDate],
+  )
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const index = Math.max(
+        0,
+        Math.min(months.length - 1, Math.floor(event.nativeEvent.contentOffset.y / MONTH_HEIGHT)),
+      )
+      const year = Math.floor(months[index] / 12)
+      if (year !== visibleYearRef.current) {
+        visibleYearRef.current = year
+        setVisibleYear(year)
+      }
+    },
+    [months],
   )
 
   return (
@@ -141,7 +340,7 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
             <TouchableOpacity
               accessibilityRole="button"
               disabled={!complete}
-              onPress={onClose}
+              onPress={confirmSelection}
               style={styles.toolbarButton}
             >
               <Text style={[styles.actionText, !complete && styles.disabledText]}>Lưu</Text>
@@ -181,17 +380,15 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
               ref={listRef}
               data={months}
               renderItem={renderMonth}
-              keyExtractor={(month) => month.format('YYYY-MM')}
+              keyExtractor={itemKey}
               initialScrollIndex={initialIndex}
-              getItemLayout={(_, index) => ({ length: MONTH_HEIGHT, offset: MONTH_HEIGHT * index, index })}
+              getItemLayout={getMonthLayout}
               initialNumToRender={3}
+              maxToRenderPerBatch={2}
+              updateCellsBatchingPeriod={16}
               windowSize={5}
-              extraData={{ from, to, isDark }}
               showsVerticalScrollIndicator={false}
-              onScroll={(event) => {
-                const index = Math.floor(event.nativeEvent.contentOffset.y / MONTH_HEIGHT)
-                if (months[index]) setVisibleYear(months[index].year())
-              }}
+              onScroll={handleScroll}
               scrollEventThrottle={100}
             />
             {showYears && (
@@ -199,15 +396,16 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
                 style={styles.yearList}
                 data={years}
                 numColumns={3}
-                keyExtractor={String}
+                keyExtractor={itemKey}
                 initialScrollIndex={Math.max(0, Math.floor(years.indexOf(visibleYear) / 3))}
-                getItemLayout={(_, index) => ({ length: 52, offset: 52 * index, index })}
+                getItemLayout={getYearLayout}
                 renderItem={({ item: year }) => (
                   <TouchableOpacity
                     accessibilityRole="button"
                     accessibilityLabel={`Năm ${year}`}
                     onPress={() => {
                       setShowYears(false)
+                      visibleYearRef.current = year
                       setVisibleYear(year)
                       listRef.current?.scrollToIndex({ index: (year - firstYear) * 12, animated: false })
                     }}
@@ -224,7 +422,7 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
               accessibilityRole="button"
               accessibilityState={{ disabled: !complete }}
               disabled={!complete}
-              onPress={onClose}
+              onPress={confirmSelection}
               style={[styles.okButton, !complete && styles.disabledButton]}
             >
               <Text style={styles.okText}>OK</Text>
@@ -235,6 +433,8 @@ export default function DateRangeCalendar({ value, onChange, onClose, disableFut
     </Modal>
   )
 }
+
+export default memo(DateRangeCalendar)
 
 const createStyles = (isDark: boolean) => {
   const background = isDark ? '#1E2643' : '#FFFFFF'
@@ -268,7 +468,7 @@ const createStyles = (isDark: boolean) => {
       paddingVertical: 12,
       paddingHorizontal: 12,
     },
-    weekday: { width: '14.285714%', textAlign: 'center', color: isDark ? text : accent, fontSize: 13 },
+    weekday: { width: `${DAY_WIDTH_PERCENT}%`, textAlign: 'center', color: isDark ? text : accent, fontSize: 13 },
     calendar: { flex: 1, marginHorizontal: 12 },
     month: { height: MONTH_HEIGHT },
     monthTitle: {
@@ -279,18 +479,24 @@ const createStyles = (isDark: boolean) => {
       fontSize: 13,
       fontWeight: '500',
     },
-    days: { flexDirection: 'row', flexWrap: 'wrap' },
-    dayCell: { width: '14.285714%', height: DAY_HEIGHT, alignItems: 'center', justifyContent: 'center' },
-    dayCircle: {
+    // Keep six rows of space without mounting trailing empty cells.
+    days: { height: DAY_HEIGHT * 6, flexDirection: 'row', flexWrap: 'wrap', alignContent: 'flex-start' },
+    dayCell: { width: `${DAY_WIDTH_PERCENT}%`, height: DAY_HEIGHT, alignItems: 'center', justifyContent: 'center' },
+    dayIndicator: {
+      position: 'absolute',
+      top: (DAY_HEIGHT - DAY_SIZE) / 2,
+      left: '50%',
+      marginLeft: -DAY_SIZE / 2,
       width: DAY_SIZE,
       height: DAY_SIZE,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
+    todayIndicator: { color: isDark ? '#28CEE0' : '#2F7BEE' },
     dayText: { color: text, fontSize: 14 },
-    rangeBand: { position: 'absolute', left: 0, right: 0, height: DAY_SIZE, backgroundColor: isDark ? '#43658E' : '#C8F4FC' },
-    rangeStart: { left: '50%' },
-    rangeEnd: { right: '50%' },
+    rangeBand: {
+      position: 'absolute',
+      height: DAY_SIZE,
+      backgroundColor: isDark ? '#43658E' : '#C8F4FC',
+    },
     selectedText: { color: '#FFFFFF' },
     disabledText: { color: isDark ? '#737D99' : '#B8BEC9' },
     yearList: { ...StyleSheet.absoluteFillObject, backgroundColor: background },
