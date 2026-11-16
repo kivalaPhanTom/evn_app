@@ -4,6 +4,7 @@ import { RootState } from '@/core/redux/store'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getPowerByTimeFactDetail } from '@/core/redux/domains/power'
 import PowerByHours from '@/components/PowerByHours/PowerByHours'
+import { usePlantSelection } from '@/core/hooks/use-plant-selection'
 interface Props {
   currentPlantId: string
   keyTab: number
@@ -29,21 +30,22 @@ function PowerByHoursFactDetail(props: Props) {
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
+  const { currentPlantId: plantId } = usePlantSelection(currentPlantId)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { currentDate, unit, HourlyPowerList, currentTime, offeredPowerList, currentPower, offeredPower  } = useAppSelector((state: any) => state.powerSlice.powerByTime)
 
   useEffect(() => {
-    if (activeTabIndex === keyTab) {
+    if (activeTabIndex === keyTab && plantId) {
       dispatch(
         getPowerByTimeFactDetail({
-          factoryId: currentPlantId,
+          factoryId: plantId,
           companyId,
           getDataFromApi: () => {},
           setLoading: setLoading,
         }),
       )
     }
-  }, [currentPlantId, activeTabIndex, countRefesh, companyId])
+  }, [plantId, activeTabIndex, countRefesh, companyId, keyTab, dispatch])
 
   const setLoading = (value: boolean) => {
     setIsLoading(value)

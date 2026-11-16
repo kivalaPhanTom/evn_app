@@ -51,11 +51,10 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
 
     // Nếu giá trị invalid, return luôn hoặc gán về mặc định (optional)
     if (!fromDate.isValid() || !toDate.isValid()) return
-    setRange({ from: fromDate, to: toDate })
-
     if (fromDate.isAfter(toDate)) {
       return
     }
+    setRange({ from: fromDate, to: toDate })
     dispatch(
       getComparePower({
         tagetDate: toDate.format('DD/MM/YYYY'),
@@ -80,9 +79,10 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
     //   }),
     // )
   }
-  const currentDate = new Date()
+  const now = dayjs()
+  const bothDaysComplete = dayjs(range.from).isBefore(now, 'day') && dayjs(range.to).isBefore(now, 'day')
   const currentBarchartData =
-    BarChartData?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
+    BarChartData?.filter((item: any) => bothDaysComplete || Number(item.label?.slice(0, -1)) <= now.hour()) || []
   // const currentCompareLineChartData =
   //   compareLineChartData?.slice(0, currentBarchartData.length)?.map((item: any) => ({
   //     value: typeof item === 'number' ? item : item?.value,
@@ -94,7 +94,7 @@ function ComparePower24h(props: { currentPlantId?: string; isCheckDisableDate: b
         label: idx + 'h',
         value: typeof item === 'number' ? item : item?.value,
       }))
-      ?.filter((item: any) => Number(item.label?.slice(0, -1)) <= currentDate.getHours()) || []
+      ?.filter((item: any) => bothDaysComplete || Number(item.label?.slice(0, -1)) <= now.hour()) || []
   return (
     <AnimatedCardContainer>
       <View style={styles.content}>

@@ -60,9 +60,8 @@ function* getPowerByTimeSaga(action: ReturnType<typeof getPowerByTime>): Generat
 }
 
 function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeFactDetail>): Generator {
+  const { factoryId, companyId, getDataFromApi, setLoading } = action.payload
   try {
-    const payload = action.payload
-    const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
     const res = yield call(Service.getPowerByTimeFactDetailApi, factoryId, companyId || '')
     if (res.status === 200) {
@@ -70,9 +69,9 @@ function* getPowerByTimeFactDetailSaga(action: ReturnType<typeof getPowerByTimeF
       yield put(setPowerByTime(data))
       getDataFromApi(data)
     }
-    setLoading(false)
   } catch (error) {
     catchHandle(error, 'getPowerByTimeFactDetailSaga')
+  } finally {
     setLoading(false)
   }
 }

@@ -1,3 +1,43 @@
+diff --git a/node_modules/gifted-charts-core/dist/BarChart/index.js b/node_modules/gifted-charts-core/dist/BarChart/index.js
+index 22c7976..aaa9a11 100644
+--- a/node_modules/gifted-charts-core/dist/BarChart/index.js
++++ b/node_modules/gifted-charts-core/dist/BarChart/index.js
+@@ -348,14 +348,15 @@ export var useBarChart = function (props) {
+                         : stackData
+                             ? stackData[i].stacks.reduce(function (total, item) { return total + item.value; }, 0)
+                             : data[i].value;
++                    if (lineData[i].isMissing) continue;
+                     pp +=
+-                        'L' +
++                        (!pp || lineData[i - 1].isMissing ? 'M' : 'L') +
+                             getXForLineInBar(i, firstBarWidth, currentBarWidth, yAxisLabelWidth, lineConfig, spacing) +
+                             ' ' +
+                             getYForLineInBar(currentValue, lineConfig.shiftY, containerHeight, lineConfig.isSecondary ? secondaryMaxValue : maxValue, localYAxisOffset1) +
+                             ' ';
+                 }
+-                setPoints(pp.replace('L', 'M'));
++                setPoints(pp);
+                 if (lineData.length > 1 && lineConfig.showArrow) {
+                     var ppArray = pp.trim().split(' ');
+                     var arrowTipY = parseInt(ppArray[ppArray.length - 1]);
+@@ -396,14 +397,15 @@ export var useBarChart = function (props) {
+                         }
+                         var currentBarWidth = (_x = (_w = (_v = data === null || data === void 0 ? void 0 : data[i]) === null || _v === void 0 ? void 0 : _v.barWidth) !== null && _w !== void 0 ? _w : props.barWidth) !== null && _x !== void 0 ? _x : defaultBarWidth;
+                         var currentValue = lineData2[i].value;
++                        if (lineData2[i].isMissing) continue;
+                         pp2 +=
+-                            'L' +
++                            (!pp2 || lineData2[i - 1].isMissing ? 'M' : 'L') +
+                                 getXForLineInBar(i, firstBarWidth, currentBarWidth, yAxisLabelWidth, lineConfig2, spacing) +
+                                 ' ' +
+                                 getYForLineInBar(currentValue, lineConfig2.shiftY, containerHeight, lineConfig2.isSecondary ? secondaryMaxValue : maxValue, localYAxisOffset2) +
+                                 ' ';
+                     }
+-                    setPoints2(pp2.replace('L', 'M'));
++                    setPoints2(pp2);
+                 }
+                 else {
+                     var p2Array = [];
 diff --git a/node_modules/gifted-charts-core/dist/utils/index.js b/node_modules/gifted-charts-core/dist/utils/index.js
 index 45367dd..358138e 100644
 --- a/node_modules/gifted-charts-core/dist/utils/index.js

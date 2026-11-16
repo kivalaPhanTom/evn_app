@@ -4,6 +4,7 @@ import React, { Component, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { BarChart as GiftedBarChart } from 'react-native-gifted-charts'
 import LineBarChartSkeleton from '@/components/Skeletons/LineBarChartSkeleton'
+import { sanitizeChartLineData } from '@/core/utils/chart-missing-values'
 
 export interface BarPoint {
   value: number
@@ -51,16 +52,6 @@ interface Props {
   topLabelOffset?: number
 }
 
-// gifted-charts crash khi value là null/undefined (fallback item.stacks.reduce)
-const sanitizeLineData = (arr?: any[]) =>
-  Array.isArray(arr)
-    ? arr.map((item: any) => {
-        const raw = item && typeof item === 'object' ? item?.value : item
-        const num = Number(raw)
-        return { ...(item && typeof item === 'object' ? item : {}), value: Number.isFinite(num) ? num : 0 }
-      })
-    : []
-
 const BarChart: React.FC<Props> = ({
   data,
   height = px.v(180),
@@ -94,16 +85,16 @@ const BarChart: React.FC<Props> = ({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
-  const safeLineData1 = useMemo(() => sanitizeLineData(lineData1), [lineData1])
-  const safeLineData2 = useMemo(() => sanitizeLineData(lineData2), [lineData2])
+  const safeLineData1 = useMemo(() => sanitizeChartLineData(lineData1), [lineData1])
+  const safeLineData2 = useMemo(() => sanitizeChartLineData(lineData2), [lineData2])
 
   // Trạng thái nhóm đang được chọn
   const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null)
   const [selectedGroupItems, setSelectedGroupItems] = useState<BarPoint[] | null>(null)
 
-  const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value)), [data])
+  const allValues = useMemo(() => data.flatMap((g) => g.items.map((i) => i.value === -1 ? 0 : i.value)), [data])
 
-  const maxValue = Math.max(0, ...data.flatMap((g) => g.items.map((i) => i.value)))
+  const maxValue = Math.max(0, ...data.flatMap((g) => g.items.map((i) => i.value === -1 ? 0 : i.value)))
 
   const roundedMax = Math.ceil(maxValue / 10) * 10
 
@@ -150,6 +141,7 @@ const BarChart: React.FC<Props> = ({
           group.items.forEach((item, idx) => {
             const isLastInGroup = idx === group.items.length - 1
             const globalIndex = startIndex + idx
+            const isMissing = item.value === -1
             const front = item.frontColor ?? frontColor ?? COLORS[globalIndex % COLORS.length]
 
             const isLastOverall = gIdx === data.length - 1 && isLastInGroup
@@ -190,16 +182,17 @@ const BarChart: React.FC<Props> = ({
             // }
 
             result.push({
-              value: item.value,
-              frontColor: front,
+              value: isMissing ? 0 : item.value,
+              frontColor: isMissing ? 'transparent' : front,
+              disablePress: isMissing,
               spacing: isLastOverall ? 0 : isGrouped && !isLastInGroup ? groupInnerSpacing : item.spacing,
               labelWidth: isGrouped && !isLastInGroup ? groupWidth : item.labelWidth,
               onPress: () => {
                 setSelectedGroupIndex(gIdx)
-                setSelectedGroupItems(group.items)
+                setSelectedGroupItems(group.items.filter((point) => point.value !== -1))
               },
               topLabelComponent:
-                (item.showValuesOnTop ?? true) && item.value !== 0
+                (item.showValuesOnTop ?? true) && !isMissing && item.value !== 0
                   ? () => (
                       <View style={{ transform: [{ translateY: -labelOffset }] }}>
                         <Text
