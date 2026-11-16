@@ -82,7 +82,9 @@ export default function LoginScreen() {
                   style={styles.formGlow}
                 /> */}
                 <View style={[styles.titleWrap, { marginBottom: px.v(24) }]}>
-                  <Text style={styles.loginTitle}>{t('auth.login')}</Text>
+                  <Text style={[styles.loginTitle, { color: isDark ? Colors.white : Colors.deepBlue }]}>
+                    {t('auth.login')}
+                  </Text>
                 </View>
                 <View style={{ marginBottom: px.v(14) }}>
                   <Controller
