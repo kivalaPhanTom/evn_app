@@ -14,13 +14,15 @@ function HomeNewScreen() {
   const dispatch = useAppDispatch();
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
-  const { detail } = useAppSelector((state: RootState) => state.powerSlice)
+  const { plants, companies, selectedCompanyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
+  const selectedCompany = companies.find((company) => company.companyId === selectedCompanyId)
   const activeTab = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
   const onSetActiveTab = (index: number) => {
     dispatch(setActiveTab(index))
   }
   return (
     <PagerView
+      key={selectedCompanyId ?? 'home'}
       style={{ flex: 1, backgroundColor: isDark ? Colors.background : Colors.lightBackground }}
       initialPage={0}
       onPageSelected={(e) => onSetActiveTab(e.nativeEvent.position)}
@@ -33,12 +35,12 @@ function HomeNewScreen() {
 
       {/* PAGE 2: FACTORY DETAIL */}
       {
-        detail.map((factory, index) => (
-          <View key={`factory${index}`} style={{ flex: 1 }}>
+        plants.filter((plant) => plant.companyId === selectedCompanyId).map((plant, index) => (
+          <View key={`factory-${plant.plantId}`} style={{ flex: 1 }}>
             {activeTab === index + 1 ? <FactoryDetail
-              companyName={`NMTĐ ${factory.name}`}
-              location={'Đắk Lắk'}
-              currentPlantId={factory.code}
+              companyName={`NMTĐ ${plant.plantName}`}
+              location={selectedCompany?.location ?? ''}
+              currentPlantId={String(plant.plantId)}
               keyTab={index + 1}
             /> : <BlankPageSkeleton />}
           </View>
