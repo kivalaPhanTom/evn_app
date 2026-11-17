@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { plantsLoading } from '../company-plant/company-plant.slice'
 interface PowerDetail {
   code: string
   color: string
@@ -121,6 +122,9 @@ const powerSlice = createSlice({
         ...action.payload,
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(plantsLoading, () => initialState)
   },
 })
 const { reducer } = powerSlice

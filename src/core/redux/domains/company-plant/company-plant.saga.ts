@@ -46,15 +46,17 @@ function* getPlantsSaga(action: ReturnType<typeof getPlants>): Generator {
       throw new Error('INVALID_RESPONSE: GetPlants không trả về danh sách nhà máy hợp lệ.')
     }
     yield put(plantsLoaded(plantList))
-    const plants: RootState['companyPlantSlice']['plants'] = yield select(
-      (state: RootState) => state.companyPlantSlice.plants,
-    )
-    // console.log(
-    //   '[GetPlants][Redux: companyPlantSlice.plants]\n' + JSON.stringify({ companyId: action.payload, plants }, null, 2),
-    // )
-    // Dữ liệu nhà máy chỉ được trả về Redux, chưa dùng để thay các luồng hiện tại.
     const companies: Company[] = yield select((state: RootState) => state.companyPlantSlice.companies)
     const company = companies.find((item) => item.companyId === action.payload)
+    console.log(
+      '[GetPlants] Danh sách nhà máy theo công ty:\n' +
+        JSON.stringify({
+          companyId: action.payload,
+          companyName: company?.companyName ?? '',
+          plantCount: plantList.length,
+          plants: plantList,
+        }, null, 2),
+    )
     router.navigate({
       pathname: '/home',
       params: { companyName: company?.companyName ?? '', location: company?.location ?? '' },
