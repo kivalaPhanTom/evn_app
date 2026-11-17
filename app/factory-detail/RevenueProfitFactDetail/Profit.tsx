@@ -13,6 +13,26 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { getProfitFactDetail } from '@/core/redux/domains/revenue-profit'
 import { RootState } from '@/core/redux/store'
 import { LineChart } from '@/components/ChartView/LineChart.component'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { createThemePalette } from '@/core/constants/themePalette'
+import { LinearGradient } from 'expo-linear-gradient'
+
+const hexToRgba = (hex: string, alpha: number) => {
+  const clean = hex.replace('#', '')
+  const bigint = parseInt(
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean,
+    16,
+  )
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 
 interface ProfitFactDetailProps {
   currentPlantId: string
@@ -24,6 +44,10 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   const { currentPlantId, keyTab, currentPlantName } = props
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const theme = useAppTheme()
+  const isDark = theme === 'dark'
+  const p = createThemePalette(isDark)
+
   const { profitFactDetail, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
@@ -32,120 +56,17 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   const fromDay = fromParts[2] ?? ''
   const toDay = toParts[2] ?? ''
   const toMonth = toParts[1] ?? ''
-  // console.log('profitFactDetail data in ProfitDetail ewew:', profitFactDetail.Cumulative.Week)
   const values: { label: string; value: number }[] = profitFactDetail.Chart.Data.map((item: { value: number }) => ({
     label: '',
     value: Number(item.value),
   }))
-
-  const data = [
-    { value: 1.3, label: '01/11' },
-    { value: 1.8, label: '02/11' },
-    { value: 1.1, label: '03/11' },
-    { value: 1.6, label: '04/11' },
-    { value: 1.9, label: '05/11' },
-    { value: 1.4, label: '06/11' },
-    { value: 1.2, label: '07/11' },
-    { value: 1.7, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.8, label: '10/11' },
-    { value: 1.3, label: '11/11' },
-    { value: 1.9, label: '12/11' },
-    { value: 1.1, label: '13/11' },
-    { value: 1.6, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.2, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.9, label: '20/11' },
-    { value: 1.3, label: '21/11' },
-    { value: 1.6, label: '22/11' },
-    { value: 1.1, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.4, label: '25/11' },
-    { value: 1.8, label: '26/11' },
-    { value: 1.2, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.9, label: '29/11' },
-    { value: 1.3, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
-
-  const data2 = [
-    { value: 1.7, label: '01/11' },
-    { value: 1.2, label: '02/11' },
-    { value: 1.9, label: '03/11' },
-    { value: 1.4, label: '04/11' },
-    { value: 1.6, label: '05/11' },
-    { value: 1.1, label: '06/11' },
-    { value: 1.8, label: '07/11' },
-    { value: 1.3, label: '08/11' },
-    { value: 1.5, label: '09/11' },
-    { value: 1.9, label: '10/11' },
-    { value: 1.2, label: '11/11' },
-    { value: 1.6, label: '12/11' },
-    { value: 1.4, label: '13/11' },
-    { value: 1.8, label: '14/11' },
-    { value: 1.1, label: '15/11' },
-    { value: 1.7, label: '16/11' },
-    { value: 1.3, label: '17/11' },
-    { value: 1.9, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.2, label: '20/11' },
-    { value: 1.6, label: '21/11' },
-    { value: 1.8, label: '22/11' },
-    { value: 1.4, label: '23/11' },
-    { value: 1.7, label: '24/11' },
-    { value: 1.1, label: '25/11' },
-    { value: 1.9, label: '26/11' },
-    { value: 1.3, label: '27/11' },
-    { value: 1.5, label: '28/11' },
-    { value: 1.8, label: '29/11' },
-    { value: 1.2, label: '30/11' },
-    { value: 1.6, label: '31/11' },
-  ]
-
-  const data3 = [
-    { value: 1.2, label: '01/11' },
-    { value: 1.7, label: '02/11' },
-    { value: 1.4, label: '03/11' },
-    { value: 1.8, label: '04/11' },
-    { value: 1.1, label: '05/11' },
-    { value: 1.2, label: '06/11' },
-    { value: 1.5, label: '07/11' },
-    { value: 1.6, label: '08/11' },
-    { value: 1.9, label: '09/11' },
-    { value: 1.7, label: '10/11' },
-    { value: 1, label: '11/11' },
-    { value: 1.3, label: '12/11' },
-    { value: 1.2, label: '13/11' },
-    { value: 1.1, label: '14/11' },
-    { value: 1.4, label: '15/11' },
-    { value: 1.5, label: '16/11' },
-    { value: 1.9, label: '17/11' },
-    { value: 1.8, label: '18/11' },
-    { value: 1.5, label: '19/11' },
-    { value: 1.6, label: '20/11' },
-    { value: 1.8, label: '21/11' },
-    { value: 1.4, label: '22/11' },
-    { value: 1.8, label: '23/11' },
-    { value: 1.1, label: '24/11' },
-    { value: 1.7, label: '25/11' },
-    { value: 1.4, label: '26/11' },
-    { value: 1.6, label: '27/11' },
-    { value: 1.2, label: '28/11' },
-    { value: 1.3, label: '29/11' },
-    { value: 1.7, label: '30/11' },
-    { value: 1.9, label: '31/11' },
-  ]
 
   const rawBarGroups: BarGroup[] = values.map(({ label, value }: { label: string; value: number }) => ({
     label,
     items: [
       {
         value,
-        frontColor: value < 0 ? Colors.red : Colors.green,
+        frontColor: value < 0 ? (isDark ? Colors.red : '#ef4444') : isDark ? Colors.green : '#22c55e',
         showValuesOnTop: true,
         showPrefix: value > 0,
       },
@@ -191,69 +112,141 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
     })
   }
 
+  // Theme-aware colors (giống src/features/home/components/.../Profit.tsx)
+  const cardLabelColor = isDark ? '#8b92a0' : '#475569'
+  const cardValueColor = isDark ? '#ffffff' : '#475569'
+  const cardUnitColor = isDark ? '#ffffff' : '#475569'
+  const weekTitleColor = isDark ? '#A5B4FC' : '#001eac'
+  const monthTitleColor = isDark ? '#FCD34D' : '#b28800'
+  const weekBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(99,102,241,0.2)'
+  const monthBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(251,191,36,0.2)'
+  const chartCardBg = isDark ? '#1e2838' : 'rgba(255,255,255,0.06)'
+  const chartCardBorder = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.06)'
+  const chartTitleColor = isDark ? '#fff' : '#475569'
+  const dateBadgeBg = isDark ? '#1f2937' : '#D9D9D9'
+  const dateTextColor = isDark ? '#8b92a0' : '#475569'
+  const axisLabelColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
+  const axisLabelNegativeColor = isDark ? Colors.red : '#f87171'
+  const axisLabelTodayColor = isDark ? '#8b92a0' : '#fbbf24'
+  const dividerColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'
+  const legendTextColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
+  const lossIndicatorBg = isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.15)'
+  const lossIndicatorTextColor = isDark ? Colors.red : '#f87171'
+
   return (
     <SectionContainer title="Lợi nhuận">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <Text style={styles.revenueTitle}>{`Lợi nhuận ngày ${formatDayWithMonth(endDate)}`}</Text>
-          <Text style={[styles.cardValue, { fontSize: px.f(70) }]}>
-            {profitFactDetail.Today.Value} <Text style={styles.cardUnit}>{profitFactDetail.Today.Unit}</Text>
+          <Text style={[styles.revenueTitle, { color: cardLabelColor, opacity: isDark ? 1 : 0.5 }]}>
+            {`Lợi nhuận ngày ${formatDayWithMonth(endDate)}`}
+          </Text>
+          <Text style={[styles.cardValue, { color: cardValueColor, fontSize: px.f(70) }]}>
+            {profitFactDetail.Today.Value}{' '}
+            <Text style={[styles.cardUnit, { color: cardUnitColor, opacity: isDark ? 1 : 0.6 }]}>
+              {profitFactDetail.Today.Unit}
+            </Text>
           </Text>
           <MetricDiff
             style={{ fontSize: px.f(20) }}
             withBackground
             unit={profitFactDetail.Today.Unit}
+            compareTo={0}
             diff={profitFactDetail.Today.ChangeValue}
             label={`so với ngày ${formatDayWithMonth(prevDate)}`}
+            bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+            textColor={isDark ? '#22C55E' : '#00A73D'}
+            containerStyle={{ borderRadius: px.h(20) }}
           />
         </View>
+
+        {/* Lũy kế tuần */}
         <View style={{ marginTop: px.v(10) }}>
-          <View style={styles.revenueCard}>
+          <LinearGradient
+            colors={
+              isDark
+                ? ['rgba(99,102,241,0.1)', 'rgba(99,102,241,0.1)']
+                : ['rgba(99,102,241,0.12)', 'rgba(99,102,241,0.06)']
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.revenueCard, { borderColor: weekBorderColor }]}
+          >
             <View>
-              <Text style={[styles.cardTitle, { color: '#A5B4FC' }]}>{`Lũy kế tuần`}</Text>
-              <Text style={styles.cardValue}>
-                {profitFactDetail.Cumulative.Week.Value} <Text style={styles.cardUnit}>{profitFactDetail.Cumulative.Week.Unit}</Text>
+              <Text style={[styles.cardTitle, { color: weekTitleColor }]}>{`Lũy kế tuần`}</Text>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
+                {profitFactDetail.Cumulative.Week.Value}{' '}
+                <Text style={[styles.cardUnit, { color: cardUnitColor }]}>
+                  {profitFactDetail.Cumulative.Week.Unit}
+                </Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground unit={profitFactDetail.Cumulative.Week.Unit} diff={profitFactDetail.Cumulative.Week.ChangeValue} />
+              <MetricDiff
+                withBackground
+                unit="%"
+                compareTo={0}
+                diff={profitFactDetail.Cumulative.Week.ChangeValue}
+                bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                textColor={isDark ? '#22C55E' : '#00A73D'}
+              />
             </View>
-          </View>
+          </LinearGradient>
         </View>
+
+        {/* Lũy kế tháng */}
         <View>
-          <View style={[styles.revenueCard, { backgroundColor: 'rgba(251, 191, 36, 0.1)' }]}>
+          <LinearGradient
+            colors={
+              isDark
+                ? ['rgba(251,191,36,0.1)', 'rgba(251,191,36,0.1)']
+                : ['rgba(251,191,36,0.12)', 'rgba(251,191,36,0.06)']
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.revenueCard, { borderColor: monthBorderColor }]}
+          >
             <View>
-              <Text
-                style={[styles.cardTitle, { color: '#FCD34D' }]}
-              >{`Lũy kế tháng ${profitFactDetail.Cumulative.Month.month?.split('-')[1] ?? ''}`}</Text>
-              <Text style={styles.cardValue}>
-                {profitFactDetail.Cumulative.Month.Value} <Text style={styles.cardUnit}>{profitFactDetail.Cumulative.Month.Unit}</Text>
+              <Text style={[styles.cardTitle, { color: monthTitleColor }]}>
+                {`Lũy kế tháng ${profitFactDetail.Cumulative.Month.month?.split('-')[1] ?? ''}`}
+              </Text>
+              <Text style={[styles.cardValue, { color: cardValueColor }]}>
+                {profitFactDetail.Cumulative.Month.Value}{' '}
+                <Text style={[styles.cardUnit, { color: cardUnitColor }]}>
+                  {profitFactDetail.Cumulative.Month.Unit}
+                </Text>
               </Text>
             </View>
             <View>
-              <MetricDiff withBackground unit={profitFactDetail.Cumulative.Month.Unit} diff={profitFactDetail.Cumulative.Month.ChangeValue} />
+              <MetricDiff
+                withBackground
+                unit="%"
+                compareTo={0}
+                diff={profitFactDetail.Cumulative.Month.ChangeValue}
+                bgColor={isDark ? hexToRgba('#22C55E', 0.15) : hexToRgba('#22C55E', 0.15)}
+                textColor={isDark ? '#22C55E' : '#00A73D'}
+              />
             </View>
-          </View>
+          </LinearGradient>
         </View>
+
+        {/* Chart section */}
         <View>
           <View
-            style={[styles.profitCard, { backgroundColor: '#1e2838' }]}
+            style={[styles.profitCard, { backgroundColor: chartCardBg, borderColor: chartCardBorder }]}
             onStartShouldSetResponder={() => true}
             onResponderTerminationRequest={() => false}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={styles.profitByDayTitle}>Lãi/Lỗ theo ngày</Text>
+              <Text style={[styles.profitByDayTitle, { color: chartTitleColor }]}>Lãi/Lỗ theo ngày</Text>
               <View
                 style={{
-                  paddingHorizontal: px.h(12),
-                  paddingVertical: px.v(6),
-                  backgroundColor: '#1f2937',
-                  borderRadius: px.h(18),
-                  borderWidth: 1,
-                  borderColor: 'rgba(255,255,255,0.12)',
+                  paddingHorizontal: px.h(8),
+                  paddingVertical: px.v(4),
+                  backgroundColor: dateBadgeBg,
+                  borderRadius: px.h(8),
                 }}
               >
-                <Text style={{ color: '#8b92a0', fontSize: px.f(16) }}>
+                <Text style={{ color: dateTextColor, fontSize: px.f(16) }}>
                   {fromDay} - {toDay}/{toMonth}
                 </Text>
               </View>
@@ -266,9 +259,9 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
             <View style={styles.axisContainer}>
               <View style={[styles.axisLabelsRow, { justifyContent: 'flex-start' }]}>
                 {xAxisLabels.map((label, idx) => {
-                  const isToday = idx === xAxisLabels.length
+                  const isToday = idx === xAxisLabels.length - 1
                   const isNegative = values[idx].value < 0
-                  const color = isToday ? '#8b92a0' : isNegative ? Colors.red : '#8b92a0'
+                  const color = isToday ? axisLabelTodayColor : isNegative ? axisLabelNegativeColor : axisLabelColor
                   return (
                     <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
                       <Text style={[styles.axisLabel, { color }]}>{label}</Text>
@@ -276,30 +269,43 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
                   )
                 })}
               </View>
-              <View style={styles.axisDivider} />
+              <View style={[styles.axisDivider, { backgroundColor: dividerColor }]} />
               {/* Legend */}
               <View style={styles.legendRow}>
                 <View style={[styles.legendItem]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.green }]} />
-                  <Text style={styles.legendText}>Lãi</Text>
+                  <LinearGradient
+                    colors={isDark ? [Colors.green, Colors.green] : ['#4ade80', '#22c55e']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={[styles.legendSwatch, { borderRadius: 3 }]}
+                  />
+                  <Text style={[styles.legendText, { color: legendTextColor }]}>Lãi</Text>
                 </View>
                 <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
-                  <View style={[styles.legendSwatch, { backgroundColor: Colors.red }]} />
-                  <Text style={styles.legendText}>Lỗ</Text>
+                  <LinearGradient
+                    colors={isDark ? [Colors.red, Colors.red] : ['#f87171', '#ef4444']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={[styles.legendSwatch, { borderRadius: 3 }]}
+                  />
+                  <Text style={[styles.legendText, { color: legendTextColor }]}>Lỗ</Text>
                 </View>
               </View>
 
               {/* Warning cards for negative days */}
               <View style={{ marginTop: px.v(12) }}>
                 {negativeDays.map((item, idx) => (
-                  <View key={idx} style={styles.warningCard}>
+                  <View
+                    key={idx}
+                    style={[styles.warningCard, { backgroundColor: lossIndicatorBg, borderRadius: px.h(10) }]}
+                  >
                     <Ionicons
                       name="warning-outline"
-                      size={px.f(18)}
-                      color={Colors.red}
+                      size={px.f(16)}
+                      color={lossIndicatorTextColor}
                       style={{ marginRight: px.h(8) }}
                     />
-                    <Text style={styles.warningText}>
+                    <Text style={[styles.warningText, { color: lossIndicatorTextColor }]}>
                       {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
                     </Text>
                   </View>
@@ -326,13 +332,16 @@ const styles = StyleSheet.create({
   },
   profitCard: {
     flexDirection: 'column',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-    borderRadius: 12,
+    borderRadius: 20,
     marginTop: px.v(20),
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
   chartWrapper: {
     marginTop: px.v(8),
@@ -350,7 +359,6 @@ const styles = StyleSheet.create({
   },
   axisDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.12)',
     marginVertical: px.v(20),
   },
   axisLabelsRow: {
@@ -378,7 +386,6 @@ const styles = StyleSheet.create({
     marginRight: px.h(8),
   },
   legendText: {
-    color: '#8b92a0',
     fontSize: px.f(16),
   },
   // Warning card styles
@@ -386,27 +393,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.08)',
-    borderRadius: px.h(12),
     paddingHorizontal: px.h(12),
     paddingVertical: px.v(10),
     marginTop: px.v(8),
   },
   warningText: {
-    color: Colors.red,
     fontSize: px.f(16),
   },
   cardTitle: {
-    color: '#8b92a0',
     fontSize: px.f(16),
     textTransform: 'uppercase',
   },
   profitByDayTitle: {
-    color: '#fff',
     fontSize: px.f(20),
   },
   revenueTitle: {
-    color: '#8b92a0',
     fontSize: px(20),
     textTransform: 'uppercase',
   },
@@ -414,16 +415,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-    borderRadius: 12,
+    borderRadius: 14,
     marginTop: px.v(20),
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   cardValue: {
-    color: '#ffffff',
     fontSize: 24,
     fontWeight: '700',
     marginBottom: px.v(6),
@@ -434,7 +432,6 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
     marginBottom: 15,
   },
   legendLabel: {
