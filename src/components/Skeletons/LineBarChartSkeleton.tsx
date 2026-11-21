@@ -75,7 +75,7 @@ const ShimmerBlock: React.FC<ShimmerBlockProps> = ({ style, barWidth }) => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={{
-            ...StyleSheet.absoluteFillObject,
+            ...StyleSheet.absoluteFill,
             width: barWidth * 2.5,
           }}
         />

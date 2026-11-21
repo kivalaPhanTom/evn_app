@@ -17,5 +17,6 @@ export default ({ config }) => ({
     ...config.extra, // giữ các giá trị từ app.json
     API_BASE_URL: normalizeApiBaseUrl(process.env.API_BASE_URL),
   },
-  plugins: ['expo-font', 'expo-localization', 'expo-web-browser', './plugins/withSceneManifest.js'],
+  // SDK 58 generates the iOS scene lifecycle. Keep the plugins declared in app.json.
+  plugins: [...(config.plugins ?? []), 'expo-font', 'expo-localization', 'expo-web-browser'],
 })

@@ -95,7 +95,7 @@ const createStyles = (isDark: boolean) => {
     },
 
     grid: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       justifyContent: 'space-between',
       paddingVertical: 16,
     },

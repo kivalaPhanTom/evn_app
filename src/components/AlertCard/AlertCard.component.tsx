@@ -1,6 +1,6 @@
 import { Colors } from '@/core/constants/colors'
 import { px } from '@/core/utils/scale'
-import { useTheme } from '@react-navigation/native'
+import { useTheme } from 'expo-router/react-navigation'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 

@@ -5,7 +5,7 @@ import { TranslationProvider } from '@/core/i18n/TranslationProvider'
 import StoreProvider from '@/core/redux/StoreProvider'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation'
 import { Stack, usePathname, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -18,6 +18,10 @@ import VersionChecker from '@/components/VersionChecker/VersionChecker'
 import { BlurView } from 'expo-blur'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
+
+export const unstable_settings = {
+  anchor: 'splash',
+}
 
 export default function RootLayout() {
   const systemScheme = useSystemColorScheme() ?? 'light'
@@ -81,7 +85,6 @@ export default function RootLayout() {
               <Host>
                 <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
                   <Stack
-                    initialRouteName="splash"
                     screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
                   >
                     <Stack.Screen name="splash" />

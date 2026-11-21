@@ -18,8 +18,6 @@ interface Props {
 
 const DAY_HEIGHT = 42
 const DAY_SIZE = 36
-// Keep weekday headers, leading spaces and day buttons on the same column widths.
-const DAY_WIDTH_PERCENT = 14.285714
 const MONTH_HEIGHT = 48 + DAY_HEIGHT * 6
 const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
 const DAY_RIPPLE = { color: '#387FD230', radius: DAY_SIZE / 2 }
@@ -166,44 +164,47 @@ const CalendarMonth = memo(function CalendarMonth({
 }: CalendarMonthProps) {
   const year = Math.floor(month / 12)
   const monthNumber = month % 12
-  const { cells, offset, daysInMonth, leadingSpace } = useMemo(() => {
+  const { weeks, offset, daysInMonth } = useMemo(() => {
     const offset = new Date(year, monthNumber, 1).getDay()
     const daysInMonth = new Date(year, monthNumber + 1, 0).getDate()
     const key = monthKey(month)
-    const cells = Array.from({ length: daysInMonth }, (_, index) => {
-      const day = index + 1
-      return {
-        day,
-        value: key + day,
-        label: `${String(day).padStart(2, '0')}/${String(monthNumber + 1).padStart(2, '0')}/${year}`,
-      }
-    })
-    // Combining fractional leading widths can wrap the last day of the first week
-    // onto the next row in Yoga, so retain only these individual empty cells.
-    const leadingSpace = Array.from({ length: offset }, (_, index) => (
-      <View
-        key={index}
-        pointerEvents="none"
-        accessible={false}
-        style={{ width: `${DAY_WIDTH_PERCENT}%`, height: DAY_HEIGHT }}
-      />
-    ))
-    return { cells, offset, daysInMonth, leadingSpace }
+    // Explicit seven-cell weeks avoid percentage rounding wrapping the seventh
+    // day onto another line on iOS. Empty end cells keep the last week aligned.
+    const weeks = Array.from({ length: Math.ceil((offset + daysInMonth) / 7) }, (_, row) =>
+      Array.from({ length: 7 }, (_, column) => {
+        const day = row * 7 + column - offset + 1
+        if (day < 1 || day > daysInMonth) return null
+        return {
+          day,
+          value: key + day,
+          label: `${String(day).padStart(2, '0')}/${String(monthNumber + 1).padStart(2, '0')}/${year}`,
+        }
+      }),
+    )
+    return { weeks, offset, daysInMonth }
   }, [month, monthNumber, year])
-  const dayButtons = useMemo(
+  const weekRows = useMemo(
     () =>
-      cells.map((cell) => (
-        <CalendarDay
-          key={cell.day}
-          {...cell}
-          selected={cell.day === startDay || cell.day === endDay}
-          disabled={cell.day > disabledAfter}
-          isToday={cell.day === todayDay}
-          styles={styles}
-          onSelect={onSelect}
-        />
+      weeks.map((week, row) => (
+        <View key={row} style={styles.week}>
+          {week.map((cell, column) =>
+            cell ? (
+              <CalendarDay
+                key={cell.day}
+                {...cell}
+                selected={cell.day === startDay || cell.day === endDay}
+                disabled={cell.day > disabledAfter}
+                isToday={cell.day === todayDay}
+                styles={styles}
+                onSelect={onSelect}
+              />
+            ) : (
+              <View key={`empty-${column}`} pointerEvents="none" accessible={false} style={styles.dayCell} />
+            ),
+          )}
+        </View>
       )),
-    [cells, startDay, endDay, disabledAfter, todayDay, styles, onSelect],
+    [weeks, startDay, endDay, disabledAfter, todayDay, styles, onSelect],
   )
 
   return (
@@ -221,8 +222,7 @@ const CalendarMonth = memo(function CalendarMonth({
           trimEnd={endDay > 0}
           styles={styles}
         />
-        {leadingSpace}
-        {dayButtons}
+        {weekRows}
       </View>
     </View>
   )
@@ -468,7 +468,7 @@ const createStyles = (isDark: boolean) => {
       paddingVertical: 12,
       paddingHorizontal: 12,
     },
-    weekday: { width: `${DAY_WIDTH_PERCENT}%`, textAlign: 'center', color: isDark ? text : accent, fontSize: 13 },
+    weekday: { flex: 1, minWidth: 0, textAlign: 'center', color: isDark ? text : accent, fontSize: 13 },
     calendar: { flex: 1, marginHorizontal: 12 },
     month: { height: MONTH_HEIGHT },
     monthTitle: {
@@ -479,9 +479,10 @@ const createStyles = (isDark: boolean) => {
       fontSize: 13,
       fontWeight: '500',
     },
-    // Keep six rows of space without mounting trailing empty cells.
-    days: { height: DAY_HEIGHT * 6, flexDirection: 'row', flexWrap: 'wrap', alignContent: 'flex-start' },
-    dayCell: { width: `${DAY_WIDTH_PERCENT}%`, height: DAY_HEIGHT, alignItems: 'center', justifyContent: 'center' },
+    // Fixed month height keeps FlatList offsets unchanged for five/six-week months.
+    days: { height: DAY_HEIGHT * 6 },
+    week: { height: DAY_HEIGHT, flexDirection: 'row' },
+    dayCell: { flex: 1, minWidth: 0, height: DAY_HEIGHT, alignItems: 'center', justifyContent: 'center' },
     dayIndicator: {
       position: 'absolute',
       top: (DAY_HEIGHT - DAY_SIZE) / 2,
@@ -499,7 +500,7 @@ const createStyles = (isDark: boolean) => {
     },
     selectedText: { color: '#FFFFFF' },
     disabledText: { color: isDark ? '#737D99' : '#B8BEC9' },
-    yearList: { ...StyleSheet.absoluteFillObject, backgroundColor: background },
+    yearList: { ...StyleSheet.absoluteFill, backgroundColor: background },
     yearCell: { width: '33.333333%', height: 52, justifyContent: 'center', alignItems: 'center' },
     footer: { borderTopWidth: StyleSheet.hairlineWidth, borderColor: divider, padding: 10 },
     okButton: {

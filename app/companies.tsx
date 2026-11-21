@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: px.h(12),
   },
   companyImageOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   iconWrap: {

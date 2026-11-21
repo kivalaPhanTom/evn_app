@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Platform } from 'react-native'
 
 const BASE_URL =
   getApiBaseUrl()
@@ -88,6 +89,28 @@ const normalizeError = (error: any) => {
         'Request error',
       status: error.response.status,
       data: error.response.data,
+    })
+  }
+  if (__DEV__) {
+    // RN exposes the native connection failure on XHR. Preserve it for diagnosis;
+    // do not log request headers, bodies, or URL query parameters (login data).
+    let requestUrl: string | undefined
+    try {
+      const url = new URL(axios.getUri(error.config))
+      requestUrl = `${url.origin}${url.pathname}`
+    } catch {
+      // Diagnostics must never replace the original request failure.
+    }
+    const nativeMessage = error.request?._response
+    console.warn('[API connection failed]', {
+      platform: Platform.OS,
+      method: error.config?.method,
+      url: requestUrl,
+      code: error.code,
+      nativeMessage:
+        typeof nativeMessage === 'string'
+          ? nativeMessage.replace(/https?:\/\/[^\s]+/g, '[URL]').slice(0, 500)
+          : undefined,
     })
   }
   return Promise.reject({ message: error.message || 'Network error' })
