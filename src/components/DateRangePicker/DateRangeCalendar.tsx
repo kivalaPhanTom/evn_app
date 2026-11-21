@@ -499,7 +499,7 @@ const createStyles = (isDark: boolean) => {
     },
     selectedText: { color: '#FFFFFF' },
     disabledText: { color: isDark ? '#737D99' : '#B8BEC9' },
-    yearList: { ...StyleSheet.absoluteFillObject, backgroundColor: background },
+    yearList: { ...StyleSheet.absoluteFill, backgroundColor: background },
     yearCell: { width: '33.333333%', height: 52, justifyContent: 'center', alignItems: 'center' },
     footer: { borderTopWidth: StyleSheet.hairlineWidth, borderColor: divider, padding: 10 },
     okButton: {

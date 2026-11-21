@@ -2,18 +2,20 @@
 
 Ứng dụng quản lý Nhà máy thủy điện EVNGENCO3, được xây dựng với [Expo](https://expo.dev) và [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+Project sử dụng **Expo SDK 58**. Xem [hướng dẫn nâng SDK và kiểm tra tương thích](doc/EXPO-SDK-58-UPGRADE.md), đặc biệt trước khi build lại thư mục native đã sinh từ SDK cũ.
+
 ## 🚀 Getting started
 
 1. Cài đặt dependencies:
 
    ```bash
-   npm install
+   npm ci
    ```
 
 2. Khởi động app:
 
    ```bash
-   npx expo start
+   npx expo start --go --clear
    ```
 
 Trong output, bạn sẽ thấy các tùy chọn để mở app trong:

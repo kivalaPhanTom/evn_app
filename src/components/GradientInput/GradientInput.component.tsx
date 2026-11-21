@@ -102,7 +102,7 @@ const GradientInput: React.FC<GradientInputProps> = ({
             style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
           />
         ) : (
-          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: resolvedSolid, borderRadius: 10 }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: resolvedSolid, borderRadius: 10 }]} />
         )}
 
         {/* subtle inner highlight/shadow overlay */}

@@ -41,6 +41,13 @@ module.exports = defineConfig([
       },
     },
     rules: {
+      // SDK 58 adds compiler diagnostics. Keep them visible without refactoring
+      // existing component behavior as part of the SDK upgrade.
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/static-components': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-assignment': 'off',

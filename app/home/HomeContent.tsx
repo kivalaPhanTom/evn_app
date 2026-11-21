@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { Animated, ScrollView, StyleSheet, Text, View, RefreshControl, InteractionManager } from 'react-native'
+import { Animated, ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
 import GradientText from '@/components/GradientText/GradientText.component'
 import { textGradients } from '@/core/constants/gradients'
@@ -60,9 +60,10 @@ function HomeContent() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
+    const task = requestIdleCallback(() => {
       setReady(true)
     })
+    return () => cancelIdleCallback(task)
   }, [])
 
   const scrollY = useRef(new Animated.Value(0)).current

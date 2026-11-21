@@ -204,7 +204,6 @@ export const LineChart: React.FC<LineCharProps> = ({
         yAxisColor="transparent"
         {...(showRules && ruleTypes && { xAxisColor: resolvedXAxisColor, rulesColor: resolvedRulesColor, dashGap: 10, dashWidth: 5, rulesType: ruleTypes })}
         noOfSections={noOfSections}
-        showRules={showRules}
         initialSpacing={30}
         endSpacing={15}
         strokeDashArray1={strokedashArray1}
