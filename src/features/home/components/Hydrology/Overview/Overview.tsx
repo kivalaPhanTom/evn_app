@@ -168,7 +168,7 @@ const WaterLevelCard: React.FC<{
               minWidth: tabWidth,
               maxWidth: tabWidth,
             }
-          : { width: undefined, minWidth: px.h(110) },
+          : { width: undefined },
         isActive && styles.cardActive,
         isActive && {
           backgroundColor: isDark ? dark.background : light.background,
@@ -226,15 +226,12 @@ const WaterLevelCard: React.FC<{
                   <View style={[styles.locationUnderline, { backgroundColor: isDark ? data.color : light.plants[index % light.plants.length] }]} />
                 </View>
 
-                <View style={styles.levelContainer}>
-                  <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
-                    {formatWaterLevel(data.currentLevel)}
+                <Text style={styles.currentLevel}>
+                  {formatWaterLevel(data.currentLevel)}
+                  <Text style={[styles.maxLevel, !isDark && { color: light.muted }]}>
+                    {` /\u00a0${data.maxLevel ?? '—'}`}
                   </Text>
-                  <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
-                    {' '}
-                    / {data.maxLevel ?? '—'}
-                  </Text>
-                </View>
+                </Text>
 
                 {containerWidth > 0 && (
                   <View style={{ flexDirection: 'row' }}>
@@ -372,15 +369,12 @@ const WaterLevelCard: React.FC<{
                 <View style={[styles.locationUnderline, { backgroundColor: isDark ? data.color : light.plants[index % light.plants.length] }]} />
               </View>
 
-              <View style={styles.levelContainer}>
-                <Text style={[styles.currentLevel]} numberOfLines={1} adjustsFontSizeToFit>
-                  {formatWaterLevel(data.currentLevel)}
+              <Text style={styles.currentLevel}>
+                {formatWaterLevel(data.currentLevel)}
+                <Text style={[styles.maxLevel, !isDark && { color: light.muted }]}>
+                  {` /\u00a0${data.maxLevel ?? '—'}`}
                 </Text>
-                <Text style={[styles.maxLevel, !isDark && { color: light.muted }]} numberOfLines={1}>
-                  {' '}
-                  / {data.maxLevel ?? '—'}
-                </Text>
-              </View>
+              </Text>
 
               {containerWidth > 0 && (
                 <View style={{ flexDirection: 'row' }}>
@@ -542,7 +536,7 @@ const Overview: React.FC = () => {
   const reservoirId = activeData?.id ?? ''
   const referenceLevel = activeData?.referenceLevel ?? null
   const maxLevel = activeData?.maxLevel ?? undefined
-  const uniformTabWidth = waterData.length > 3 && tabsViewportWidth > 0 ? tabsViewportWidth / 3 : undefined
+  const uniformTabWidth = waterData.length > 3 ? tabsViewportWidth / 3 || px.h(110) : undefined
   useEffect(() => {
     if (reservoirId && activeTab) {
       const type = getHydrologyApiType(selectedOptionsValue as 'HOURS' | '7_DAYS')

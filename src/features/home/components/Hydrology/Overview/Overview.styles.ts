@@ -53,13 +53,10 @@ export const styles = StyleSheet.create({
     // backgroundColor sẽ được set động từ data.color
     marginTop: px.v(4),
   },
-  levelContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginBottom: px.v(12),
-    justifyContent: 'center',
-  },
   currentLevel: {
+    maxWidth: '100%',
+    marginBottom: px.v(12),
+    textAlign: 'center',
     color: dark.overview.currentLevel, // Màu xanh lá
     fontSize: px.m(18),
     fontWeight: '700',

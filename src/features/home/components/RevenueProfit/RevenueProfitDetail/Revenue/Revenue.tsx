@@ -113,7 +113,7 @@ function RevenueDetail() {
     <SectionContainer title="Doanh thu">
       <AnimatedCardContainer onPress={onPressCard}>
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={styles.revenueHeader}>
             <Text
               style={[styles.revenueTitle, { color: revenueTitleColor }]}
             >{`Doanh thu ngày ${formatDayWithMonth(endDate)}`}</Text>
@@ -372,7 +372,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: px.f(20),
   },
+  revenueHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: px.h(8),
+  },
   revenueTitle: {
+    flexShrink: 1,
     color: '#8b92a0',
     fontSize: px(20),
     textTransform: 'uppercase',
@@ -422,6 +429,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flexDirection: 'row',
+    flexShrink: 0,
     alignItems: 'center',
     gap: 4,
   },

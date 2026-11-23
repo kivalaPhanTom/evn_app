@@ -1,7 +1,7 @@
 import { darkGradients, lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { GradientColors } from '@/core/types'
-import { isTablet, px } from '@/core/utils/scale'
+import { hasCompactDesignScale, isTablet, px } from '@/core/utils/scale'
 import React, { useEffect, useRef } from 'react'
 import { ActivityIndicator, Animated, View } from 'react-native'
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts'
@@ -24,7 +24,7 @@ export const ChartView: React.FC<ChartViewProps> = ({
   data,
   color = 'blue',
   gradient = true,
-  height = isTablet() ? px.v(320) : px.v(220),
+  height = px.v(hasCompactDesignScale() ? 320 : 220),
   showLegend = false,
   loading = false,
   animationDuration = 1000,
