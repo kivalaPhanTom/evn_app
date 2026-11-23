@@ -19,10 +19,6 @@ import { BlurView } from 'expo-blur'
 
 export const THEME_PREFERENCE_KEY = 'user:themePreference'
 
-export const unstable_settings = {
-  anchor: 'splash',
-}
-
 export default function RootLayout() {
   const systemScheme = useSystemColorScheme() ?? 'light'
   const [preference, setPreferenceState] = useState<ThemePref>('system')
