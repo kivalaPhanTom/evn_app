@@ -2,7 +2,6 @@ import { hydrologyLight as light, hydrologyDark as dark } from '@/core/constants
 import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import GradientText from '@/components/GradientText/GradientText.component'
 import { px } from '@/core/utils/scale'
 import { styles } from './PowerStoreInLake.styles'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
@@ -19,6 +18,7 @@ const PowerStoreInLake: React.FC = () => {
   const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
   const accent = isDark ? dark.inflow : '#00DF73'
   const muted = isDark ? dark.storage.muted : '#1F2937'
+  const unitLabel = powerStoreInLake?.unit ? ` ${powerStoreInLake.unit}` : ''
   const colorMap: Record<string, string> = {
     BTS: isDark ? dark.storage.plants[0] : '#FB923C',
     BK: isDark ? dark.storage.plants[1] : '#14B8A6',
@@ -54,27 +54,20 @@ const PowerStoreInLake: React.FC = () => {
           </View>
         ) : (
           <>
-            <GradientText
-              text={Number(powerStoreInLake?.currentCapacity ?? 0)}
-              fontSize={px.f(52)}
-              fontWeight="800"
-              colors={accent}
-            />
             <Text
               allowFontScaling={false}
-              style={[styles.unit, { color: accent, marginLeft: px.h(6), fontSize: px.f(20) }]}
+              style={[styles.currentValue, { color: accent }]}
             >
-              {powerStoreInLake?.unit ?? ''}
+              {Number(powerStoreInLake?.currentCapacity ?? 0)}
+              <Text style={styles.unit}>{unitLabel}</Text>
             </Text>
-            <Text allowFontScaling={false} style={[styles.slash, { color: muted }]}>
-              {' '}
-              /{' '}
-            </Text>
-            <Text allowFontScaling={false} style={[styles.refValue, { color: muted }]}>
-              {powerStoreInLake?.previousCapacity ?? 0}{' '}
-              <Text allowFontScaling={false} style={styles.refUnit}>
-                {powerStoreInLake?.unit ?? ''}
-              </Text>
+            <Text
+              allowFontScaling={false}
+              style={[styles.refValue, { color: muted }]}
+            >
+              <Text style={styles.slash}>{'/\u00a0'}</Text>
+              {powerStoreInLake?.previousCapacity ?? 0}
+              <Text style={styles.refUnit}>{unitLabel}</Text>
             </Text>
           </>
         )}
