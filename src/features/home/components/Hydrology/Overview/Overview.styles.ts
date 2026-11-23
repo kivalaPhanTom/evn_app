@@ -11,13 +11,16 @@ export const styles = StyleSheet.create({
     alignItems: 'stretch',
     width: '100%',
   },
+  scrollableTabsContainer: {
+    width: undefined,
+    minWidth: '100%',
+  },
   card: {
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
     display: 'flex',
     backgroundColor: 'transparent',
-    width: '100%',
   },
   cardActive: {
     // Bỏ scale để detailContainer sát với tab active

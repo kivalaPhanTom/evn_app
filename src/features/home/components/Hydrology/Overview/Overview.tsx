@@ -168,7 +168,7 @@ const WaterLevelCard: React.FC<{
               minWidth: tabWidth,
               maxWidth: tabWidth,
             }
-          : { width: undefined },
+          : undefined,
         isActive && styles.cardActive,
         isActive && {
           backgroundColor: isDark ? dark.background : light.background,
@@ -536,7 +536,6 @@ const Overview: React.FC = () => {
   const reservoirId = activeData?.id ?? ''
   const referenceLevel = activeData?.referenceLevel ?? null
   const maxLevel = activeData?.maxLevel ?? undefined
-  const uniformTabWidth = waterData.length > 3 ? tabsViewportWidth / 3 || px.h(110) : undefined
   useEffect(() => {
     if (reservoirId && activeTab) {
       const type = getHydrologyApiType(selectedOptionsValue as 'HOURS' | '7_DAYS')
@@ -587,6 +586,10 @@ const Overview: React.FC = () => {
     )
   }
 
+  const visibleTabCount = Math.min(waterData.length, 3)
+  const hasMoreTabs = waterData.length > visibleTabCount
+  const uniformTabWidth = tabsViewportWidth > 0 ? tabsViewportWidth / visibleTabCount : hasMoreTabs ? px.h(110) : undefined
+
   return (
     <AnimatedCardContainer
       noneBackground={true}
@@ -598,12 +601,13 @@ const Overview: React.FC = () => {
       <View style={[styles.container, { margin: -24 }]}>
         <ScrollView
           horizontal
+          scrollEnabled={hasMoreTabs}
           showsHorizontalScrollIndicator={false}
           onLayout={(event) => {
             const width = event.nativeEvent.layout.width
             if (width > 0 && width !== tabsViewportWidth) setTabsViewportWidth(width)
           }}
-          contentContainerStyle={[styles.tabsContainer, { width: undefined, minWidth: '100%' }]}
+          contentContainerStyle={[styles.tabsContainer, hasMoreTabs && styles.scrollableTabsContainer]}
         >
           {waterData.map((data, index) => (
             <WaterLevelCard
