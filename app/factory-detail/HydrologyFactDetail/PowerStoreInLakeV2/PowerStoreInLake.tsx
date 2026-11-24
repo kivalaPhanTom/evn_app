@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
-import GradientText from '@/components/GradientText/GradientText.component'
 import AnimatedNumber from '@/components/AnimatedNumber/AnimatedNumber.component'
 import { px } from '@/core/utils/scale'
 import StackedBar, { StackedItem } from '@/components/StackedBar/StackedBar.component'
@@ -25,6 +24,7 @@ const PowerStoreInLakeV2: React.FC = () => {
   const isLoading: boolean = false
 
   const powerStoreInLakeData = powerStoreInLakeFactDetail ? powerStoreInLakeFactDetail[0] : ({} as any)
+  const unitLabel = powerStoreInLakeData?.unit ? ` ${powerStoreInLakeData.unit}` : ''
 
   const card = (
     <AnimatedCardContainer style={isDark ? undefined : { elevation: 0, shadowOpacity: 0, shadowRadius: 0 }}>
@@ -40,17 +40,13 @@ const PowerStoreInLakeV2: React.FC = () => {
           </View>
         ) : (
           <>
-            <GradientText
-              text={Number(powerStoreInLakeData?.currentCapacity ?? 0)}
-              fontSize={px.f(52)}
-              colors={'#00C853'}
-            />
-            <Text style={[styles.unit, { color: '#00C853', marginLeft: px.h(6), fontSize: px.f(20) }]}>
-              {powerStoreInLakeData?.unit ?? ''}
+            <Text style={[styles.currentValue, { color: '#00C853' }]}>
+              {Number(powerStoreInLakeData?.currentCapacity ?? 0)}
+              <Text style={styles.unit}>{unitLabel}</Text>
             </Text>
-            <Text style={[styles.slash, { color: '#9AA6B6' }]}> / </Text>
             <Text style={[styles.refValue, { color: '#9AA6B6' }]}>
-              {powerStoreInLakeData?.capacity ?? 0} {powerStoreInLakeData?.unit ?? ''}
+              <Text style={styles.slash}>{'/\u00a0'}</Text>
+              {powerStoreInLakeData?.capacity ?? 0}{unitLabel}
             </Text>
           </>
         )}

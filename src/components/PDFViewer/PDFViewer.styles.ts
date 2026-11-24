@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.2,

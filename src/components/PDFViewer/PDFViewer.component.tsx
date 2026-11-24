@@ -13,7 +13,7 @@ interface PdfViewerProps {
 
 const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
   const [loading, setLoading] = React.useState(true)
-  const webViewRef = useRef<WebView>(null)
+  const webViewRef = useRef<WebView<object>>(null)
 
   const onReload = () => {
     webViewRef.current?.reload()
@@ -44,7 +44,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ doc, onClose }) => {
 
         {/* PDF Content */}
         <View style={styles.viewer}>
-          <WebView
+          <WebView<object>
             source={{
               uri:
                 Platform.OS === 'ios'

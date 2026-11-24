@@ -26,7 +26,8 @@ const GradientText: React.FC<GradientTextProps> = ({
   animated = true,
   ...props
 }) => {
-  const TextComponent = animated ? Animated.Text : RNText
+  const TextComponent: React.ElementType<TextProps & { entering?: ReturnType<typeof FadeIn.duration> }> =
+    animated ? Animated.Text : RNText
 
   // normalize colors to an array with at least two entries
   let gradientColors: string[]

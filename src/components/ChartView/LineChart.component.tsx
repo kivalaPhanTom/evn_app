@@ -2,7 +2,7 @@ import { darkGradients, lightGradients } from '@/core/constants/gradients'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { createThemePalette } from '@/core/constants/themePalette'
 import { GradientColors } from '@/core/types'
-import { isTablet, px } from '@/core/utils/scale'
+import { hasCompactDesignScale, px } from '@/core/utils/scale'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { ActivityIndicator, Animated, Dimensions, View, Text } from 'react-native'
 import { LineChart as GiftedLineChart } from 'react-native-gifted-charts'
@@ -58,7 +58,7 @@ export const LineChart: React.FC<LineCharProps> = ({
   startFillColor2 = '#2563EB',
   endFillColor2 = '#2563EB',
   gradient = true,
-  height = isTablet() ? px.v(320) : px.v(220),
+  height = px.v(hasCompactDesignScale() ? 320 : 220),
   loading = false,
   animationDuration = 1000,
   ruleTypes = 'dash',
@@ -202,9 +202,9 @@ export const LineChart: React.FC<LineCharProps> = ({
         showVerticalLines={false}
         hideYAxisText={hideYAxisText}
         yAxisColor="transparent"
+        hideRules={!showRules}
         {...(showRules && ruleTypes && { xAxisColor: resolvedXAxisColor, rulesColor: resolvedRulesColor, dashGap: 10, dashWidth: 5, rulesType: ruleTypes })}
         noOfSections={noOfSections}
-        showRules={showRules}
         initialSpacing={30}
         endSpacing={15}
         strokeDashArray1={strokedashArray1}

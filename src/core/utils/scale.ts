@@ -7,58 +7,67 @@ import { Dimensions, PixelRatio } from 'react-native'
 const BASE_WIDTH = 375 // iPhone 11 width
 const BASE_HEIGHT = 812
 
-// ===============================
-// 🔹 GLOBAL SCALE VALUES
-// ===============================
-let { width, height } = Dimensions.get('window')
-let scaleW = width / BASE_WIDTH
-let scaleH = height / BASE_HEIGHT
+const TABLET_MIN_SHORT_SIDE = 768
+const COMPACT_SCALE_MIN_SCREEN_LONG_SIDE = 768
+
+const getDimensions = () => ({
+  window: Dimensions.get('window'),
+  screen: Dimensions.get('screen'),
+})
+
+let dimensions = getDimensions()
 
 // ===============================
 // 🔹 AUTO UPDATE khi xoay màn hình
 // ===============================
-Dimensions.addEventListener('change', ({ window }) => {
-  width = window.width
-  height = window.height
-  scaleW = width / BASE_WIDTH
-  scaleH = height / BASE_HEIGHT
+Dimensions.addEventListener('change', (nextDimensions) => {
+  dimensions = nextDimensions
 })
 
 // ===============================
 // 🔹 Tablet heuristic (avoid native module at load time)
 //    returns true khi kích thước lớn hơn breakpoint
 // ===============================
-export const isTablet = (): boolean => {
-  // breakpoint phổ biến cho tablet: 768 (px)
-  const maxDim = Math.max(width, height)
-  return maxDim >= 768
-}
+export const isTablet = (): boolean =>
+  Math.min(dimensions.window.width, dimensions.window.height) >= TABLET_MIN_SHORT_SIDE
+
+// Giữ tỷ lệ gọn của màn hình dài ngay cả khi thanh hệ thống đổi chiều cao cửa sổ.
+export const hasCompactDesignScale = (screen = dimensions.screen): boolean =>
+  Math.max(screen.width, screen.height) >= COMPACT_SCALE_MIN_SCREEN_LONG_SIDE
 
 // ===============================
 // 🔹 CORE SCALE FUNCTION
 // ===============================
-export const px = (
+type ScaleType = 'horizontal' | 'vertical' | 'moderate' | 'font'
+
+const scaleSize = (
+  { window, screen }: ReturnType<typeof getDimensions>,
   size: number,
-  type: 'horizontal' | 'vertical' | 'moderate' | 'font' = 'moderate',
-  factor: number = 0.5,
+  type: ScaleType,
+  factor = 0.5,
 ): number => {
-  const tabletFactor = isTablet() ? 0.7 : 1 // Tablet scale nhẹ hơn
+  const designFactor = hasCompactDesignScale(screen) ? 0.7 : 1
+  const scaleW = (window.width / BASE_WIDTH) * designFactor
+  const scaleH = (window.height / BASE_HEIGHT) * designFactor
 
   switch (type) {
     case 'horizontal':
-      return Math.round(PixelRatio.roundToNearestPixel(size * scaleW * tabletFactor))
+      return Math.round(PixelRatio.roundToNearestPixel(size * scaleW))
 
     case 'vertical':
-      return Math.round(PixelRatio.roundToNearestPixel(size * scaleH * tabletFactor))
+      return Math.round(PixelRatio.roundToNearestPixel(size * scaleH))
 
     case 'font':
-      return Math.round(PixelRatio.roundToNearestPixel(size * scaleW * tabletFactor * 0.95))
+      return Math.round(PixelRatio.roundToNearestPixel(size * scaleW * 0.95))
 
     default: // moderate
-      const scaled = size * scaleW * tabletFactor
+      const scaled = size * scaleW
       return Math.round(PixelRatio.roundToNearestPixel(size + (scaled - size) * factor))
   }
 }
+
+export const px = (size: number, type: ScaleType = 'moderate', factor = 0.5): number =>
+  scaleSize(dimensions, size, type, factor)
 
 // ===============================
 // 🔹 SHORTCUTS
@@ -81,30 +90,20 @@ px.f = (size: number) => px(size, 'font')
 // (Realtime cập nhật khi xoay)
 // ===============================
 export const useScaledSize = () => {
-  const [dims, setDims] = useState(Dimensions.get('window'))
+  const [dims, setDims] = useState(getDimensions)
 
   useEffect(() => {
-    const sub = Dimensions.addEventListener('change', ({ window }) => {
-      setDims(window)
-    })
+    const sub = Dimensions.addEventListener('change', setDims)
 
     return () => {
-      sub?.remove?.()
+      sub.remove()
     }
   }, [])
 
-  const scaleWLocal = dims.width / BASE_WIDTH
-  const scaleHLocal = dims.height / BASE_HEIGHT
-  const tabletFactor = Math.max(dims.width, dims.height) >= 768 ? 0.7 : 1
-
-  const scale = (size: number, factor: number = 0.5) =>
-    Math.round(PixelRatio.roundToNearestPixel(size + (size * scaleWLocal * tabletFactor - size) * factor))
-
-  const h = (size: number) => Math.round(PixelRatio.roundToNearestPixel(size * scaleWLocal * tabletFactor))
-
-  const v = (size: number) => Math.round(PixelRatio.roundToNearestPixel(size * scaleHLocal * tabletFactor))
-
-  const f = (size: number) => Math.round(PixelRatio.roundToNearestPixel(size * scaleWLocal * tabletFactor * 0.95))
-
-  return { scale, h, v, f }
+  return {
+    scale: (size: number, factor?: number) => scaleSize(dims, size, 'moderate', factor),
+    h: (size: number) => scaleSize(dims, size, 'horizontal'),
+    v: (size: number) => scaleSize(dims, size, 'vertical'),
+    f: (size: number) => scaleSize(dims, size, 'font'),
+  }
 }

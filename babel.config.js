@@ -21,7 +21,6 @@ module.exports = function (api) {
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         },
       ],
-      'expo-router/babel',   // 🚨 BẮT BUỘC — đặt cuối danh sách
     ],
   };
 };

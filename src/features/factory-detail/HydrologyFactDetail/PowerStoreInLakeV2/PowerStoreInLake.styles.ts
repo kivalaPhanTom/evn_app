@@ -17,19 +17,28 @@ const createStyles = (isDark: boolean) =>
     },
     mainRow: {
       flexDirection: 'row',
+      flexWrap: 'wrap',
       justifyContent: 'flex-start',
       alignItems: 'baseline',
+      columnGap: px.h(12),
+      rowGap: px.v(4),
       marginTop: px.v(12),
     },
+    currentValue: {
+      maxWidth: '100%',
+      fontSize: px.f(52),
+      fontWeight: '700',
+    },
     unit: {
+      fontSize: px.f(20),
       fontWeight: '700',
     },
     slash: {
       fontSize: px.f(25),
       fontWeight: '600',
-      marginHorizontal: px.h(6),
     },
     refValue: {
+      maxWidth: '100%',
       fontSize: px.f(35),
       fontWeight: '600',
     },

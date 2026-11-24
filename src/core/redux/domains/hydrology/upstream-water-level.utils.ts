@@ -7,14 +7,24 @@ function finiteNumber(value: unknown): number | null {
 
 export function normalizeUpstreamWaterLevel(response: any) {
   let data = response
-  // Response v2 bọc kết quả trong data; component cần đọc todayUpstream trực tiếp.
+  // API theo năm dùng currentUpstream; biểu đồ đọc chuỗi chính từ todayUpstream.
   for (let depth = 0; depth < 4; depth += 1) {
-    if (Array.isArray(data?.todayUpstream) || Array.isArray(data?.samePeriodUpstream)) break
+    if (
+      Array.isArray(data?.todayUpstream) ||
+      Array.isArray(data?.currentUpstream) ||
+      Array.isArray(data?.samePeriodUpstream)
+    ) {
+      break
+    }
     const nested = data?.data ?? data?.Data ?? data?.result
     if (nested === undefined || nested === data) break
     data = nested
   }
-  const todayUpstream = Array.isArray(data?.todayUpstream) ? data.todayUpstream : []
+  const todayUpstream = Array.isArray(data?.todayUpstream)
+    ? data.todayUpstream
+    : Array.isArray(data?.currentUpstream)
+      ? data.currentUpstream
+      : []
   const samePeriodUpstream = Array.isArray(data?.samePeriodUpstream) ? data.samePeriodUpstream : []
   const values: number[] = todayUpstream.flatMap((point: any) => {
     const value = finiteNumber(point?.value)

@@ -1,5 +1,7 @@
 # HƯỚNG DẪN FIX 2 LỖI BUILD APP iOS (HPP GENCO3)
 
+> **Cập nhật SDK 58 (21/11/2026):** Các bước dùng `withSceneManifest.js` bên dưới là hướng dẫn cho SDK cũ. SDK 58 tự tạo SceneDelegate và scene manifest; project hiện không bật plugin này. Khi build bản hiện tại, xem [hướng dẫn SDK 58](../../doc/EXPO-SDK-58-UPGRADE.md) và không áp dụng lại bản vá scene cũ.
+
 > Tài liệu handover cho người tiếp nhận việc build iOS.
 > Gồm: 2 lỗi đã gặp ngày 18/10/2026, nguyên nhân, cách fix, và quy trình build.
 

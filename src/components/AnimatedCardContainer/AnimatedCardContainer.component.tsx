@@ -146,7 +146,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
             <Image
               source={backgroundImage}
               style={[
-                StyleSheet.absoluteFillObject,
+                StyleSheet.absoluteFill,
                 { borderRadius },
                 backgroundImageStyle,
                 { opacity: backgroundImageOpacity },
@@ -159,7 +159,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
             intensity={isDark ? 40 : 30}
             tint={isDark ? 'dark' : 'light'}
             style={[
-              StyleSheet.absoluteFillObject,
+              StyleSheet.absoluteFill,
               {
                 borderRadius,
                 backgroundColor: isDark
@@ -173,7 +173,7 @@ const AnimatedCardContainer: React.FC<AnimatedCardContainerProps> = (props) => {
               colors={resolvedBg as GradientColors}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={{ ...StyleSheet.absoluteFillObject, borderRadius }}
+              style={{ ...StyleSheet.absoluteFill, borderRadius }}
               pointerEvents="none"
             />
           )}

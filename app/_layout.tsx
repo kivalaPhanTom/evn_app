@@ -5,8 +5,8 @@ import { TranslationProvider } from '@/core/i18n/TranslationProvider'
 import StoreProvider from '@/core/redux/StoreProvider'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, usePathname, useRouter } from 'expo-router'
+import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation'
+import { Stack, useCanGoBack, usePathname, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
@@ -24,6 +24,7 @@ export default function RootLayout() {
   const [preference, setPreferenceState] = useState<ThemePref>('system')
   const [loaded, setLoaded] = useState(false)
   const router = useRouter()
+  const canGoBack = useCanGoBack()
   const pathname = usePathname()
   const insets = useSafeAreaInsets()
 
@@ -81,7 +82,6 @@ export default function RootLayout() {
               <Host>
                 <SafeAreaView style={{ flex: 1, backgroundColor: effectiveScheme === 'dark' ? '#0B0F2A' : '#F3F4F6' }}>
                   <Stack
-                    initialRouteName="splash"
                     screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}
                   >
                     <Stack.Screen name="splash" />
@@ -101,7 +101,7 @@ export default function RootLayout() {
                     {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
                     <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
                   </Stack>
-                  {router.canGoBack() && !pathname.startsWith('/(tabs)') && (
+                  {canGoBack && !pathname.startsWith('/(tabs)') && (
                     <View style={[styles.backContainer, { bottom: insets.bottom + 10 }]} pointerEvents="box-none">
                       {/* <TouchableOpacity
                       onPress={() => router.back()}
