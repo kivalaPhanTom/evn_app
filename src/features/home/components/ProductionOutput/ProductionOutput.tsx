@@ -6,9 +6,8 @@ import styles from './ProductionOutput.styles'
 import ProductOutputRencentDays from '@/components/ProductOutputRencentDays/ProductOutputRencentDays'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { RootState } from '@/core/redux/store'
-import { getProductOutputOverview, getProductOutputByHours, getProductOutputByDays } from '@/core/redux/domains/production-output'
+import { getProductOutputOverview, getProductOutputByDays } from '@/core/redux/domains/production-output'
 import TotalPower from '@/components/TotalPower/TotalPower'
-import ProductionOutputByHours from '@/components/ProductionOutputByHours/ProductionOutputByHours'
 import { useAlignedHourlyTimer } from '@/core/hooks/use-aligned-hourly-timer'
 import { shallowEqual } from 'react-redux'
 
@@ -19,8 +18,6 @@ function ProductionOutput() {
   const {
     productOutputOverview: { totalPower, averagePower, powerSources, unit },
     isLoadingOverview,
-    productOutputByHours,
-    isLoadingByHours,
     productOutputByDays: { productionData },
     isLoadingNearCurrentDays,
   } = useAppSelector((state: RootState) => state.productOutputSlice, shallowEqual)
@@ -32,7 +29,6 @@ function ProductionOutput() {
  
   useEffect(() => {
     dispatch(getProductOutputOverview({ companyId }))
-    dispatch(getProductOutputByHours({ companyId }))
     dispatch(getProductOutputByDays({n: 7, samePeriodYear: selectedYear, companyId}))
   }, [countRefesh, companyId])
 
@@ -56,18 +52,6 @@ function ProductionOutput() {
           type="product-output"
         />
       </View>
-      {/* <View style={styles.section}>
-        <ProductionOutputByHours
-          isLoading={isLoadingByHours}
-          currentDate={productOutputByHours.currentDate}
-          contractPowerValue={productOutputByHours.contractPowerValue}
-          currentPowerValue={productOutputByHours.currentPowerValue}
-          currentTime={productOutputByHours.currentTime}
-          unit={productOutputByHours.unit}
-          barGroups={productOutputByHours.barGroups}
-          onPressCard={onPressCard}
-        />
-      </View> */}
       <View style={styles.section}>
         <ProductOutputRencentDays
           selectedYear={selectedYear}

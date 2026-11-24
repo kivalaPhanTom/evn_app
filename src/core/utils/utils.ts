@@ -60,7 +60,6 @@ export type ApiResponse<T = any> = {
 
 export const catchHandle = (e: any, fnName?: string): void => {
   const { status, data }: ApiResponse = e;
-  const { Message: message } = (data ?? {}) as { Message?: string };
 
   const location = fnName ? ` [${fnName}]` : '';
   console.log(`API Error${location}:`, e);
@@ -76,7 +75,12 @@ export const catchHandle = (e: any, fnName?: string): void => {
       break;
     }
     case 404: {
-      notify(data ?? 'Yêu cầu không tồn tại. Vui lòng thử lại sau.');
+      const message = [data, data?.message, data?.Message].find(
+        (value): value is string => typeof value === 'string' && value.trim().length > 0,
+      );
+      notify(message === 'PLANT_NOT_FOUND'
+        ? 'Không tìm thấy nhà máy trong công ty đã chọn.'
+        : message ?? 'Yêu cầu không tồn tại. Vui lòng thử lại sau.');
       break;
     }
     case 500: {

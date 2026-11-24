@@ -13,11 +13,12 @@ import ReservoirMetric from '../ReservoirWaterLevel/ReservoirMetric/ReservoirMet
 
 interface hydrologyFactDetailProps {
   currentPlantId: string
+  legacyPlantCode?: string
   keyTab: number
   selectedMaHoChua: string
 }
 function HydrologyFactDetail(props: hydrologyFactDetailProps) {
-  const { currentPlantId, keyTab, selectedMaHoChua } = props
+  const { currentPlantId, legacyPlantCode, keyTab, selectedMaHoChua } = props
   const { activeTabIndex } = useAppSelector((state: RootState) => state.powerSlice)
   const { plants, selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
@@ -57,10 +58,10 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   ])
 
   useEffect(() => {
-    if (activeTabIndex === keyTab) {
-      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId }))
+    if (activeTabIndex === keyTab && legacyPlantCode) {
+      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: legacyPlantCode }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
+  }, [legacyPlantCode, activeTabIndex, keyTab, dispatch, countRefesh])
 
   return (
     <ScrollView>
@@ -75,9 +76,11 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
           <InflowOutflow />
         </View>
 
-        <View style={{ marginTop: 20 }}>
-          <PowerStoreInLakeV2 />
-        </View>
+        {legacyPlantCode && (
+          <View style={{ marginTop: 20 }}>
+            <PowerStoreInLakeV2 />
+          </View>
+        )}
       </View>
     </ScrollView>
   )
