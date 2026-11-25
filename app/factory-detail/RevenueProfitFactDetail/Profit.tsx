@@ -35,13 +35,13 @@ const hexToRgba = (hex: string, alpha: number) => {
 }
 
 interface ProfitFactDetailProps {
-  currentPlantId: string
+  legacyPlantCode: string
   keyTab: number
   currentPlantName?: string
 }
 
 export default function ProfitDetail(props: ProfitFactDetailProps) {
-  const { currentPlantId, keyTab, currentPlantName } = props
+  const { legacyPlantCode, keyTab, currentPlantName } = props
   const dispatch = useAppDispatch()
   const router = useRouter()
   const theme = useAppTheme()
@@ -75,9 +75,9 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getProfitFactDetail({ currentPlantId }))
+      dispatch(getProfitFactDetail({ currentPlantId: legacyPlantCode }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
+  }, [dispatch, legacyPlantCode, activeTabIndex, keyTab, countRefesh])
 
   // Build x-axis labels: last 6 days + "Nay" for today
   const today = new Date()
@@ -106,7 +106,7 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
     router.navigate({
       pathname: '/profit-detail' as any,
       params: {
-        plantId: currentPlantId,
+        plantId: legacyPlantCode,
         plantName: currentPlantName
       },
     })

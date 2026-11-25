@@ -60,7 +60,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
         currentPlantId: plantId || '',
       }),
     )
-  }, [dispatch, range])
+  }, [dispatch, range, plantId])
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'

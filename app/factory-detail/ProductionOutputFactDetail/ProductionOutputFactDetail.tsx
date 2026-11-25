@@ -3,7 +3,6 @@ import { View } from 'react-native'
 import styles from '@/features/factory-detail/ProductionOutputFactDetail/ProductionOutputFactDetail.styles'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import TotalProductionOutputFactDetail from './TotalProductionOutputFactDetail/TotalProductionOutputFactDetail'
-import ProuductOutputByHoursFactDetail from './ProductionOutputByHoursFactDetail/ProductionOutputByHoursFactDetail'
 import ProductOutputRencentDaysFactDetail from './ProductOutputRencentDaysFactDetail/ProductOutputRencentDaysFactDetail'
 interface Props { 
    currentPlantId: string
@@ -15,9 +14,6 @@ function ProductionOutputFactDetail(props: Props) {
     <SectionContainer title="Sản lượng (A)">
       <View style={styles.section}>
         <TotalProductionOutputFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
-      </View>
-      <View style={styles.section}>
-        <ProuductOutputByHoursFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />
       </View>
       <View style={styles.section}>
         <ProductOutputRencentDaysFactDetail currentPlantId={currentPlantId} keyTab={keyTab} />

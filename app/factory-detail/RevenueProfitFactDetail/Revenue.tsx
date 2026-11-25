@@ -30,12 +30,12 @@ const hexToRgba = (hex: string, alpha: number) => {
 }
 
 interface RevenueFactDetailProps {
-  currentPlantId: string
+  legacyPlantCode: string
   keyTab: number
 }
 
 export default function RevenueDetail(props: RevenueFactDetailProps) {
-  const { currentPlantId, keyTab } = props
+  const { legacyPlantCode, keyTab } = props
   const dispatch = useAppDispatch()
   const router = useRouter()
   const theme = useAppTheme()
@@ -50,16 +50,16 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
     router.navigate({
       pathname: '/revenue-detail',
       params: {
-        currentPlantId: currentPlantId,
+        currentPlantId: legacyPlantCode,
       },
     })
   }
 
   useEffect(() => {
     if (activeTabIndex === keyTab) {
-      dispatch(getRevenueFactDetail({ currentPlantId }))
+      dispatch(getRevenueFactDetail({ currentPlantId: legacyPlantCode }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
+  }, [dispatch, legacyPlantCode, activeTabIndex, keyTab, countRefesh])
 
   const data: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({

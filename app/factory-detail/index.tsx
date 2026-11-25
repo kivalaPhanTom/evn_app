@@ -50,24 +50,27 @@ function FactoryDetail(props: factoryDetailProps) {
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
+  const activeTabIndex = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
   const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedHydrologyReservoirId, setSelectedHydrologyReservoirId] = useState('')
 
   const router = useRouter();
 
+  const plant = plants.find((item) =>
+    String(item.plantId) === currentPlantId || item.symbol === currentPlantId || item.abbreviation === currentPlantId,
+  )
+  const legacyPlantCode = [plant?.symbol, plant?.abbreviation, currentPlantId]
+    .map((value) => value?.trim().toUpperCase())
+    .map((value) => value === 'SPS3' ? 'SP3' : value)
+    .find((value) => value === 'BTS' || value === 'BK' || value === 'SP3')
+
   useEffect(() => {
     setSelectedHydrologyReservoirId('')
-    const plant = plants.find(
-      (item) =>
-        String(item.plantId) === currentPlantId ||
-        item.symbol === currentPlantId ||
-        item.abbreviation === currentPlantId,
-    )
     if (plant) {
       dispatch(setSelectedOptionsValueFactDetail(getDefaultHydrologyPeriod(plant.regulationType)))
     }
-  }, [currentPlantId, dispatch, plants])
+  }, [currentPlantId, dispatch, plant])
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -193,6 +196,7 @@ function FactoryDetail(props: factoryDetailProps) {
                   onSelectMaHoChua={setSelectedHydrologyReservoirId}
                 />
                 <HydrologyFactDetail
+                  legacyPlantCode={legacyPlantCode}
                   keyTab={keyTab}
                   currentPlantId={currentPlantId}
                   selectedMaHoChua={selectedHydrologyReservoirId}
@@ -201,15 +205,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           {
-            checkModulePermission('DOANH_THU') &&
+            legacyPlantCode && checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-              <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+              <RevenueDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} />
             </LazySection>
           }
           {
-            checkModulePermission('LOI_NHUAN') &&
+            legacyPlantCode && checkModulePermission('LOI_NHUAN') &&
             <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-              <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
+              <ProfitDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} currentPlantName={companyName} />
             </LazySection>
           }
           {
@@ -219,13 +223,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
-            <TechInfoDetail
-              currentPlantId={currentPlantId}
+            {legacyPlantCode && <TechInfoDetail
+              currentPlantId={legacyPlantCode}
               keyTab={keyTab}
-            />
+            />}
           </LazySection>
           <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
-            <ExistenceInfo currentPlantId={currentPlantId} />
+            {legacyPlantCode && activeTabIndex === keyTab && (
+              <ExistenceInfo currentPlantId={legacyPlantCode} />
+            )}
           </LazySection>
         </TwinkleStars>
       </View>
