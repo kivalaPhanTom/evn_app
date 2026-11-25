@@ -18,6 +18,7 @@ function DocumentSection() {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null)
   const dispatch = useAppDispatch()
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { isLoadingLegal, legal } = useAppSelector((state: RootState) => state.documentSlice)
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -43,8 +44,8 @@ function DocumentSection() {
   }, [])
 
   useEffect(() => {
-    dispatch(getLegal())
-  }, [dispatch, countRefesh])
+    dispatch(getLegal({ companyId }))
+  }, [dispatch, countRefesh, companyId])
 
   const renderItem: ListRenderItem<DocumentWithIndex> = useCallback(
     ({ item, index }) => (

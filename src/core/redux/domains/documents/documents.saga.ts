@@ -4,10 +4,11 @@ import { setLoading, setLegal, setExistence } from './documents.slice'
 import { Service } from '@/core/service/documentService'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getLegalSaga(): Generator {
+function* getLegalSaga(action: ReturnType<typeof getLegal>): Generator {
   try {
     yield put(setLoading({ isLoadingLegal: true }))
-    const res = yield call(Service.getLegalApi)
+    const companyId = action.payload?.companyId || ''
+    const res = yield call(Service.getLegalApi, companyId)
     if (res.status === 200) {
       yield put(setLegal(res.data))
     }
@@ -19,7 +20,7 @@ function* getLegalSaga(): Generator {
 }
 
 function* getExistenceSaga(action: ReturnType<typeof getExistence>): Generator {
-  const { currentPlantId } = action.payload
+  const currentPlantId = action.payload?.currentPlantId || ''
   try {
     yield put(setLoading({ isLoadingExistence: true }))
     const res = yield call(Service.getExistenceApi, currentPlantId)
