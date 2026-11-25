@@ -42,6 +42,7 @@ function ProfitDetail() {
   const isDark = theme === 'dark'
   const p = createThemePalette(isDark)
 
+  const { plants, selectedCompanyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { profit, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
@@ -341,10 +342,16 @@ function ProfitDetail() {
           </Text>
           <View>
             {profit.Breakdown.map((plant, idx) => {
+              const selected = plants.find((item) =>
+                item.companyId === selectedCompanyId && item.hasProfit &&
+                (String(item.plantId) === plant.PlantCode || item.symbol === plant.PlantCode ||
+                  item.abbreviation === plant.PlantCode || item.plantName === plant.PlantName),
+              )
               return (
                 <TouchableOpacity
                   key={idx}
-                  onPress={() => onPressPlant(plant.PlantName, plant.PlantCode || idx.toString())}
+                  disabled={!selected}
+                  onPress={() => selected && onPressPlant(selected.plantName, String(selected.plantId))}
                   style={[styles.revenueCard, { backgroundColor: plantCardBg, borderColor: plantCardBorder }]}
                 >
                   <View>

@@ -1,11 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 export interface TechInfoItem {
-  ID_NM: string
-  Name: string
-  Value: string
-  UoM: string
-  Group: string
+  label: string
+  value: string
+  unit: string
 }
 
 export interface TechInfoState {

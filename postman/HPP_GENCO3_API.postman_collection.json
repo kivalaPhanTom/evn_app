@@ -194,9 +194,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/get_Specifications?currentPlantId={{currentPlantId}}&type=",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/get_Specifications?currentPlantId={{currentPlantId}}&type=summary",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "get_Specifications"],
+              "path": ["{{apiPrefix}}", "v2", "get_Specifications"],
               "query": [
                 {
                   "key": "currentPlantId",
@@ -205,7 +205,7 @@
                 },
                 {
                   "key": "type",
-                  "value": "",
+                  "value": "summary",
                   "type": "text"
                 }
               ]

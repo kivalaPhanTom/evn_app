@@ -30,7 +30,9 @@ const PowerStoreInLakeV2: React.FC = () => {
     <AnimatedCardContainer style={isDark ? undefined : { elevation: 0, shadowOpacity: 0, shadowRadius: 0 }}>
       <View style={styles.pill}>
         <Text style={[styles.pillText, { color: '#A855F7' }]}>Điện năng tích trữ</Text>
-        <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData?.rateOfChange / 100} />
+        {powerStoreInLakeData?.rateOfChange != null && (
+          <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData.rateOfChange / 100} />
+        )}
       </View>
 
       <View style={styles.mainRow}>
@@ -59,7 +61,7 @@ const PowerStoreInLakeV2: React.FC = () => {
         ) : (
           <GradientProgress
             colors={['#EC4899', '#F97316']}
-            progress={powerStoreInLakeData?.currentCapacity / powerStoreInLakeData?.capacity}
+            progress={(powerStoreInLakeData?.currentPercentCapacity ?? 0) / 100}
           />
         )}
       </View>

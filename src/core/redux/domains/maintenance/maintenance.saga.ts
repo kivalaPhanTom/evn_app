@@ -1,5 +1,5 @@
 import { getDetailRepairSchedule, getRepairSchedule } from './maintenance.actions'
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeLatest, takeEvery, put, call } from 'redux-saga/effects'
 import { Service } from '@/core/service/unitMaintenanceScheduleService'
 import { setRepairSchedule, setCurrentPlantDetail, setLoading } from './maintenance.slice'
 import { catchHandle } from '@/core/utils/utils'
@@ -25,7 +25,7 @@ function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairS
     const { currentPlantId, year } = action.payload
     const res = yield call(Service.getDetailRepairScheduleApi, currentPlantId, year)
     if (res.status === 200) {
-      yield put(setCurrentPlantDetail(res.data))
+      yield put(setCurrentPlantDetail(res.data.data))
     }
     yield put(setLoading({ isDetailRepairScheduleLoading: false }))
   } catch (error) {
@@ -36,7 +36,7 @@ function* getDetailRepairScheduleSaga(action: ReturnType<typeof getDetailRepairS
 
 function* getRepairScheduleApi() {
   yield takeEvery(getRepairSchedule, getRepairScheduleSaga)
-  yield takeEvery(getDetailRepairSchedule, getDetailRepairScheduleSaga)
+  yield takeLatest(getDetailRepairSchedule, getDetailRepairScheduleSaga)
 }
 
 export function* repairScheduleSagaList() {

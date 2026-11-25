@@ -48,7 +48,10 @@ const companyPlantSlice = createSlice({
       state.plantsError = null
     },
     plantsLoaded: (state, action: PayloadAction<Plant[]>) => {
-      state.plants = action.payload
+      state.plants = action.payload.map((plant) => ({
+        ...plant,
+        ListHoChua: Array.isArray(plant.ListHoChua) ? plant.ListHoChua : [],
+      }))
       state.plantsStatus = 'succeeded'
       state.plantsError = null
     },

@@ -20,29 +20,29 @@ interface RepairScheduleDetailItem {
 }
 
 interface CurrentPlantDetailItem {
-  Id: string
-  Name: string
-  Type: string
-  PlannedStartDate: string
-  PlannedEndDate: string
-  PlannedDays: number
-  ActualStartDate: string
-  ActualEndDate: string
-  ActualDays: number
-  ActiveMonth: number[]
+  id: string
+  name: string
+  type: string
+  plannedStartDate: string
+  plannedEndDate: string
+  plannedDays: number
+  actualStartDate: string
+  actualEndDate: string
+  actualDays: number
+  activeMonth: number[]
 }
 
 export interface CurrentPlantDetail {
-  PlantCode: string
-  PlantName: string
-  MaintenanceItems: number
-  Breakdown: RepairScheduleDetailCategory
-  RepairPlannedDays: number
-  RepairActualDays: number
-  Status: number
-  Progress: number
-  ImageUrl: string
-  Items: CurrentPlantDetailItem[]
+  plantCode: string
+  plantName: string
+  maintenanceItems: number
+  breakdown: { rcm: number; major: number }
+  repairPlannedDays: number
+  repairActualDays: number
+  status: number
+  progress: number
+  imageUrl: string
+  items: CurrentPlantDetailItem[]
 }
 
 export interface RepairScheduleState {
@@ -65,16 +65,16 @@ const initialState: RepairScheduleState = {
   isRepairerScheduleLoading: false,
   isDetailRepairScheduleLoading: false,
   currentPlantDetail: {
-    PlantCode: '',
-    PlantName: '',
-    MaintenanceItems: 0,
-    Breakdown: { RCM: 0, Major: 0 },
-    RepairPlannedDays: 0,
-    RepairActualDays: 0,
-    Status: 0,
-    Progress: 0,
-    ImageUrl: '',
-    Items: [],
+    plantCode: '',
+    plantName: '',
+    maintenanceItems: 0,
+    breakdown: { rcm: 0, major: 0 },
+    repairPlannedDays: 0,
+    repairActualDays: 0,
+    status: 0,
+    progress: 0,
+    imageUrl: '',
+    items: [],
   },
 }
 

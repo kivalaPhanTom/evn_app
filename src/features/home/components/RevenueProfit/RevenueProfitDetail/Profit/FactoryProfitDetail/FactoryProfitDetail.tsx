@@ -1,3 +1,4 @@
+import { usePlantSelection } from '@/core/hooks/use-plant-selection'
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -32,7 +33,7 @@ function FactoryProfitDetail() {
     from: dayjs().subtract(10, 'day'),
     to: dayjs().subtract(1, 'day'),
   })
-  const [selectedOption, setSelectedOption] = useState<string>('Tổng')
+  const [selectedOption, setSelectedOption] = useState<string>('total')
   const [showSelectModal, setShowSelectModal] = useState(false)
 
   const { currentPlantId } = useLocalSearchParams<{
@@ -40,7 +41,9 @@ function FactoryProfitDetail() {
   }>()
   const plantId = currentPlantId || ''
 
-  const selectOptions = ['Tổng', 'BTS', 'BK', 'SP3']
+  const { tabs } = usePlantSelection(undefined, 'hasProfit')
+  const selectOptions = [{ id: 'total', label: 'Tổng' }, ...tabs]
+  const activeOption = selectOptions.find((item) => item.id === selectedOption) ?? selectOptions[0]
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     const fromDate = dayjs(newRange.from)
@@ -70,10 +73,10 @@ function FactoryProfitDetail() {
       getProfitByPeriod({
         startDate: fromDate,
         endDate: toDate,
-        currentPlantId: selectedOption === 'Tổng' ? 'total' : selectedOption,
+        currentPlantId: activeOption.id,
       }),
     )
-  }, [dispatch, range, selectedOption, countRefesh])
+  }, [dispatch, range, activeOption.id, countRefesh])
 
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
@@ -222,7 +225,7 @@ function FactoryProfitDetail() {
       <AnimatedCardContainer>
         <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
         <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-          <Text style={styles.selectText}>{selectedOption}</Text>
+          <Text style={styles.selectText}>{activeOption.label}</Text>
         </TouchableOpacity>
         <Modal
           visible={showSelectModal}
@@ -234,15 +237,15 @@ function FactoryProfitDetail() {
             <View style={styles.modalContent}>
               {selectOptions.map((option) => (
                 <TouchableOpacity
-                  key={option}
-                  style={[styles.selectOption, selectedOption === option && styles.selectOptionActive]}
+                  key={option.id}
+                  style={[styles.selectOption, activeOption.id === option.id && styles.selectOptionActive]}
                   onPress={() => {
-                    setSelectedOption(option)
+                    setSelectedOption(option.id)
                     setShowSelectModal(false)
                   }}
                 >
-                  <Text style={[styles.selectOptionText, selectedOption === option && styles.selectOptionTextActive]}>
-                    {option}
+                  <Text style={[styles.selectOptionText, activeOption.id === option.id && styles.selectOptionTextActive]}>
+                    {option.label}
                   </Text>
                 </TouchableOpacity>
               ))}

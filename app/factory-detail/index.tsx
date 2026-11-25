@@ -60,11 +60,6 @@ function FactoryDetail(props: factoryDetailProps) {
   const plant = plants.find((item) =>
     String(item.plantId) === currentPlantId || item.symbol === currentPlantId || item.abbreviation === currentPlantId,
   )
-  const legacyPlantCode = [plant?.symbol, plant?.abbreviation, currentPlantId]
-    .map((value) => value?.trim().toUpperCase())
-    .map((value) => value === 'SPS3' ? 'SP3' : value)
-    .find((value) => value === 'BTS' || value === 'BK' || value === 'SP3')
-
   useEffect(() => {
     setSelectedHydrologyReservoirId('')
     if (plant) {
@@ -196,7 +191,6 @@ function FactoryDetail(props: factoryDetailProps) {
                   onSelectMaHoChua={setSelectedHydrologyReservoirId}
                 />
                 <HydrologyFactDetail
-                  legacyPlantCode={legacyPlantCode}
                   keyTab={keyTab}
                   currentPlantId={currentPlantId}
                   selectedMaHoChua={selectedHydrologyReservoirId}
@@ -205,15 +199,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           {
-            legacyPlantCode && checkModulePermission('DOANH_THU') &&
+            plant?.hasRevenue && checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-              <RevenueDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} />
+              <RevenueDetail plantId={String(plant.plantId)} keyTab={keyTab} />
             </LazySection>
           }
           {
-            legacyPlantCode && checkModulePermission('LOI_NHUAN') &&
+            plant?.hasProfit && checkModulePermission('LOI_NHUAN') &&
             <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-              <ProfitDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} currentPlantName={companyName} />
+              <ProfitDetail plantId={String(plant.plantId)} keyTab={keyTab} currentPlantName={companyName} />
             </LazySection>
           }
           {
@@ -223,14 +217,14 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
-            {legacyPlantCode && <TechInfoDetail
-              currentPlantId={legacyPlantCode}
+            {plant && <TechInfoDetail
+              currentPlantId={String(plant.plantId)}
               keyTab={keyTab}
             />}
           </LazySection>
           <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
-            {legacyPlantCode && activeTabIndex === keyTab && (
-              <ExistenceInfo currentPlantId={legacyPlantCode} />
+            {plant && activeTabIndex === keyTab && (
+              <ExistenceInfo currentPlantId={String(plant.plantId)} />
             )}
           </LazySection>
         </TwinkleStars>
