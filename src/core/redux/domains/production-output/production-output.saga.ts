@@ -25,7 +25,7 @@ import { catchHandle } from '@/core/utils/utils'
 function* getProductOutputByHoursSaga(action: ReturnType<typeof getProductOutputByHours>): Generator {
   try {
     yield put(setLoading({ isLoadingByHours: true }))
-    const companyId = action.payload?.companyId || ''
+    const { companyId } = action.payload
     const res = yield call(Service.getProductOutputByHoursApi, companyId)
     if (res.status === 200) {
       yield put(setProductOutputByHours(res.data?.data ?? res.data))
@@ -130,13 +130,13 @@ function* getProductOutputByHoursFactDetailSaga(
     const payload = action.payload
     const { factoryId, companyId, getDataFromApi, setLoading } = payload
     setLoading(true)
-    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId, companyId || '')
+    const res = yield call(Service.getProductOutputByHoursFactDetailApi, factoryId, companyId)
     if (res.status === 200) {
       getDataFromApi(res.data?.data ?? res.data)
     }
     setLoading(false)
   } catch (error) {
-    setLoading(false)
+    action.payload.setLoading(false)
     catchHandle(error, 'getProductOutputByHoursFactDetailSaga')
   }
 }

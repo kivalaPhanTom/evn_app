@@ -21,6 +21,7 @@ import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 function FactoryProfitDetail() {
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const isDark = useAppTheme() === 'dark'
   const styles = makeStyles(isDark)
   const { profit, dailyAndCumulativeData, profitByPeriod, countRefesh } = useAppSelector(
@@ -33,7 +34,6 @@ function FactoryProfitDetail() {
     from: dayjs().subtract(10, 'day'),
     to: dayjs().subtract(1, 'day'),
   })
-  const [selectedOption, setSelectedOption] = useState<string>('total')
   const [showSelectModal, setShowSelectModal] = useState(false)
 
   const { currentPlantId } = useLocalSearchParams<{
@@ -41,9 +41,7 @@ function FactoryProfitDetail() {
   }>()
   const plantId = currentPlantId || ''
 
-  const { tabs } = usePlantSelection(undefined, 'hasProfit')
-  const selectOptions = [{ id: 'total', label: 'Tổng' }, ...tabs]
-  const activeOption = selectOptions.find((item) => item.id === selectedOption) ?? selectOptions[0]
+  const { tabs: selectOptions, plant, currentPlantId: periodPlantId, selectPlant } = usePlantSelection(currentPlantId, 'hasProfit')
 
   const onChangeDateRage = (newRange: { from: any; to: any }) => {
     const fromDate = dayjs(newRange.from)
@@ -56,27 +54,31 @@ function FactoryProfitDetail() {
   }
 
   useEffect(() => {
-    dispatch(getProfit())
-  }, [dispatch, countRefesh])
+    if (!selectedCompanyId) return
+    dispatch(getProfit({ companyId: selectedCompanyId }))
+  }, [selectedCompanyId, dispatch, countRefesh])
 
   useEffect(() => {
+    if (!selectedCompanyId) return
     const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
-    dispatch(getDailyAndCumulativeData({ currentPlantId: plantId, date: formattedDate }))
-  }, [dispatch, selectedDate, plantId, countRefesh])
+    dispatch(getDailyAndCumulativeData({ companyId: selectedCompanyId, currentPlantId: plantId, date: formattedDate }))
+  }, [selectedCompanyId, dispatch, selectedDate, plantId, countRefesh])
 
   useEffect(() => {
+    if (!selectedCompanyId || !periodPlantId) return
     // Fetch factory profit by period when range or plantId changes
     const fromDate = dayjs(range?.from)?.format('DD/MM/YYYY')
     const toDate = dayjs(range?.to)?.format('DD/MM/YYYY')
 
     dispatch(
       getProfitByPeriod({
+        companyId: selectedCompanyId,
         startDate: fromDate,
         endDate: toDate,
-        currentPlantId: activeOption.id,
+        currentPlantId: periodPlantId,
       }),
     )
-  }, [dispatch, range, activeOption.id, countRefesh])
+  }, [selectedCompanyId, dispatch, range, periodPlantId, countRefesh])
 
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
@@ -100,7 +102,7 @@ function FactoryProfitDetail() {
   // Plant colors mapping
   const plantColors = isDark ? ['#A78BFA', '#4ADE80', '#22D3EE'] : ['#7C3AED', '#16A34A', '#0891B2']
 
-  const profitData = profitByPeriod?.Data || []
+  const profitData = periodPlantId ? profitByPeriod?.Data || [] : []
   const values: { label: string; value: number }[] = profitData?.map((item: { Value: number; Date: string }) => ({
     label: item.Date.substring(0, 5), // Lấy ngày từ chuỗi "DD/MM/YYYY"
     value: Number(item.Value),
@@ -224,8 +226,8 @@ function FactoryProfitDetail() {
       {/* Lãi/Lỗ theo thời gian */}
       <AnimatedCardContainer>
         <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
-        <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-          <Text style={styles.selectText}>{activeOption.label}</Text>
+        <TouchableOpacity style={styles.selectContainer} disabled={!periodPlantId} onPress={() => setShowSelectModal(true)}>
+          <Text style={styles.selectText}>{plant?.plantName ?? 'Ch?a c? nh? m?y'}</Text>
         </TouchableOpacity>
         <Modal
           visible={showSelectModal}
@@ -238,13 +240,13 @@ function FactoryProfitDetail() {
               {selectOptions.map((option) => (
                 <TouchableOpacity
                   key={option.id}
-                  style={[styles.selectOption, activeOption.id === option.id && styles.selectOptionActive]}
+                  style={[styles.selectOption, periodPlantId === option.id && styles.selectOptionActive]}
                   onPress={() => {
-                    setSelectedOption(option.id)
+                    selectPlant(option.id)
                     setShowSelectModal(false)
                   }}
                 >
-                  <Text style={[styles.selectOptionText, activeOption.id === option.id && styles.selectOptionTextActive]}>
+                  <Text style={[styles.selectOptionText, periodPlantId === option.id && styles.selectOptionTextActive]}>
                     {option.label}
                   </Text>
                 </TouchableOpacity>

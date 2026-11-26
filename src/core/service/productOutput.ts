@@ -24,7 +24,7 @@ export const servicePattern = {
   getProductOutputCompareChart: `${prefix_api_v2}/ProductOutput_compare_chart`,
 }
 
-function getProductOutputByHoursApi(companyId: string = '') {
+function getProductOutputByHoursApi(companyId: string) {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       date: dayjs().format('DD/MM/YYYY'),
@@ -77,7 +77,7 @@ function getProductOutputOverviewFactDetailApi(factoryId: string = '', companyId
   })
 }
 
-function getProductOutputByHoursFactDetailApi(factoryId: string = '', companyId: string = '') {
+function getProductOutputByHoursFactDetailApi(factoryId: string, companyId: string) {
   return api.get(`${servicePattern.getProductOutputByHours}`, {
     params: {
       currentPlantId: factoryId,

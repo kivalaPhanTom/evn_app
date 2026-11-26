@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { formatNumber } from '@/core/utils/utils'
 import { Colors } from '@/core/constants/colors';
 import { useAppTheme } from '@/core/hooks/use-app-theme';
@@ -18,25 +17,11 @@ interface Props {
     variant?: 'blue' | 'purple' | 'red';
 }
 
-const variantConfig = {
-    blue: {
-        borderColor: 'rgba(34,211,238,0.25)',
-        gradient: ['rgba(34, 211, 238, 0.3)', 'rgba(34, 211, 238, 0.2)'],
-    },
-    purple: {
-        borderColor: 'rgba(167,139,250,0.25)',
-        gradient: ['rgba(167, 139, 250, 0.3)', 'rgba(167, 139, 250, 0.2)'],
-    },
-    red: {
-        borderColor: 'rgba(248,113,113,0.25)',
-        gradient: ['rgba(248, 113, 113, 0.3)', 'rgba(248, 113, 113, 0.2)'],
-    },
+const accents = {
+    blue: { light: '#155E75', darkBorder: 'rgba(34,211,238,0.25)' },
+    purple: { light: '#5B4394', darkBorder: 'rgba(167,139,250,0.25)' },
+    red: { light: '#9B4141', darkBorder: 'rgba(248,113,113,0.25)' },
 };
-
-// Plant label colors (same across all variants per Figma)
-const plantLabelColors = ['#6936ff', '#178d42', '#00a9c3'];
-// Plant value colors (shifted by one position)
-const plantValueColors = ['#178d42', '#00a9c3', '#6936ff'];
 
 export default function TotalRevenueExpensesItem({
     title,
@@ -46,48 +31,54 @@ export default function TotalRevenueExpensesItem({
     variant = 'blue',
 }: Props) {
     const isDark = useAppTheme() === 'dark';
-    const config = variantConfig[variant];
-
-    const titleColor = isDark ? '#f0f6ff' : '#475569';
-    const totalColor = isDark ? '#F8FAFC' : '#475569';
-    const totalUnitColor = isDark ? '#94A3B8' : '#475569';
-
-    const cardBg = isDark ? '#0F172A' : 'transparent';
-    const cardBorder = config.borderColor;
+    const accent = accents[variant];
+    const heading = <Text style={[styles.title, !isDark && styles.lightTitle]}>{title}</Text>;
+    const amount = (
+        <View style={styles.right}>
+            <Text style={[styles.total, !isDark && { color: accent.light }]}>{formatNumber(total)}</Text>
+            <Text style={[styles.totalUnit, !isDark && styles.lightLabel]}>{totalUnit}</Text>
+        </View>
+    );
 
     return (
-        <LinearGradient
-            colors={isDark ? [cardBg, cardBg] : (config.gradient as [string, string])}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[styles.card, { borderColor: cardBorder }]}
-        >
-            <View style={styles.left}>
-                <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
-
-                {items.map((item, idx) => {
-                    const labelColor = isDark ? '#e3efff' : plantLabelColors[idx % 3];
-                    const valueColor = isDark ? Colors.green : plantValueColors[idx % 3];
-                    return (
-                        <View key={idx} style={styles.row}>
-                            <Text style={[styles.label, { color: labelColor }]}>{item.PlantName}:</Text>
-                            <Text style={[styles.value, { color: valueColor }]}>
-                                {formatNumber(item.Value)} Tỷ
-                            </Text>
-                        </View>
-                    );
-                })}
+        <View style={[styles.card, isDark ? { borderColor: accent.darkBorder } : styles.lightCard]}>
+            {!isDark && <View style={styles.lightHeader}>{heading}{amount}</View>}
+            <View style={isDark ? styles.left : undefined}>
+                {isDark && heading}
+                {items.map((item) => (
+                    <View key={item.PlantCode} style={[styles.row, !isDark && styles.lightRow]}>
+                        <Text style={[styles.label, !isDark && styles.lightLabel]}>{item.PlantName}{isDark ? ':' : ''}</Text>
+                        <Text style={[styles.value, !isDark && styles.lightValue]}>{formatNumber(item.Value)} {isDark ? 'Tỷ' : 'tỷ'}</Text>
+                    </View>
+                ))}
             </View>
-
-            <View style={styles.right}>
-                <Text style={[styles.total, { color: totalColor }]}>{formatNumber(total)}</Text>
-                <Text style={[styles.totalUnit, { color: totalUnitColor }]}>{totalUnit}</Text>
-            </View>
-        </LinearGradient>
+            {isDark && amount}
+        </View>
     );
 }
 const styles = StyleSheet.create({
+    lightCard: {
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#D9DFE6',
+        borderRadius: 14,
+        elevation: 0,
+        shadowOpacity: 0,
+    },
+    lightHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#CBD5E1',
+    },
+    lightTitle: { flex: 1, color: '#1E293B', fontSize: 15, marginBottom: 0 },
+    lightRow: { alignItems: 'baseline', paddingTop: 6, paddingRight: 0, gap: 12 },
+    lightLabel: { color: '#475569', fontSize: 13, flexShrink: 1 },
+    lightValue: { color: '#1E293B', fontSize: 13, fontVariant: ['tabular-nums'] },
     card: {
+        backgroundColor: '#0F172A',
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 16,

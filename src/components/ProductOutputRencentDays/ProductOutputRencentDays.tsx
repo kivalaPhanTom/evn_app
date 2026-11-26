@@ -35,6 +35,7 @@ function ProductOutputRencentDays(props: Props) {
   const isDark = useAppTheme() === 'dark'
   const { isLoading, productionData, onPressCard, selectedYear, setSelectedYear } = props
   const currentYear = new Date().getFullYear()
+  const contractColor = isDark ? '#eab308' : '#855100'
   const actualGreenColor = isDark ? Colors.green : Colors.actualGreen
   //
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i - 1)
@@ -61,7 +62,7 @@ function ProductOutputRencentDays(props: Props) {
   }, [isLoading])
   const legendItems: LegendItemData[] = [
     { type: 'line', label: 'Thực tế', color: actualGreenColor },
-    { type: 'line', label: 'Hợp đồng', color: '#eab308' },
+    { type: 'line', label: 'Hợp đồng', color: contractColor },
     { type: 'line', label: 'Cùng kỳ', color: '#7a8596' },
   ]
   return (
@@ -177,7 +178,7 @@ function ProductOutputRencentDays(props: Props) {
                           styles.col1,
                           styles.dateText,
                           isWeekend && styles.weekendText,
-                          !isDark && { color: isWeekend ? '#eab308' : '#111827' },
+                          !isDark && { color: isWeekend ? contractColor : '#111827' },
                         ]}
                       >
                         {day.date}
@@ -201,7 +202,7 @@ function ProductOutputRencentDays(props: Props) {
                         </Text>
                       </View>
                       <View style={styles.col3}>
-                        <Text style={[styles.cellText, styles.valueText, styles.contractText]}>
+                        <Text style={[styles.cellText, styles.valueText, styles.contractText, !isDark && { color: contractColor }]}>
                           {day.contract.toFixed(2)} <Text style={styles.unitText}></Text>
                         </Text>
                       </View>
@@ -230,7 +231,7 @@ function ProductOutputRencentDays(props: Props) {
               data2={contractData}
               data3={samePeriodData}
               color={actualGreenColor}
-              color2={'#eab308'}
+              color2={contractColor}
               color3={'#7a8596'}
               areaChart={false}
               hideYAxisText={true}

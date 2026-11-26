@@ -10,19 +10,21 @@ import { textGradients } from '@/core/constants/gradients'
 import { Ionicons } from '@expo/vector-icons'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
-const DEFAULT_COMPANY_NAME = 'CÔNG TY THỦY ĐIỆN BUÔN KUỐP'
-const DEFAULT_LOCATION = 'Đắk Lắk, Việt Nam'
+import { useAppSelector } from '@/core/redux/hooks'
 
 const UnitMaintenanceScheduleDetailScreen: React.FC = () => {
   const { companyName, location } = useLocalSearchParams<{
     companyName?: string | string[]
     location?: string | string[]
   }>()
+  const company = useAppSelector(({ companyPlantSlice }) => companyPlantSlice.companies.find(
+    (item) => item.companyId === companyPlantSlice.selectedCompanyId,
+  ))
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
 
-  const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName || DEFAULT_COMPANY_NAME
-  const companyLocation = Array.isArray(location) ? location[0] : location || DEFAULT_LOCATION
+  const companyTitle = Array.isArray(companyName) ? companyName[0] : companyName || company?.companyName || ''
+  const companyLocation = Array.isArray(location) ? location[0] : location || company?.location || ''
 
   return (
     <TwinkleStars
@@ -39,10 +41,10 @@ const UnitMaintenanceScheduleDetailScreen: React.FC = () => {
           fontSize={px.f(30)}
           style={styles.titleText}
         />
-        <View style={styles.locationRow}>
+        {companyLocation && <View style={styles.locationRow}>
           <Ionicons name="location" size={px.f(12)} color="#FF6A6A" style={styles.locationIcon} />
           <Text style={[styles.locationText, { color: isDark ? '#FFF' : '#6B7280' }]}>{companyLocation}</Text>
-        </View>
+        </View>}
       </View>
       <UnitMaintenanceDetails />
     </TwinkleStars>

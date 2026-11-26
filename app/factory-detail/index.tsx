@@ -141,7 +141,7 @@ function FactoryDetail(props: factoryDetailProps) {
     >
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-          <View style={styles.header}>
+          <View style={[styles.header, !isDark && styles.lightHeader]}>
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
@@ -176,10 +176,10 @@ function FactoryDetail(props: factoryDetailProps) {
             <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
               <SectionContainer
                 title={t('hydrology')}
-                actionButton={{
+                actionButton={plant?.hasHydrology ? {
                   label: 'Chi tiết',
                   onPress: onPressCardHydro,
-                }}
+                } : undefined}
                 isShowSelectButton={true}
                 options={HYDROLOGY_PERIOD_OPTIONS}
                 onChangeOption={onChange}
@@ -244,6 +244,9 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  lightHeader: {
+    paddingHorizontal: px.h(16) + px.f(32) + px.h(8),
   },
   checklistIcon: {
     position: 'absolute',

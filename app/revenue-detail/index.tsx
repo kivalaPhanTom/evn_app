@@ -54,6 +54,7 @@ function SectionBox({ children, style }: any) {
 export default function RevenueDetail(props: Props) {
   const isDark = useAppTheme() === 'dark'
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()
@@ -77,13 +78,13 @@ export default function RevenueDetail(props: Props) {
       currentPlantId: activeTab,
       date: formattedDate,
     }
-    if (activeTab) dispatch(getRevenuePowerPrices(payload))
+    if (activeTab && selectedCompanyId) dispatch(getRevenuePowerPrices({ ...payload, companyId: selectedCompanyId }))
     dispatch(
       getRevenueTotalExpense({
         date: formattedDate,
       }),
     )
-  }, [activeTab, selectedDate, countRefesh])
+  }, [selectedCompanyId, activeTab, selectedDate, countRefesh])
 
   const onRefresh = async () => {
     setRefreshing(true)

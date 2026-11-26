@@ -77,8 +77,9 @@ function ProfitDetail() {
   )
 
   useEffect(() => {
-    dispatch(getProfit())
-  }, [countRefesh])
+    if (!selectedCompanyId) return
+    dispatch(getProfit({ companyId: selectedCompanyId }))
+  }, [selectedCompanyId, countRefesh])
 
   const today = new Date()
   const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`

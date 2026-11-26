@@ -43,6 +43,7 @@ interface ProfitFactDetailProps {
 export default function ProfitDetail(props: ProfitFactDetailProps) {
   const { plantId, keyTab, currentPlantName } = props
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const router = useRouter()
   const theme = useAppTheme()
   const isDark = theme === 'dark'
@@ -74,10 +75,11 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   }))
 
   useEffect(() => {
+    if (!selectedCompanyId) return
     if (activeTabIndex === keyTab) {
-      dispatch(getProfitFactDetail({ currentPlantId: plantId }))
+      dispatch(getProfitFactDetail({ companyId: selectedCompanyId, currentPlantId: plantId }))
     }
-  }, [dispatch, plantId, activeTabIndex, keyTab, countRefesh])
+  }, [selectedCompanyId, dispatch, plantId, activeTabIndex, keyTab, countRefesh])
 
   // Build x-axis labels: last 6 days + "Nay" for today
   const today = new Date()
