@@ -1,5 +1,6 @@
 import AnimatedCardContainer from '@/components/AnimatedCardContainer/AnimatedCardContainer.component'
 import TwinkleStars from '@/components/Background/TwinkleStarsCore'
+import ConfirmDialog from '@/components/ConfirmDialog/ConfirmDialog.component'
 import SectionContainer from '@/components/ui/SectionContainer/SectionContainer.component'
 import { Colors } from '@/core/constants/colors'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
@@ -50,6 +51,7 @@ export default function CompaniesScreen() {
   const { logout } = useAuth()
   const { setPreference } = useContext(ThemeToggleContext)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const lightOn = !isDark
   useEffect(() => {
     if (companiesStatus === 'idle') dispatch(restoreCompanies())
@@ -75,17 +77,21 @@ export default function CompaniesScreen() {
         {menuOpen && <Pressable style={styles.backdrop} onPress={() => setMenuOpen(false)} />}
         <View style={styles.header}>
           <Pressable onPress={() => setMenuOpen((v) => !v)} hitSlop={10}>
-            <Ionicons name="settings" size={px.f(24)} color={lightOn ? '#374151' : isDark ? '#FFFFFF' : '#111827'} />
+            <Ionicons name="settings" size={px.f(30)} color={lightOn ? '#374151' : isDark ? '#FFFFFF' : '#111827'} />
           </Pressable>
           {menuOpen && (
-            <View style={styles.menu}>
-              <View style={styles.menuRow}>
-                <Text style={styles.menuText}>{t('common.backgroundColor')}</Text>
-                <Pressable
-                  onPress={() => setPreference(isDark ? 'light' : 'dark')}
-                  hitSlop={8}
-                  style={[styles.toggleTrack, { backgroundColor: lightOn ? '#F97316' : '#111827' }]}
-                >
+            <View style={[styles.menu, lightOn ? styles.menuLight : styles.menuDark]}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuRow,
+                  pressed && (lightOn ? styles.menuRowPressedLight : styles.menuRowPressedDark),
+                ]}
+                onPress={() => setPreference(isDark ? 'light' : 'dark')}
+              >
+                <Text style={[styles.menuText, lightOn ? styles.menuTextLight : styles.menuTextDark]}>
+                  {t('common.backgroundColor')}
+                </Text>
+                <View hitSlop={8} style={[styles.toggleTrack, { backgroundColor: lightOn ? '#F97316' : '#111827' }]}>
                   <View style={styles.toggleInner}>
                     {lightOn ? (
                       <>
@@ -99,17 +105,22 @@ export default function CompaniesScreen() {
                       </>
                     )}
                   </View>
-                </Pressable>
-              </View>
+                </View>
+              </Pressable>
               <Pressable
-                style={styles.menuRow}
+                style={({ pressed }) => [
+                  styles.menuRow,
+                  pressed && (lightOn ? styles.menuRowPressedLight : styles.menuRowPressedDark),
+                ]}
                 onPress={() => {
                   setMenuOpen(false)
-                  onLogout().catch(() => {})
+                  setLogoutDialogOpen(true)
                 }}
               >
-                <Text style={styles.menuText}>{t('auth.logout')}</Text>
-                <Ionicons name="log-out-outline" size={px.f(20)} color="#1B6FC2" />
+                <Text style={[styles.menuText, lightOn ? styles.menuTextLight : styles.menuTextDark]}>
+                  {t('auth.logout')}
+                </Text>
+                <Ionicons name="log-out-outline" size={px.f(24)} color={lightOn ? '#1B6FC2' : Colors.blue} />
               </Pressable>
             </View>
           )}
@@ -190,6 +201,19 @@ export default function CompaniesScreen() {
           <Text style={{ color: lightOn ? '#111827' : '#fff', fontSize: px.f(13) }}>v{appVersion}</Text>
         </View>
       </SafeAreaView>
+      <ConfirmDialog
+        visible={logoutDialogOpen}
+        title={t('auth.logoutConfirmTitle')}
+        message={t('auth.logoutConfirmMessage')}
+        confirmText={t('auth.logoutConfirmYes')}
+        cancelText={t('auth.logoutConfirmNo')}
+        destructive
+        onCancel={() => setLogoutDialogOpen(false)}
+        onConfirm={() => {
+          setLogoutDialogOpen(false)
+          onLogout().catch(() => {})
+        }}
+      />
     </TwinkleStars>
   )
 }
@@ -300,28 +324,49 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: px.v(36),
     right: 0,
-    minWidth: px.h(190),
-    backgroundColor: '#FFFFFF',
-    borderRadius: px.h(12),
-    paddingVertical: px.v(6),
+    minWidth: px.h(320),
+    minHeight: px.h(160),
+    borderRadius: px.h(14),
+    paddingVertical: px.v(8),
+    borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 10,
     elevation: 6,
   },
+  menuLight: {
+    backgroundColor: Colors.white,
+    borderColor: 'rgba(17, 24, 39, 0.08)',
+  },
+  menuDark: {
+    backgroundColor: Colors.cardColor,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: px.h(12),
-    paddingVertical: px.v(10),
-    gap: px.h(12),
+    paddingHorizontal: px.h(20),
+    paddingVertical: px.v(16),
+    minHeight: px.h(72),
+    gap: px.h(14),
+  },
+  menuRowPressedLight: {
+    backgroundColor: '#F1F5F9',
+  },
+  menuRowPressedDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   menuText: {
-    color: '#1B6FC2',
-    fontSize: px.f(14),
+    fontSize: px.f(18),
     fontWeight: '600',
+  },
+  menuTextLight: {
+    color: '#1B6FC2',
+  },
+  menuTextDark: {
+    color: Colors.blue,
   },
   toggleTrack: {
     width: px.h(48),

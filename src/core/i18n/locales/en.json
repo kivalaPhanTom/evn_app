@@ -36,7 +36,11 @@
     "username": "Username",
     "logout": "Logout",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "logoutConfirmTitle": "Log out",
+    "logoutConfirmMessage": "Do you want to log out of this account?",
+    "logoutConfirmYes": "Yes",
+    "logoutConfirmNo": "No"
   },
   "appName": "EVNGENCO3 Hydropower Plant Management Application"
 }

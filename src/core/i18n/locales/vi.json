@@ -36,7 +36,11 @@
     "username": "Tên đăng nhập",
     "logout": "Đăng xuất",
     "email": "Email",
-    "password": "Mật khẩu"
+    "password": "Mật khẩu",
+    "logoutConfirmTitle": "Đăng xuất",
+    "logoutConfirmMessage": "Bạn có muốn đăng xuất tài khoản này không?",
+    "logoutConfirmYes": "Có",
+    "logoutConfirmNo": "Không"
   },
   "appName": "Quản lý NMTĐ EVNGENCO3",
   "power": "Công suất (P)",
