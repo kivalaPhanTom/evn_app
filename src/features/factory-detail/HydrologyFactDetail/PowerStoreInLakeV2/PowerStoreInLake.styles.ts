@@ -3,6 +3,58 @@ import { StyleSheet } from "react-native";
 
 const createStyles = (isDark: boolean) =>
   StyleSheet.create({
+    lightCard: {
+      elevation: 0,
+      shadowOpacity: 0,
+    },
+    lightHeader: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: 8,
+    },
+    lightTitle: {
+      color: '#1E293B',
+      fontSize: px.m(17),
+      fontWeight: '700',
+    },
+    lightCurrent: {
+      color: '#0F766E',
+      fontSize: px.f(42),
+      fontWeight: '700',
+      fontVariant: ['tabular-nums'],
+      marginVertical: px.v(8),
+    },
+    lightUnit: {
+      color: '#475569',
+      fontSize: px.m(16),
+      fontWeight: '600',
+    },
+    lightProgressLabel: {
+      color: '#475569',
+      fontWeight: '600',
+    },
+    lightComparison: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      gap: 8,
+      marginTop: px.v(14),
+      paddingTop: px.v(10),
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: '#CBD5E1',
+    },
+    lightComparisonLabel: {
+      color: '#475569',
+      fontSize: px.m(14),
+    },
+    lightComparisonValue: {
+      color: '#1E293B',
+      fontSize: px.m(14),
+      fontWeight: '700',
+      fontVariant: ['tabular-nums'],
+    },
     pill: {
       flexDirection: 'row',
       justifyContent: 'space-between',

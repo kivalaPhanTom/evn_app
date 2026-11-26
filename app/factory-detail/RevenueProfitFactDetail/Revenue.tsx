@@ -30,13 +30,14 @@ const hexToRgba = (hex: string, alpha: number) => {
 }
 
 interface RevenueFactDetailProps {
-  currentPlantId: string
+  plantId: string
   keyTab: number
 }
 
 export default function RevenueDetail(props: RevenueFactDetailProps) {
-  const { currentPlantId, keyTab } = props
+  const { plantId, keyTab } = props
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const router = useRouter()
   const theme = useAppTheme()
   const isDark = theme === 'dark'
@@ -50,16 +51,17 @@ export default function RevenueDetail(props: RevenueFactDetailProps) {
     router.navigate({
       pathname: '/revenue-detail',
       params: {
-        currentPlantId: currentPlantId,
+        currentPlantId: plantId,
       },
     })
   }
 
   useEffect(() => {
+    if (!selectedCompanyId) return
     if (activeTabIndex === keyTab) {
-      dispatch(getRevenueFactDetail({ currentPlantId }))
+      dispatch(getRevenueFactDetail({ companyId: selectedCompanyId, currentPlantId: plantId }))
     }
-  }, [dispatch, currentPlantId, activeTabIndex, keyTab, countRefesh])
+  }, [selectedCompanyId, dispatch, plantId, activeTabIndex, keyTab, countRefesh])
 
   const data: { label: string; value: number }[] = revenueFactDetail.Chart.Data.map(
     (item: { Contract: number; Date: string }) => ({

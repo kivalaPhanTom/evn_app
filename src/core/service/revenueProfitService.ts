@@ -1,5 +1,5 @@
-import { api, get } from './api.service'
-import { prefix_api } from '../constants/vars'
+import { api } from './api.service'
+import { prefix_api, prefix_api_v2 } from '../constants/vars'
 
 export const Service = {
   getProfitApi,
@@ -11,40 +11,27 @@ export const Service = {
   getProfitByPeriodApi,
 }
 export const servicePattern = {
-  getProfit: `${prefix_api}/profit`,
-  getRevenue: `${prefix_api}/revenue`,
+  getProfit: `${prefix_api_v2}/profit`,
+  getRevenue: `${prefix_api_v2}/revenue`,
 
-  getRevenuePowerPrices: `${prefix_api}/electricityPrices`,
+  getRevenuePowerPrices: `${prefix_api_v2}/electricityPrices`,
 
   getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
   getRevenueByPeriod: `${prefix_api}/revenueByPeriod`,
-  getDailyAndCumulative: `${prefix_api}/dailyAndCumulative`,
-  getProfitByPeriod: `${prefix_api}/byPeriod`,
+  getDailyAndCumulative: `${prefix_api_v2}/dailyAndCumulative`,
+  getProfitByPeriod: `${prefix_api_v2}/byPeriod`,
 }
 
-function getProfitApi(currentPlantId: string = '') {
-  return api.get(`${servicePattern.getProfit}`, {
-    params: {
-      currentPlantId: currentPlantId,
-    },
-  })
+function getProfitApi(params: { companyId: string; currentPlantId?: string; date?: string }) {
+  return api.get(servicePattern.getProfit, { params })
 }
 
-function getRevenueApi(currentPlantId: string = '') {
-  return api.get(`${servicePattern.getRevenue}`, {
-    params: {
-      currentPlantId: currentPlantId,
-    },
-  })
+function getRevenueApi(params: { companyId: string; currentPlantId?: string; date?: string }) {
+  return api.get(servicePattern.getRevenue, { params })
 }
 
-function getRevenuePowerPricesApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getRevenuePowerPrices}`, {
-    params: {
-      currentPlantId: currentPlantId,
-      date: date,
-    },
-  })
+function getRevenuePowerPricesApi(params: { companyId: string; currentPlantId: string; date?: string }) {
+  return api.get(servicePattern.getRevenuePowerPrices, { params })
 }
 
 function getRevenueTotalExpensesApi(date: string) {
@@ -65,21 +52,10 @@ function getRevenueByPeriodApi(startDate: string, endDate: string, type: string)
   })
 }
 
-function getDailyAndCumulativeApi(currentPlantId: string, date: string) {
-  return api.get(`${servicePattern.getDailyAndCumulative}`, {
-    params: {
-      currentPlantId: currentPlantId,
-      date: date,
-    },
-  })
+function getDailyAndCumulativeApi(params: { companyId: string; currentPlantId?: string; date?: string }) {
+  return api.get(servicePattern.getDailyAndCumulative, { params })
 }
 
-function getProfitByPeriodApi(startDate: string, endDate: string, currentPlantId: string) {
-  return api.get(`${servicePattern.getProfitByPeriod}`, {
-    params: {
-      startDate: startDate,
-      endDate: endDate,
-      currentPlantId: currentPlantId,
-    },
-  })
+function getProfitByPeriodApi(params: { companyId: string; currentPlantId: string; startDate: string; endDate: string }) {
+  return api.get(servicePattern.getProfitByPeriod, { params })
 }

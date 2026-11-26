@@ -34,7 +34,7 @@ export const servicePattern = {
   getOutflow: `${prefix_api_v2}/getOutflow`,
   getTurbineflow: `${prefix_api_v2}/getTurbineflow`,
   getPowerStoreInLake: `${prefix_api}/PowerStoreInLake`,
-  getPowerStoreInLakeFactDetail: `${prefix_api}/PowerStoreInLakeOfFactory`,
+  getPowerStoreInLakeFactDetail: `${prefix_api_v2}/PowerStoreInLakeOfFactory`,
   getOperateWaterLevel: `${prefix_api}/GetOperateWaterLevel`,
 }
 function getHydrologyGraphicChartApi(maHoChua: string, type: string) {
@@ -103,11 +103,12 @@ function getPowerStoreInLake() {
   )
 }
 
-function getPowerStoreInLakeFactDetail(currentPlantId: string) {
+function getPowerStoreInLakeFactDetail(currentPlantId: string, maHoChua?: string) {
   return apiFormUrlEncoded.get(
     `${servicePattern.getPowerStoreInLakeFactDetail}`, {
     params: {
-      currentPlantId: currentPlantId,
+      currentPlantId,
+      MaHoChua: maHoChua,
     }
   }
   )

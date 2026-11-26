@@ -50,24 +50,22 @@ function FactoryDetail(props: factoryDetailProps) {
   const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
+  const activeTabIndex = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
   const plants = useAppSelector((state: RootState) => state.companyPlantSlice.plants)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedHydrologyReservoirId, setSelectedHydrologyReservoirId] = useState('')
 
   const router = useRouter();
 
+  const plant = plants.find((item) =>
+    String(item.plantId) === currentPlantId || item.symbol === currentPlantId || item.abbreviation === currentPlantId,
+  )
   useEffect(() => {
     setSelectedHydrologyReservoirId('')
-    const plant = plants.find(
-      (item) =>
-        String(item.plantId) === currentPlantId ||
-        item.symbol === currentPlantId ||
-        item.abbreviation === currentPlantId,
-    )
     if (plant) {
       dispatch(setSelectedOptionsValueFactDetail(getDefaultHydrologyPeriod(plant.regulationType)))
     }
-  }, [currentPlantId, dispatch, plants])
+  }, [currentPlantId, dispatch, plant])
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -143,7 +141,7 @@ function FactoryDetail(props: factoryDetailProps) {
     >
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-          <View style={styles.header}>
+          <View style={[styles.header, !isDark && styles.lightHeader]}>
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
@@ -178,10 +176,10 @@ function FactoryDetail(props: factoryDetailProps) {
             <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
               <SectionContainer
                 title={t('hydrology')}
-                actionButton={{
+                actionButton={plant?.hasHydrology ? {
                   label: 'Chi tiết',
                   onPress: onPressCardHydro,
-                }}
+                } : undefined}
                 isShowSelectButton={true}
                 options={HYDROLOGY_PERIOD_OPTIONS}
                 onChangeOption={onChange}
@@ -201,15 +199,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           {
-            checkModulePermission('DOANH_THU') &&
+            plant?.hasRevenue && checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-              <RevenueDetail keyTab={keyTab} currentPlantId={currentPlantId} />
+              <RevenueDetail plantId={String(plant.plantId)} keyTab={keyTab} />
             </LazySection>
           }
           {
-            checkModulePermission('LOI_NHUAN') &&
+            plant?.hasProfit && checkModulePermission('LOI_NHUAN') &&
             <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-              <ProfitDetail keyTab={keyTab} currentPlantId={currentPlantId} currentPlantName={companyName} />
+              <ProfitDetail plantId={String(plant.plantId)} keyTab={keyTab} currentPlantName={companyName} />
             </LazySection>
           }
           {
@@ -219,13 +217,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
-            <TechInfoDetail
-              currentPlantId={currentPlantId}
+            {plant && <TechInfoDetail
+              currentPlantId={String(plant.plantId)}
               keyTab={keyTab}
-            />
+            />}
           </LazySection>
           <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
-            <ExistenceInfo currentPlantId={currentPlantId} />
+            {plant && activeTabIndex === keyTab && (
+              <ExistenceInfo currentPlantId={String(plant.plantId)} />
+            )}
           </LazySection>
         </TwinkleStars>
       </View>
@@ -244,6 +244,9 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  lightHeader: {
+    paddingHorizontal: px.h(16) + px.f(32) + px.h(8),
   },
   checklistIcon: {
     position: 'absolute',

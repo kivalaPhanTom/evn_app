@@ -1,3 +1,4 @@
+import { usePlantSelection } from '@/core/hooks/use-plant-selection'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -14,6 +15,7 @@ import { BarGroup } from '@/core/types'
 import { Colors } from '@/core/constants/colors'
 import BarChart from '@/components/BarChart/BarChart.component'
 import { px } from '@/core/utils/scale'
+import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { Toast } from 'toastify-react-native'
 
 interface ProfitDetailProps {
@@ -22,7 +24,11 @@ interface ProfitDetailProps {
 }
 
 function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
+  const { currentPlantId: periodPlantId } = usePlantSelection(plantId, 'hasProfit')
+  const light = useAppTheme() === 'light'
+  const monthlyText = light && { color: '#805000' }
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const { dailyAndCumulativeData, profitByPeriod } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
@@ -42,25 +48,29 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
     setRange(newRange)
   }, [])
   useEffect(() => {
-    dispatch(getProfit())
-  }, [dispatch])
+    if (!selectedCompanyId) return
+    dispatch(getProfit({ companyId: selectedCompanyId }))
+  }, [selectedCompanyId, dispatch])
 
   useEffect(() => {
+    if (!selectedCompanyId) return
     const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY')
-    dispatch(getDailyAndCumulativeData({ currentPlantId: plantId || '', date: formattedDate }))
-  }, [dispatch, selectedDate, plantId])
+    dispatch(getDailyAndCumulativeData({ companyId: selectedCompanyId, currentPlantId: plantId || '', date: formattedDate }))
+  }, [selectedCompanyId, dispatch, selectedDate, plantId])
   useEffect(() => {
+    if (!selectedCompanyId || !periodPlantId) return
     // Fetch factory profit by period when range or plantId changes
     const fromDate = dayjs(range?.from)?.format('DD/MM/YYYY')
     const toDate = dayjs(range?.to)?.format('DD/MM/YYYY')
     dispatch(
       getProfitByPeriod({
+        companyId: selectedCompanyId,
         startDate: fromDate,
         endDate: toDate,
-        currentPlantId: plantId || '',
+        currentPlantId: periodPlantId,
       }),
     )
-  }, [dispatch, range])
+  }, [selectedCompanyId, dispatch, range, periodPlantId])
   // Get month number from selectedDate (format: "DD/MM/YYYY")
   const monthNumber = dayjs(selectedDate).format('DD/MM/YYYY')?.split('/')[1] ?? new Date().getMonth() + 1
   const widthLine = '93%'
@@ -133,10 +143,10 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
           style={[styles.card, styles.rightCard]}
         >
           <View style={styles.cardContent}>
-            <Text style={styles.cardLabelYellow}>LŨY KẾ THÁNG {monthNumber}</Text>
+            <Text style={[styles.cardLabelYellow, monthlyText]}>LŨY KẾ THÁNG {monthNumber}</Text>
             <View style={styles.cardValueContainer}>
-              <Text style={styles.cardValueYellow}>{dailyAndCumulativeData.ProfitMonth.Value}</Text>
-              <Text style={styles.cardUnitYellow}>{dailyAndCumulativeData.ProfitMonth.Unit}</Text>
+              <Text style={[styles.cardValueYellow, monthlyText]}>{dailyAndCumulativeData.ProfitMonth.Value}</Text>
+              <Text style={[styles.cardUnitYellow, monthlyText]}>{dailyAndCumulativeData.ProfitMonth.Unit}</Text>
             </View>
           </View>
         </GradientCard>
@@ -154,7 +164,7 @@ function ProfitDetail({ plantName, plantId }: ProfitDetailProps) {
 
       {/* Lãi/Lỗ theo thời gian */}
       <AnimatedCardContainer>
-        <Text style={styles.profitTimeTitle}>Lãi/Lỗ theo thời gian</Text>
+        <Text style={[styles.profitTimeTitle, light && { color: '#1F2937' }]}>Lãi/Lỗ theo thời gian</Text>
         <DateRangePicker format="DD/MM/YYYY" value={range} onChange={onChangeDateRage} mode="modal" chooseMode="day" />
         <View>
           <View style={[styles.chartWrapper]}>

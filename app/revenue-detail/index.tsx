@@ -1,3 +1,4 @@
+import { usePlantSelection } from '@/core/hooks/use-plant-selection'
 import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import PowerPrices from './PowerPrices'
@@ -50,26 +51,10 @@ const data = {
 function SectionBox({ children, style }: any) {
   return <View style={style}>{children}</View>
 }
-function getCurrentPlantId(activeTab: string): string {
-  let result: string = ''
-  switch (activeTab) {
-    case 'buon-tua-srah':
-      result = 'BTS'
-      break
-    case 'buon-kuop':
-      result = 'BK'
-      break
-    case 'srepok-3':
-      result = 'SP3'
-      break
-    default:
-      break
-  }
-  return result
-}
 export default function RevenueDetail(props: Props) {
   const isDark = useAppTheme() === 'dark'
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId?: string
   }>()
@@ -79,26 +64,10 @@ export default function RevenueDetail(props: Props) {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const [selectedDate, setSelectedDate] = useState<Date>(yesterday)
-  const [activeTab, setActiveTab] = useState<string>(currentPlantId ?? 'BTS')
-  const hydrologyPlants = {
-    plantsData: [
-      { abbreviation: 'buon-tua-srah', name: 'Buôn Tua Srah' },
-      { abbreviation: 'buon-kuop', name: 'Buôn Kuốp' },
-      { abbreviation: 'srepok-3', name: 'Srepok 3' },
-    ],
-  }
-  const formattedOneYearAgo = new Date(
-    new Date(selectedDate).setFullYear(selectedDate.getFullYear() - 1),
-  ).toLocaleDateString('vi-VN')
-
-  const tabs = hydrologyPlants?.plantsData?.map((plant) => {
-    const plantId = getCurrentPlantId(plant.abbreviation)
-    return {
-      id: plantId,
-      label: plant.name,
-    }
-  })
-
+  const { tabs, currentPlantId: activeTab, selectPlant } = usePlantSelection(currentPlantId, 'hasRevenue')
+  const companyName = useAppSelector(({ companyPlantSlice }) =>
+    companyPlantSlice.companies.find((item) => item.companyId === companyPlantSlice.selectedCompanyId)?.companyName,
+  )
   useEffect(() => {
     const formattedDate = selectedDate.toLocaleDateString('vi-VN', {
       day: '2-digit',
@@ -109,13 +78,13 @@ export default function RevenueDetail(props: Props) {
       currentPlantId: activeTab,
       date: formattedDate,
     }
-    dispatch(getRevenuePowerPrices(payload))
+    if (activeTab && selectedCompanyId) dispatch(getRevenuePowerPrices({ ...payload, companyId: selectedCompanyId }))
     dispatch(
       getRevenueTotalExpense({
         date: formattedDate,
       }),
     )
-  }, [activeTab, selectedDate, countRefesh])
+  }, [selectedCompanyId, activeTab, selectedDate, countRefesh])
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -148,8 +117,8 @@ export default function RevenueDetail(props: Props) {
           fontWeight="600"
           style={styles.title}
         />
-        <Text style={[styles.companyName, !isDark && { color: '#475569', opacity: 0.6 }]}>Công ty thủy điện Buôn Kuốp</Text>
-        <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+        <Text style={[styles.companyName, !isDark && { color: '#475569', opacity: 0.6 }]}>{companyName}</Text>
+        <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={selectPlant} />
 
         {/* Horizontal Divider */}
         <View style={[styles.divider, { backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.12)' }]} />
@@ -169,7 +138,7 @@ export default function RevenueDetail(props: Props) {
         {/* Horizontal Divider */}
         <View style={[styles.divider, { backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.12)' }]} />
 
-        <PowerPrices />
+        {activeTab && <PowerPrices />}
         <TotalRevenueExpenses />
         <ReveneCompareByTime
           fromDate="01/11/2024"

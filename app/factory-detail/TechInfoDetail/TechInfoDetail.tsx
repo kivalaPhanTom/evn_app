@@ -9,23 +9,6 @@ import { useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import TechnologyInfo from '@/components/TechnologyInfo/TechnologyInfo'
 
-function getCurrentPlantId(activeTab: string): string {
-    let result: string = ''
-    switch (activeTab) {
-        case 'buon-tua-srah':
-            result = 'BTS'
-            break
-        case 'buon-kuop':
-            result = 'BK'
-            break
-        case 'srepok-3':
-            result = 'SP3'
-            break
-        default:
-            break
-    }
-    return result
-}
 interface TechInfoDetailProps {
     currentPlantId: string
     keyTab: number
@@ -37,8 +20,8 @@ function TechInfoDetail(props: TechInfoDetailProps) {
     const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
     const { currentPlantId, keyTab } = props
     const data = techInfoDetail.map(item => ({
-        label: item.Name,
-        value: `${item.Value} ${item.UoM !== "-" ? `(${(item.UoM)})` : ""}`
+        label: item.label,
+        value: `${item.value} ${item.unit !== "-" ? `(${(item.unit)})` : ""}`
     }))
 
     useEffect(() => {

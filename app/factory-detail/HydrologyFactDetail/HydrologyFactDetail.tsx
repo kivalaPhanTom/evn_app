@@ -57,10 +57,10 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
   ])
 
   useEffect(() => {
-    if (activeTabIndex === keyTab) {
-      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId }))
+    if (activeTabIndex === keyTab && plantId != null) {
+      dispatch(getPowerStoreInLakeFactDetail({ currentPlantId: String(plantId), maHoChua }))
     }
-  }, [currentPlantId, activeTabIndex, keyTab, dispatch, countRefesh])
+  }, [plantId, maHoChua, activeTabIndex, keyTab, dispatch, countRefesh])
 
   return (
     <ScrollView>
@@ -75,9 +75,11 @@ function HydrologyFactDetail(props: hydrologyFactDetailProps) {
           <InflowOutflow />
         </View>
 
-        <View style={{ marginTop: 20 }}>
-          <PowerStoreInLakeV2 />
-        </View>
+        {plantId != null && (
+          <View style={{ marginTop: 20 }}>
+            <PowerStoreInLakeV2 />
+          </View>
+        )}
       </View>
     </ScrollView>
   )

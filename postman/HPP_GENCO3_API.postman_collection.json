@@ -47,6 +47,11 @@
       "type": "string"
     },
     {
+      "key": "companyId",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "currentPlantId",
       "value": "",
       "type": "string"
@@ -194,9 +199,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/get_Specifications?currentPlantId={{currentPlantId}}&type=",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/get_Specifications?currentPlantId={{currentPlantId}}&type=summary",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "get_Specifications"],
+              "path": ["{{apiPrefix}}", "v2", "get_Specifications"],
               "query": [
                 {
                   "key": "currentPlantId",
@@ -205,7 +210,7 @@
                 },
                 {
                   "key": "type",
-                  "value": "",
+                  "value": "summary",
                   "type": "text"
                 }
               ]
@@ -370,10 +375,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/ProductByHours?date={{date}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/ProductByHours?companyId={{companyId}}&date={{date}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "ProductByHours"],
+              "path": ["{{apiPrefix}}", "v2", "ProductByHours"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "date",
                   "value": "{{date}}",
@@ -525,10 +531,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/ProductByHours?currentPlantId={{currentPlantId}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/ProductByHours?companyId={{companyId}}&currentPlantId={{currentPlantId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "ProductByHours"],
+              "path": ["{{apiPrefix}}", "v2", "ProductByHours"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "currentPlantId",
                   "value": "{{currentPlantId}}",
@@ -610,10 +617,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/profit?currentPlantId={{currentPlantId}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/profit?companyId={{companyId}}&currentPlantId={{currentPlantId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "profit"],
+              "path": ["{{apiPrefix}}", "v2", "profit"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "currentPlantId",
                   "value": "{{currentPlantId}}",
@@ -630,10 +638,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/revenue?currentPlantId={{currentPlantId}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/revenue?companyId={{companyId}}&currentPlantId={{currentPlantId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "revenue"],
+              "path": ["{{apiPrefix}}", "v2", "revenue"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "currentPlantId",
                   "value": "{{currentPlantId}}",
@@ -650,10 +659,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/electricityPrices?currentPlantId={{currentPlantId}}&date={{date}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/electricityPrices?companyId={{companyId}}&currentPlantId={{currentPlantId}}&date={{date}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "electricityPrices"],
+              "path": ["{{apiPrefix}}", "v2", "electricityPrices"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "currentPlantId",
                   "value": "{{currentPlantId}}",
@@ -725,10 +735,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/dailyAndCumulative?currentPlantId={{currentPlantId}}&date={{date}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/dailyAndCumulative?companyId={{companyId}}&currentPlantId={{currentPlantId}}&date={{date}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "dailyAndCumulative"],
+              "path": ["{{apiPrefix}}", "v2", "dailyAndCumulative"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "currentPlantId",
                   "value": "{{currentPlantId}}",
@@ -750,10 +761,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/byPeriod?startDate=01/01/2026&endDate=05/09/2026&currentPlantId={{currentPlantId}}",
+              "raw": "{{baseUrl}}{{apiPrefix}}/v2/byPeriod?companyId={{companyId}}&startDate=01/01/2026&endDate=05/09/2026&currentPlantId={{currentPlantId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["{{apiPrefix}}", "byPeriod"],
+              "path": ["{{apiPrefix}}", "v2", "byPeriod"],
               "query": [
+                { "key": "companyId", "value": "{{companyId}}", "type": "text" },
                 {
                   "key": "startDate",
                   "value": "01/01/2026",

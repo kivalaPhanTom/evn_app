@@ -25,10 +25,10 @@ import {
 } from './revenue-profit.slice'
 import { catchHandle } from '@/core/utils/utils'
 
-function* getProfitApiSaga(): Generator {
+function* getProfitApiSaga(action: ReturnType<typeof getProfit>): Generator {
   try {
     yield put(setLoading({ isLoadingProfit: true }))
-    const res = yield call(Service.getProfitApi, '')
+    const res = yield call(Service.getProfitApi, action.payload)
     if (res.status === 200) {
       yield put(setProfitData(res.data))
     }
@@ -42,9 +42,7 @@ function* getProfitApiSaga(): Generator {
 function* getProfitFactDetailApiSaga(action: ReturnType<typeof getProfitFactDetail>): Generator {
   try {
     yield put(setLoading({ isLoadingProfit: true }))
-    const payload = action.payload
-    const { currentPlantId } = payload
-    const res = yield call(Service.getProfitApi, currentPlantId)
+    const res = yield call(Service.getProfitApi, action.payload)
     if (res.status === 200) {
       yield put(setProfitFactDetailData(res.data))
     }
@@ -55,10 +53,10 @@ function* getProfitFactDetailApiSaga(action: ReturnType<typeof getProfitFactDeta
   }
 }
 
-function* getRevenueApiSaga(): Generator {
+function* getRevenueApiSaga(action: ReturnType<typeof getRevenue>): Generator {
   try {
     yield put(setLoading({ isLoadingRevenue: true }))
-    const res = yield call(Service.getRevenueApi, '')
+    const res = yield call(Service.getRevenueApi, action.payload)
     if (res.status === 200) {
       yield put(setRevenueData(res.data))
     }
@@ -72,9 +70,7 @@ function* getRevenueApiSaga(): Generator {
 function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDetail>): Generator {
   try {
     yield put(setLoading({ isLoadingRevenue: true }))
-    const payload = action.payload
-    const { currentPlantId } = payload
-    const res = yield call(Service.getRevenueApi, currentPlantId)
+    const res = yield call(Service.getRevenueApi, action.payload)
     if (res.status === 200) {
       yield put(setRevenueFactDetailData(res.data))
     }
@@ -88,9 +84,7 @@ function* getRevenueFactDetailApiSaga(action: ReturnType<typeof getRevenueFactDe
 function* getRevenuePowerPricesSaga(action: ReturnType<typeof getRevenuePowerPrices>): Generator {
   try {
     yield put(setLoading({ isLoadingPowerPrice: true }))
-    const payload = action.payload
-    const { currentPlantId, date } = payload
-    const res = yield call(Service.getRevenuePowerPricesApi, currentPlantId, date)
+    const res = yield call(Service.getRevenuePowerPricesApi, action.payload)
     if (res.status === 200) {
       yield put(setPowerPrices(res.data.Prices))
     }
@@ -138,8 +132,7 @@ function* getRevenueByPeriodSaga(action: ReturnType<typeof getRevenueByPeriod>):
 function* getProfitByPeriodSaga(action: ReturnType<typeof getProfitByPeriod>): Generator {
   try {
     yield put(setLoading({ isLoadingProfitByPeriod: true }))
-    const { startDate, endDate, currentPlantId } = action.payload
-    const res = yield call(Service.getProfitByPeriodApi, startDate, endDate, currentPlantId)
+    const res = yield call(Service.getProfitByPeriodApi, action.payload)
     if (res.status === 200) {
       yield put(setProfitByPeriod(res.data))
     }
@@ -152,8 +145,7 @@ function* getProfitByPeriodSaga(action: ReturnType<typeof getProfitByPeriod>): G
 
 function* getDailyAndCumulativeDataSaga(action: ReturnType<typeof getDailyAndCumulativeData>): Generator {
   try {
-    const { currentPlantId, date } = action.payload
-    const res = yield call(Service.getDailyAndCumulativeApi, currentPlantId, date)
+    const res = yield call(Service.getDailyAndCumulativeApi, action.payload)
     if (res.status === 200) {
       yield put(setDailyAndCumulativeData(res.data))
     }

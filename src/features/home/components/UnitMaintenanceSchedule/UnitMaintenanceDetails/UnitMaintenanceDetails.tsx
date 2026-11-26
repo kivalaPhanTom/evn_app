@@ -1,3 +1,4 @@
+import { usePlantSelection } from '@/core/hooks/use-plant-selection'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FlatList, ListRenderItem, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
@@ -13,12 +14,6 @@ import { getDetailRepairSchedule } from '@/core/redux/domains/maintenance'
 import { RootState } from '@/core/redux/store'
 import { generateYearList } from '@/core/utils/date'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
-
-const TABS = [
-  { id: 'BTS', label: 'Buôn Tua Srah' },
-  { id: 'BK', label: 'Buôn Kuôp' },
-  { id: 'SP3', label: 'Srepok 3' },
-]
 
 // Helper function to map Type string to MaintenanceLevel
 const mapTypeToLevel = (type: string): MaintenanceLevel => {
@@ -120,15 +115,8 @@ function UnitMaintenanceDetails() {
     ? currentPlantIdFromParams[0]
     : currentPlantIdFromParams
 
-  const effectivePlantId = currentPlantId || currentPlantDetail?.PlantCode || TABS[0]?.id || ''
-  const [activeTab, setActiveTab] = useState<string>(effectivePlantId)
+  const { tabs, currentPlantId: activeTab, selectPlant } = usePlantSelection(currentPlantId)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-
-  useEffect(() => {
-    if (effectivePlantId) {
-      setActiveTab(effectivePlantId)
-    }
-  }, [effectivePlantId])
 
   useEffect(() => {
     if (activeTab) {
@@ -137,25 +125,25 @@ function UnitMaintenanceDetails() {
   }, [activeTab, dispatch, selectedYear])
 
   const maintenanceItems = useMemo<MaintenanceItem[]>(() => {
-    if (!currentPlantDetail?.Items || currentPlantDetail.Items.length === 0) {
+    if (!currentPlantDetail?.items || currentPlantDetail.items.length === 0) {
       return []
     }
 
-    return currentPlantDetail.Items.map((item) => ({
-      title: item.Name || '',
-      level: mapTypeToLevel(item.Type || ''),
+    return currentPlantDetail.items.map((item) => ({
+      title: item.name || '',
+      level: mapTypeToLevel(item.type || ''),
       planned: {
-        days: item.PlannedDays || 0,
-        startDate: item.PlannedStartDate || '',
-        endDate: item.PlannedEndDate || '',
+        days: item.plannedDays || 0,
+        startDate: item.plannedStartDate || '',
+        endDate: item.plannedEndDate || '',
       },
       actual: {
-        days: item.ActualDays || null,
-        startDate: item.ActualStartDate,
-        endDate: item.ActualEndDate,
+        days: item.actualDays || null,
+        startDate: item.actualStartDate,
+        endDate: item.actualEndDate,
       },
       timeline: {
-        activeMonths: item.ActiveMonth || [],
+        activeMonths: item.activeMonth || [],
       },
     }))
   }, [currentPlantDetail])
@@ -177,7 +165,7 @@ function UnitMaintenanceDetails() {
 
   return (
     <ScrollView>
-      <ScrollableTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+      <ScrollableTabBar tabs={tabs} activeTab={activeTab} onTabChange={selectPlant} />
       <SectionContainer title="Chi tiết hạng mục bảo dưỡng">
         <View style={{ alignItems: 'flex-end' }}>
           <YearPicker selectedYear={selectedYear} onChange={setSelectedYear} styles={styles} />

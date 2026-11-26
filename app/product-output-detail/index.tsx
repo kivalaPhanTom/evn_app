@@ -22,12 +22,11 @@ const ProductOutputDetailScreen: React.FC = () => {
   const { currentPlantId } = useLocalSearchParams<{
     currentPlantId: string;
   }>();
-  const { companies, selectedCompanyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
-  const plantDetails = useAppSelector((state: RootState) => state.powerSlice.detail)
-  const plantName = plantDetails.find((d) => d.code === currentPlantId)?.name
+  const { companies, plants, selectedCompanyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   // Tên công ty động theo companyId đang chọn (fallback i18n nếu chưa load được)
+  const plantName = plants.find((plant) => String(plant.plantId) === currentPlantId)?.plantName
   const selectedCompany = companies.find((c) => c.companyId === selectedCompanyId)
 
   const onRefresh = async () => {
@@ -55,7 +54,7 @@ const ProductOutputDetailScreen: React.FC = () => {
             style={{ textAlign: 'center' }}
           />
           <View style={styles.locationRow}>
-            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{currentPlantId ? (plantName ?? t(currentPlantId)) : (selectedCompany?.companyName ?? t('companyName'))}</Text>
+            <Text style={[styles.locationText, { color: isDark ? '#C7D6E1' : '#6B7280' }]}>{currentPlantId ? (plantName ?? currentPlantId) : (selectedCompany?.companyName ?? t('companyName'))}</Text>
           </View>
         </View>
         <ProductOutputDetail currentPlantId={currentPlantId} isCheckDisableDate={false} />
