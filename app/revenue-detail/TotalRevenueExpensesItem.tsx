@@ -32,19 +32,18 @@ export default function TotalRevenueExpensesItem({
 }: Props) {
     const isDark = useAppTheme() === 'dark';
     const accent = accents[variant];
-    const heading = <Text style={[styles.title, !isDark && styles.lightTitle]}>{title}</Text>;
-    const amount = (
-        <View style={styles.right}>
-            <Text style={[styles.total, !isDark && { color: accent.light }]}>{formatNumber(total)}</Text>
-            <Text style={[styles.totalUnit, !isDark && styles.lightLabel]}>{totalUnit}</Text>
-        </View>
-    );
-
     return (
         <View style={[styles.card, isDark ? { borderColor: accent.darkBorder } : styles.lightCard]}>
-            {!isDark && <View style={styles.lightHeader}>{heading}{amount}</View>}
-            <View style={isDark ? styles.left : undefined}>
-                {isDark && heading}
+            <View style={[styles.header, !isDark && styles.lightHeader]}>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.title, !isDark && styles.lightTitle]}>
+                    {title}
+                </Text>
+                <Text numberOfLines={1} style={[styles.total, !isDark && { color: accent.light }]}>
+                    {formatNumber(total)}{'\u00A0'}
+                    <Text style={[styles.totalUnit, !isDark && styles.lightLabel]}>{totalUnit}</Text>
+                </Text>
+            </View>
+            <View>
                 {items.map((item) => (
                     <View key={item.PlantCode} style={[styles.row, !isDark && styles.lightRow]}>
                         <Text style={[styles.label, !isDark && styles.lightLabel]}>{item.PlantName}{isDark ? ':' : ''}</Text>
@@ -52,7 +51,6 @@ export default function TotalRevenueExpensesItem({
                     </View>
                 ))}
             </View>
-            {isDark && amount}
         </View>
     );
 }
@@ -65,22 +63,24 @@ const styles = StyleSheet.create({
         elevation: 0,
         shadowOpacity: 0,
     },
-    lightHeader: {
+    header: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'baseline',
         justifyContent: 'space-between',
+        gap: 8,
+        paddingBottom: 8,
+    },
+    lightHeader: {
         paddingBottom: 10,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: '#CBD5E1',
     },
-    lightTitle: { flex: 1, color: '#1E293B', fontSize: 15, marginBottom: 0 },
+    lightTitle: { flex: 1, color: '#1E293B', fontSize: 15 },
     lightRow: { alignItems: 'baseline', paddingTop: 6, paddingRight: 0, gap: 12 },
     lightLabel: { color: '#475569', fontSize: 13, flexShrink: 1 },
     lightValue: { color: '#1E293B', fontSize: 13, fontVariant: ['tabular-nums'] },
     card: {
         backgroundColor: '#0F172A',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         padding: 16,
         borderRadius: 18,
         marginTop: 12,
@@ -93,21 +93,11 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
 
-    left: {
-        flex: 1,
-    },
-
-    right: {
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        marginLeft: 12,
-    },
-
     title: {
         color: '#f0f6ff',
         fontSize: 13,
         fontWeight: '700',
-        marginBottom: 8,
+        flex: 1,
     },
 
     row: {
@@ -138,6 +128,6 @@ const styles = StyleSheet.create({
     totalUnit: {
         color: '#94A3B8',
         fontSize: 11,
-        marginTop: 2,
+        fontWeight: '400',
     },
 });
