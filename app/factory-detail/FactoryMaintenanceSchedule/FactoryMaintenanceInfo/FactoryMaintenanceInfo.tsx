@@ -42,14 +42,14 @@ function FactoryMaintenanceInfo(props: FactoryMaintenanceInfoProps) {
 
   // Map dữ liệu từ Breakdown - API v2 trả về RCM thay vì Minor và Medium
   const maintenanceTypeData = {
-    rcm: currentPlantDetail?.Breakdown?.RCM ?? 0, // RCM
-    major: currentPlantDetail?.Breakdown?.Major ?? 0, // ĐẠI TU
+    rcm: currentPlantDetail?.breakdown?.rcm ?? 0, // RCM
+    major: currentPlantDetail?.breakdown?.major ?? 0, // ĐẠI TU
   }
 
   // Map dữ liệu từ RepairPlannedDays và RepairActualDays
   const maintenanceDurationData = {
-    planned: currentPlantDetail?.RepairPlannedDays ?? 0, // KẾ HOẠCH
-    actual: currentPlantDetail?.RepairActualDays ?? 0, // THỰC TẾ
+    planned: currentPlantDetail?.repairPlannedDays ?? 0, // KẾ HOẠCH
+    actual: currentPlantDetail?.repairActualDays ?? 0, // THỰC TẾ
   }
 
   return (

@@ -128,7 +128,7 @@ function HomeContent() {
         minSize={0.5}
         maxSize={2}
       >
-        <View style={styles.header}>
+          <View style={[styles.header, !isDark && styles.lightHeader]}>
           <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
           <GradientText
             text={companyTitle ?? t('companyName')}
@@ -206,6 +206,9 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  lightHeader: {
+    paddingHorizontal: px.h(16) + px.f(32) + px.h(8),
   },
   checklistIcon: {
     position: 'absolute',

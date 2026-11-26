@@ -42,6 +42,7 @@ function ProfitDetail() {
   const isDark = theme === 'dark'
   const p = createThemePalette(isDark)
 
+  const { plants, selectedCompanyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { profit, isLoadingProfit } = useAppSelector((state: RootState) => state.revenueProfitSlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const fromParts = profit.Chart.Period.From?.split('-') ?? []
@@ -66,7 +67,7 @@ function ProfitDetail() {
         items: [
           {
             value,
-            frontColor: value < 0 ? (isDark ? Colors.red : '#ef4444') : isDark ? Colors.green : '#22c55e',
+            frontColor: value < 0 ? (isDark ? '#FB7185' : '#B91C1C') : isDark ? '#4ADE80' : '#15803D',
             showValuesOnTop: true,
             showPrefix: value > 0,
           },
@@ -76,8 +77,9 @@ function ProfitDetail() {
   )
 
   useEffect(() => {
-    dispatch(getProfit())
-  }, [countRefesh])
+    if (!selectedCompanyId) return
+    dispatch(getProfit({ companyId: selectedCompanyId }))
+  }, [selectedCompanyId, countRefesh])
 
   const today = new Date()
   const formatDay = (d: Date) => `${String(d.getDate()).padStart(2, '0')}`
@@ -131,16 +133,16 @@ function ProfitDetail() {
   const monthTitleColor = isDark ? '#FCD34D' : '#b28800'
   const weekBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(99,102,241,0.2)'
   const monthBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(251,191,36,0.2)'
-  const chartCardBg = isDark ? '#1e2838' : 'rgba(255,255,255,0.06)'
-  const chartCardBorder = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.06)'
-  const chartTitleColor = isDark ? '#fff' : '#475569'
+  const chartCardBg = isDark ? '#1e2838' : '#F8F8F8'
+  const chartCardBorder = isDark ? 'rgba(255,255,255,0.2)' : '#EFEFEF'
+  const chartTitleColor = isDark ? '#F8FAFC' : '#1E293B'
   const dateBadgeBg = isDark ? '#1f2937' : '#D9D9D9'
-  const dateTextColor = isDark ? '#8b92a0' : '#475569'
-  const axisLabelColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
-  const axisLabelNegativeColor = isDark ? Colors.red : '#f87171'
-  const axisLabelTodayColor = isDark ? '#8b92a0' : '#fbbf24'
-  const dividerColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'
-  const legendTextColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
+  const dateTextColor = isDark ? '#E2E8F0' : '#1E293B'
+  const axisLabelColor = isDark ? '#CBD5E1' : '#475569'
+  const axisLabelNegativeColor = isDark ? '#FDA4AF' : '#B91C1C'
+  const axisLabelTodayColor = isDark ? '#FCD34D' : '#854D0E'
+  const dividerColor = isDark ? '#64748B' : '#A1AAB7'
+  const legendTextColor = axisLabelColor
   const lossIndicatorBg = isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.15)'
   const lossIndicatorTextColor = isDark ? Colors.red : '#f87171'
   const plantCardBg = isDark ? '#1e2838' : '#FFFFFF'
@@ -267,7 +269,7 @@ function ProfitDetail() {
               </View>
             </View>
             <View style={[styles.chartWrapper]}>
-              <BarChart topLabelOffset={0} data={rawBarGroups} rounded noOfSection={3} disableScroll />
+              <BarChart topLabelOffset={0} data={rawBarGroups} rounded noOfSection={3} rulesColor={dividerColor} disableScroll />
             </View>
 
             {/* X-Axis below chart */}
@@ -279,7 +281,7 @@ function ProfitDetail() {
                   const color = isToday ? axisLabelTodayColor : isNegative ? axisLabelNegativeColor : axisLabelColor
                   return (
                     <View key={idx} style={{ flex: 1, alignItems: 'center' }}>
-                      <Text style={[styles.axisLabel, { color }]}>{label}</Text>
+                      <Text style={[styles.axisLabel, { color }, isToday && { fontWeight: '700' }]}>{label}</Text>
                     </View>
                   )
                 })}
@@ -289,7 +291,7 @@ function ProfitDetail() {
               <View style={styles.legendRow}>
                 <View style={[styles.legendItem]}>
                   <LinearGradient
-                    colors={isDark ? [Colors.green, Colors.green] : ['#4ade80', '#22c55e']}
+                    colors={isDark ? ['#4ADE80', '#4ADE80'] : ['#15803D', '#15803D']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
                     style={[styles.legendSwatch, { borderRadius: 3 }]}
@@ -298,7 +300,7 @@ function ProfitDetail() {
                 </View>
                 <View style={[styles.legendItem, { marginLeft: px.h(24) }]}>
                   <LinearGradient
-                    colors={isDark ? [Colors.red, Colors.red] : ['#f87171', '#ef4444']}
+                    colors={isDark ? ['#FB7185', '#FB7185'] : ['#B91C1C', '#B91C1C']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
                     style={[styles.legendSwatch, { borderRadius: 3 }]}
@@ -341,10 +343,16 @@ function ProfitDetail() {
           </Text>
           <View>
             {profit.Breakdown.map((plant, idx) => {
+              const selected = plants.find((item) =>
+                item.companyId === selectedCompanyId && item.hasProfit &&
+                (String(item.plantId) === plant.PlantCode || item.symbol === plant.PlantCode ||
+                  item.abbreviation === plant.PlantCode || item.plantName === plant.PlantName),
+              )
               return (
                 <TouchableOpacity
                   key={idx}
-                  onPress={() => onPressPlant(plant.PlantName, plant.PlantCode || idx.toString())}
+                  disabled={!selected}
+                  onPress={() => selected && onPressPlant(selected.plantName, String(selected.plantId))}
                   style={[styles.revenueCard, { backgroundColor: plantCardBg, borderColor: plantCardBorder }]}
                 >
                   <View>
@@ -399,11 +407,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 4,
+    boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.12)',
   },
   chartWrapper: {
     marginTop: px.v(8),

@@ -56,7 +56,8 @@ function HydrologyDetail(props: HydrologyDetailProps) {
       })),
     [plants],
   )
-  const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : tabs[0]?.id ?? ''
+  const requestedSymbol = plants.find((plant) => String(plant.plantId) === selectedTab)?.symbol
+  const activeTab = tabs.find((tab) => tab.id === selectedTab || tab.id === requestedSymbol)?.id ?? tabs[0]?.id ?? ''
 
   const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {}, shallowEqual)
   const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {}, shallowEqual)

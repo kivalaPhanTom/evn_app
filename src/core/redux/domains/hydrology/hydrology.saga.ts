@@ -693,9 +693,9 @@ function* getPowerStoreInLakeFactDetailApiSaga(action: ReturnType<typeof getPowe
   try {
     const payload = action.payload
     const currentPlantId = payload?.currentPlantId || ''
-    const res = yield call(Service.getPowerStoreInLakeFactDetail, currentPlantId)
+    const res = yield call(Service.getPowerStoreInLakeFactDetail, currentPlantId, payload.maHoChua)
     if (res.status === 200) {
-      yield put(setPowerStoreInLakeFactDetail(res.data))
+      yield put(setPowerStoreInLakeFactDetail(res.data.data ? [res.data.data] : []))
     }
   } catch (error) {
     catchHandle(error, 'getPowerStoreInLakeFactDetailApiSaga')

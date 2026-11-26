@@ -37,6 +37,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 
 function RevenueDetail() {
   const dispatch = useAppDispatch()
+  const selectedCompanyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
   const router = useRouter()
   const theme = useAppTheme()
   const isDark = theme === 'dark'
@@ -50,8 +51,9 @@ function RevenueDetail() {
   }, [router])
 
   useEffect(() => {
-    dispatch(getRevenue())
-  }, [countRefesh])
+    if (!selectedCompanyId) return
+    dispatch(getRevenue({ companyId: selectedCompanyId }))
+  }, [selectedCompanyId, countRefesh])
 
   const data = useMemo<{ label: string; value: number }[]>(
     () =>

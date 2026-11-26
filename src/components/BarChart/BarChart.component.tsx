@@ -35,6 +35,7 @@ interface Props {
   showLine?: boolean
   lineDataPointsShift?: number // offset to shift line data points vertically
   noOfSection?: number
+  rulesColor?: string
   rulesType?: string
   lineColor?: string
   customDataPoint?: React.ReactElement
@@ -66,6 +67,7 @@ const BarChart: React.FC<Props> = ({
   showLine = false,
   lineDataPointsShift = 0,
   noOfSection = 6,
+  rulesColor,
   rulesType = 'solid',
   lineColor = '#A78BFA',
   customDataPoint = null,
@@ -339,7 +341,7 @@ const BarChart: React.FC<Props> = ({
           }}
           hideRules={!showHorizontalGrid}
           rulesType={rulesType}
-          rulesColor={isDark ? 'rgb(255,255,255,0.1)' : 'rgba(0,0,0,0.12)'}
+          rulesColor={rulesColor ?? (isDark ? 'rgb(255,255,255,0.1)' : 'rgba(0,0,0,0.12)')}
           isAnimated={false}
           barBorderRadius={rounded ? barRadius : 0}
           barBorderTopRightRadius={rounded ? barRadius : 0}

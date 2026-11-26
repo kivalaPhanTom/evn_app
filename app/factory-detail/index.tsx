@@ -60,11 +60,6 @@ function FactoryDetail(props: factoryDetailProps) {
   const plant = plants.find((item) =>
     String(item.plantId) === currentPlantId || item.symbol === currentPlantId || item.abbreviation === currentPlantId,
   )
-  const legacyPlantCode = [plant?.symbol, plant?.abbreviation, currentPlantId]
-    .map((value) => value?.trim().toUpperCase())
-    .map((value) => value === 'SPS3' ? 'SP3' : value)
-    .find((value) => value === 'BTS' || value === 'BK' || value === 'SP3')
-
   useEffect(() => {
     setSelectedHydrologyReservoirId('')
     if (plant) {
@@ -146,7 +141,7 @@ function FactoryDetail(props: factoryDetailProps) {
     >
       <View style={{ flex: 1 }} collapsable={false}>
         <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
-          <View style={styles.header}>
+          <View style={[styles.header, !isDark && styles.lightHeader]}>
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
               text={companyName}
@@ -181,10 +176,10 @@ function FactoryDetail(props: factoryDetailProps) {
             <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
               <SectionContainer
                 title={t('hydrology')}
-                actionButton={{
+                actionButton={plant?.hasHydrology ? {
                   label: 'Chi tiết',
                   onPress: onPressCardHydro,
-                }}
+                } : undefined}
                 isShowSelectButton={true}
                 options={HYDROLOGY_PERIOD_OPTIONS}
                 onChangeOption={onChange}
@@ -196,7 +191,6 @@ function FactoryDetail(props: factoryDetailProps) {
                   onSelectMaHoChua={setSelectedHydrologyReservoirId}
                 />
                 <HydrologyFactDetail
-                  legacyPlantCode={legacyPlantCode}
                   keyTab={keyTab}
                   currentPlantId={currentPlantId}
                   selectedMaHoChua={selectedHydrologyReservoirId}
@@ -205,15 +199,15 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           {
-            legacyPlantCode && checkModulePermission('DOANH_THU') &&
+            plant?.hasRevenue && checkModulePermission('DOANH_THU') &&
             <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
-              <RevenueDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} />
+              <RevenueDetail plantId={String(plant.plantId)} keyTab={keyTab} />
             </LazySection>
           }
           {
-            legacyPlantCode && checkModulePermission('LOI_NHUAN') &&
+            plant?.hasProfit && checkModulePermission('LOI_NHUAN') &&
             <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
-              <ProfitDetail legacyPlantCode={legacyPlantCode} keyTab={keyTab} currentPlantName={companyName} />
+              <ProfitDetail plantId={String(plant.plantId)} keyTab={keyTab} currentPlantName={companyName} />
             </LazySection>
           }
           {
@@ -223,14 +217,14 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
-            {legacyPlantCode && <TechInfoDetail
-              currentPlantId={legacyPlantCode}
+            {plant && <TechInfoDetail
+              currentPlantId={String(plant.plantId)}
               keyTab={keyTab}
             />}
           </LazySection>
           <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
-            {legacyPlantCode && activeTabIndex === keyTab && (
-              <ExistenceInfo currentPlantId={legacyPlantCode} />
+            {plant && activeTabIndex === keyTab && (
+              <ExistenceInfo currentPlantId={String(plant.plantId)} />
             )}
           </LazySection>
         </TwinkleStars>
@@ -250,6 +244,9 @@ const styles = StyleSheet.create({
   header: {
     marginTop: px.v(40),
     alignItems: 'center',
+  },
+  lightHeader: {
+    paddingHorizontal: px.h(16) + px.f(32) + px.h(8),
   },
   checklistIcon: {
     position: 'absolute',

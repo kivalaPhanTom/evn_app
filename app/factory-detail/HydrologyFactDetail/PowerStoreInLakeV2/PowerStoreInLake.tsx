@@ -12,7 +12,6 @@ import MetricDiff from '@/components/MetricDiff/MetricDiff.component'
 import createStyles from '@/features/factory-detail/HydrologyFactDetail/PowerStoreInLakeV2/PowerStoreInLake.styles'
 import GradientProgress from '@/components/GradientProgress/GradientProgress.component'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
-import { Shadow } from 'react-native-shadow-2'
 
 const PowerStoreInLakeV2: React.FC = () => {
   const { powerStoreInLakeFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
@@ -26,11 +25,56 @@ const PowerStoreInLakeV2: React.FC = () => {
   const powerStoreInLakeData = powerStoreInLakeFactDetail ? powerStoreInLakeFactDetail[0] : ({} as any)
   const unitLabel = powerStoreInLakeData?.unit ? ` ${powerStoreInLakeData.unit}` : ''
 
-  const card = (
-    <AnimatedCardContainer style={isDark ? undefined : { elevation: 0, shadowOpacity: 0, shadowRadius: 0 }}>
+  if (!isDark) {
+    const current = powerStoreInLakeData?.currentCapacity
+    const previous = powerStoreInLakeData?.previousCapacity
+    const percent = powerStoreInLakeData?.currentPercentCapacity
+    const change = powerStoreInLakeData?.rateOfChange
+
+    return (
+      <AnimatedCardContainer noneBackground borderColor="#D9DFE6" style={styles.lightCard}>
+        <View style={styles.lightHeader}>
+          <Text style={styles.lightTitle}>Điện năng tích trữ</Text>
+          {change != null && (
+            <MetricDiff
+              withBackground
+              diff={change / 100}
+              textColor={change < 0 ? '#B91C33' : '#047857'}
+            />
+          )}
+        </View>
+        <Text style={styles.lightCurrent}>
+          {current == null ? '—' : Number(current)}
+          <Text style={styles.lightUnit}>{current == null ? '' : unitLabel}</Text>
+        </Text>
+        {percent != null && (
+          <GradientProgress
+            colors="#0F766E"
+            height={7}
+            backgroundColor="#E2E8F0"
+            leftLabel="So với cùng kỳ"
+            rightLabel={`${percent}%`}
+            labelStyle={styles.lightProgressLabel}
+            progress={percent / 100}
+          />
+        )}
+        <View style={styles.lightComparison}>
+          <Text style={styles.lightComparisonLabel}>Cùng kỳ năm ngoái</Text>
+          <Text style={styles.lightComparisonValue}>
+            {previous == null ? '—' : `${previous}${unitLabel}`}
+          </Text>
+        </View>
+      </AnimatedCardContainer>
+    )
+  }
+
+  return (
+    <AnimatedCardContainer>
       <View style={styles.pill}>
         <Text style={[styles.pillText, { color: '#A855F7' }]}>Điện năng tích trữ</Text>
-        <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData?.rateOfChange / 100} />
+        {powerStoreInLakeData?.rateOfChange != null && (
+          <MetricDiff style={{ fontSize: px.f(20) }} withBackground diff={powerStoreInLakeData.rateOfChange / 100} />
+        )}
       </View>
 
       <View style={styles.mainRow}>
@@ -59,7 +103,7 @@ const PowerStoreInLakeV2: React.FC = () => {
         ) : (
           <GradientProgress
             colors={['#EC4899', '#F97316']}
-            progress={powerStoreInLakeData?.currentCapacity / powerStoreInLakeData?.capacity}
+            progress={(powerStoreInLakeData?.currentPercentCapacity ?? 0) / 100}
           />
         )}
       </View>
@@ -85,11 +129,6 @@ const PowerStoreInLakeV2: React.FC = () => {
     </AnimatedCardContainer>
   )
 
-  return isDark ? card : (
-    <Shadow distance={5} startColor="rgba(0, 0, 0, 0.10)" offset={[0, -2]} stretch>
-      {card}
-    </Shadow>
-  )
 }
 
 export default PowerStoreInLakeV2

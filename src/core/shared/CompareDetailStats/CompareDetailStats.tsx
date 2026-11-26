@@ -28,7 +28,7 @@ const StatItem: React.FC<StatItemProps> = ({
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const styles = createStyles(isDark)
-  const calculatedDifference = difference ?? currentValue - compareValue
+  const calculatedDifference = Number((difference ?? currentValue - compareValue).toFixed(2))
   const isPositive = calculatedDifference >= 0
 
   return (
@@ -97,7 +97,7 @@ const StatItem: React.FC<StatItemProps> = ({
 
       {/* Difference Badge */}
       {
-        isLoading && <View style={[styles.differenceBadge, isPositive ? styles.positiveChange : styles.negativeChange]}>
+        !isLoading && <View style={[styles.differenceBadge, isPositive ? styles.positiveChange : styles.negativeChange]}>
           <Text style={[styles.differenceIcon, isPositive ? styles.positiveColor : styles.negativeColor]}>
             {isPositive ? '↑' : '↓'}
           </Text>
