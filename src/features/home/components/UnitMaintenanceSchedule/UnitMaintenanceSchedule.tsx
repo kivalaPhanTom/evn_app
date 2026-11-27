@@ -76,6 +76,7 @@ function UnitMaintenanceSchedule() {
 
   const [firstLoading, setFirstLoading] = useState(true)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
+  const { selectedCompanyId: companyId } = useAppSelector((state: RootState) => state.companyPlantSlice)
   const { isRepairerScheduleLoading, TotalActualDay, TotalCategory, Details } = useAppSelector(
     (state: RootState) => state.unitMaintenanceScheduleSlice,
   )
@@ -91,8 +92,9 @@ function UnitMaintenanceSchedule() {
   }, [isRepairerScheduleLoading])
 
   useEffect(() => {
-    dispatch(getRepairSchedule({ year: selectedYear }))
-  }, [dispatch, countRefesh, selectedYear])
+    if (!companyId) return
+    dispatch(getRepairSchedule({ year: selectedYear, companyId }))
+  }, [dispatch, countRefesh, selectedYear, companyId])
 
   const onPressCard = useCallback(() => {
     router.navigate({ pathname: '/unit-maintenance-schedule-detail' as any })

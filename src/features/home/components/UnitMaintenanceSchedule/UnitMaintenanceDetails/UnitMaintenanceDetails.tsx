@@ -65,7 +65,9 @@ const YearPicker: React.FC<YearPickerProps> = ({ selectedYear, onChange, styles 
   return (
     <>
       <TouchableOpacity style={styles.selectContainer} onPress={() => setShowSelectModal(true)}>
-        <Text style={styles.selectText}>{selectedYear}</Text>
+        <Text numberOfLines={1} style={styles.selectText}>
+          {selectedYear}
+        </Text>
       </TouchableOpacity>
 
       <Modal

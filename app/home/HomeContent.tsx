@@ -169,7 +169,7 @@ function HomeContent() {
           </LazySection>
         )}
 
-        {checkModulePermission('LICH_SUA_CHUA') && (
+        {(checkModulePermission('LICH_SCL') || checkModulePermission('LICH_SUA_CHUA')) && (
           <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
             <UnitMaintenanceSchedule />
           </LazySection>

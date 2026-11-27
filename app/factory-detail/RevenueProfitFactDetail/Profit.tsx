@@ -122,16 +122,16 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
   const monthTitleColor = isDark ? '#FCD34D' : '#b28800'
   const weekBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(99,102,241,0.2)'
   const monthBorderColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(251,191,36,0.2)'
-  const chartCardBg = isDark ? '#1e2838' : 'rgba(255,255,255,0.06)'
-  const chartCardBorder = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.06)'
+  const chartCardBg = isDark ? '#1e2838' : '#FFFFFF'
+  const chartCardBorder = p.border
   const chartTitleColor = isDark ? '#fff' : '#475569'
   const dateBadgeBg = isDark ? '#1f2937' : '#D9D9D9'
   const dateTextColor = isDark ? '#8b92a0' : '#475569'
-  const axisLabelColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
+  const axisLabelColor = p.textSecondary
   const axisLabelNegativeColor = isDark ? Colors.red : '#f87171'
   const axisLabelTodayColor = isDark ? '#8b92a0' : '#fbbf24'
-  const dividerColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'
-  const legendTextColor = isDark ? '#8b92a0' : 'rgba(0,0,0,0.4)'
+  const dividerColor = p.divider
+  const legendTextColor = p.textSecondary
   const lossIndicatorBg = isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.15)'
   const lossIndicatorTextColor = isDark ? Colors.red : '#f87171'
 
@@ -253,8 +253,15 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
                 </Text>
               </View>
             </View>
-            <View style={[styles.chartWrapper]}>
-              <BarChart topLabelOffset={0} data={rawBarGroups} rounded noOfSection={3} disableScroll />
+            <View style={styles.chartWrapper}>
+              <BarChart
+                topLabelOffset={0}
+                data={rawBarGroups}
+                rounded
+                noOfSection={3}
+                rulesColor={dividerColor}
+                disableScroll
+              />
             </View>
 
             {/* X-Axis below chart */}
@@ -295,24 +302,26 @@ export default function ProfitDetail(props: ProfitFactDetailProps) {
               </View>
 
               {/* Warning cards for negative days */}
-              <View style={{ marginTop: px.v(12) }}>
-                {negativeDays.map((item, idx) => (
-                  <View
-                    key={idx}
-                    style={[styles.warningCard, { backgroundColor: lossIndicatorBg, borderRadius: px.h(10) }]}
-                  >
-                    <Ionicons
-                      name="warning-outline"
-                      size={px.f(16)}
-                      color={lossIndicatorTextColor}
-                      style={{ marginRight: px.h(8) }}
-                    />
-                    <Text style={[styles.warningText, { color: lossIndicatorTextColor }]}>
-                      {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+              {negativeDays.length > 0 && (
+                <View style={{ marginTop: px.v(12) }}>
+                  {negativeDays.map((item, idx) => (
+                    <View
+                      key={idx}
+                      style={[styles.warningCard, { backgroundColor: lossIndicatorBg, borderRadius: px.h(10) }]}
+                    >
+                      <Ionicons
+                        name="warning-outline"
+                        size={px.f(16)}
+                        color={lossIndicatorTextColor}
+                        style={{ marginRight: px.h(8) }}
+                      />
+                      <Text style={[styles.warningText, { color: lossIndicatorTextColor }]}>
+                        {`Ngày ${item.dateStr} ghi nhận lỗ ${item.value} tỷ`}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -339,16 +348,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 4,
   },
   chartWrapper: {
     marginTop: px.v(8),
     marginBottom: px.v(12),
-    marginLeft: px.h(-12),
     width: '100%',
     alignSelf: 'stretch',
     backgroundColor: 'transparent',
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
   },
   axisDivider: {
     height: StyleSheet.hairlineWidth,
-    marginVertical: px.v(20),
+    marginVertical: px.v(12),
   },
   axisLabelsRow: {
     flexDirection: 'row',

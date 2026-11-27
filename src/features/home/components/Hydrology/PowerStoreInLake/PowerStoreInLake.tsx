@@ -15,7 +15,9 @@ const PowerStoreInLake: React.FC = () => {
   const dispatch = useAppDispatch()
   const isDark = useAppTheme() === 'dark'
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
-  const { powerStoreInLake, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const companyId = useAppSelector((state) => state.companyPlantSlice.selectedCompanyId)
+  const { powerStoreInLake: storage, isLoadingPowerStoreInLake } = useAppSelector((state: RootState) => state.hydrologySlice)
+  const powerStoreInLake = storage?.companyId === companyId ? storage : null
   const accent = isDark ? dark.inflow : '#00DF73'
   const muted = isDark ? dark.storage.muted : '#1F2937'
   const unitLabel = powerStoreInLake?.unit ? ` ${powerStoreInLake.unit}` : ''
@@ -38,8 +40,8 @@ const PowerStoreInLake: React.FC = () => {
     }))
 
   useEffect(() => {
-    dispatch(getPowerStoreInLake())
-  }, [countRefesh])
+    if (companyId) dispatch(getPowerStoreInLake({ companyId }))
+  }, [companyId, countRefesh, dispatch])
 
   return (
     <AnimatedCardContainer noneBackground={!isDark} borderColor={isDark ? undefined : light.border}>
@@ -58,7 +60,7 @@ const PowerStoreInLake: React.FC = () => {
               allowFontScaling={false}
               style={[styles.currentValue, { color: accent }]}
             >
-              {Number(powerStoreInLake?.currentCapacity ?? 0)}
+              {powerStoreInLake?.currentCapacity ?? '—'}
               <Text style={styles.unit}>{unitLabel}</Text>
             </Text>
             <Text
@@ -66,7 +68,7 @@ const PowerStoreInLake: React.FC = () => {
               style={[styles.refValue, { color: muted }]}
             >
               <Text style={styles.slash}>{'/\u00a0'}</Text>
-              {powerStoreInLake?.previousCapacity ?? 0}
+              {powerStoreInLake?.capacity ?? '—'}
               <Text style={styles.refUnit}>{unitLabel}</Text>
             </Text>
           </>

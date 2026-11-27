@@ -58,6 +58,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
   )
   const requestedSymbol = plants.find((plant) => String(plant.plantId) === selectedTab)?.symbol
   const activeTab = tabs.find((tab) => tab.id === selectedTab || tab.id === requestedSymbol)?.id ?? tabs[0]?.id ?? ''
+  const activePlant = plants.find((plant) => plant.symbol === activeTab)
 
   const upstreamData = useAppSelector((state: any) => state.hydrologySlice.upstreamWaterLevel || {}, shallowEqual)
   const inflow = useAppSelector((state: any) => state.hydrologySlice.inflow || {}, shallowEqual)
@@ -275,7 +276,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
         </View>
         <View style={{ marginBottom: 20 }}>
           <LazySection shouldLoad={shouldLoadGeneralInfo} minHeight={300}>
-            <GeneralInformation date={formatDate(selectedDate)} currentPlantId={activeTab} />
+            {activePlant && <GeneralInformation date={formatDate(selectedDate)} currentPlantId={String(activePlant.plantId)} />}
           </LazySection>
         </View>
         <View style={{ marginBottom: 20 }}>
@@ -344,7 +345,7 @@ function HydrologyDetail(props: HydrologyDetailProps) {
           </LazySection>
         </View>
         <View style={{ marginBottom: 20 }}>
-          {activeTab === 'BTS' && <RegulationWaterLevel title="Mực nước thượng lưu (MNTL)" />}
+          {activeTab === 'BTS' && activePlant && <RegulationWaterLevel currentPlantId={String(activePlant.plantId)} />}
         </View>
       </SectionContainer>
     </ScrollView>

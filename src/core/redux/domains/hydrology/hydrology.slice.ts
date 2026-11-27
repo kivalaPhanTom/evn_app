@@ -66,11 +66,13 @@ interface hydrologyState {
   outflow: any
   turbineflow: any
   powerStoreInLake: {
-    currentCapacity: number
-    previousCapacity: number
-    segments: any[]
+    companyId: string
+    capacity: number | null
+    currentCapacity: number | null
+    previousCapacity: number | null
+    segments: { label: string; value: number | null; order?: number }[]
     unit: string
-  }
+  } | null
   powerStoreInLakeFactDetail: any[]
   operateWaterLevel: {
     waterLevelRange: waterLevelRangeItem[]
@@ -125,7 +127,7 @@ const initialState: hydrologyState = {
     unit: 'm³/s', minValue: 0, maxValue: 0, avgValue: 0, currentValue: 0,
     todayUpstream: [], samePeriodUpstream: [],
   },
-  powerStoreInLake: { currentCapacity: 0, previousCapacity: 0, segments: [], unit: '' },
+  powerStoreInLake: null,
   powerStoreInLakeFactDetail: [],
   operateWaterLevel: { waterLevelRange: [] },
   filterByTime: {

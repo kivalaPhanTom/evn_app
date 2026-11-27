@@ -5,7 +5,7 @@ import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 export interface StackedItem {
   label: string
-  value: number
+  value: number | null
   color: string
 }
 
@@ -39,7 +39,12 @@ const StackedBar: React.FC<Props> = ({
   valueDecimals = 1,
 }) => {
   const isDark = useAppTheme() === 'dark'
-  const filtered = useMemo(() => items.filter((i) => i.value > 0), [items])
+  const filtered = useMemo(
+    () => items.filter((item): item is StackedItem & { value: number } =>
+      typeof item.value === 'number' && Number.isFinite(item.value) && item.value > 0,
+    ),
+    [items],
+  )
   const sum = useMemo(() => filtered.reduce((a, b) => a + b.value, 0), [filtered])
   const total = totalOverride ?? sum
   const mv = maxValue ?? sum
@@ -90,7 +95,8 @@ const StackedBar: React.FC<Props> = ({
         }}
       >
         {items.map((it, idx) => {
-          const percent = mv > 0 ? (it.value / mv) * 100 : 0
+          const value = typeof it.value === 'number' && Number.isFinite(it.value) ? it.value : null
+          const percent = value !== null && mv > 0 ? (value / mv) * 100 : 0
           return (
             <View
               key={it.label}
@@ -112,8 +118,8 @@ const StackedBar: React.FC<Props> = ({
               />
               <Text style={[styles.labelText, !isDark && { color: '#1F2937' }]}>{it.label} </Text>
               <Text style={[styles.valueText, !isDark && { color: '#1F2937' }]}>
-                {it.value.toFixed(valueDecimals)}
-                {showPercent ? ` (${percent.toFixed(1)}%)` : ''}
+                {value === null ? '—' : value.toFixed(valueDecimals)}
+                {showPercent && value !== null ? ` (${percent.toFixed(1)}%)` : ''}
               </Text>
             </View>
           )

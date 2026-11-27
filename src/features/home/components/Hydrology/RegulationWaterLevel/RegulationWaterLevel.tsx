@@ -11,7 +11,7 @@ import { getOperateWaterLevel } from '@/core/redux/domains/hydrology'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 
 interface RegulationWaterLevelProps {
-  title?: string
+  currentPlantId: string
 }
 
 interface TimeRangeData {
@@ -21,7 +21,7 @@ interface TimeRangeData {
   mnqtTo: number
 }
 
-const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
+const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = ({ currentPlantId }) => {
   const dispatch = useAppDispatch()
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
@@ -75,8 +75,8 @@ const RegulationWaterLevel: React.FC<RegulationWaterLevelProps> = () => {
   // Gọi API khi component mount hoặc khi selectedMonth thay đổi
   useEffect(() => {
     const formattedDate = selectedMonth.format('MM/YYYY')
-    dispatch(getOperateWaterLevel({ selectedMonth: formattedDate }))
-  }, [selectedMonth, dispatch, countRefesh])
+    dispatch(getOperateWaterLevel({ currentPlantId, selectedMonth: formattedDate }))
+  }, [currentPlantId, selectedMonth, dispatch, countRefesh])
 
   const handleConfirm = (date: dayjs.Dayjs) => {
     setSelectedMonth(date)
