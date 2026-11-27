@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api, prefix_api_v2 } from '../constants/vars'
+import { prefix_api_v2 } from '../constants/vars'
 
 export const Service = {
   getProfitApi,
@@ -16,8 +16,8 @@ export const servicePattern = {
 
   getRevenuePowerPrices: `${prefix_api_v2}/electricityPrices`,
 
-  getRevenueTotalExpenses: `${prefix_api}/revenueCostSummary`,
-  getRevenueByPeriod: `${prefix_api}/revenueByPeriod`,
+  getRevenueTotalExpenses: `${prefix_api_v2}/RevenueCostSummary`,
+  getRevenueByPeriod: `${prefix_api_v2}/revenueByPeriod`,
   getDailyAndCumulative: `${prefix_api_v2}/dailyAndCumulative`,
   getProfitByPeriod: `${prefix_api_v2}/byPeriod`,
 }

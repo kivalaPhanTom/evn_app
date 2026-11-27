@@ -668,24 +668,27 @@ function* getHydrologyPlantsInfoApiSaga(action: ReturnType<typeof getHydrologyPl
     const date = payload?.date || ''
     const res = yield call(Service.getHydrologyPlantsInfoApi, plantId, date)
     if (res.status === 200) {
-      yield put(setHydrologyPlantsInfo(res.data))
+      yield put(setHydrologyPlantsInfo({ PlantsInfoData: res.data.data?.plantsInfoData ?? [] }))
     }
   } catch (error) {
     catchHandle(error, 'getHydrologyPlantsInfoApiSaga')
   }
 }
 
-function* getPowerStoreInLakeApiSaga(): Generator {
+function* getPowerStoreInLakeApiSaga(action: ReturnType<typeof getPowerStoreInLake>): Generator {
+  const { companyId } = action.payload
   try {
     yield put(setLoading({ isLoadingPowerStoreInLake: true }))
-    const res = yield call(Service.getPowerStoreInLake)
+    const res = yield call(Service.getPowerStoreInLake, companyId)
     if (res.status === 200) {
-      yield put(setPowerStoreInLake(res.data))
+      const data = res.data.data
+      yield put(setPowerStoreInLake(data ? { ...data, companyId } : null))
     }
-    yield put(setLoading({ isLoadingPowerStoreInLake: false }))
   } catch (error) {
-    yield put(setLoading({ isLoadingPowerStoreInLake: false }))
+    yield put(setPowerStoreInLake(null))
     catchHandle(error, 'getPowerStoreInLakeApiSaga')
+  } finally {
+    yield put(setLoading({ isLoadingPowerStoreInLake: false }))
   }
 }
 
@@ -704,11 +707,10 @@ function* getPowerStoreInLakeFactDetailApiSaga(action: ReturnType<typeof getPowe
 
 function* getOperateWaterLevelApiSaga(action: ReturnType<typeof getOperateWaterLevel>): Generator {
   try {
-    const payload = action.payload as { selectedMonth: string }
-    const selectedMonth = payload?.selectedMonth || ''
-    const res = yield call(Service.getOperateWaterLevel, selectedMonth)
+    const { currentPlantId, selectedMonth } = action.payload
+    const res = yield call(Service.getOperateWaterLevel, currentPlantId, selectedMonth)
     if (res.status === 200) {
-      yield put(setOperateWaterLevel(res.data))
+      yield put(setOperateWaterLevel({ waterLevelRange: res.data.data?.waterLevelRange ?? [] }))
     }
   } catch (error) {
     catchHandle(error, 'getOperateWaterLevelApiSaga')

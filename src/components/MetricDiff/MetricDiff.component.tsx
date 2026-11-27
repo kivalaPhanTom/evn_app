@@ -38,58 +38,31 @@ const MetricDiff: React.FC<MetricDiffProps> = ({
   textColor,
 }) => {
   const base = typeof compareTo === 'number' ? compareTo : 0
-
-  // If comparing to 0 and showing percent, use raw diff with % (no extra calc)
-  if (unit === '%' && compareTo === 0) {
-    const isUp = diff >= 0
-    const color = textColor ?? (isUp ? Colors.green : Colors.red)
-    const arrow = isUp ? '▲' : '▼'
-    const value = Math.abs(diff).toFixed(decimals)
-    const content = `${arrow} ${value}% ${label}`
-
-    if (withBackground) {
-      return (
-        <View
-          style={[
-            styles.badge,
-            { backgroundColor: bgColor ?? hexToRgba(color, 0.15) },
-            containerStyle,
-          ]}
-        >
-          <Text style={[styles.text, { color }, style]}>{content}</Text>
-        </View>
-      )
-    }
-
-    return <Text style={[styles.text, { color }, style]}>{content}</Text>
-  }
   const isPercent = unit === '%'
-  const rawDelta = typeof compareTo === 'number' ? diff - base : diff
-  const percent = base === 0 ? diff * 100 : ((diff - base) / base) * 100
+  const delta = diff - base
+  // An explicit zero means the caller already supplied a percentage.
+  const percent = compareTo === 0 ? diff : (base === 0 ? diff : delta / base) * 100
+  const change = isPercent ? percent : delta
 
-  const signValue = isPercent ? percent : rawDelta
-  const isUp = signValue >= 0
-  const color = textColor ?? (isUp ? Colors.green : Colors.red)
-  const arrow = isUp ? '▲' : '▼'
-  const value = Math.abs(isPercent ? percent : rawDelta).toFixed(decimals)
+  const isDown = change < 0
+  const color = isDown ? Colors.red : textColor ?? Colors.green
+  const backgroundColor = isDown ? hexToRgba(Colors.red, 0.15) : bgColor ?? hexToRgba(color, 0.15)
+  const arrow = isDown ? '▼' : '▲'
+  const value = Math.abs(change).toFixed(decimals)
 
   const content = isPercent ? `${arrow} ${value}% ${label}` : `${arrow} ${value} ${unit} ${label}`
 
   if (withBackground) {
     return (
       <View
-        style={[
-          styles.badge,
-          { backgroundColor: bgColor ?? hexToRgba(color, 0.15) },
-          containerStyle,
-        ]}
+        style={[styles.badge, containerStyle, { backgroundColor }]}
       >
-        <Text style={[styles.text, { color }, style]}>{content}</Text>
+        <Text style={[styles.text, style, { color }]}>{content}</Text>
       </View>
     )
   }
 
-  return <Text style={[styles.text, { color }, style]}>{content}</Text>
+  return <Text style={[styles.text, style, { color }]}>{content}</Text>
 }
 
 const styles = StyleSheet.create({

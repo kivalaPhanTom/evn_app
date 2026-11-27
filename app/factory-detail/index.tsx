@@ -211,7 +211,7 @@ function FactoryDetail(props: factoryDetailProps) {
             </LazySection>
           }
           {
-            checkModulePermission('LICH_SUA_CHUA') &&
+            (checkModulePermission('LICH_SCL') || checkModulePermission('LICH_SUA_CHUA')) &&
             <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
               <FactoryMaintenanceSchedule selectedYear={selectedYear} setSelectedYear={setSelectedYear} currentPlantId={currentPlantId} />
             </LazySection>
