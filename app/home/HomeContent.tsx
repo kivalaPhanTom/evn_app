@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
@@ -46,7 +46,7 @@ function HomeContent() {
   const isDark = scheme === 'dark'
   const p = useThemePalette()
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true)
     setTimeout(() => {
       setRefreshing(false)
@@ -56,7 +56,7 @@ function HomeContent() {
         }),
       )
     }, 80)
-  }
+  }, [countRefesh, dispatch])
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -67,15 +67,17 @@ function HomeContent() {
   }, [])
 
   const scrollY = useRef(new Animated.Value(0)).current
-  const [shouldLoadProduction, setShouldLoadProduction] = useState(false)
-  const [shouldLoadHydrology, setShouldLoadHydrology] = useState(false)
-  const [shouldLoadRevenue, setShouldLoadRevenue] = useState(false)
-  const [shouldLoadProfit, setShouldLoadProfit] = useState(false)
-  const [shouldLoadMaintenance, setShouldLoadMaintenance] = useState(false)
-  const [shouldLoadMap, setShouldLoadMap] = useState(false)
-  const [shouldLoadTechInfo, setShouldLoadTechInfo] = useState(false)
-  const [shouldLoadDocuments, setShouldLoadDocuments] = useState(false)
-  const [shouldLoadExistence, setShouldLoadExistence] = useState(false)
+  const [loadedSections, setLoadedSections] = useState({
+    production: false,
+    hydrology: false,
+    revenue: false,
+    profit: false,
+    maintenance: false,
+    map: false,
+    techInfo: false,
+    documents: false,
+    existence: false,
+  })
 
   const preloadOffset = 300 // px before entering viewport
   const thresholds = useRef({
@@ -92,33 +94,65 @@ function HomeContent() {
 
   useEffect(() => {
     const id = scrollY.addListener(({ value }) => {
-      if (value >= thresholds.production) setShouldLoadProduction(true)
-      if (value >= thresholds.hydrology) setShouldLoadHydrology(true)
-      if (value >= thresholds.revenue) setShouldLoadRevenue(true)
-      if (value >= thresholds.profit) setShouldLoadProfit(true)
-      if (value >= thresholds.maintenance) setShouldLoadMaintenance(true)
-      if (value >= thresholds.map) setShouldLoadMap(true)
-      if (value >= thresholds.techInfo) setShouldLoadTechInfo(true)
-      if (value >= thresholds.documents) setShouldLoadDocuments(true)
-      if (value >= thresholds.existence) setShouldLoadExistence(true)
+      setLoadedSections((prev) => {
+        let changed = false
+        const next = { ...prev }
+        if (!prev.production && value >= thresholds.production) {
+          next.production = true
+          changed = true
+        }
+        if (!prev.hydrology && value >= thresholds.hydrology) {
+          next.hydrology = true
+          changed = true
+        }
+        if (!prev.revenue && value >= thresholds.revenue) {
+          next.revenue = true
+          changed = true
+        }
+        if (!prev.profit && value >= thresholds.profit) {
+          next.profit = true
+          changed = true
+        }
+        if (!prev.maintenance && value >= thresholds.maintenance) {
+          next.maintenance = true
+          changed = true
+        }
+        if (!prev.map && value >= thresholds.map) {
+          next.map = true
+          changed = true
+        }
+        if (!prev.techInfo && value >= thresholds.techInfo) {
+          next.techInfo = true
+          changed = true
+        }
+        if (!prev.documents && value >= thresholds.documents) {
+          next.documents = true
+          changed = true
+        }
+        if (!prev.existence && value >= thresholds.existence) {
+          next.existence = true
+          changed = true
+        }
+        return changed ? next : prev
+      })
     })
     return () => scrollY.removeListener(id)
   }, [scrollY, thresholds])
 
-  const checkModulePermission = (moduleCode: string): boolean => {
-    let result = false
-    const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode)
-    if (moduleFound && moduleFound.canAccess) result = true
-    return result
-  }
+  const checkModulePermission = useCallback(
+    (moduleCode: string): boolean => {
+      let result = false
+      const moduleFound = modules.find((mod: moduleItem) => mod.code === moduleCode)
+      if (moduleFound && moduleFound.canAccess) result = true
+      return result
+    },
+    [modules],
+  )
 
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false },
-      )}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
       scrollEventThrottle={16}
     >
       <TwinkleStars
@@ -128,7 +162,7 @@ function HomeContent() {
         minSize={0.5}
         maxSize={2}
       >
-          <View style={[styles.header, !isDark && styles.lightHeader]}>
+        <View style={[styles.header, !isDark && styles.lightHeader]}>
           <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
           <GradientText
             text={companyTitle ?? t('companyName')}
@@ -146,56 +180,56 @@ function HomeContent() {
         {checkModulePermission('CONG_SUAT') && <PowerSection />}
 
         {checkModulePermission('SAN_LUONG') && (
-          <LazySection shouldLoad={shouldLoadProduction} minHeight={300}>
+          <LazySection shouldLoad={loadedSections.production} minHeight={300}>
             <ProductionOutput />
           </LazySection>
         )}
 
         {checkModulePermission('THUY_VAN') && (
-          <LazySection shouldLoad={shouldLoadHydrology} minHeight={300}>
+          <LazySection shouldLoad={loadedSections.hydrology} minHeight={300}>
             <Hydrology />
           </LazySection>
         )}
 
         {checkModulePermission('DOANH_THU') && (
-          <LazySection shouldLoad={shouldLoadRevenue} minHeight={300}>
+          <LazySection shouldLoad={loadedSections.revenue} minHeight={300}>
             <RevenueDetail />
           </LazySection>
         )}
 
         {checkModulePermission('LOI_NHUAN') && (
-          <LazySection shouldLoad={shouldLoadProfit} minHeight={300}>
+          <LazySection shouldLoad={loadedSections.profit} minHeight={300}>
             <ProfitDetail />
           </LazySection>
         )}
 
         {(checkModulePermission('LICH_SCL') || checkModulePermission('LICH_SUA_CHUA')) && (
-          <LazySection shouldLoad={shouldLoadMaintenance} minHeight={300}>
+          <LazySection shouldLoad={loadedSections.maintenance} minHeight={300}>
             <UnitMaintenanceSchedule />
           </LazySection>
         )}
 
-        <LazySection shouldLoad={shouldLoadMap} minHeight={200}>
+        <LazySection shouldLoad={loadedSections.map} minHeight={200}>
           <UriWebView
             uri="https://buonkuop.vn:2016/pclb/quantrac.aspx"
             headers={{ 'Accept-Language': 'vi-VN,vi;q=0.9' }}
             style={{ flex: 1, height: 400, marginBottom: px.v(60) }}
           />
         </LazySection>
-        <LazySection shouldLoad={shouldLoadTechInfo} minHeight={300}>
+        <LazySection shouldLoad={loadedSections.techInfo} minHeight={300}>
           <TechInfo />
         </LazySection>
-        <LazySection shouldLoad={shouldLoadDocuments} minHeight={300}>
+        <LazySection shouldLoad={loadedSections.documents} minHeight={300}>
           <DocumentSection />
         </LazySection>
-        <LazySection shouldLoad={shouldLoadExistence} minHeight={300}>
-          <ExistenceInfo/>
+        <LazySection shouldLoad={loadedSections.existence} minHeight={300}>
+          <ExistenceInfo />
         </LazySection>
       </TwinkleStars>
     </ScrollView>
   )
 }
-export default HomeContent
+export default React.memo(HomeContent)
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },

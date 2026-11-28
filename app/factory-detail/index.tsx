@@ -47,7 +47,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const scheme = useAppTheme()
   const isDark = scheme === 'dark'
   const p = useThemePalette()
-  const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice) 
+  const { selectedOptionsValueFactDetail } = useAppSelector((state: RootState) => state.hydrologySlice)
   const { countRefesh } = useAppSelector((state: any) => state.refreshSlice)
   const { modules } = useAppSelector((state: any) => state.moduleSlice)
   const activeTabIndex = useAppSelector((state: RootState) => state.powerSlice.activeTabIndex)
@@ -123,7 +123,7 @@ function FactoryDetail(props: factoryDetailProps) {
       if (value >= thresholds.existence) setShouldLoadExistence(true);
     });
     return () => scrollY.removeListener(id);
-  }, [scrollY, thresholds]);
+  }, [scrollY, thresholds, currentPlantId]);
   const onChange = (val: string) => {
     dispatch(setSelectedOptionsValueFactDetail(val))
   }
