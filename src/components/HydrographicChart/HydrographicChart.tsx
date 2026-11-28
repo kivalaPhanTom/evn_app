@@ -10,6 +10,7 @@ import Svg, {
 import WaterDrop from '../WaterDrop/WaterDrop.component';
 import { LineChartSkeleton } from '../Skeletons/LineChartSkeleton';
 import { useAppTheme } from '@/core/hooks/use-app-theme';
+import { useVisibility } from '@/core/context/visibility-context';
 import { prepareHydrographicChartData, type HydroChartItem } from './hydrographicChart.data';
 
 /* ===== CONFIG ===== */
@@ -32,6 +33,8 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
   const { isLoading = false, data = [], referenceLevel = 0, bgColor, selectedOptionsValue = "" } = props
   const scheme = useAppTheme();
   const isDark = scheme === 'dark';
+  const visibility = useVisibility()
+  const showDrops = visibility.hydrology
   const scrollRef = useRef<ScrollView>(null);
   // Chuẩn bị chung dữ liệu đường biểu diễn và giọt nước để hai phần không lệch giờ.
   // Chỉ tính lại khi response hoặc chế độ xem thay đổi.
@@ -283,24 +286,28 @@ const HydrographicChart: React.FC<HydrographicChartProps> = (props) => {
                           }}
                         >
                           <View style={styles.dropScale}>
-                            <WaterDrop
-                              percent={drop.percent}
-                              fontSize={12}
-                              isShowPercent={false}
-                              colors={isDark ? {
-                                top: drop.percent >= 50 ? dark.drop.top : dark.warningTop,
-                                bottom: drop.percent >= 50 ? dark.drop.bottom : dark.warningMid,
-                                border: drop.percent >= 50 ? dark.drop.border : dark.warning,
-                                background: dark.drop.background,
-                                text: drop.percent >= 50 ? dark.drop.text : dark.danger,
-                              } : {
-                                top: drop.percent >= 50 ? light.waterTop : light.warningTop,
-                                bottom: drop.percent >= 50 ? light.waterBottom : light.warningBottom,
-                                border: drop.percent >= 50 ? light.water : light.warning,
-                                background: light.surface,
-                                text: drop.percent >= 50 ? light.water : light.warning,
-                              }}
-                            />
+                            {showDrops ? (
+                              <WaterDrop
+                                percent={drop.percent}
+                                fontSize={12}
+                                isShowPercent={false}
+                                colors={isDark ? {
+                                  top: drop.percent >= 50 ? dark.drop.top : dark.warningTop,
+                                  bottom: drop.percent >= 50 ? dark.drop.bottom : dark.warningMid,
+                                  border: drop.percent >= 50 ? dark.drop.border : dark.warning,
+                                  background: dark.drop.background,
+                                  text: drop.percent >= 50 ? dark.drop.text : dark.danger,
+                                } : {
+                                  top: drop.percent >= 50 ? light.waterTop : light.warningTop,
+                                  bottom: drop.percent >= 50 ? light.waterBottom : light.warningBottom,
+                                  border: drop.percent >= 50 ? light.water : light.warning,
+                                  background: light.surface,
+                                  text: drop.percent >= 50 ? light.water : light.warning,
+                                }}
+                              />
+                            ) : (
+                              <View style={{ width: 32, height: 56 }} />
+                            )}
                           </View>
 
                           <Text style={[styles.volumeText, !isDark && { color: light.muted }]}>

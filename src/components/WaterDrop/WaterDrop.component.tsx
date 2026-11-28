@@ -28,25 +28,10 @@ export default function WaterDrop({
   const critical = percent < 20
 
   const anim = useRef(new Animated.Value(0)).current
-  const bobAnim = useRef(new Animated.Value(0)).current
-  // NEW: wave phase animation
-  const wavePhaseAnim = useRef(new Animated.Value(0)).current
 
-  // NEW: state holders for animated numeric values (percent, bob offset, wave phase)
+  // NEW: state holders for animated numeric values (percent, wave phase)
   const [animatedPercent, setAnimatedPercent] = useState(percent)
-  const [bobOffsetValue, setBobOffsetValue] = useState(0)
   const [wavePhase, setWavePhase] = useState(0)
-
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(bobAnim, { toValue: 1, duration: 2200, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
-        Animated.timing(bobAnim, { toValue: 0, duration: 2200, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
-      ]),
-    )
-    loop.start()
-    return () => loop.stop()
-  }, [bobAnim])
 
   useEffect(() => {
     Animated.timing(anim, {
@@ -56,35 +41,24 @@ export default function WaterDrop({
     }).start()
   }, [percent, anim])
 
-  // NEW: listeners to drive re-render with animated values
+  // NEW: listener to drive re-render with animated percent value
   useEffect(() => {
     const id = anim.addListener(v => setAnimatedPercent(v.value))
-    const bobId = bobAnim.addListener(v => setBobOffsetValue(
-      (-vbHeight * 0.03) + (v.value * (vbHeight * 0.06))
-    ))
     return () => {
       anim.removeListener(id)
-      bobAnim.removeListener(bobId)
     }
-  }, [anim, bobAnim, vbHeight])
+  }, [anim])
 
-  // NEW: wave phase looping (0 -> 2π)
+  // NEW: wave phase loop - dùng setInterval ~120ms thay vì Animated listener (60Hz)
+  // để giảm React re-render khi có nhiều WaterDrop đồng thời.
   useEffect(() => {
-    const loop = Animated.loop(
-      Animated.timing(wavePhaseAnim, {
-        toValue: Math.PI * 2,
-        duration: 6000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-    )
-    loop.start()
-    const phaseId = wavePhaseAnim.addListener(v => setWavePhase(v.value))
-    return () => {
-      loop.stop()
-      wavePhaseAnim.removeListener(phaseId)
-    }
-  }, [wavePhaseAnim])
+    let phase = 0
+    const interval = setInterval(() => {
+      phase = (phase + Math.PI * 2 * (120 / 6000)) % (Math.PI * 2)
+      setWavePhase(phase)
+    }, 120)
+    return () => clearInterval(interval)
+  }, [])
 
   // blink if <20%
   const blink = useRef(new Animated.Value(1)).current
@@ -98,7 +72,9 @@ export default function WaterDrop({
         ]),
       )
       loop.start()
-      return () => loop.stop()
+      return () => {
+        loop.stop()
+      }
     } else {
       blink.setValue(1)
     }
@@ -106,7 +82,7 @@ export default function WaterDrop({
 
   // NEW: build wavy water clip path based on animated percent & phase
   const waterHeightUnits = (animatedPercent / 100) * vbHeight * Math.min(Math.max(0.9, 0), 1)
-  const topYBase = vbHeight - waterHeightUnits + bobOffsetValue
+  const topYBase = vbHeight - waterHeightUnits
   const amplitude = vbHeight * 0.05
   const segments = 14  // more segments = smoother wave
   const segmentWidth = vbWidth / segments

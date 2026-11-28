@@ -17,6 +17,7 @@ import { RootState } from '@/core/redux/store'
 import BarSkeleton from '@/components/Skeletons/BarSkeleton'
 import { LineChartSkeleton } from '@/components/Skeletons/LineChartSkeleton'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { useVisibility } from '@/core/context/visibility-context'
 import { shallowEqual } from 'react-redux'
 
 interface WaterLevelData {
@@ -88,6 +89,10 @@ const WaterLevelCard: React.FC<{
   const initialOffset = index * (Math.PI / 2)
   const waveTranslateFront = useRef(new Animated.Value(0)).current
   const waveTranslateBack = useRef(new Animated.Value(0)).current
+  const visibility = useVisibility()
+  const inViewport = visibility.hydrology
+  const frontAnimRef = useRef<Animated.CompositeAnimation | null>(null)
+  const backAnimRef = useRef<Animated.CompositeAnimation | null>(null)
 
   // Tạo path sóng: trong SVG y=0 là top (reference line), y=waveHeight là bottom
   const createWavePath = (offset: number, amplitude: number, frequency: number, width: number, waveHeight: number) => {
@@ -146,14 +151,34 @@ const WaterLevelCard: React.FC<{
         useNativeDriver: true,
       }),
     )
-    frontAnimation.start()
-    backAnimation.start()
+    frontAnimRef.current = frontAnimation
+    backAnimRef.current = backAnimation
+    if (inViewport) {
+      frontAnimation.start()
+      backAnimation.start()
+    }
 
     return () => {
       frontAnimation.stop()
       backAnimation.stop()
+      frontAnimRef.current = null
+      backAnimRef.current = null
     }
-  }, [containerWidth, waveTranslateBack, waveTranslateFront])
+  }, [containerWidth, waveTranslateBack, waveTranslateFront, inViewport])
+
+  // Stop/start loop khi viewport thay đổi (perf: pause animation khi ra khỏi viewport).
+  useEffect(() => {
+    const f = frontAnimRef.current
+    const b = backAnimRef.current
+    if (!f || !b) return
+    if (inViewport) {
+      f.start()
+      b.start()
+    } else {
+      f.stop()
+      b.stop()
+    }
+  }, [inViewport])
 
   return (
     <View

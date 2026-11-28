@@ -27,6 +27,7 @@ import { Colors } from '@/core/constants/colors'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
 import { useThemePalette } from '@/core/constants/themePalette'
 import ReportIcon from '@/components/icons/ReportIcon'
+import { VisibilityProvider } from '@/core/context/visibility-context'
 
 interface factoryDetailProps {
   companyName: string;
@@ -93,6 +94,7 @@ function FactoryDetail(props: factoryDetailProps) {
   const [shouldLoadMaintenance, setShouldLoadMaintenance] = useState(false);
   const [shouldLoadTechInfo, setShouldLoadTechInfo] = useState(false);
   const [shouldLoadExistence, setShouldLoadExistence] = useState(false);
+  const [hydrologyInViewport, setHydrologyInViewport] = useState(true);
 
   const checkModulePermission = (moduleCode: string): boolean => {
     let result = false;
@@ -121,6 +123,12 @@ function FactoryDetail(props: factoryDetailProps) {
       if (value >= thresholds.maintenance) setShouldLoadMaintenance(true);
       if (value >= thresholds.techInfo) setShouldLoadTechInfo(true);
       if (value >= thresholds.existence) setShouldLoadExistence(true);
+      // Hydrology section: viewport = scrollY in [start, end]. Range rất rộng để animation chạy khi user đang đọc.
+      const hBuffer = 100;
+      const hTop = 300 - hBuffer;
+      const hBottom = 4500 - hBuffer;
+      const visible = value >= hTop && value < hBottom;
+      setHydrologyInViewport((prev) => (prev === visible ? prev : visible));
     });
     return () => scrollY.removeListener(id);
   }, [scrollY, thresholds, currentPlantId]);
@@ -140,7 +148,8 @@ function FactoryDetail(props: factoryDetailProps) {
       scrollEventThrottle={16}
     >
       <View style={{ flex: 1 }} collapsable={false}>
-        <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
+        <VisibilityProvider value={{ hydrology: hydrologyInViewport }}>
+          <TwinkleStars background={isDark ? Colors.background : Colors.lightBackground} particleDensity={50} particleColor={Colors.textColor} minSize={0.5} maxSize={2}>
           <View style={[styles.header, !isDark && styles.lightHeader]}>
             <ReportIcon size={px.f(32)} color={p.fileChartIcon} style={styles.checklistIcon} />
             <GradientText
@@ -228,6 +237,7 @@ function FactoryDetail(props: factoryDetailProps) {
             )}
           </LazySection>
         </TwinkleStars>
+        </VisibilityProvider>
       </View>
     </ScrollView>
   )

@@ -24,6 +24,7 @@ import DocumentSection from '@/features/home/components/Legal/Documents'
 import ExistenceInfo from '@/features/home/components/Existence/ExistenceInfo'
 import ReportIcon from '@/components/icons/ReportIcon'
 import { useThemePalette } from '@/core/constants/themePalette'
+import { VisibilityProvider } from '@/core/context/visibility-context'
 
 interface moduleItem {
   code: string
@@ -78,6 +79,9 @@ function HomeContent() {
     documents: false,
     existence: false,
   })
+
+  // Hydrology section: ~300-1800px scrollY. Hydrology height lớn (chart + 3 cards).
+  const [hydrologyInViewport, setHydrologyInViewport] = useState(true)
 
   const preloadOffset = 300 // px before entering viewport
   const thresholds = useRef({
@@ -135,6 +139,14 @@ function HomeContent() {
         }
         return changed ? next : prev
       })
+      // Hydrology section: viewport = scrollY in [start - buffer, end + buffer].
+      // Hydrology rộng (chart + cards), range rất rộng để animation KHÔNG bị stop khi user đang đọc nội dung.
+      // PowerStoreInLake / HydrographicChart có thể cao tới 3000-4000px.
+      const hBuffer = 100
+      const hTop = 300 - hBuffer
+      const hBottom = 4500 - hBuffer
+      const visible = value >= hTop && value < hBottom
+      setHydrologyInViewport((prev) => (prev === visible ? prev : visible))
     })
     return () => scrollY.removeListener(id)
   }, [scrollY, thresholds])
@@ -155,7 +167,8 @@ function HomeContent() {
       onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
       scrollEventThrottle={16}
     >
-      <TwinkleStars
+      <VisibilityProvider value={{ hydrology: hydrologyInViewport }}>
+        <TwinkleStars
         background={isDark ? Colors.background : Colors.lightBackground}
         particleDensity={50}
         particleColor={Colors.textColor}
@@ -226,6 +239,7 @@ function HomeContent() {
           <ExistenceInfo />
         </LazySection>
       </TwinkleStars>
+      </VisibilityProvider>
     </ScrollView>
   )
 }

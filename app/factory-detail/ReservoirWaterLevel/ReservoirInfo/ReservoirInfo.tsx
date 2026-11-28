@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/core/redux/hooks'
 import { RootState } from '@/core/redux/store'
 import { getHydrologyPlantsParam } from '@/core/redux/domains/hydrology'
 import { useAppTheme } from '@/core/hooks/use-app-theme'
+import { useVisibility } from '@/core/context/visibility-context'
 
 interface ReservoirData {
   currentLevel: number | null
@@ -137,6 +138,10 @@ function ReservoirInfo(props: ReservoirInfoProps) {
 
   const waveTranslateFront = useRef(new Animated.Value(0)).current
   const waveTranslateBack = useRef(new Animated.Value(0)).current
+  const visibility = useVisibility()
+  const inViewport = visibility.hydrology
+  const frontAnimRef = useRef<Animated.CompositeAnimation | null>(null)
+  const backAnimRef = useRef<Animated.CompositeAnimation | null>(null)
 
   // Create wave path
   const createWavePath = (offset: number, amplitude: number, frequency: number, width: number, waveHeight: number) => {
@@ -195,14 +200,34 @@ function ReservoirInfo(props: ReservoirInfoProps) {
         useNativeDriver: true,
       }),
     )
-    frontAnimation.start()
-    backAnimation.start()
+    frontAnimRef.current = frontAnimation
+    backAnimRef.current = backAnimation
+    if (inViewport) {
+      frontAnimation.start()
+      backAnimation.start()
+    }
 
     return () => {
       frontAnimation.stop()
       backAnimation.stop()
+      frontAnimRef.current = null
+      backAnimRef.current = null
     }
-  }, [gaugeWidth, waveAreaHeight, waveTranslateBack, waveTranslateFront])
+  }, [gaugeWidth, waveAreaHeight, waveTranslateBack, waveTranslateFront, inViewport])
+
+  // Stop/start loop khi viewport thay đổi (perf: pause animation khi ra khỏi viewport).
+  useEffect(() => {
+    const f = frontAnimRef.current
+    const b = backAnimRef.current
+    if (!f || !b) return
+    if (inViewport) {
+      f.start()
+      b.start()
+    } else {
+      f.stop()
+      b.stop()
+    }
+  }, [inViewport])
 
   // Calculate gradient direction for 122.53deg
   // 122.53deg from vertical = 32.53deg from horizontal

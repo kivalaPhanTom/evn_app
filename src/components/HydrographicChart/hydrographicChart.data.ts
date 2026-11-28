@@ -31,8 +31,12 @@ export function prepareHydrographicChartData(data: HydroChartItem[], selectedOpt
   })
   // Giọt nước chỉ xuất hiện khi điểm có cả mực nước và phần trăm hợp lệ.
   // percent = null thì bỏ giọt nước; percent = 0 vẫn hiển thị đúng 0%.
-  const waterDrops = points.flatMap((point) =>
-    point.percent === null ? [] : [{ index: point.index, percent: point.percent }],
-  )
+  // Sample mỗi DROP_SAMPLE_STEP điểm để giảm số WaterDrop animations đồng thời (CPU).
+  const DROP_SAMPLE_STEP = 4
+  const waterDrops = points.flatMap((point, i) => {
+    if (point.percent === null) return []
+    if (i % DROP_SAMPLE_STEP !== 0 && i !== points.length - 1) return []
+    return [{ index: point.index, percent: point.percent }]
+  })
   return { points, waterDrops }
 }
