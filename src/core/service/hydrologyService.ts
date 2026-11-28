@@ -1,4 +1,4 @@
-import { prefix_api, prefix_api_v2 } from '../constants/vars'
+import { prefix_api_v2 } from '../constants/vars'
 import { apiFormUrlEncoded, api, get } from './api.service'
 
 export const Service = {
@@ -28,14 +28,14 @@ export const servicePattern = {
   getHydrologyFlow: `${prefix_api_v2}/FlowDiagram`,
   getInflowOutflow: `${prefix_api_v2}/InflowOutflow_v2`,
   getHydrologyPlantsParam: `${prefix_api_v2}/hydrologyplant_detail`,
-  getHydrologyPlantsInfo: `${prefix_api}/HydrologyPlantInformation`,
+  getHydrologyPlantsInfo: `${prefix_api_v2}/HydrologyPlantInformation`,
   getUpstreamWaterLevel: `${prefix_api_v2}/GetUpstreamWaterLevel`,
   getInflow: `${prefix_api_v2}/getInflow`,
   getOutflow: `${prefix_api_v2}/getOutflow`,
   getTurbineflow: `${prefix_api_v2}/getTurbineflow`,
-  getPowerStoreInLake: `${prefix_api}/PowerStoreInLake`,
+  getPowerStoreInLake: `${prefix_api_v2}/PowerStoreInLake`,
   getPowerStoreInLakeFactDetail: `${prefix_api_v2}/PowerStoreInLakeOfFactory`,
-  getOperateWaterLevel: `${prefix_api}/GetOperateWaterLevel`,
+  getOperateWaterLevel: `${prefix_api_v2}/GetOperateWaterLevel`,
 }
 function getHydrologyGraphicChartApi(maHoChua: string, type: string) {
   const url = servicePattern.getHydrographicChart
@@ -70,7 +70,7 @@ async function getHydrologyPlantsParamApi(currentPlantId?: string, maHoChua?: st
 }
 
 function getHydrologyPlantsInfoApi(plantId: string, date: string) {
-  return api.get(`${servicePattern.getHydrologyPlantsInfo}?currentPlantId=${plantId}&date=${date}`)
+  return api.get(servicePattern.getHydrologyPlantsInfo, { params: { currentPlantId: plantId, date } })
 }
 
 // Log tại service để theo dõi MNTL cho cả luồng so sánh và các action gọi riêng.
@@ -97,10 +97,8 @@ function getTurbineFlowApi(currentPlantId: string, date: string) {
     `${servicePattern.getTurbineflow}?currentPlantId=${encodeURIComponent(currentPlantId)}&date=${encodeURIComponent(date)}`,
   )
 }
-function getPowerStoreInLake() {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getPowerStoreInLake}`,
-  )
+function getPowerStoreInLake(companyId: string) {
+  return apiFormUrlEncoded.get(servicePattern.getPowerStoreInLake, { params: { companyId } })
 }
 
 function getPowerStoreInLakeFactDetail(currentPlantId: string, maHoChua?: string) {
@@ -114,10 +112,8 @@ function getPowerStoreInLakeFactDetail(currentPlantId: string, maHoChua?: string
   )
 }
 
-function getOperateWaterLevel(selectedMonth: string) {
-  return apiFormUrlEncoded.get(
-    `${servicePattern.getOperateWaterLevel}?selectedMonth=${selectedMonth}`,
-  )
+function getOperateWaterLevel(currentPlantId: string, selectedMonth: string) {
+  return apiFormUrlEncoded.get(servicePattern.getOperateWaterLevel, { params: { currentPlantId, selectedMonth } })
 }
 
 function getUpstreamWaterLevelApi_2(currentPlantId: string, currentDate: string, compareDate: string, type: string) {

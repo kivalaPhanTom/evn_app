@@ -1,5 +1,5 @@
 import { api } from './api.service'
-import { prefix_api, prefix_api_v2 } from '../constants/vars'
+import { prefix_api_v2 } from '../constants/vars'
 import { ProductCummulativeOutputParams } from '../model/productOutput.request'
 import dayjs from 'dayjs'
 import { current } from '@reduxjs/toolkit'

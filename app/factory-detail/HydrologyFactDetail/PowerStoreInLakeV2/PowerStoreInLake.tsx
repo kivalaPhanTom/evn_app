@@ -39,7 +39,7 @@ const PowerStoreInLakeV2: React.FC = () => {
             <MetricDiff
               withBackground
               diff={change / 100}
-              textColor={change < 0 ? '#B91C33' : '#047857'}
+              textColor="#047857"
             />
           )}
         </View>

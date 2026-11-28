@@ -35,9 +35,9 @@ export const getInflow = createAction<{ currentPlantId: string; date: string }>(
 export const getOutflow = createAction<{ currentPlantId: string; date: string }>('GET_OUTFLOW')
 export const getTurbineflow = createAction<{ currentPlantId: string; date: string }>('GET_TURBINE_FLOW')
 export const getHydrologyPlantsInfo = createAction<{ plantId: string; date: string }>('GET_HYDROLOGY_PLANTS_INFO')
-export const getPowerStoreInLake = createAction('GET_POWER_STORE_IN_LAKE')
+export const getPowerStoreInLake = createAction<{ companyId: string }>('GET_POWER_STORE_IN_LAKE')
 export const getPowerStoreInLakeFactDetail = createAction<{ currentPlantId: string; maHoChua?: string }>('GET_POWER_STORE_IN_LAKE_FACT_DETAIL')
-export const getOperateWaterLevel = createAction<{ selectedMonth: string }>('GET_OPERATE_WATER_LEVEL')
+export const getOperateWaterLevel = createAction<{ currentPlantId: string; selectedMonth: string }>('GET_OPERATE_WATER_LEVEL')
 export const getUpstreamWaterLevel_2 = createAction<{
   currentPlantId: string
   currentDate: string

@@ -8,7 +8,7 @@ const createStyles = (isDark: boolean) => {
   return StyleSheet.create({
   contentContainer: {},
     selectContainer: {
-      width: 60,
+      minWidth: 64,
       marginBottom: 10,
       display: 'flex',
       alignItems: 'center',
@@ -24,6 +24,7 @@ const createStyles = (isDark: boolean) => {
       color: p.textPrimary,
       fontSize: 14,
       fontWeight: '600',
+      textAlign: 'center',
     },
     modalOverlay: {
       flex: 1,
